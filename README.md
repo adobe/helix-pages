@@ -14,7 +14,7 @@ Clone the current repo and run `hlx up`.
 
 Run `hlx publish`.
 
-The project requires a patch of the online VCL as long as this issue []() is not fixed.
+The project requires a patch of the online VCL as long as this issue [https://github.com/adobe/helix-pages/issues/1](https://github.com/adobe/helix-pages/issues/1) is not fixed.
 Here are the manual step to go through after the `hlx publish`:
 
 - Connect to Fastly
