@@ -11,5 +11,5 @@ definitions:
 strains:
   - name: default
     code: *defaultRepo
-    content: https://github.com/adobe/helix-pages.git#master
+    content: https://github.com/davidnuescheler/helix-test#to-helix-pages
     static: https://github.com/adobe/helix-pages.git/htdocs#master
