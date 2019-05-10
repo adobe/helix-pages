@@ -236,12 +236,21 @@ header .section:nth-child(2) ul {
     list-style: none;
 }
 
+header:empty {
+    display:none;
+}
+
+
 footer {
     background-color: #cccccc;
     padding: 20px 0px;
     font-size: 0.5em;
     color: #888888;
     text-align: center;
+}
+
+footer:empty {
+    display:none;
 }
 
 
