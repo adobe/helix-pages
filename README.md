@@ -20,7 +20,7 @@ Here are the manual step to go through after the `hlx publish`:
 - Connect to Fastly
 - Open the project-helix.page service
 - Clone the latest configuration
-- Edit the helix.vcl file: 
+- Edit the helix.vcl file:
   - locate the `hlx_owner` and `hlx_repo` subroutines
   - remove them and replace them by the ones in this gits [https://gist.github.com/kptdobe/bd0f5bb10b88783a3cefd917beb98a68](https://gist.github.com/kptdobe/bd0f5bb10b88783a3cefd917beb98a68)
 - Update the modifications
