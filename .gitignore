@@ -7,3 +7,4 @@ logs
 deploy.sh
 hlx
 .env
+helix-config.yaml.old

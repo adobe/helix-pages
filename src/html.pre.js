@@ -16,14 +16,7 @@
  *
  */
 
-/**
- * The 'pre' function that is executed before the HTML is rendered
- * @param payload The current payload of processing pipeline
- * @param payload.content The content
- */
-
-
-function wrapNodes (newparent, elems) {
+function wrapNodes(newparent, elems) {
   elems.forEach((el, index) => {
     newparent.appendChild(el.cloneNode(true));
     if (index !== 0) {
@@ -53,39 +46,39 @@ function classify(document, selector, classname, level) {
   });
 }
 
-function pre(payload) {
+/**
+ * The 'pre' function that is executed before the HTML is rendered
+ * @param context The current context of processing pipeline
+ * @param context.content The content
+ */
+function pre(context) {
+  const document = context.content.document;
 
-  const document = payload.content.document;
+  /* workaround until sections in document are fixed via PR on pipeline */
+  let currentCollection = [];
+  let sections = [];
 
+  document.body.childNodes.forEach((child) => {
+    if (child.tagName === "HR") {
+      sections.push(currentCollection);
+      currentCollection = [];
+    } else {
+      currentCollection.push(child);
+    }
+  });
 
-      /* workaround until sections in document are fixed via PR on pipeline */
-   
-    
-      let currentCollection = [];
-      let sections=[]
-    
-       document.body.childNodes.forEach((child)=>{
-         if (child.tagName == "HR") {
-           sections.push(currentCollection);
-           currentCollection = [];
-         } else {
-           currentCollection.push(child);
-         }
-       });
-       
- 
-       sections.push(currentCollection);
-       sections.forEach((el) => {
-         const newparent=document.createElement("div");
-         newparent.className='section';
-         wrapNodes(newparent, el);
-       })
-    
-       document.querySelectorAll("body>hr").forEach((el)=>{ el.parentNode.removeChild(el) }); 
-      
-      /* end of workaround */  
+  sections.push(currentCollection);
+  sections.forEach((el) => {
+    const newparent = document.createElement("div");
+    newparent.className = 'section';
+    wrapNodes(newparent, el);
+  });
 
-  
+  document.querySelectorAll("body>hr").forEach((el) => {
+    el.parentNode.removeChild(el)
+  });
+  /* end of workaround */
+
   classify(document, "div.section", "section copy");
   classify(document, "div.section>:first-child>img", "section image", 2);
 
@@ -94,7 +87,6 @@ function pre(payload) {
     classify(document, "div.section:first-child", "section title");
     wrap(document, "div.section:first-child :nth-child(1n+2)", "header");
   }
-
 }
 
 module.exports.pre = pre;

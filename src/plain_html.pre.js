@@ -16,14 +16,7 @@
  *
  */
 
-/**
- * The 'pre' function that is executed before the HTML is rendered
- * @param payload The current payload of processing pipeline
- * @param payload.content The content
- */
-
-
-function wrapNodes (newparent, elems) {
+function wrapNodes(newparent, elems) {
   elems.forEach((el, index) => {
     newparent.appendChild(el.cloneNode(true));
     if (index !== 0) {
@@ -34,38 +27,38 @@ function wrapNodes (newparent, elems) {
   });
 }
 
+/**
+ * The 'pre' function that is executed before the HTML is rendered
+ * @param context The current context of processing pipeline
+ * @param context.content The content
+ */
+function pre(context) {
+  const document = context.content.document;
 
-function pre(payload) {
+  /* workaround until sections in document are fixed via PR on pipeline */
+  let currentCollection = [];
+  let sections = [];
 
-  const document = payload.content.document;
-
-
-     /* workaround until sections in document are fixed via PR on pipeline */
-   
-    
-     let currentCollection = [];
-     let sections=[]
-   
-      document.body.childNodes.forEach((child)=>{
-        if (child.tagName == "HR") {
-          sections.push(currentCollection);
-          currentCollection = [];
-        } else {
-          currentCollection.push(child);
-        }
-      });
-      
-
+  document.body.childNodes.forEach((child) => {
+    if (child.tagName === "HR") {
       sections.push(currentCollection);
-      sections.forEach((el) => {
-        const newparent=document.createElement("div");
-        newparent.setAttribute('class', 'section');
-        wrapNodes(newparent, el);
-      })
-   
-      document.querySelectorAll("body>hr").forEach((el)=>{ el.parentNode.removeChild(el) }); 
-     
-     /* end of workaround */
+      currentCollection = [];
+    } else {
+      currentCollection.push(child);
+    }
+  });
+
+  sections.push(currentCollection);
+  sections.forEach((el) => {
+    const newparent = document.createElement("div");
+    newparent.setAttribute('class', 'section');
+    wrapNodes(newparent, el);
+  });
+
+  document.querySelectorAll("body>hr").forEach((el) => {
+    el.parentNode.removeChild(el)
+  });
+  /* end of workaround */
 
 }
 
