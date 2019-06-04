@@ -16,35 +16,10 @@
  *
  */
 
-function wrapNodes(newparent, elems) {
-  elems.forEach((el, index) => {
-    newparent.appendChild(el.cloneNode(true));
-    if (index !== 0) {
-      el.parentNode.removeChild(el);
-    } else {
-      el.parentNode.replaceChild(newparent, el);
-    }
-  });
-}
-
-function wrap(document, selector, classname) {
-  const elems = document.querySelectorAll(selector);
-  const div = document.createElement("div");
-  div.className = classname;
-  wrapNodes(div, elems);
-}
-
-function classify(document, selector, classname, level) {
-  const elems = document.querySelectorAll(selector);
-  elems.forEach((el) => {
-    let l = level;
-    while (l) {
-      el = el.parentNode;
-      l--;
-    }
-    el.className = classname;
-  });
-}
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+const { window } = new JSDOM('<html></html>');
+const $ = require('jquery')(window);
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -69,9 +44,7 @@ function pre(context) {
 
   sections.push(currentCollection);
   sections.forEach((el) => {
-    const newparent = document.createElement("div");
-    newparent.className = 'section';
-    wrapNodes(newparent, el);
+    $(el).wrapAll('<div class="section"></div>');
   });
 
   document.querySelectorAll("body>hr").forEach((el) => {
@@ -79,14 +52,11 @@ function pre(context) {
   });
   /* end of workaround */
 
-  classify(document, "div.section", "section copy");
-  classify(document, "div.section>:first-child>img", "section image", 2);
-
-  /* header image? */
-  if (document.querySelector("div.section:first-child p:first-child>img")) {
-    classify(document, "div.section:first-child", "section title");
-    wrap(document, "div.section:first-child :nth-child(1n+2)", "header");
-  }
+  const $sections = $(document).find('div.section');
+  $sections.addClass('copy');
+  $sections.has(':first-child>img').addClass('image').removeClass('copy');
+  // first section is has a starting image: add title class and wrap all subsequent items inside a div
+  $sections.first().has('p:first-child>img').addClass('title').removeClass('image').find(':nth-child(1n+2)').wrapAll('<div class="header"></div>');
 }
 
 module.exports.pre = pre;
