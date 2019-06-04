@@ -15,11 +15,7 @@
  * limitations under the License.
  *
  */
-
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-const { window } = new JSDOM('<html></html>');
-const $ = require('jquery')(window);
+const jquery = require('jquery');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -28,6 +24,7 @@ const $ = require('jquery')(window);
  */
 function pre(context) {
   const document = context.content.document;
+  const $ = jquery(document.defaultView);
 
   /* workaround until sections in document are fixed via PR on pipeline */
   let currentCollection = [];
