@@ -50,10 +50,25 @@ function pre(context) {
   /* end of workaround */
 
   const $sections = $(document).find('div.section');
-  $sections.addClass('copy');
-  $sections.has(':first-child>img').addClass('image').removeClass('copy');
-  // first section is has a starting image: add title class and wrap all subsequent items inside a div
-  $sections.first().has('p:first-child>img').addClass('title').removeClass('image').find(':nth-child(1n+2)').wrapAll('<div class="header"></div>');
+
+  // sections with an image
+  $sections
+    .has(':first-child>img')
+    .addClass('image')
+
+  // first section has a starting image: add title class and wrap all subsequent items inside a div
+  $sections
+    .first()
+    .has('p:first-child>img')
+    .addClass('title')
+    .find(':nth-child(1n+2)')
+    .wrapAll('<div class="header"></div>');
+
+  // sections without image and title class gets a default class
+  $sections
+    .not('.image')
+    .not('.title')
+    .addClass('default');
 }
 
 module.exports.pre = pre;
