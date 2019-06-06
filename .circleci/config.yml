@@ -97,7 +97,7 @@ workflows:
     jobs:
       - publish
         requires:
-          - build
+        - build
         filters:
           branches:
             #TODO change to master
