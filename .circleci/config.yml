@@ -91,11 +91,9 @@ workflows:
   build:
     jobs:
       - build
-  publish:
-    jobs:
-    - publish:
-        requires:
-        - build
-        filters:
-          branches:
-            only: auto-publish
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only: auto-publish
