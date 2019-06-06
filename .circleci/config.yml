@@ -82,9 +82,27 @@ jobs:
   publish:
     executor: node8
     steps:
+      - setup
+
       - run:
-          name: Echo
-          command: echo "I am going to publish now!!"
+          name: Installing Helix CLI
+          command: npm install @adobe/helix-cli --save=false
+
+      - run:
+          name: Build Templates
+          command: npx hlx build
+
+      - run:
+          name: Reset Working Copy
+          command: git status; git checkout -- .
+
+      - run:
+          name: Deploy to Adobe I/O Runtime
+          command: npx hlx deploy | cat
+
+      - run:
+          name: Publish to Fastly
+          command: npx hlx publish | cat
 
 workflows:
   version: 2
