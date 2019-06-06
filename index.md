@@ -23,12 +23,12 @@ function takeMeThere() {
     let separator = '-';
 
     const path = giturl.substr(segments[3].index + branch.length, giturl.length - (segments[3].index + branch.length) - 3);
-    if (user.indexOf('-') >= 0 || branch != 'master') {
+    if (user.indexOf('-') >= 0 || branch !== 'master') {
         separator = '--';
     }
-    const branchprefix= (branch == 'master' ? '' : branch+separator);
+    const branchprefix = (branch === 'master' ? '' : branch + separator);
     const url = `https://${branchprefix}${repo}${separator}${user}.project-helix.page${path}.html`;
-    window.location=url;
+    window.location = url;
 }
 </script>
 <input type="text" id="giturl">
