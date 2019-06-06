@@ -3,41 +3,41 @@ version: 2.1
 executors:
   node8:
     docker:
-    # use latest node 8 on debian 8 (jessie)
-    - image: circleci/node:8-jessie
+      # use latest node 8 on debian 8 (jessie)
+      - image: circleci/node:8-jessie
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
 commands:
   setup:
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
-    - run:
-        name: install npm 6.4.1
-        command: sudo npm -g install npm@6.4.1
-    - run:
-        name: Installing Dependencies
-        command: npm ci
-    - save_cache:
-        paths:
-        - node_modules
-        key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
-    - run:
-        name: prepare test git user
-        command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: install npm 6.4.1
+          command: sudo npm -g install npm@6.4.1
+      - run:
+          name: Installing Dependencies
+          command: npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: prepare test git user
+          command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
 
 jobs:
   build:
     executor: node8
     steps:
-      - setup
+        - checkout
 
-      - run:
-        name: Lint
-        command: npm run lint
+        - run:
+            name: Lint
+            command: npm run lint
 
         # - run:
         #     name: Installing Dependencies
@@ -83,8 +83,8 @@ jobs:
     executor: node8
     steps:
       - run:
-        name: Echo
-        command: echo "I am going to publish now!!"
+          name: Echo
+          command: echo "I am going to publish now!!"
 
 workflows:
   version: 2
