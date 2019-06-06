@@ -33,11 +33,11 @@ jobs:
   build:
     executor: node8
     steps:
-        - setup
+      - setup
 
-        - run:
-            name: Lint
-            command: npm run lint
+      - run:
+        name: Lint
+        command: npm run lint
 
         # - run:
         #     name: Installing Dependencies
@@ -79,9 +79,27 @@ jobs:
 
         # - store_test_results:
         #     path: junit
+  publish:
+    executor: node8
+    steps:
+      - run:
+        name: Echo
+        command: echo "I am going to publish now!!"
+
+    
 
 workflows:
   version: 2
   build:
     jobs:
-        - build
+      - build
+  publish:
+    jobs:
+      - publish
+        requires:
+          - build
+        filters:
+          branches:
+            #TODO change to master
+            only: auto-publish
+
