@@ -1,0 +1,29 @@
+{
+  "name": "helix-pages",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adobe/helix-pages.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/adobe/helix-pages/issues"
+  },
+  "homepage": "https://github.com/adobe/helix-pages#readme",
+  "dependencies": {
+    "jquery": "^3.4.1"
+  },
+  "devDependencies": {
+    "eslint": "5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-header": "^3.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0"
+  }
+}
