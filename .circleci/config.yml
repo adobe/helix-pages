@@ -1,29 +1,39 @@
-version: 2
+version: 2.1
+
+executors:
+  node8:
+    docker:
+      # use latest node 8 on debian 8 (jessie)
+      - image: circleci/node:8-jessie
+    environment:
+      NPM_CONFIG_PREFIX: ~/.npm-global
+
+commands:
+  setup:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: install npm 6.4.1
+          command: sudo npm -g install npm@6.4.1
+      - run:
+          name: Installing Dependencies
+          command: npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: prepare test git user
+          command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
+
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:8-stretch
+    executor: node8
     steps:
-        - checkout
-
-        - run:
-            name: Provide package-lock.json
-            command:  test ! -f package.json && touch package-lock.json || echo "package.json exists"
-
-        # Download and cache dependencies
-        - restore_cache:
-            keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
-
-        - run:
-            name: install npm 6.4.1
-            command: sudo npm -g install npm@6.4.1
-
-        - run:
-            name: Installing Dependencies
-            command: npm ci
+        - setup
 
         - run:
             name: Lint
@@ -36,11 +46,6 @@ jobs:
         # - run:
         #     name: Installing Helix CLI
         #     command: npm install @adobe/helix-cli --save=false
-
-        - save_cache:
-            paths:
-                - node_modules
-            key: v1-dependencies-{{ checksum "package-lock.json" }}
 
         # - run:
         #     name: Reset package-lock.json
@@ -72,11 +77,41 @@ jobs:
         #             echo "Add HLX_CALIBRE_AUTH to your CircleCI config to enable performance testing"
         #         fi
 
-        - store_test_results:
-            path: junit
+        # - store_test_results:
+        #     path: junit
+  publish:
+    executor: node8
+    steps:
+      - setup
+
+      - run:
+          name: Installing Helix CLI
+          command: npm install @adobe/helix-cli --save=false
+
+      - run:
+          name: Build Templates
+          command: npx hlx build
+
+      - run:
+          name: Reset Working Copy
+          command: git status; git checkout -- .
+
+      - run:
+          name: Deploy to Adobe I/O Runtime
+          command: npx hlx deploy | cat
+
+      - run:
+          name: Publish to Fastly
+          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' | cat
 
 workflows:
   version: 2
   build:
     jobs:
-        - build
+      - build
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
