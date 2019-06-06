@@ -102,7 +102,7 @@ jobs:
 
       - run:
           name: Publish to Fastly
-          command: npx hlx publish | cat
+          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' | cat
 
 workflows:
   version: 2
