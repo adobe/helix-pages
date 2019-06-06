@@ -1,8 +1,8 @@
 {
   "name": "helix-pages",
   "version": "1.0.0",
+  "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
-  "main": " ",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ."
   },
@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/adobe/helix-pages.git"
   },
-  "author": "",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/adobe/helix-pages/issues"
