@@ -22,7 +22,7 @@ function takeMeThere() {
 
   const path = giturl.substr(
     segments[3].index + branch.length,
-    giturl.length - (segments[3].index + branch.length) - 3
+    giturl.length - (segments[3].index + branch.length) - 3,
   );
   if (user.indexOf('-') >= 0 || branch !== 'master') {
     separator = '--';
