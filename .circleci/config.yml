@@ -33,7 +33,7 @@ jobs:
   build:
     executor: node8
     steps:
-        - checkout
+        - setup
 
         - run:
             name: Lint
