@@ -45,9 +45,9 @@ function pre(context) {
 
   const $sections = $(document).find('div.section');
 
-  // sections with an image
+ // sections with an image immediatly after the section break
   $sections
-    .has(':first-child>img')
+    .has('p:first-child>img')
     .addClass('image');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
