@@ -250,6 +250,23 @@ footer .plain {
     display: block;
 }
 
+input {
+    width: 100%;
+    font-size: 1.5em;
+    font-family: "source-sans-pro", sans-serif;
+}
+
+button {
+    padding: 5px 20px;
+    border-radius: 5px;
+    background-color: black;
+    font-size: 1.5em;
+    color: white;
+    font-family: "source-sans-pro", sans-serif;
+
+}
+
+
 @media (min-width:600px) {
 
     h1 {
