@@ -45,7 +45,7 @@ function pre(context) {
 
   const $sections = $(document).find('div.section');
 
- // sections with an image immediatly after the section break
+  // sections with an image immediatly after the section break
   $sections
     .has('p:first-child>img')
     .addClass('image');
