@@ -116,8 +116,6 @@ jobs:
           name: Tag known good deploy
           command: |
             git tag `date "+known-good-%Y%m%d%H%M%S"`
-            git tag -f published
-            git push origin :published
             git push --tags origin master
 
 workflows:
