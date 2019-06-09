@@ -104,6 +104,14 @@ jobs:
           name: Publish to Fastly
           command: npx hlx publish --custom-vcl='vcl/extensions.vcl' | cat
 
+      - add_ssh_keys
+      - run:
+          name: Commit helix config to master
+          command: |
+            git checkout master
+            git pull --tags origin
+            git commit -am "🚢 enshrining config post-deploy [ci skip]"
+
 workflows:
   version: 2
   build:
