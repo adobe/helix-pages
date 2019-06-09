@@ -24,10 +24,10 @@
   </head>
 <body>
   <!--  header -->
-  <header><esi:include src="/header.plain.html" onerror="continue"/></header>
+  <header><esi:include src="/header.plain.html${request.queryString @ context='unsafe'}" onerror="continue" /></header>
   <!--  content -->
   ${content.document.body.innerHTML @ context = 'unsafe'}
   <!--  footer -->
-  <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
+  <footer><esi:include src="/footer.plain.html${request.queryString @ context='unsafe'}" onerror="continue"/></footer>
 </body>
 </html>
