@@ -112,6 +112,14 @@ jobs:
             git pull --tags origin
             git commit -am "🚢 enshrining config post-deploy [ci skip]"
 
+      - run:
+          name: Tag known good deploy
+          command: |
+            git tag `date "+known-good-%Y%m%d%H%M%S"`
+            git tag -f published
+            git push origin :published
+            git push --tags origin master
+
 workflows:
   version: 2
   build:
