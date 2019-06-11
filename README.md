@@ -8,9 +8,9 @@ Clone the current repo and run `hlx up`.
 
 ## Deployment and publication
 
-// TODO: setup blackbox
+Direct commits to `master` branch are blocked, all changes must come via a PR. Once the PR is merged into `master`, the CI will `hlx deploy` and `hlx publish` the new code.
 
-## Publishing
+## Manual publishing
 
 The project requires some extensions of the default VCL provided by Helix. The publish steps requires to include the extensions in [vcl/extensions.vcl](vcl/extensions.vcl). To publish, run:
 
