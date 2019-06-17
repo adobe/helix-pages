@@ -169,7 +169,7 @@ table {
     border-spacing: 0;    
 }
 
-header .plain {
+header {
     position: fixed;
     background-color: black;
     color: white;
@@ -236,18 +236,17 @@ header .section:nth-child(2) ul {
     list-style: none;
 }
 
-header,
 footer {
-    font-size: 0;
-}
-
-footer .plain {
     background-color: #cccccc;
     padding: 20px 0px;
     font-size: 0.5em;
     color: #888888;
     text-align: center;
     display: block;
+}
+
+header:empty, footer:empty {
+    display: none;
 }
 
 input {
