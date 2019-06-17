@@ -46,6 +46,7 @@ function checkURL() {
     if (!c.path.endsWith(`.md`)) return ('URL needs to end in \'.md\'');
     if (c.repo.indexOf('.')>=0) return('Repository name cannot contain a \'.\'');
     if (c.user.indexOf('.')>=0) return('User name cannot contain a \'.\'');
+    if (c.branch.indexOf('.')>=0) return('Branch cannot contain a \'.\'');
 }
 
 function takeMeThere() {
@@ -63,4 +64,4 @@ function takeMeThere() {
 </script>
 <input onkeyup="change()" type="text" id="giturl">
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
-<span id="alert" class="alert">Alert</span>
+<span id="alert" class="alert"></span>
