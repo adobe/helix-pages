@@ -13,23 +13,54 @@ Example: [https://helix-home-adobe.project-helix.page/README.html](https://helix
 Simply paste a GitHub URL to a publicly visible Markdown file (`.md`) here...
 
 <script>
-function takeMeThere() {
+
+function splitURL() {
     const giturl = document.getElementById('giturl').value;
-    const resegs = /(?<!\?.+)(?<=\/)[\w-]+(?=[/\r\n?]|$)/g;
+    const resegs = /(?<!\?.+)(?<=\/)[\w-\.]+(?=[/\r\n?]|$)/g;
     const segments = [...giturl.matchAll(resegs)];
-    const user = segments[0][0];
-    const repo = segments[1][0];
-    const branch = segments[3][0];
+    const path = giturl.substr(segments[4].index + segments[4][0].length);
+    return ({ "user": segments[1][0], "repo": segments[2][0], "branch": segments[4][0], "path": path});
+}
+
+function change() {
+    const alertElem = document.getElementById('alert');
+    const alert=checkURL();
+
+    if (alert) {
+        alertElem.innerHTML = alert;
+        alertElem.style = '';
+    }  else {
+        alertElem.style = 'display: none';
+    }
+}
+
+function checkURL() {
+    let c;
+
+    try {
+        c = splitURL();
+    } catch (e) {
+        return ('URL needs be a valid GitHub URL');
+    }
+    
+    if (!c.path.endsWith(`.md`)) return ('URL needs to end in \'.md\'');
+    if (c.repo.indexOf('.')>=0) return('Repository name cannot contain a \'.\'');
+    if (c.user.indexOf('.')>=0) return('User name cannot contain a \'.\'');
+}
+
+function takeMeThere() {
+    const c = splitUrl();
     let separator = '-';
 
-    const path = giturl.substr(segments[3].index + branch.length, giturl.length - (segments[3].index + branch.length) - 3);
-    if (user.indexOf('-') >= 0 || branch !== 'master') {
+    const pathstub = c.path.substr(0, c.path.length - 3);
+    if (c.user.indexOf('-') >= 0 || c.branch !== 'master') {
         separator = '--';
     }
-    const branchprefix = (branch === 'master' ? '' : branch + separator);
-    const url = `https://${branchprefix}${repo}${separator}${user}.project-helix.page${path}.html`;
+    const branchprefix = (c.branch === 'master' ? '' : c.branch + separator);
+    const url = `https://${branchprefix}${c.repo}${separator}${c.user}.project-helix.page${pathstub}.html`;
     window.location = url;
 }
 </script>
-<input type="text" id="giturl">
-<button onclick="takeMeThere()">Take Me There</button>
+<input onkeyup="change()" type="text" id="giturl">
+<button id="takemethere" onclick="takeMeThere()">Take Me There</button>
+<span id="alert" class="alert">Alert</span>
