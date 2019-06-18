@@ -50,7 +50,10 @@ function checkURL() {
 }
 
 function takeMeThere() {
-    const c = splitUrl();
+    if (checkURL()) {
+      return;
+    }
+    const c = splitURL();
     let separator = '-';
 
     const pathstub = c.path.substr(0, c.path.length - 3);
@@ -64,4 +67,4 @@ function takeMeThere() {
 </script>
 <input onkeyup="change()" type="text" id="giturl">
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
-<span id="alert" class="alert"></span>
+<span id="alert" class="alert" style="display:none"></span>
