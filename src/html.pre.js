@@ -47,7 +47,7 @@ function pre(context) {
 
   // sections with an image immediatly after the section break
   $sections
-    .has('p:first-child>img')
+    .has('>img')
     .addClass('image');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
