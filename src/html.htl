@@ -3,12 +3,12 @@
 <head>
     <title>${content.title}</title>
     <esi:include src="/head.html" onerror="continue"/>
-  </head>
+</head>
 <body>
   <!--  header -->
   <header><esi:include src="/header.plain.html" onerror="continue"/></header>
   <!--  content -->
-  ${content.document.body.innerHTML @ context = 'unsafe'}
+  ${content.document.body}
   <!--  footer -->
   <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
 </body>
