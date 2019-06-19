@@ -1,1 +1,1 @@
-<div class="plain">${content.document.body.innerHTML @ context = 'unsafe'}</div>
+${content.document.body.innerHTML @ context = 'unsafe'}
