@@ -13,4 +13,4 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: acapt/ea0fcbb9c8bae8e935795698a207aa220144dd42
+    package: helix-pages/cdc2e0dd963684d1fbdaff96bb3be40fb27a9f58
