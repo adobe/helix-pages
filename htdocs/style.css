@@ -254,6 +254,7 @@ input {
     width: 100%;
     font-size: 1.5em;
     font-family: "source-sans-pro", sans-serif;
+    padding: 2px;
 }
 
 button {
@@ -264,6 +265,14 @@ button {
     color: white;
     font-family: "source-sans-pro", sans-serif;
 
+}
+
+.alert {
+    color: red;
+    border: 1px red solid;
+    width: 100%;
+    border-radius: 5px;
+    padding: 2px 20px;
 }
 
 
