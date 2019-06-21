@@ -19,7 +19,7 @@ const rp = require('request-promise-native');
  * workaround an issue in the order the Fastly logic executes the templates.
  */
 async function preFetch(context, { secrets = {}, request, logger }) {
-  logger.info(JSON.stringify(secrets, null, 2));
+  // logger.info(JSON.stringify(secrets, null, 2));
   const {
     owner, repo, path, ref, extension, selector,
   } = request.params;
@@ -27,8 +27,8 @@ async function preFetch(context, { secrets = {}, request, logger }) {
     return;
   }
   const sel = selector ? `.${selector}` : '';
-  const htmlPath = `${path.substring(0, path.length - 3)}${sel}.${extension}`.replace(/\/+/g, '/');
-  const url = `${secrets.REPO_RAW_ROOT}${owner}/${repo}/${ref}/${htmlPath}`;
+  const htmlPath = `${owner}/${repo}/${ref}/${path.substring(0, path.length - 3)}${sel}.${extension}`.replace(/\/+/g, '/');
+  const url = `${secrets.REPO_RAW_ROOT}${htmlPath}`;
   logger.info(`trying to load ${url}`);
 
   if (!context.response) {
@@ -42,6 +42,7 @@ async function preFetch(context, { secrets = {}, request, logger }) {
       url,
       json: false,
     });
+    context.content.sources = [url];
     context.content.body = '';
   } catch (e) {
     // ignore
