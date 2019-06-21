@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
+const { preFetch } = require('./utils.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -66,3 +67,6 @@ function pre(context) {
 }
 
 module.exports.pre = pre;
+module.exports.before = {
+  fetch: preFetch,
+};
