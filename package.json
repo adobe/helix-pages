@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "request-promise-native": "^1.0.7"
   },
   "devDependencies": {
     "eslint": "5.16.0",
