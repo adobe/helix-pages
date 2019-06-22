@@ -26,9 +26,10 @@ async function preFetch(context, { secrets = {}, request, logger }) {
   if (!path.endsWith('.md')) {
     return;
   }
+  const rootUrl = secrets.REPO_RAW_ROOT || 'https://raw.githubusercontent.com/';
   const sel = selector ? `.${selector}` : '';
   const htmlPath = `${owner}/${repo}/${ref}/${path.substring(0, path.length - 3)}${sel}.${extension}`.replace(/\/+/g, '/');
-  const url = `${secrets.REPO_RAW_ROOT}${htmlPath}`;
+  const url = `${rootUrl}${htmlPath}`;
   logger.info(`trying to load ${url}`);
 
   if (!context.response) {
