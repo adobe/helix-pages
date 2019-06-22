@@ -30,7 +30,7 @@ async function main(params) {
           body: context.response.body,
           headers: {
             'Surrogate-Key': context.content.sources.map(computeSurrogateKey).join(' '),
-            'Content-Type': 'text/javascript',
+            'Content-Type': 'application/javascript',
             'Cache-Control': 's-maxage=604800',
           },
         },
