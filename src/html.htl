@@ -7,8 +7,8 @@
 <body>
   <!--  header -->
   <header><esi:include src="/header.plain.html" onerror="continue"/></header>
-  <!--  content -->
-  ${content.document.body}
+  <!--  main content -->
+  <main>${content.document.body}</main>
   <!--  footer -->
   <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
 </body>
