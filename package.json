@@ -17,6 +17,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "jquery": "^3.4.1",
+    "request": "^2.88.0",
     "request-promise-native": "^1.0.7"
   },
   "devDependencies": {
