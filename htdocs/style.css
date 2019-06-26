@@ -256,7 +256,7 @@ input {
     padding: 2px;
 }
 
-button {
+button, input[type=button], input[type=submit], input[type=reset] {
     padding: 5px 20px;
     border-radius: 5px;
     background-color: black;

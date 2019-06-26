@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
+const { preFetch } = require('./utils.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -47,7 +48,7 @@ function pre(context) {
 
   // sections with an image immediatly after the section break
   $sections
-    .has('p:first-child>img')
+    .has('>img')
     .addClass('image');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
@@ -66,3 +67,6 @@ function pre(context) {
 }
 
 module.exports.pre = pre;
+module.exports.before = {
+  fetch: preFetch,
+};
