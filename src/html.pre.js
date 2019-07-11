@@ -21,6 +21,13 @@ function pre(context) {
   const { document } = context.content;
   const $ = jquery(document.defaultView);
 
+  /* cache killer */
+  context.response = context.response || {}
+  context.response.headers = context.response.headers || {};
+  context.response.headers['Cache-Control'] = 'no-cache';
+  context.response.headers['Surrogate-Control'] = 'max-age=0';
+  /* end of cache killer */
+
   /* workaround until sections in document are fixed via PR on pipeline */
   let currentCollection = [];
   const sections = [];
