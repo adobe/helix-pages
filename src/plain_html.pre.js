@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* eslint-disable no-param-reassign */
 const jquery = require('jquery');
 
 /**
@@ -21,7 +22,7 @@ function pre(context) {
   const $ = jquery(document.defaultView);
 
   /* cache killer */
-  context.response = context.response || {}
+  context.response = context.response || {};
   context.response.headers = context.response.headers || {};
   context.response.headers['Cache-Control'] = 'no-cache';
   context.response.headers['Surrogate-Control'] = 'max-age=0';
