@@ -21,7 +21,7 @@
     "jquery": "^3.4.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.192.0"
+    "snyk": "^1.192.6"
   },
   "devDependencies": {
     "eslint": "5.16.0",
