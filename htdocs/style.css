@@ -66,7 +66,7 @@ body {
     object-fit: cover;
 }
 
-.default, footer section {
+.default, footer div {
     padding: 1rem 2rem;
 }
 
@@ -211,7 +211,7 @@ header a:any-link{
     font-weight: 100;
 }
 
-header .section:nth-child(2) {
+header div:nth-child(2) {
     display: none;
     position: fixed;
     width: 100vw;
@@ -224,14 +224,14 @@ header .section:nth-child(2) {
 
 }
 
-header .section:nth-child(2)>p {
+header div:nth-child(2)>p {
     display: block;
     float: right;
     font-size: 1.8em;
     margin-top: -3px;
 }
 
-header .section:nth-child(2) ul {
+header div:nth-child(2) ul {
     font-size: 2em;
     list-style: none;
 }
@@ -310,7 +310,7 @@ button, input[type=button], input[type=submit], input[type=reset] {
 }
 
 @media (min-width:900px) {
-    .default, footer .section {
+    .default, footer div {
         width: 800px;
         margin: auto;
     }
