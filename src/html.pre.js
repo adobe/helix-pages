@@ -42,7 +42,7 @@ function pre(context) {
     .not('.image')
     .not('.title')
     .addClass('default');
-  
+
   // if there are no sections wrap everything in a default div
   if ($sections.length === 0) {
     $(document.body).children().wrapAll('<div class="default"></div>');
