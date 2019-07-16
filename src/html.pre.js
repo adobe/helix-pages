@@ -21,34 +21,11 @@ function pre(context) {
   const { document } = context.content;
   const $ = jquery(document.defaultView);
 
-  /* workaround until sections in document are fixed via PR on pipeline */
-  let currentCollection = [];
-  const sections = [];
-
-  document.body.childNodes.forEach((child) => {
-    if (child.tagName === 'HR') {
-      sections.push(currentCollection);
-      currentCollection = [];
-    } else {
-      currentCollection.push(child);
-    }
-  });
-
-  sections.push(currentCollection);
-  sections.forEach((el) => {
-    $(el).wrapAll('<div class="section"></div>');
-  });
-
-  document.querySelectorAll('body>hr').forEach((el) => {
-    el.parentNode.removeChild(el);
-  });
-  /* end of workaround */
-
-  const $sections = $(document).find('div.section');
+  const $sections = $(document).find('div');
 
   // sections with an image immediatly after the section break
   $sections
-    .has('>img')
+    .has('>p>img')
     .addClass('image');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
