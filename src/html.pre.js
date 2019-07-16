@@ -21,12 +21,7 @@ function pre(context) {
   const { document } = context.content;
   const $ = jquery(document.defaultView);
 
-  const $sections = $(document).find('div');
-
-  // sections with an image immediatly after the section break
-  $sections
-    .has('>p>img')
-    .addClass('image');
+  const $sections = $(document.body).children('div');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
   $sections
@@ -36,11 +31,22 @@ function pre(context) {
     .find(':nth-child(1n+2)')
     .wrapAll('<div class="header"></div>');
 
+  // sections with an image immediatly after the section break
+  $sections
+    .has(':first-child>img')
+    .not('.title')
+    .addClass('image');
+
   // sections without image and title class gets a default class
   $sections
     .not('.image')
     .not('.title')
     .addClass('default');
+
+  // if there are no sections wrap everything in a default div
+  if ($sections.length === 0) {
+    $(document.body).children().wrapAll('<div class="default"></div>');
+  }
 }
 
 module.exports.pre = pre;
