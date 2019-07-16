@@ -31,9 +31,9 @@ function pre(context) {
     .find(':nth-child(1n+2)')
     .wrapAll('<div class="header"></div>');
 
-  // sections with an image immediatly after the section break
+  // sections consisting of only one image
   $sections
-    .has(':first-child>img')
+    .filter('[data-hlx-types~="has-only-image"]')
     .not('.title')
     .addClass('image');
 
