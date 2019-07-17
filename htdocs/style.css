@@ -177,7 +177,6 @@ header {
     background-color: black;
     color: white;
     z-index: 1;
-    overflow: hidden;
     padding: 10px 20px;
     width: 100vw;
     box-sizing: border-box;
