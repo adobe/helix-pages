@@ -10,7 +10,9 @@
 # governing permissions and limitations under the License.
 #
 
-sub hlx_type_pipeline_before {}
+sub hlx_type_pipeline_before {
+    set req.http.X-Dispatch-NoCache = "true";
+}
 sub hlx_type_pipeline_after {}
 
 # try to extract X-Owner, X-Repo, X-Ref from subdomain
