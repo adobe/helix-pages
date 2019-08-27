@@ -86,7 +86,7 @@ jobs:
 
       - run:
           name: Installing Helix CLI
-          command: npm install @adobe/helix-cli@"=4" --save=false
+          command: npm install @adobe/helix-cli@">=5" --save=false
 
       - run:
           name: Build Templates
