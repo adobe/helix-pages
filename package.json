@@ -24,12 +24,10 @@
     "snyk": "^1.192.6"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "^17.1.1",
+    "@adobe/eslint-config-helix": "^1.0.1",
+    "eslint": "6.2.2",
     "eslint-plugin-header": "^3.0.0",
-    "eslint-plugin-import": "^2.18.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.2"
+    "eslint-plugin-import": "^2.18.0"
   },
   "snyk": true
 }
