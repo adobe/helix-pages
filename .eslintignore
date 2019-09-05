@@ -6,5 +6,6 @@ test/integration-with-cgi-bin
 test/tmp/*
 tmp/*
 coverage/*
+google/*
 
 htdocs/scrani.js

@@ -30,6 +30,6 @@ This is done automatically during CI, but when testing locally it needs to be sp
 
 eg:
 ```
-$ export GOOGLE_DOCS_ROOT=https://script.google.com/macros/s/...scriptId.../exec
+$ export GOOGLE_DOCS_ROOT=https://script.google.com/macros/s/xxxxx/exec
 $ hlx up --dev-default GOOGLE_DOCS_ROOT $GOOGLE_DOCS_ROOT
 ```
