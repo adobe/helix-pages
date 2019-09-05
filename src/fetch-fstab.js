@@ -14,8 +14,8 @@
 const rp = require('request-promise-native');
 
 /**
- * Tries to load the `fstab.json` from the content repository and stores it into
- * `context.content.data.fstab`
+ * Tries to load the `fstab.json` from the content repository.
+ * @return {*} the fstab object or {@code null}
  */
 async function fetch(context, { secrets = {}, request, logger: log }) {
   const {
