@@ -99,10 +99,10 @@ function storeImage(imageBlob, name) {
   }
   var scriptProperties = PropertiesService.getScriptProperties();
   var sas = scriptProperties.getProperty('AZURE_BLOB_SAS');
-  var url = "https://helixblobs.blob.core.windows.net/helixcontentblobs/" + name;
+  var url = "https://helixblobs2.blob.core.windows.net/helixcontentblobs/" + name;
   var resp = UrlFetchApp.fetch(url + sas, params);
-  if (resp.getResponseCode() !== 200) {
-    err('Error while storing image: %s', resp.getContentText());
+  if (resp.getResponseCode() >= 300) {
+    err('Error while storing image: %d %s', resp.getResponseCode(), resp.getContentText());
     return null;
   } else {
     dbg('stored image %s', url);
