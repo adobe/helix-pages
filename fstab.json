@@ -1,0 +1,8 @@
+{
+  "mountpoints": [
+    {
+      "root": "/shared",
+      "type": "google"
+    }
+  ]
+}

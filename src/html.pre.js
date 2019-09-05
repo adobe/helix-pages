@@ -66,6 +66,11 @@ module.exports.before = {
     logger.info(`resourcePath=${resourcePath}`);
 
     // find the mountpoint for the path
+    fstab.mountpoints.forEach((m) => {
+      if (!m.root.endsWith('/')) {
+        m.root += '/';
+      }
+    });
     const mp = fstab.mountpoints.find((m) => resourcePath.startsWith(m.root));
     if (!mp) {
       logger.info(`no mount point for ${resourcePath}`);
@@ -79,10 +84,15 @@ module.exports.before = {
       logger.warn('google docs mountpoint needs a configured GOOGLE_DOCS_ROOT but is missing.');
       return;
     }
-    let relPath = resourcePath.substring(mp.root === '/' ? 0 : mp.root.length);
+    let relPath = resourcePath.substring(mp.root.length - 1);
     if (!mp.id) {
       // dynamic folderId is next path segment.
-      [, mp.id, relPath] = /^\/([^/]*)(\/.*$)/.exec(relPath);
+      const match = /^\/([^/]*)(\/.*$)/.exec(relPath);
+      if (!match) {
+        logger.warn('dynamic mountpoints need folderId as path segment');
+        return;
+      }
+      [, mp.id, relPath] = match;
       if (!relPath) {
         logger.warn('dynamic mountpoints need folderId as path segment');
         return;
