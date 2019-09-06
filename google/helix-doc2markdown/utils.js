@@ -1,6 +1,7 @@
 var inf;
 var err;
 var dbg;
+var wrn;
 
 function initLogger(ctx) {
 
@@ -13,8 +14,9 @@ function initLogger(ctx) {
     fn.call(this, params);
     Logger.log(params.message);
   }
-  inf = myLog.bind(console, console.info);
   dbg = myLog.bind(console, console.log);
+  inf = myLog.bind(console, console.info);
+  wrn = myLog.bind(console, console.warn);
   err = myLog.bind(console, console.error);
 }
 initLogger({});
