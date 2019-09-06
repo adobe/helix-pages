@@ -65,10 +65,16 @@ module.exports.before = {
 
     logger.info(`resourcePath=${resourcePath}`);
 
-    // find the mountpoint for the path
+    // sanitize the mountpoints
     fstab.mountpoints.forEach((m) => {
       if (!m.root.endsWith('/')) {
         m.root += '/';
+      }
+      if (m.url && !m.id) {
+        if (m.url.startsWith('https://drive.google.com/')) {
+          m.type = 'google';
+          m.id = m.url.split('/').pop();
+        }
       }
     });
     const mp = fstab.mountpoints.find((m) => resourcePath.startsWith(m.root));
@@ -84,22 +90,13 @@ module.exports.before = {
       logger.warn('google docs mountpoint needs a configured GOOGLE_DOCS_ROOT but is missing.');
       return;
     }
-    let relPath = resourcePath.substring(mp.root.length - 1);
     if (!mp.id) {
-      // dynamic folderId is next path segment.
-      const match = /^\/([^/]*)(\/.*$)/.exec(relPath);
-      if (!match) {
-        logger.warn('dynamic mountpoints need folderId as path segment');
-        return;
-      }
-      [, mp.id, relPath] = match;
-      if (!relPath) {
-        logger.warn('dynamic mountpoints need folderId as path segment');
-        return;
-      }
+      logger.warn('google docs mountpoint needs id');
+      return;
     }
-    logger.info(`relPath=${relPath}`);
 
+    const relPath = resourcePath.substring(mp.root.length - 1);
+    logger.info(`relPath=${relPath}`);
     const oldRaw = secrets.REPO_RAW_ROOT;
     const oldTimeout = secrets.HTTP_TIMEOUT;
     secrets.REPO_RAW_ROOT = secrets.GOOGLE_DOCS_ROOT;

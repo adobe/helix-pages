@@ -46,7 +46,7 @@ function doGet(req) {
   }
 }
 
-function saveInlineImage(image) {
+function saveInlineImage(image, isEditor) {
   var meta = image.getAltDescription();
   if (meta) {
     try {
@@ -78,7 +78,11 @@ function saveInlineImage(image) {
     url = storeImage(imageBlob, name);
     if (url) {
       meta.url = url;
-      image.setAltDescription(JSON.stringify(meta));
+      if (isEditor) {
+        image.setAltDescription(JSON.stringify(meta));
+      } else {
+        wrn('unable to update image description, active user is not editor.');
+      } 
     }
   }
   var alt = image.getAltTitle() || '';
@@ -169,6 +173,11 @@ function toMarkdown(folderId, path) {
   var docId = getDocId(folderId, path);
   dbg('loading doc %s', docId);
   var doc = DocumentApp.openById(docId);
+  // check if the doc is editable by the user
+  var email = Session.getEffectiveUser().getEmail();
+  var isEditor = doc.getEditors().map(function(u) { return u.getEmail(); }).indexOf(email) >= 0;
+  dbg('effective user %s is %s', email, isEditor ? 'editor' : 'viewer');
+  
   var body = doc.getBody();
 
   var result = "";
@@ -209,7 +218,7 @@ function toMarkdown(folderId, path) {
 
         /* inline image */
         if (pc.getType() === DocumentApp.ElementType.INLINE_IMAGE) {
-          md += saveInlineImage(pc.asInlineImage());
+          md += saveInlineImage(pc.asInlineImage(), isEditor);
         }
       }
       result += md + "\n";

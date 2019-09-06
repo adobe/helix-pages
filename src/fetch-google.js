@@ -31,8 +31,10 @@ async function fetch(context, action, resourcePath, rootId) {
     owner, repo, ref,
   } = request.params;
   const source = `${owner}/${repo}/${ref}`;
-  const requestId = request.headers['x-request-id'] || '';
-
+  const requestId = request.headers['x-request-id']
+    || request.headers['x-cdn-request-id']
+    || request.headers['x-openwhisk-activation-id']
+    || '';
   const uri = `${secrets.REPO_RAW_ROOT}?path=${encodeURIComponent(resourcePath)}&rootId=${encodeURIComponent(rootId)}&src=${encodeURIComponent(source)}&rid=${encodeURIComponent(requestId)}`;
   const options = {
     uri,
