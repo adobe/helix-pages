@@ -10,7 +10,8 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
-const { preFetch } = require('./utils.js');
+const fetchGoogle = require('./fetch-google.js');
+const fetchFSTab = require('./fetch-fstab.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -50,6 +51,65 @@ function pre(context) {
 }
 
 module.exports.pre = pre;
+
 module.exports.before = {
-  fetch: preFetch,
+  fetch: async (context, action) => {
+    // could be separate pipeline step or done completely in the dispatcher
+    const fstab = await fetchFSTab(context, action);
+    if (!fstab) {
+      return;
+    }
+    const { logger, request, secrets } = action;
+    const idx = request.params.path.lastIndexOf('.');
+    const resourcePath = decodeURIComponent(request.params.path.substring(0, idx));
+
+    logger.info(`resourcePath=${resourcePath}`);
+
+    // find the mountpoint for the path
+    fstab.mountpoints.forEach((m) => {
+      if (!m.root.endsWith('/')) {
+        m.root += '/';
+      }
+    });
+    const mp = fstab.mountpoints.find((m) => resourcePath.startsWith(m.root));
+    if (!mp) {
+      logger.info(`no mount point for ${resourcePath}`);
+      return;
+    }
+    if (mp.type !== 'google') {
+      logger.info(`mount point type '${mp.type}' not supported.`);
+      return;
+    }
+    if (!secrets.GOOGLE_DOCS_ROOT) {
+      logger.warn('google docs mountpoint needs a configured GOOGLE_DOCS_ROOT but is missing.');
+      return;
+    }
+    let relPath = resourcePath.substring(mp.root.length - 1);
+    if (!mp.id) {
+      // dynamic folderId is next path segment.
+      const match = /^\/([^/]*)(\/.*$)/.exec(relPath);
+      if (!match) {
+        logger.warn('dynamic mountpoints need folderId as path segment');
+        return;
+      }
+      [, mp.id, relPath] = match;
+      if (!relPath) {
+        logger.warn('dynamic mountpoints need folderId as path segment');
+        return;
+      }
+    }
+    logger.info(`relPath=${relPath}`);
+
+    const oldRaw = secrets.REPO_RAW_ROOT;
+    const oldTimeout = secrets.HTTP_TIMEOUT;
+    secrets.REPO_RAW_ROOT = secrets.GOOGLE_DOCS_ROOT;
+    // ump the timeout a bit, since the google docs script might take a while to render
+    secrets.HTTP_TIMEOUT = 10000;
+    try {
+      await fetchGoogle(context, action, relPath, mp.id);
+    } finally {
+      secrets.REPO_RAW_ROOT = oldRaw;
+      secrets.HTTP_TIMEOUT = oldTimeout;
+    }
+  },
 };
