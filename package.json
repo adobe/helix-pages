@@ -5,6 +5,7 @@
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
+    "semantic-release": "semantic-release",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
@@ -26,9 +27,13 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "^1.0.1",
+    "@semantic-release/changelog": "^3.0.4",
+    "@semantic-release/git": "^7.0.14",
+    "@semantic-release/github": "^5.4.3",
     "eslint": "6.3.0",
     "eslint-plugin-header": "^3.0.0",
-    "eslint-plugin-import": "^2.18.0"
+    "eslint-plugin-import": "^2.18.0",
+    "semantic-release": "^15.13.24"
   },
   "snyk": true
 }
