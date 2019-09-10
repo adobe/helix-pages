@@ -38,7 +38,7 @@ async function fetch(context, action, resourcePath, rootId) {
   const uri = `${secrets.REPO_RAW_ROOT}?path=${encodeURIComponent(resourcePath)}&rootId=${encodeURIComponent(rootId)}&src=${encodeURIComponent(source)}&rid=${encodeURIComponent(requestId)}`;
   const options = {
     uri,
-    json: true,
+    json: false,
     timeout,
     time: true,
     followAllRedirects: true,
@@ -46,13 +46,7 @@ async function fetch(context, action, resourcePath, rootId) {
 
   logger.info(`fetching Markdown from ${options.uri}`);
   try {
-    const resp = await client(options);
-    if (resp.statusCode === 200) {
-      content.body = resp.body;
-    } else {
-      logger.info(`failed loading from google docs: ${resp.statusCode}`);
-      // do not throw error in order to allow resource merging in github repository
-    }
+    content.body = await client(options);
   } catch (e) {
     if (e.statusCode === 404) {
       logger.error(`Could not find Markdown at ${options.uri}`);
