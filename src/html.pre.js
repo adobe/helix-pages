@@ -86,10 +86,6 @@ module.exports.before = {
       logger.info(`mount point type '${mp.type}' not supported.`);
       return;
     }
-    if (!secrets.GOOGLE_DOCS_ROOT) {
-      logger.warn('google docs mountpoint needs a configured GOOGLE_DOCS_ROOT but is missing.');
-      return;
-    }
     if (!mp.id) {
       logger.warn('google docs mountpoint needs id');
       return;
@@ -99,7 +95,7 @@ module.exports.before = {
     logger.info(`relPath=${relPath}`);
     const oldRaw = secrets.REPO_RAW_ROOT;
     const oldTimeout = secrets.HTTP_TIMEOUT;
-    secrets.REPO_RAW_ROOT = secrets.GOOGLE_DOCS_ROOT;
+    secrets.REPO_RAW_ROOT = secrets.GOOGLE_DOCS_ROOT || 'https://adobeioruntime.net/api/v1/web/helix/helix-services/gdocs2md@latest';
     // ump the timeout a bit, since the google docs script might take a while to render
     secrets.HTTP_TIMEOUT = 10000;
     try {

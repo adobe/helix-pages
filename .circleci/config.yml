@@ -98,7 +98,7 @@ jobs:
 
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --default GOOGLE_DOCS_ROOT $GOOGLE_DOCS_ROOT | cat
+          command: npx hlx deploy | cat
 
       - run:
           name: Publish to Fastly
