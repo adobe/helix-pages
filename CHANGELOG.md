@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/adobe/helix-pages/compare/v1.0.0...v1.0.1) (2019-09-11)
+
+
+### Bug Fixes
+
+* **scripts:** clean up scripts ([9b7399a](https://github.com/adobe/helix-pages/commit/9b7399a))
+
 # 1.0.0 (2019-09-11)
 
 
