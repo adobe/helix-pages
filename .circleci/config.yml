@@ -94,7 +94,7 @@ jobs:
 
       - run:
           name: Reset Working Copy
-          command: git status; git checkout -- .
+          command: git status; git checkout -- . ; git pull
 
       - run:
           name: Deploy to Adobe I/O Runtime
