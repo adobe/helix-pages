@@ -30,7 +30,7 @@
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.14",
     "@semantic-release/github": "^5.4.3",
-    "eslint": "6.4.0",
+    "eslint": "6.5.0",
     "eslint-plugin-header": "^3.0.0",
     "eslint-plugin-import": "^2.18.0",
     "semantic-release": "^15.13.24"
