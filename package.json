@@ -19,21 +19,21 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "ferrum": "^1.2.0",
-    "jquery": "^3.4.1",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
-    "snyk": "^1.192.6"
+    "ferrum": "1.2.0",
+    "jquery": "3.4.1",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.7",
+    "snyk": "1.192.6"
   },
   "devDependencies": {
-    "@adobe/eslint-config-helix": "^1.0.1",
-    "@semantic-release/changelog": "^3.0.4",
-    "@semantic-release/git": "^7.0.14",
-    "@semantic-release/github": "^5.4.3",
+    "@adobe/eslint-config-helix": "1.0.1",
+    "@semantic-release/changelog": "3.0.4",
+    "@semantic-release/git": "7.0.16",
+    "@semantic-release/github": "5.4.3",
     "eslint": "6.5.0",
-    "eslint-plugin-header": "^3.0.0",
-    "eslint-plugin-import": "^2.18.0",
-    "semantic-release": "^15.13.24"
+    "eslint-plugin-header": "3.0.0",
+    "eslint-plugin-import": "2.18.0",
+    "semantic-release": "15.13.24"
   },
   "snyk": true
 }
