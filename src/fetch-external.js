@@ -16,7 +16,7 @@ const { setdefault } = require('ferrum');
 /**
  * Fetches the Markdown from google docs
  */
-async function fetch(context, action, resourcePath, rootId) {
+async function fetch(context, action, params) {
   const { logger, request, secrets } = action;
   const content = setdefault(context, 'content', {});
   let timeout;
@@ -35,7 +35,10 @@ async function fetch(context, action, resourcePath, rootId) {
     || request.headers['x-cdn-request-id']
     || request.headers['x-openwhisk-activation-id']
     || '';
-  const uri = `${secrets.REPO_RAW_ROOT}?path=${encodeURIComponent(resourcePath)}&rootId=${encodeURIComponent(rootId)}&src=${encodeURIComponent(source)}&rid=${encodeURIComponent(requestId)}`;
+  let uri = `${secrets.REPO_RAW_ROOT}?rid=${encodeURIComponent(requestId)}&src=${encodeURIComponent(source)}`;
+  Object.entries(params).forEach(([name, value]) => {
+    uri += `&${name}=${encodeURIComponent(value)}`;
+  });
   const options = {
     uri,
     json: false,

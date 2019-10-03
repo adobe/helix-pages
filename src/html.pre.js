@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
-const fetchGoogle = require('./fetch-google.js');
+const fetchExternal = require('./fetch-external.js');
 const fetchFSTab = require('./fetch-fstab.js');
 
 /**
@@ -70,10 +70,14 @@ module.exports.before = {
       if (!m.root.endsWith('/')) {
         m.root += '/';
       }
-      if (m.url && !m.id) {
-        if (m.url.startsWith('https://drive.google.com/')) {
+      if (!m.type && m.url) {
+        if (!m.id && m.url.startsWith('https://drive.google.com/')) {
           m.type = 'google';
           m.id = m.url.split('/').pop();
+          return;
+        }
+        if (/https:\/\/.*\.sharepoint\.com/.test(m.url) || m.url.startsWith('https://1drv.ms/')) {
+          m.type = 'onedrive';
         }
       }
     });
@@ -82,24 +86,38 @@ module.exports.before = {
       logger.info(`no mount point for ${resourcePath}`);
       return;
     }
-    if (mp.type !== 'google') {
-      logger.info(`mount point type '${mp.type}' not supported.`);
-      return;
-    }
-    if (!mp.id) {
-      logger.warn('google docs mountpoint needs id');
-      return;
-    }
 
     const relPath = resourcePath.substring(mp.root.length - 1);
     logger.info(`relPath=${relPath}`);
     const oldRaw = secrets.REPO_RAW_ROOT;
+    const params = {
+      path: relPath,
+    };
+
+    switch (mp.type) {
+      case 'google':
+        if (!mp.id) {
+          logger.warn('google docs mountpoint needs id');
+          return;
+        }
+        secrets.REPO_RAW_ROOT = 'https://adobeioruntime.net/api/v1/web/helix/helix-services/gdocs2md@latest';
+        params.rootId = mp.id;
+        break;
+      case 'onedrive':
+        secrets.REPO_RAW_ROOT = 'https://adobeioruntime.net/api/v1/web/helix/helix-services/word2md@latest';
+        params.shareLink = mp.url;
+        params.path += '.docx';
+        break;
+      default:
+        logger.info(`mount point type '${mp.type}' not supported.`);
+        return;
+    }
+
+    // ump the timeout a bit, since the external script might take a while to render
     const oldTimeout = secrets.HTTP_TIMEOUT;
-    secrets.REPO_RAW_ROOT = secrets.GOOGLE_DOCS_ROOT || 'https://adobeioruntime.net/api/v1/web/helix/helix-services/gdocs2md@latest';
-    // ump the timeout a bit, since the google docs script might take a while to render
     secrets.HTTP_TIMEOUT = 10000;
     try {
-      await fetchGoogle(context, action, relPath, mp.id);
+      await fetchExternal(context, action, params);
     } finally {
       secrets.REPO_RAW_ROOT = oldRaw;
       secrets.HTTP_TIMEOUT = oldTimeout;
