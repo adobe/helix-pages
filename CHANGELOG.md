@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/adobe/helix-pages/compare/v1.0.1...v1.0.2) (2019-10-03)
+
+
+### Bug Fixes
+
+* **word:** add support for onedrive ([#88](https://github.com/adobe/helix-pages/issues/88)) ([bd682e2](https://github.com/adobe/helix-pages/commit/bd682e2))
+
 ## [1.0.1](https://github.com/adobe/helix-pages/compare/v1.0.0...v1.0.1) (2019-09-11)
 
 
