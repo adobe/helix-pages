@@ -23,7 +23,7 @@
     "jquery": "3.4.1",
     "request": "2.88.0",
     "request-promise-native": "1.0.7",
-    "snyk": "1.230.6"
+    "snyk": "1.231.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
