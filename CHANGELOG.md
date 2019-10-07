@@ -1,3 +1,11 @@
+## [1.0.3](https://github.com/adobe/helix-pages/compare/v1.0.2...v1.0.3) (2019-10-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency snyk to v1.231.0 ([#92](https://github.com/adobe/helix-pages/issues/92)) ([f42343d](https://github.com/adobe/helix-pages/commit/f42343d))
+* **package:** update snyk to version 1.231.1 ([7327903](https://github.com/adobe/helix-pages/commit/7327903))
+
 ## [1.0.2](https://github.com/adobe/helix-pages/compare/v1.0.1...v1.0.2) (2019-10-03)
 
 
