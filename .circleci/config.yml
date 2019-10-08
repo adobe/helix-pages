@@ -60,8 +60,10 @@ jobs:
               name="TEST_SERVICE_$modulo"
               TEST_SERVICE=${!name}
               # "pass" the variable to the next steps...
-              echo "export TEST_DOMAIN=$TEST_DOMAIN" >> $BASH_ENV
-              echo "export TEST_SERVICE=$TEST_SERVICE" >> $BASH_ENV
+              echo "export TEST_DOMAIN=$TEST_DOMAIN" >> env/TEST_DOMAIN
+              echo "export TEST_SERVICE=$TEST_SERVICE" >> env/TEST_SERVICE
+              cat env/TEST_DOMAIN >> $BASH_ENV
+              cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
               echo "TEST_DOMAIN has been found - $TEST_DOMAIN"
               echo "TEST_SERVICE has been found - $TEST_SERVICE"
@@ -85,8 +87,12 @@ jobs:
           at: /home/circleci
 
       - run:
-          name: Echo
-          command: echo "TEST_DOMAIN - $TEST_DOMAIN"
+          name: Load TEST_DOMAIN
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+            echo "TEST_DOMAIN - $TEST_DOMAIN"
+            echo "TEST_SERVICE - $TEST_SERVICE"
 
       - run:
           name: Run Helix Pages smoke tests
