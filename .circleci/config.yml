@@ -95,6 +95,10 @@ jobs:
             type: string
             default: master
             description: the branch of the git repo that hosts the "hlxPagesSmokeTest" tests
+        script:
+            type: string
+            default: test:hlxPagesSmokeTest
+            description: the name of the npm script to run
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -117,7 +121,7 @@ jobs:
 
       - run:
           name: Run Helix Pages smoke tests
-          command: npm run test:hlxPagesSmokeTest
+          command: npm run << parameters.script >>
           cwd: << parameters.repo >>
 
       - persist_to_workspace:
