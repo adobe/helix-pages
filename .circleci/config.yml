@@ -184,23 +184,23 @@ workflows:
           requires:
             - build
       - run_hlxPagesSmokeTest:
-          name: HelixPages1
+          name: adobe/helix-pages#smoke-tests
           repo: helix-pages
           org: adobe
           branch: smoke-tests
           requires:
             - init_hlxPagesSmokeTest
       - run_hlxPagesSmokeTest:
-          name: HelixPages2
-          repo: helix-pages
+          name: adobe/helix-example-basic#smoke-tests
+          repo: helix-example-basic
           org: adobe
           branch: smoke-tests
           requires:
             - init_hlxPagesSmokeTest
       - finalize_hlxPagesSmokeTest:
           requires:
-            - HelixPages1
-            - HelixPages2
+            - adobe/helix-pages#smoke-tests
+            - adobe/helix-example-basic#smoke-tests
       - publish:
           requires:
             - finalize_hlxPagesSmokeTest
