@@ -11,36 +11,7 @@ executors:
 references:
   run_hlxPagesSmokeTest: &run_hlxPagesSmokeTest
     executor: node8
-    parameters:
-        org:
-            type: string
-            description: the org of the git repo that hosts the "hlxPagesSmokeTest" tests
-        repo:
-            type: string
-            description: the name of the git repo that hosts the "hlxPagesSmokeTest" tests
-        branch:
-            type: string
-            default: master
-            description: the branch of the git repo that hosts the "hlxPagesSmokeTest" tests
     steps:
-      - attach_workspace:
-          at: /home/circleci
-
-      - run:
-          name: Load TEST_DOMAIN
-          command: |
-            cat env/TEST_DOMAIN >> $BASH_ENV
-            cat env/TEST_SERVICE >> $BASH_ENV
-
-      - run:
-          name: Run Helix Pages smoke tests
-          command: npm run test:hlxPagesSmokeTest << parameters.repo >> 
-
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - project
-            - .npm
 
 commands:
   setup:
@@ -111,8 +82,38 @@ jobs:
             - project
             - .npm
 
-  helixPagesSmokeTest:
-    <<: *run_hlxPagesSmokeTest
+  run_hlxPagesSmokeTest:
+    executor: node8
+    parameters:
+        org:
+            type: string
+            description: the org of the git repo that hosts the "hlxPagesSmokeTest" tests
+        repo:
+            type: string
+            description: the name of the git repo that hosts the "hlxPagesSmokeTest" tests
+        branch:
+            type: string
+            default: master
+            description: the branch of the git repo that hosts the "hlxPagesSmokeTest" tests
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load TEST_DOMAIN
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run Helix Pages smoke tests
+          command: npm run test:hlxPagesSmokeTest << parameters.repo >> 
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .npm
 
   finalize_hlxPagesSmokeTest:
     executor: node8
@@ -182,7 +183,15 @@ workflows:
       - init_hlxPagesSmokeTest:
           requires:
             - build
-      - helixPagesSmokeTest:
+      - run_hlxPagesSmokeTest:
+          name: HelixPages1
+          repo: helix-pages
+          org: adobe
+          branch: smoke-tests
+          requires:
+            - init_hlxPagesSmokeTest
+      - run_hlxPagesSmokeTest:
+          name: HelixPages2
           repo: helix-pages
           org: adobe
           branch: smoke-tests
@@ -190,7 +199,8 @@ workflows:
             - init_hlxPagesSmokeTest
       - finalize_hlxPagesSmokeTest:
           requires:
-            - helixPagesSmokeTest
+            - HelixPages1
+            - HelixPages2
       - publish:
           requires:
             - finalize_hlxPagesSmokeTest
