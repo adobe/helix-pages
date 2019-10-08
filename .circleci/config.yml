@@ -77,7 +77,6 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            # for whatever reason, working directoy is project.
             - project
             - .npm
 
@@ -94,10 +93,17 @@ jobs:
             cat env/TEST_SERVICE >> $BASH_ENV
             echo "TEST_DOMAIN - $TEST_DOMAIN"
             echo "TEST_SERVICE - $TEST_SERVICE"
+            echo "BASH_ENV - $BASH_ENV"
 
       - run:
           name: Run Helix Pages smoke tests
           command: npm run test:hlxPagesSmokeTest
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .npm
 
   finalize_hlxPagesSmokeTest:
     executor: node8

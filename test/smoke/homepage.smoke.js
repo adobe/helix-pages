@@ -59,19 +59,19 @@ describe('Helix Pages homepage smoke tests - subdomain extraction and some page 
   }
 
   // all tests refer to the same repository thus same content
-  it('www test', (done) => {
+  it(`www.${DOMAIN} test`, (done) => {
     testHomePage(`www.${DOMAIN}`, done);
   });
 
-  it('helix-pages-adobe test', (done) => {
+  it(`helix-pages-adobe.${DOMAIN} test`, (done) => {
     testHomePage(`helix-pages-adobe.${DOMAIN}`, done);
   });
 
-  it('helix-pages--adobe test', (done) => {
+  it(`helix-pages--adobe.${DOMAIN} test`, (done) => {
     testHomePage(`helix-pages--adobe.${DOMAIN}`, done);
   });
 
-  it('master--helix-pages--adobe test', (done) => {
+  it(`master--helix-pages--adobe.${DOMAIN} test`, (done) => {
     testHomePage(`master--helix-pages--adobe.${DOMAIN}`, done);
   });
 });
