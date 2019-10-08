@@ -108,7 +108,7 @@ jobs:
       # TODO clone repo, np
       - run:
           name: Clone repo
-          command: git clone https://github.com/<< parameters.owner >>/<< parameters.repo >>.git#<< parameters.branch >>
+          command: git clone --single-branch --branch << parameters.branch >> --depth 1 https://github.com/<< parameters.owner >>/<< parameters.repo >>
 
       - run:
           name: Installing Helix CLI
