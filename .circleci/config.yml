@@ -85,9 +85,9 @@ jobs:
   run_hlxPagesSmokeTest:
     executor: node8
     parameters:
-        org:
+        owner:
             type: string
-            description: the org of the git repo that hosts the "hlxPagesSmokeTest" tests
+            description: the owner of the git repo that hosts the "hlxPagesSmokeTest" tests
         repo:
             type: string
             description: the name of the git repo that hosts the "hlxPagesSmokeTest" tests
@@ -105,9 +105,20 @@ jobs:
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
 
+      # TODO clone repo, np
+      - run:
+          name: Clone repo
+          command: git clone git@github.com:<< parameters.owner >>/<< parameters.repo >>.git#<< parameters.branch >>
+
+      - run:
+          name: Installing Helix CLI
+          command: npm install
+          cwd: << parameters.repo >>
+
       - run:
           name: Run Helix Pages smoke tests
-          command: npm run test:hlxPagesSmokeTest << parameters.repo >> 
+          command: npm run test:hlxPagesSmokeTest
+          cwd: << parameters.repo >>
 
       - persist_to_workspace:
           root: /home/circleci
@@ -185,15 +196,15 @@ workflows:
             - build
       - run_hlxPagesSmokeTest:
           name: adobe/helix-pages#smoke-tests
+          owner: adobe
           repo: helix-pages
-          org: adobe
           branch: smoke-tests
           requires:
             - init_hlxPagesSmokeTest
       - run_hlxPagesSmokeTest:
           name: adobe/helix-example-basic#smoke-tests
+          owner: adobe
           repo: helix-example-basic
-          org: adobe
           branch: smoke-tests
           requires:
             - init_hlxPagesSmokeTest
