@@ -104,25 +104,24 @@ jobs:
           at: /home/circleci
 
       - run:
-          name: Load TEST_DOMAIN
+          name: Load environment variables
           command: |
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
 
-      # TODO clone repo, np
       - run:
-          name: Clone repo
+          name: Cloning << parameters.owner >>/<< parameters.repo >>
           command: git clone --single-branch --branch << parameters.branch >> --depth 1 https://github.com/<< parameters.owner >>/<< parameters.repo >>
 
       - run:
-          name: Installing Helix CLI
+          name: Installing << parameters.repo >>
           command: npm install
-          cwd: << parameters.repo >>
+          working_directory: << parameters.repo >>
 
       - run:
-          name: Run Helix Pages smoke tests
+          name: Run the smoke tests for repo << parameters.repo >>
           command: npm run << parameters.script >>
-          cwd: << parameters.repo >>
+          working_directory: << parameters.repo >>
 
       - persist_to_workspace:
           root: /home/circleci
