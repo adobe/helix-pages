@@ -9,7 +9,7 @@ executors:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
 references:
-  run_hlxPagesSmokeTest: &run_hlxPagesSmokeTest
+  run_smoketests: &run_smoketests
     executor: node8
     steps:
 
@@ -43,7 +43,7 @@ jobs:
           name: Lint
           command: npm run lint
 
-  init_hlxPagesSmokeTest:
+  init_smoketests:
     executor: node8
     steps:
       - setup
@@ -82,7 +82,7 @@ jobs:
             - project
             - .npm
 
-  run_hlxPagesSmokeTest:
+  run_smoketests:
     executor: node8
     parameters:
         owner:
@@ -126,7 +126,7 @@ jobs:
             - project
             - .npm
 
-  finalize_hlxPagesSmokeTest:
+  finalize_smoketests:
     executor: node8
     steps:
       - attach_workspace:
@@ -191,30 +191,30 @@ workflows:
   build:
     jobs:
       - build
-      - init_hlxPagesSmokeTest:
+      - init_smoketests:
           requires:
             - build
-      - run_hlxPagesSmokeTest:
+      - run_smoketests:
           name: adobe/helix-pages#smoke-tests
           owner: adobe
           repo: helix-pages
           branch: smoke-tests
           requires:
-            - init_hlxPagesSmokeTest
-      - run_hlxPagesSmokeTest:
+            - init_smoketests
+      - run_smoketests:
           name: adobe/helix-example-basic#smoke-tests
           owner: adobe
           repo: helix-example-basic
           branch: smoke-tests
           requires:
-            - init_hlxPagesSmokeTest
-      - finalize_hlxPagesSmokeTest:
+            - init_smoketests
+      - finalize_smoketests:
           requires:
             - adobe/helix-pages#smoke-tests
             - adobe/helix-example-basic#smoke-tests
       - publish:
           requires:
-            - finalize_hlxPagesSmokeTest
+            - finalize_smoketests
           filters:
             branches:
               only: master
