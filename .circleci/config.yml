@@ -59,6 +59,7 @@ jobs:
               TEST_DOMAIN=${!name}
               name="TEST_SERVICE_$modulo"
               TEST_SERVICE=${!name}
+              mkdir -p env
               # "pass" the variable to the next steps...
               echo "export TEST_DOMAIN=$TEST_DOMAIN" >> env/TEST_DOMAIN
               echo "export TEST_SERVICE=$TEST_SERVICE" >> env/TEST_SERVICE
