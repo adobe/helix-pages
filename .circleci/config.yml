@@ -8,6 +8,40 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+references:
+  run_hlxPagesSmokeTest: &run_hlxPagesSmokeTest
+    executor: node8
+    parameters:
+        org:
+            type: string
+            description: the org of the git repo that hosts the "hlxPagesSmokeTest" tests
+        repo:
+            type: string
+            description: the name of the git repo that hosts the "hlxPagesSmokeTest" tests
+        branch:
+            type: string
+            default: master
+            description: the branch of the git repo that hosts the "hlxPagesSmokeTest" tests
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load TEST_DOMAIN
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run Helix Pages smoke tests
+          command: npm run test:hlxPagesSmokeTest << parameters.repo >> 
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .npm
+
 commands:
   setup:
     steps:
@@ -66,11 +100,8 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
-              echo "TEST_DOMAIN has been found - $TEST_DOMAIN"
-              echo "TEST_SERVICE has been found - $TEST_SERVICE"
-      - run:
-          name: Echo
-          command: echo "TEST_SERVICE - $TEST_DOMAIN"
+              echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
+              echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
           name: Publish to Fastly
           command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
@@ -80,30 +111,8 @@ jobs:
             - project
             - .npm
 
-  run_hlxPagesSmokeTest:
-    executor: node8
-    steps:
-      - attach_workspace:
-          at: /home/circleci
-
-      - run:
-          name: Load TEST_DOMAIN
-          command: |
-            cat env/TEST_DOMAIN >> $BASH_ENV
-            cat env/TEST_SERVICE >> $BASH_ENV
-            echo "TEST_DOMAIN - $TEST_DOMAIN"
-            echo "TEST_SERVICE - $TEST_SERVICE"
-            echo "BASH_ENV - $BASH_ENV"
-
-      - run:
-          name: Run Helix Pages smoke tests
-          command: npm run test:hlxPagesSmokeTest
-
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - project
-            - .npm
+  helixPagesSmokeTest:
+    <<: *run_hlxPagesSmokeTest
 
   finalize_hlxPagesSmokeTest:
     executor: node8
@@ -173,12 +182,15 @@ workflows:
       - init_hlxPagesSmokeTest:
           requires:
             - build
-      - run_hlxPagesSmokeTest:
+      - helixPagesSmokeTest:
+          repo: helix-pages
+          org: adobe
+          branch: smoke-tests
           requires:
             - init_hlxPagesSmokeTest
       - finalize_hlxPagesSmokeTest:
           requires:
-            - run_hlxPagesSmokeTest
+            - helixPagesSmokeTest
       - publish:
           requires:
             - finalize_hlxPagesSmokeTest

@@ -8,3 +8,5 @@ deploy.sh
 hlx
 .env
 helix-config.yaml.old
+.nyc_output
+coverage
