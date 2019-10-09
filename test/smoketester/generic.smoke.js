@@ -29,25 +29,42 @@ const argv = require('yargs') // eslint-disable-line
     description: 'Domain name to run the smoke test against',
     coerce,
   })
-  .demandOption(['domain']).argv;
+  .option('owner', {
+    type: 'string',
+    description: 'Git owner',
+    coerce,
+  })
+  .option('repo', {
+    type: 'string',
+    description: 'Git repo',
+    coerce,
+  })
+  .option('branch', {
+    type: 'string',
+    default: 'master',
+    description: 'Git branch',
+    coerce,
+  })
+  .option('index', {
+    type: 'string',
+    default: 'index.html',
+    description: 'Site homepage',
+    coerce,
+  })
+  .demandOption(['domain', 'ower', 'repo']).argv;
 
-describe('Helix Pages homepage smoke tests - subdomain extraction and some page content', () => {
+describe('Generic smoke test runner - subdomain extraction and homepage content', () => {
   function testHomePageContent(content) {
     const $ = jquery(new JSDOM(content).window);
 
-    expect($('title').text()).to.be.equal('Helix Pages');
-    // index has no header
-    expect($('header').children().length).to.be.equal(0);
-    // index has a main with 2 divs
-    expect($('main').length).to.be.equal(1);
-    expect($('main div').length).to.be.equal(2);
-    // index has no footer
-    expect($('footer').children().length).to.be.equal(0);
+    // generic test would expect a head and a body...
+    expect($('head').length).to.be.equal(1);
+    expect($('body').length).to.be.equal(1);
   }
 
   function testHomePage(url, done) {
     chai.request(url)
-      .get('/')
+      .get(`/${argv.index}`)
       .then((res) => {
         expect(res).to.have.status(200);
 
@@ -60,20 +77,7 @@ describe('Helix Pages homepage smoke tests - subdomain extraction and some page 
       });
   }
 
-  // all tests refer to the same repository thus same content
-  it(`www.${argv.domain} test`, (done) => {
-    testHomePage(`www.${argv.domain}`, done);
-  });
-
-  it(`helix-pages-adobe.${argv.domain} test`, (done) => {
-    testHomePage(`helix-pages-adobe.${argv.domain}`, done);
-  });
-
-  it(`helix-pages--adobe.${argv.domain} test`, (done) => {
-    testHomePage(`helix-pages--adobe.${argv.domain}`, done);
-  });
-
-  it(`master--helix-pages--adobe.${argv.domain} test`, (done) => {
-    testHomePage(`master--helix-pages--adobe.${argv.domain}`, done);
+  it(`${argv.branch}--${argv.repo}--${argv.owner}.${argv.domain} test`, (done) => {
+    testHomePage(`${argv.branch}--${argv.repo}--${argv.owner}.${argv.domain}`, done);
   });
 });

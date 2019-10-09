@@ -87,17 +87,17 @@ jobs:
     parameters:
         owner:
             type: string
-            description: the owner of the git repo that hosts the "hlxPagesSmokeTest" tests
+            description: the owner of the git repo that hosts the "test:hlx.pge.smoketest" tests
         repo:
             type: string
-            description: the name of the git repo that hosts the "hlxPagesSmokeTest" tests
+            description: the name of the git repo that hosts the "test:hlx.pge.smoketest" tests
         branch:
             type: string
             default: master
-            description: the branch of the git repo that hosts the "hlxPagesSmokeTest" tests
+            description: the branch of the git repo that hosts the "test:hlx.pge.smoketest" tests
         script:
             type: string
-            default: test:hlxPagesSmokeTest
+            default: test:hlx.pge.smoketest
             description: the name of the npm script to run
     steps:
       - attach_workspace:
@@ -122,6 +122,43 @@ jobs:
           name: Run the smoke tests for repo << parameters.repo >>
           command: npm run << parameters.script >>
           working_directory: << parameters.repo >>
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .npm
+
+  run_generic_smoketests:
+    executor: node8
+    parameters:
+        owner:
+            type: string
+            description: the owner of the git repo to run the smoke tests against
+        repo:
+            type: string
+            description: the name of the git repo to run the smoke tests against
+        branch:
+            type: string
+            default: master
+            description: the branch of the git repo to run the smoke tests against
+        index:
+            type: string
+            default: index.html
+            description: the index page to be tested
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
+          command: env TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester
 
       - persist_to_workspace:
           root: /home/circleci
@@ -212,10 +249,17 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
+      - run_generic_smoketests:
+          name: adobe/ferrumjsorg
+          owner: adobe
+          repo: ferrumjsorg
+          requires:
+            - init_smoketests
       - finalize_smoketests:
           requires:
             - adobe/helix-pages#smoke-tests
             - adobe/helix-example-basic#smoke-tests
+            - adobe/ferrumjsorg
       - publish:
           requires:
             - finalize_smoketests
