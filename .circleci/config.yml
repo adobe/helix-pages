@@ -118,10 +118,18 @@ jobs:
           command: npm install
           working_directory: << parameters.repo >>
 
+      - run: mkdir junit
+
       - run:
           name: Run the smoke tests for repo << parameters.repo >>
-          command: npm run << parameters.script >>
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' npm run << parameters.script >>
           working_directory: << parameters.repo >>
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
 
       - persist_to_workspace:
           root: /home/circleci
@@ -156,9 +164,17 @@ jobs:
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
 
+      - run: mkdir junit
+
       - run:
           name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
-          command: env TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
 
       - persist_to_workspace:
           root: /home/circleci
@@ -171,12 +187,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
-
-      - store_test_results:
-          path: junit
-
-      - store_artifacts:
-          path: junit
 
       - save_cache:
           paths:
