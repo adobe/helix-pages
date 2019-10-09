@@ -51,7 +51,7 @@ const argv = require('yargs') // eslint-disable-line
     description: 'Site homepage',
     coerce,
   })
-  .demandOption(['domain', 'ower', 'repo']).argv;
+  .demandOption(['domain', 'owner', 'repo']).argv;
 
 describe('Generic smoke test runner - subdomain extraction and homepage content', () => {
   function testHomePageContent(content) {
