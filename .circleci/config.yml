@@ -76,6 +76,9 @@ jobs:
       - run:
           name: Publish to Fastly
           command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+
+      - run: mkdir junit
+
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -118,8 +121,6 @@ jobs:
           command: npm install
           working_directory: << parameters.repo >>
 
-      - run: mkdir junit
-
       - run:
           name: Run the smoke tests for repo << parameters.repo >>
           command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' npm run << parameters.script >>
@@ -134,8 +135,7 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - project
-            - .npm
+            - project/junit
 
   run_generic_smoketests:
     executor: node8
@@ -164,8 +164,6 @@ jobs:
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
 
-      - run: mkdir junit
-
       - run:
           name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
           command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester
@@ -179,13 +177,20 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci
           paths:
-            - project
-            - .npm
+            - project/junit
 
   finalize_smoketests:
     executor: node8
     steps:
-      - run: echo "Success"
+      - attach_workspace:
+          at: /home/circleci
+
+      # group all junit test results in the finalize step
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
 
   publish:
     executor: node8
