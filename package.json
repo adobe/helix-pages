@@ -8,8 +8,8 @@
     "semantic-release": "semantic-release",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "test:hlx.pge.smoketest": "nyc --lines 90 --reporter=text --reporter=lcov mocha test/smoke/*.* -t 5000 --domain $TEST_DOMAIN",
-    "test:hlx.pge.generic.smoketester": "nyc --lines 90 --reporter=text --reporter=lcov mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX"
+    "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 5000 --domain $TEST_DOMAIN --reporter mocha-junit-reporter",
+    "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX --reporter mocha-junit-reporter"
   },
   "repository": {
     "type": "git",
