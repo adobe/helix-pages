@@ -123,7 +123,7 @@ jobs:
 
       - run:
           name: Run the smoke tests for repo << parameters.repo >>
-          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' npm run << parameters.script >>
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' npm run << parameters.script >> -- --reporter mocha-junit-reporter
           working_directory: << parameters.repo >>
 
       - store_test_results:
@@ -166,7 +166,7 @@ jobs:
 
       - run:
           name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
-          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester  -- --reporter mocha-junit-reporter
 
       - store_test_results:
           path: junit
