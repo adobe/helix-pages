@@ -254,7 +254,7 @@ workflows:
           name: adobe/helix-example-basic#smoke-tests
           owner: adobe
           repo: helix-example-basic
-          branch: smoke-tests
+          branch: test-code
           script: test:smoke
           requires:
             - init_smoketests
