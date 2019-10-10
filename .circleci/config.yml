@@ -182,7 +182,12 @@ jobs:
             - project
             - .npm
 
-publish:
+  finalize_smoketests:
+    executor: node8
+    steps:
+      - run: echo "Success"
+
+  publish:
     executor: node8
     steps:
       - setup
@@ -254,6 +259,11 @@ workflows:
           repo: ferrumjsorg
           requires:
             - init_smoketests
+      - finalize_smoketests:
+          requires:
+            - adobe/helix-pages#smoke-tests
+            - adobe/helix-example-basic#smoke-tests
+            - adobe/ferrumjsorg
       - publish:
           requires:
             - finalize_smoketests
