@@ -7,7 +7,9 @@
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 5000 --domain $TEST_DOMAIN",
+    "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX"
   },
   "repository": {
     "type": "git",
@@ -30,10 +32,18 @@
     "@semantic-release/changelog": "3.0.4",
     "@semantic-release/git": "7.0.16",
     "@semantic-release/github": "5.5.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "6.5.1",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.18.2",
-    "semantic-release": "15.13.24"
+    "jsdom": "^15.1.1",
+    "mocha": "6.2.1",
+    "mocha-junit-reporter": "1.23.1",
+    "mocha-parallel-tests": "2.2.2",
+    "nyc": "14.1.1",
+    "semantic-release": "15.13.24",
+    "yargs": "^14.2.0"
   },
   "snyk": true
 }

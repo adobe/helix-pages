@@ -8,6 +8,11 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+references:
+  run_smoketests: &run_smoketests
+    executor: node8
+    steps:
+
 commands:
   setup:
     steps:
@@ -33,52 +38,160 @@ jobs:
   build:
     executor: node8
     steps:
-        - setup
+      - setup
+      - run:
+          name: Lint
+          command: npm run lint
 
-        - run:
-            name: Lint
-            command: npm run lint
+  init_smoketests:
+    executor: node8
+    steps:
+      - setup
+      - run:
+          name: Installing Helix CLI
+          command: npm install @adobe/helix-cli@">=5" --save=false
+      - run:
+          name: Build Templates
+          command: npx hlx build
+      - run:
+          name: Deploy to Adobe I/O Runtime
+          command: npx hlx deploy --add test_$CIRCLE_BUILD_NUM | cat
+      - run:
+          name: Compute TEST_DOMAIN and TEST_SERVICE
+          command: |
+              modulo=$(expr $CIRCLE_BUILD_NUM % 3 + 1)
+              name="TEST_DOMAIN_$modulo"
+              TEST_DOMAIN=${!name}
+              name="TEST_SERVICE_$modulo"
+              TEST_SERVICE=${!name}
+              mkdir -p env
+              # "pass" the variable to the next steps...
+              echo "export TEST_DOMAIN=$TEST_DOMAIN" >> env/TEST_DOMAIN
+              echo "export TEST_SERVICE=$TEST_SERVICE" >> env/TEST_SERVICE
+              cat env/TEST_DOMAIN >> $BASH_ENV
+              cat env/TEST_SERVICE >> $BASH_ENV
+              # debug logs
+              echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
+              echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
+      - run:
+          name: Publish to Fastly
+          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
 
-        # - run:
-        #     name: Installing Dependencies
-        #     command: test -f package.json && npm install || echo "package.json does not exist"
+      - run: mkdir junit
 
-        # - run:
-        #     name: Installing Helix CLI
-        #     command: npm install @adobe/helix-cli --save=false
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - .npm
 
-        # - run:
-        #     name: Reset package-lock.json
-        #     command:  test ! -f package.json && rm package-lock.json || echo "package.json exists"
+  run_smoketests:
+    executor: node8
+    parameters:
+        owner:
+            type: string
+            description: the owner of the git repo that hosts the "test:hlx.pge.smoketest" tests
+        repo:
+            type: string
+            description: the name of the git repo that hosts the "test:hlx.pge.smoketest" tests
+        branch:
+            type: string
+            default: master
+            description: the branch of the git repo that hosts the "test:hlx.pge.smoketest" tests
+        script:
+            type: string
+            default: test:hlx.pge.smoketest
+            description: the name of the npm script to run
+    steps:
+      - attach_workspace:
+          at: /home/circleci
 
-        # - run:
-        #     name: Building Templates
-        #     command: npx hlx build
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
 
-        # - run:
-        #     name: Resetting Working Copy
-        #     command: git status; git checkout -- .
+      - run:
+          name: Cloning << parameters.owner >>/<< parameters.repo >>
+          command: git clone --single-branch --branch << parameters.branch >> --depth 1 https://github.com/<< parameters.owner >>/<< parameters.repo >>
 
-        # - run:
-        #     name: Deploying to Adobe I/O Runtime
-        #     command: npx hlx deploy | cat
+      - run:
+          name: Installing << parameters.repo >>
+          command: npm install
+          working_directory: << parameters.repo >>
 
-        # - run:
-        #     name: Activate CDN
-        #     command: npx hlx publish | cat
+      - run:
+          name: Run the smoke tests for repo << parameters.repo >>
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' npm run << parameters.script >> -- --reporter mocha-junit-reporter
+          working_directory: << parameters.repo >>
 
-        # - run:
-        #     name: Test Performance
-        #     command: |
-        #         mkdir -p junit
-        #         if [ ! -z $HLX_CALIBRE_AUTH ]; then
-        #             npx hlx perf --junit junit/test-results.xml
-        #         else
-        #             echo "Add HLX_CALIBRE_AUTH to your CircleCI config to enable performance testing"
-        #         fi
+      - store_test_results:
+          path: junit
 
-        # - store_test_results:
-        #     path: junit
+      - store_artifacts:
+          path: junit
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/junit
+
+  run_generic_smoketests:
+    executor: node8
+    parameters:
+        owner:
+            type: string
+            description: the owner of the git repo to run the smoke tests against
+        repo:
+            type: string
+            description: the name of the git repo to run the smoke tests against
+        branch:
+            type: string
+            default: master
+            description: the branch of the git repo to run the smoke tests against
+        index:
+            type: string
+            default: index.html
+            description: the index page to be tested
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
+          command: env MOCHA_FILE='/home/circleci/project/junit/test-results-<< parameters.owner >>-<< parameters.repo >>.xml' TEST_OWNER=<< parameters.owner >> TEST_REPO=<< parameters.repo >> TEST_BRANCH=<< parameters.branch >> TEST_INDEX=<< parameters.index >> npm run test:hlx.pge.generic.smoketester  -- --reporter mocha-junit-reporter
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/junit
+
+  finalize_smoketests:
+    executor: node8
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+
+      # group all junit test results in the finalize step
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
+
   publish:
     executor: node8
     steps:
@@ -127,9 +240,38 @@ workflows:
   build:
     jobs:
       - build
-      - publish:
+      - init_smoketests:
           requires:
             - build
+      - run_smoketests:
+          name: adobe/helix-pages#smoke-tests
+          owner: adobe
+          repo: helix-pages
+          branch: smoke-tests
+          requires:
+            - init_smoketests
+      - run_smoketests:
+          name: adobe/helix-example-basic#smoke-tests
+          owner: adobe
+          repo: helix-example-basic
+          branch: test-code
+          script: test:smoke
+          requires:
+            - init_smoketests
+      - run_generic_smoketests:
+          name: adobe/ferrumjsorg
+          owner: adobe
+          repo: ferrumjsorg
+          requires:
+            - init_smoketests
+      - finalize_smoketests:
+          requires:
+            - adobe/helix-pages#smoke-tests
+            - adobe/helix-example-basic#smoke-tests
+            - adobe/ferrumjsorg
+      - publish:
+          requires:
+            - finalize_smoketests
           filters:
             branches:
               only: master
