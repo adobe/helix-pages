@@ -247,7 +247,7 @@ workflows:
           name: adobe/helix-pages#smoke-tests
           owner: adobe
           repo: helix-pages
-          branch: smoke-tests
+          branch: master
           requires:
             - init_smoketests
       - run_smoketests:
