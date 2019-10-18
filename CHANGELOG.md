@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/adobe/helix-pages/compare/v1.0.3...v1.1.0) (2019-10-18)
+
+
+### Bug Fixes
+
+* **IT:** fix the smoke tests, forgot to adjust branch name before merging ([47f84c8](https://github.com/adobe/helix-pages/commit/47f84c8))
+
+
+### Features
+
+* **IT:** Integration Tests "infrastructure" ([585aed5](https://github.com/adobe/helix-pages/commit/585aed5))
+
 ## [1.0.3](https://github.com/adobe/helix-pages/compare/v1.0.2...v1.0.3) (2019-10-07)
 
 
