@@ -244,14 +244,14 @@ workflows:
           requires:
             - build
       - run_smoketests:
-          name: adobe/helix-pages#smoke-tests
+          name: adobe/helix-pages#master
           owner: adobe
           repo: helix-pages
           branch: master
           requires:
             - init_smoketests
       - run_smoketests:
-          name: adobe/helix-example-basic#smoke-tests
+          name: adobe/helix-example-basic#test-code
           owner: adobe
           repo: helix-example-basic
           branch: test-code
@@ -266,8 +266,8 @@ workflows:
             - init_smoketests
       - finalize_smoketests:
           requires:
-            - adobe/helix-pages#smoke-tests
-            - adobe/helix-example-basic#smoke-tests
+            - adobe/helix-pages#master
+            - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
       - publish:
           requires:
