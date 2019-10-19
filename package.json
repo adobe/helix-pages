@@ -6,8 +6,6 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 5000 --domain $TEST_DOMAIN",
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX"
   },
@@ -24,8 +22,7 @@
     "ferrum": "1.4.1",
     "jquery": "3.4.1",
     "request": "2.88.0",
-    "request-promise-native": "1.0.7",
-    "snyk": "1.235.0"
+    "request-promise-native": "1.0.7"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
@@ -44,6 +41,5 @@
     "nyc": "14.1.1",
     "semantic-release": "15.13.24",
     "yargs": "^14.2.0"
-  },
-  "snyk": true
+  }
 }
