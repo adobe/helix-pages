@@ -12,6 +12,7 @@ Example: [https://helix-home-adobe.project-helix.page/README.html](https://helix
 ### Try it...
 Simply paste a GitHub URL to a publicly visible Markdown file (`.md`) here...
 
+```html
 <script>
 
 function splitURL() {
@@ -68,3 +69,4 @@ function takeMeThere() {
 <input onkeyup="change()" type="text" id="giturl">
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
 <span id="alert" class="alert" style="display:none"></span>
+```
