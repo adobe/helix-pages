@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/adobe/helix-pages/compare/v1.1.0...v1.1.1) (2019-10-23)
+
+
+### Bug Fixes
+
+* **deps:** redeploy with @adobe/helix-cli@5.7.1 ([7a25a0f](https://github.com/adobe/helix-pages/commit/7a25a0f45bcfc613ac6839793c9fb1dc5f1271e3))
+* **deps:** redeploy with @adobe/helix-cli@5.7.1 ([3e17bc4](https://github.com/adobe/helix-pages/commit/3e17bc4e083d33c48a13a4955e629e9450296984))
+
 # [1.1.0](https://github.com/adobe/helix-pages/compare/v1.0.3...v1.1.0) (2019-10-18)
 
 

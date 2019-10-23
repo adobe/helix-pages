@@ -1,6 +1,6 @@
 {
   "name": "helix-pages",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
