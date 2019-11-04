@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/adobe/helix-pages/compare/v1.1.1...v1.1.2) (2019-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update any ([2af00aa](https://github.com/adobe/helix-pages/commit/2af00aa3a75a9fb7bbe3f538bd4bd04e4eb1a0c0))
+
 ## [1.1.1](https://github.com/adobe/helix-pages/compare/v1.1.0...v1.1.1) (2019-10-23)
 
 
