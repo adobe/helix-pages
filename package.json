@@ -40,6 +40,6 @@
     "mocha-parallel-tests": "2.2.2",
     "nyc": "14.1.1",
     "semantic-release": "15.13.30",
-    "yargs": "14.2.0"
+    "yargs": "15.0.1"
   }
 }
