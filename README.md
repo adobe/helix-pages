@@ -1,7 +1,5 @@
 # helix-pages
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/adobe/helix-pages.svg)](https://greenkeeper.io/)
-
 Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)
 
 ## Installation
