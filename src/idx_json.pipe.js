@@ -35,7 +35,6 @@ const parseFrontmatter = require('@adobe/helix-pipeline/src/html/parse-frontmatt
 const unwrapSoleImages = require('@adobe/helix-pipeline/src/html/unwrap-sole-images');
 const timing = require('@adobe/helix-pipeline/src/utils/timing');
 const sanitize = require('@adobe/helix-pipeline/src/html/sanitize');
-const resolveRef = require('@adobe/helix-pipeline/src/utils/resolve-ref');
 
 function hascontent({ content }) {
   return !(content !== undefined && content.body !== undefined);
@@ -54,7 +53,6 @@ const jsonpipe = (cont, context, action) => {
     .every(dump.record)
     .every(validate).when(() => !production())
     .every(timer.update)
-    .use(resolveRef).expose('resolve').when(hascontent)
     .use(fetch).expose('fetch').when(hascontent)
     .use(parse).expose('parse')
     .use(parseFrontmatter)
