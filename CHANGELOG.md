@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/adobe/helix-pages/compare/v1.1.2...v1.2.0) (2019-12-18)
+
+
+### Bug Fixes
+
+* **deps:** use fixed pipeline dependency ([#133](https://github.com/adobe/helix-pages/issues/133)) ([f35f2fa](https://github.com/adobe/helix-pages/commit/f35f2fa23ee6151f92824ea335174a05bb286c42))
+
+
+### Features
+
+* **doc:** Remove greenkeeper badge ([20c78f7](https://github.com/adobe/helix-pages/commit/20c78f7c4233deba3afae9d5d77d68e20750274e))
+
 ## [1.1.2](https://github.com/adobe/helix-pages/compare/v1.1.1...v1.1.2) (2019-11-04)
 
 
