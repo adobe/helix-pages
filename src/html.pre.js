@@ -48,18 +48,25 @@ function pre(context) {
   if ($sections.length === 0) {
     $(document.body).children().wrapAll('<div class="default"></div>');
   }
+
+  // ensure content.data is present
+  if (!context.content.data) {
+    context.content.data = {};
+  }
 }
 
 module.exports.pre = pre;
 
 module.exports.before = {
   fetch: async (context, action) => {
+    const { logger, request, secrets } = action;
+
     // could be separate pipeline step or done completely in the dispatcher
     const fstab = await fetchFSTab(context, action);
     if (!fstab) {
+      logger.info('no fstab found');
       return;
     }
-    const { logger, request, secrets } = action;
     const idx = request.params.path.lastIndexOf('.');
     const resourcePath = decodeURIComponent(request.params.path.substring(0, idx));
 

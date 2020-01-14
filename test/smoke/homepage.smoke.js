@@ -29,6 +29,10 @@ const argv = require('yargs') // eslint-disable-line
     description: 'Domain name to run the smoke test against',
     coerce,
   })
+  .option('serviceid', {
+    type: 'string',
+    description: 'optional fastly service id for debugging',
+  })
   .demandOption(['domain']).argv;
 
 describe('Helix Pages homepage smoke tests - subdomain extraction and some page content', () => {
@@ -45,35 +49,30 @@ describe('Helix Pages homepage smoke tests - subdomain extraction and some page 
     expect($('footer').children().length).to.be.equal(0);
   }
 
-  function testHomePage(url, done) {
-    chai.request(url)
+  async function testHomePage(url) {
+    const res = await chai.request(url)
       .get('/')
-      .then((res) => {
-        expect(res).to.have.status(200);
+      .set('X-Debug', argv.serviceid || false);
 
-        testHomePageContent(res.text);
-
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+    console.log(res.headers);
+    expect(res).to.have.status(200);
+    testHomePageContent(res.text);
   }
 
   // all tests refer to the same repository thus same content
-  it(`www.${argv.domain} test`, (done) => {
-    testHomePage(`www.${argv.domain}`, done);
+  it(`www.${argv.domain} test`, async () => {
+    await testHomePage(`https://www.${argv.domain}`);
   });
 
-  it(`helix-pages-adobe.${argv.domain} test`, (done) => {
-    testHomePage(`helix-pages-adobe.${argv.domain}`, done);
+  it(`helix-pages-adobe.${argv.domain} test`, async () => {
+    await testHomePage(`https://helix-pages-adobe.${argv.domain}`);
   });
 
-  it(`helix-pages--adobe.${argv.domain} test`, (done) => {
-    testHomePage(`helix-pages--adobe.${argv.domain}`, done);
+  it(`helix-pages--adobe.${argv.domain} test`, async () => {
+    await testHomePage(`https://helix-pages--adobe.${argv.domain}`);
   });
 
-  it(`master--helix-pages--adobe.${argv.domain} test`, (done) => {
-    testHomePage(`master--helix-pages--adobe.${argv.domain}`, done);
+  it(`master--helix-pages--adobe.${argv.domain} test`, async () => {
+    await testHomePage(`https://master--helix-pages--adobe.${argv.domain}`);
   });
 });

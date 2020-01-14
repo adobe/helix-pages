@@ -23,14 +23,16 @@ async function fetch(context, { secrets = {}, request, logger: log }) {
   } = request.params;
   const rootUrl = secrets.REPO_RAW_ROOT || 'https://raw.githubusercontent.com/';
   const url = `${rootUrl}${owner}/${repo}/${ref}/fstab.json`;
-  log.info(`trying to load ${url}`);
+
+  log.info(`1. trying to load ${url}`);
   try {
     return await rp({
       url,
+      timeout: secrets.HTTP_TIMEOUT || undefined,
       json: true,
     });
   } catch (e) {
-    log.info('unable to load fstab', e);
+    log.info('unable to load fstab', e.message);
     return null;
   }
 }

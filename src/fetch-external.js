@@ -12,6 +12,7 @@
 const { inspect } = require('util');
 const client = require('request-promise-native');
 const { setdefault } = require('ferrum');
+const crypto = require('crypto');
 
 /**
  * Fetches the Markdown from google docs
@@ -45,11 +46,21 @@ async function fetch(context, action, params) {
     timeout,
     time: true,
     followAllRedirects: true,
+    resolveWithFullResponse: true,
   };
 
   logger.info(`fetching Markdown from ${options.uri}`);
   try {
-    content.body = await client(options);
+    const resp = await client(options);
+    const sourceLocation = resp.headers['x-source-location'] || '';
+    const sourceHash = crypto.createHash('sha1').update(sourceLocation).digest('base64').substring(0, 16);
+    logger.info(`source-location: ${sourceLocation}`);
+    logger.info(`source-hash: ${sourceHash}`);
+    content.body = resp.body;
+    content.data = {
+      sourceLocation,
+      sourceHash,
+    };
   } catch (e) {
     if (e.statusCode === 404) {
       logger.error(`Could not find Markdown at ${options.uri}`);
