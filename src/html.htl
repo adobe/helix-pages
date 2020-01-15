@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>${content.title}</title>
+    <meta data-sly-test.hash=${content.data.sourceHash} name="x-source-hash" content="${hash}">
     <esi:include src="/head.html" onerror="continue"/>
 </head>
 <body>

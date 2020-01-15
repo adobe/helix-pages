@@ -1,16 +1,16 @@
 version: 2.1
 
 executors:
-  node8:
+  node10:
     docker:
-      # use latest node 8 on debian 8 (jessie)
-      - image: circleci/node:8-jessie
+      # use latest node 10 on debian
+      - image: circleci/node:10-stretch
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
 references:
   run_smoketests: &run_smoketests
-    executor: node8
+    executor: node10
     steps:
 
 commands:
@@ -19,24 +19,24 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v3-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
-          name: install npm 6.11.2
-          command: sudo npm -g install npm@6.11.2
+          name: install npm 6.13.6
+          command: sudo npm -g install npm@6.13.6
       - run:
           name: Installing Dependencies
           command: npm ci
       - save_cache:
           paths:
             - node_modules
-          key: v2-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v3-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: prepare test git user
           command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
 
 jobs:
   build:
-    executor: node8
+    executor: node10
     steps:
       - setup
       - run:
@@ -44,7 +44,7 @@ jobs:
           command: npm run lint
 
   init_smoketests:
-    executor: node8
+    executor: node10
     steps:
       - setup
       - run:
@@ -55,7 +55,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add test_$CIRCLE_BUILD_NUM | cat
+          command: npx hlx deploy --add default | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -71,6 +71,7 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
+              echo "Test Service Nr $modulo"
               echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
               echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
@@ -86,7 +87,7 @@ jobs:
             - .npm
 
   run_smoketests:
-    executor: node8
+    executor: node10
     parameters:
         owner:
             type: string
@@ -138,7 +139,7 @@ jobs:
             - project/junit
 
   run_generic_smoketests:
-    executor: node8
+    executor: node10
     parameters:
         owner:
             type: string
@@ -180,7 +181,7 @@ jobs:
             - project/junit
 
   finalize_smoketests:
-    executor: node8
+    executor: node10
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -193,7 +194,7 @@ jobs:
           path: junit
 
   publish:
-    executor: node8
+    executor: node10
     steps:
       - setup
 
