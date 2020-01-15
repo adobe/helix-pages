@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-pipeline": "6.1.6",
+    "@adobe/helix-pipeline": "6.1.10",
     "ferrum": "1.5.0",
     "jquery": "3.4.1",
     "request": "2.88.0",
