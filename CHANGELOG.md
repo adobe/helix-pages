@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/adobe/helix-pages/compare/v1.2.1...v1.3.0) (2020-01-15)
+
+
+### Features
+
+* **indexing:** include a x-source-hash meta tag for indexing support ([#140](https://github.com/adobe/helix-pages/issues/140)) ([42bc86c](https://github.com/adobe/helix-pages/commit/42bc86c5026961a0213cb806bbbd1419e2f17e0a))
+
 ## [1.2.1](https://github.com/adobe/helix-pages/compare/v1.2.0...v1.2.1) (2020-01-10)
 
 
