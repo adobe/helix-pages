@@ -1,5 +1,7 @@
 # helix-pages
 
+[![CircleCI](https://img.shields.io/circleci/project/github/adobe/helix-pages.svg)](https://circleci.com/gh/adobe/helix-pages)
+
 Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)
 
 ## Installation
