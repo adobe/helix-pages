@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/adobe/helix-pages/compare/v1.3.1...v1.3.2) (2020-01-15)
+
+
+### Bug Fixes
+
+* **readme:** add CircleCI badge ([da5872f](https://github.com/adobe/helix-pages/commit/da5872f5b0cca0962a9bde7b09e8de7f8512b479))
+
 ## [1.3.1](https://github.com/adobe/helix-pages/compare/v1.3.0...v1.3.1) (2020-01-15)
 
 
