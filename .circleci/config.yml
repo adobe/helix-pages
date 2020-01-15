@@ -55,7 +55,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add test_$CIRCLE_BUILD_NUM | cat
+          command: npx hlx deploy --add default | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -71,6 +71,7 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
+              echo "Test Service Nr $modulo"
               echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
               echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
