@@ -20,7 +20,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-pipeline": "6.1.10",
-    "ferrum": "1.6.0",
+    "ferrum": "1.7.0",
     "jquery": "3.4.1",
     "request": "2.88.0",
     "request-promise-native": "1.0.8"
@@ -37,10 +37,10 @@
     "eslint-plugin-import": "2.20.0",
     "jsdom": "16.0.0",
     "mocha": "7.0.0",
-    "mocha-junit-reporter": "1.23.2",
+    "mocha-junit-reporter": "1.23.3",
     "mocha-parallel-tests": "2.2.2",
     "nyc": "15.0.0",
-    "semantic-release": "16.0.1",
+    "semantic-release": "16.0.2",
     "yargs": "15.1.0"
   }
 }
