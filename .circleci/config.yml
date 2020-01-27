@@ -76,7 +76,7 @@ jobs:
               echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
           name: Publish to Fastly
-          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@v3.1 | cat
 
       - run: mkdir junit
 
