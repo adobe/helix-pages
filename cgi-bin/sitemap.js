@@ -52,6 +52,7 @@ async function run(params) {
     hitsPerPage = 100,
     ALGOLIA_API_KEY,
     ALGOLIA_APP_ID,
+    __ow_headers: headers,
     __ow_logger: log,
   } = params;
 
@@ -101,13 +102,13 @@ async function run(params) {
     attributesToRetrieve: ['path'],
   });
 
-  const scheme = params.__ow_headers['x-forwarded-proto'] || 'http';
+  const scheme = headers['x-forwarded-proto'] || 'http';
   // Runtime currently overwrites the initial contents of the X-Forwarded-Host header,
   // (see https://jira.corp.adobe.com/browse/RUNNER-3006), so we allow specifying a host
   // header in the action itself
   let { originalHost } = params;
   if (!originalHost) {
-    originalHost = getOriginalHost();
+    originalHost = getOriginalHost(headers);
   }
   return {
     statusCode: 200,
