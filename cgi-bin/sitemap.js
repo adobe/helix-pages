@@ -116,7 +116,7 @@ async function run(params) {
       (hit) => loc(`${scheme}://${originalHost}`, hit, roots),
     ).join(''),
     headers: {
-      'Content-Type': 'text/plain',
+      'Content-Type': 'application/xml',
     },
   };
 }

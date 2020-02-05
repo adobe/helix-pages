@@ -1,0 +1,12 @@
+{
+  "mountpoints": [
+    {
+      "root": "/ms",
+      "url": "--not-required--"
+    },
+    {
+      "root": "/g",
+      "url": "--not-required--"
+    }
+  ]
+}
