@@ -20,10 +20,13 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-pipeline": "6.2.1",
+    "@adobe/openwhisk-action-utils": "^4.1.0",
+    "algoliasearch": "^4.0.1",
     "ferrum": "1.7.0",
     "jquery": "3.4.1",
     "request": "2.88.0",
-    "request-promise-native": "1.0.8"
+    "request-promise-native": "1.0.8",
+    "yaml": "^1.7.2"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.0",
