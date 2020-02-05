@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const algoliasearch = require('algoliasearch');
+const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 
 const fetchFSTab = require('../src/fetch-fstab.js');
@@ -51,7 +52,7 @@ async function run(params) {
     hitsPerPage = 100,
     ALGOLIA_API_KEY,
     ALGOLIA_APP_ID,
-    __ow_logger: logger,
+    __ow_logger: log,
   } = params;
 
   if (!owner) {
@@ -72,7 +73,7 @@ async function run(params) {
 
   const action = {
     request: { params: { owner, repo, ref } },
-    logger,
+    logger: log,
   };
   const config = await fetchIndexConfig(null, action);
   if (!config) {
@@ -119,4 +120,5 @@ async function run(params) {
   };
 }
 
-module.exports.main = wrap(run);
+module.exports.main = wrap(run)
+  .with(logger);
