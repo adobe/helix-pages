@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/adobe/helix-pages/compare/v1.3.4...v1.4.0) (2020-02-11)
+
+
+### Features
+
+* **sitemap:** add logger wrapper for __ow_logger ([0b4789e](https://github.com/adobe/helix-pages/commit/0b4789efaedc7bab89d7142c6e08dc88ac9776b6))
+* **sitemap:** add logger wrapper for __ow_logger ([bef8e54](https://github.com/adobe/helix-pages/commit/bef8e5488611a451843c54e9c3d55363eac0b1d6))
+* **sitemap:** add test ([960bc25](https://github.com/adobe/helix-pages/commit/960bc25fe4ae79f37e9608d8e24df60b6b412e1e))
+* **sitemap:** Generate sitemap.xml from search index ([a9c9c2b](https://github.com/adobe/helix-pages/commit/a9c9c2b224c0a54ae661ca1eca3185c1c0d18544))
+* **sitemap:** Generate sitemap.xml from search index ([f1991e0](https://github.com/adobe/helix-pages/commit/f1991e066e88262d098b44ca93a1e37b75835e9a))
+* **sitemap:** let static strain point to my branch (will be undone) ([461e6fc](https://github.com/adobe/helix-pages/commit/461e6fc7c39152017863e8501841cedc3f6af1f9))
+* **sitemap:** missing headers argument ([8199aac](https://github.com/adobe/helix-pages/commit/8199aacc71b72f33d7112791b59bc4cbdb727713))
+* **sitemap:** missing headers argument ([0469f24](https://github.com/adobe/helix-pages/commit/0469f24fdb6d709e13260c9d499596da458d9ddd))
+
 ## [1.3.4](https://github.com/adobe/helix-pages/compare/v1.3.3...v1.3.4) (2020-02-11)
 
 
