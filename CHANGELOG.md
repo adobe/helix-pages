@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/adobe/helix-pages/compare/v1.4.0...v1.4.1) (2020-02-11)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([09bf644](https://github.com/adobe/helix-pages/commit/09bf6444a3e08907f61b7ab01708f40a987504a6))
+
 # [1.4.0](https://github.com/adobe/helix-pages/compare/v1.3.4...v1.4.0) (2020-02-11)
 
 
