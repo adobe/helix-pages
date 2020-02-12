@@ -1,3 +1,11 @@
+## [1.4.2](https://github.com/adobe/helix-pages/compare/v1.4.1...v1.4.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* **sitemap:** add algolia params to hlx deploy ([eaa9669](https://github.com/adobe/helix-pages/commit/eaa9669b473ad2908144d79db78c757039a5d509))
+* **sitemap:** add xml doctype ([762daa9](https://github.com/adobe/helix-pages/commit/762daa94da322b52c1d1a8b832f8dda53e940e46))
+
 ## [1.4.1](https://github.com/adobe/helix-pages/compare/v1.4.0...v1.4.1) (2020-02-11)
 
 
