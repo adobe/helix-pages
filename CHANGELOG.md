@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/adobe/helix-pages/compare/v1.4.2...v1.4.3) (2020-02-12)
+
+
+### Bug Fixes
+
+* **sitemap:** add x-hlx-pages-host header ([76767c2](https://github.com/adobe/helix-pages/commit/76767c2ebcade7b4c9294548e9c31f42ad7150ce))
+
 ## [1.4.2](https://github.com/adobe/helix-pages/compare/v1.4.1...v1.4.2) (2020-02-12)
 
 
