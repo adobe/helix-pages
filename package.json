@@ -4,6 +4,7 @@
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
+    "test": "mocha test/sitemap/*.test.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
     "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 5000 --domain $TEST_DOMAIN",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-pipeline": "6.5.0",
+    "@adobe/helix-shared": "^5.3.0",
     "@adobe/openwhisk-action-logger": "2.1.1",
     "@adobe/openwhisk-action-utils": "4.1.0",
     "algoliasearch": "4.0.3",

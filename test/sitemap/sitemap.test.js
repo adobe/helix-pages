@@ -71,6 +71,9 @@ describe('Sitemap Tests', () => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/helix-index.yaml')
         .reply(404, 'Not found');
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .reply(404, 'Not found');
     });
     it('missing index returns 500', async () => {
       const response = await proxyaction().main(createParams());
@@ -84,7 +87,7 @@ describe('Sitemap Tests', () => {
         .get('/me/repo/master/helix-index.yaml')
         .replyWithFile(200, resolve(__dirname, 'helix-index.yaml'));
       nock('https://raw.githubusercontent.com')
-        .get('/me/repo/master/fstab.json')
+        .get('/me/repo/master/fstab.yaml')
         .reply(404, 'Not found');
     });
 
@@ -103,8 +106,8 @@ describe('Sitemap Tests', () => {
         .get('/me/repo/master/helix-index.yaml')
         .replyWithFile(200, resolve(__dirname, 'helix-index.yaml'));
       nock('https://raw.githubusercontent.com')
-        .get('/me/repo/master/fstab.json')
-        .replyWithFile(200, resolve(__dirname, 'fstab.json'));
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'fstab.yaml'));
     });
 
     it('Sitemap returns URLs without prefixes', async () => {

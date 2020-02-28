@@ -1,0 +1,3 @@
+mountpoints:
+  /ms: https://example.com/--not-required--
+  /g: https://example.com/--not-required--
