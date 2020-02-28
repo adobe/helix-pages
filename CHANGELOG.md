@@ -1,3 +1,10 @@
+## [1.4.10](https://github.com/adobe/helix-pages/compare/v1.4.9...v1.4.10) (2020-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v6.4.6 ([#169](https://github.com/adobe/helix-pages/issues/169)) ([3688bef](https://github.com/adobe/helix-pages/commit/3688bef2d4f3fbe18a82ad6321d140132cc8e003))
+
 ## [1.4.9](https://github.com/adobe/helix-pages/compare/v1.4.8...v1.4.9) (2020-02-25)
 
 
