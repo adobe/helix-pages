@@ -1,3 +1,10 @@
+## [1.4.13](https://github.com/adobe/helix-pages/compare/v1.4.12...v1.4.13) (2020-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update to @adobe/helix-shared 6.0.1 ([#171](https://github.com/adobe/helix-pages/issues/171)) ([614ddcb](https://github.com/adobe/helix-pages/commit/614ddcb8cf58a2524040a526f19bb924f0cf65e2))
+
 ## [1.4.12](https://github.com/adobe/helix-pages/compare/v1.4.11...v1.4.12) (2020-03-02)
 
 
