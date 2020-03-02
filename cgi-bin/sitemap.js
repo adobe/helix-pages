@@ -13,8 +13,8 @@ const algoliasearch = require('algoliasearch');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 
-const fetchFSTab = require('../src/fetch-fstab.js');
-const fetchIndexConfig = require('../src/fetch-index-config.js');
+const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
+const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
 
 /**
  * Return the location element containing the absolute path to a hit in the index.
@@ -27,7 +27,7 @@ function loc(host, hit, roots) {
   let { path } = hit;
 
   const sep = path.indexOf('/');
-  if (sep !== -1 && roots.has(path.substr(0, sep))) {
+  if (sep !== -1 && roots.has(path.substr(0, sep + 1))) {
     path = path.substr(sep + 1);
   }
   return `  <url>
@@ -74,13 +74,27 @@ async function run(params) {
   if (!ALGOLIA_APP_ID) {
     throw new Error('ALGOLIA_APP_ID parameter missing.');
   }
-
+  const coords = { owner, repo, ref };
   const action = {
-    request: { params: { owner, repo, ref } },
+    request: { params: coords },
+    secrets: {
+      REPO_RAW_ROOT: 'https://raw.githubusercontent.com/',
+      HTTP_TIMEOUT: 1000,
+    },
     logger: log,
   };
-  const config = await fetchIndexConfig(null, action);
-  if (!config) {
+
+  const downloader = new Downloader({}, action, {
+    forceHttp1: ALGOLIA_APP_ID === 'foo', // use http1 for tests
+  });
+
+  const [indexYAML, fstabYAML] = await Promise.all([
+    downloader.fetchGithub({ ...coords, path: '/helix-index.yaml' }),
+    downloader.fetchGithub({ ...coords, path: '/fstab.yaml' }),
+  ]);
+
+  if (indexYAML.status !== 200) {
+    log.error(`unable to fetch helix-index.yaml: ${indexYAML.status}`);
     return {
       statusCode: 500,
       body: 'No index definition found.',
@@ -89,11 +103,21 @@ async function run(params) {
       },
     };
   }
-  const fstab = (await fetchFSTab(null, action)) || { mountpoints: [] };
-  const roots = fstab.mountpoints.reduce((set, entry) => {
-    set.add(entry.root.substr(1));
-    return set;
-  }, new Set());
+  const config = (await new IndexConfig()
+    .withSource(indexYAML.body)
+    .init()).toJSON();
+
+  const roots = new Set();
+  if (fstabYAML.status === 200) {
+    const fstab = await new MountConfig()
+      .withSource(fstabYAML.body)
+      .init();
+    fstab.mountpoints.forEach((entry) => {
+      roots.add(entry.path.substr(1));
+    });
+  } else {
+    log.warn(`unable to fetch fstab.yaml: ${fstabYAML.status}`);
+  }
 
   // TODO: when there are multiple indices, find the one appropriate for sitemap generation
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
