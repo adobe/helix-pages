@@ -22,7 +22,7 @@ The project requires some extensions of the default VCL provided by Helix. The p
 
 The patched version of the 3 subroutines adds the parsing of the host url to extract the content owner / repo that would override the one stored in the Fastly dictionary.
 
-## Automatic publishing
+## How to use with Google Drive
 
 Go to your Google Drive account
  * https://drive.google.com/drive/my-drive
