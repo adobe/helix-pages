@@ -1,3 +1,12 @@
+## [1.4.14](https://github.com/adobe/helix-pages/compare/v1.4.13...v1.4.14) (2020-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([a1f5774](https://github.com/adobe/helix-pages/commit/a1f57748f2bedba88bcab93f19f83a09f6d94e66))
+* **deps:** update dependency @adobe/helix-pipeline to v6.6.3 ([#177](https://github.com/adobe/helix-pages/issues/177)) ([c7c7855](https://github.com/adobe/helix-pages/commit/c7c78554fc8ce921d5171df2e57fd80b5a46075c))
+* **deps:** update dependency @adobe/openwhisk-action-logger to v2.2.0 ([#176](https://github.com/adobe/helix-pages/issues/176)) ([398fafc](https://github.com/adobe/helix-pages/commit/398fafc808ec26e69fb9deaa0995ac6b80685cd5))
+
 ## [1.4.13](https://github.com/adobe/helix-pages/compare/v1.4.12...v1.4.13) (2020-03-02)
 
 
