@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/adobe/helix-pages/compare/v1.4.14...v1.5.0) (2020-03-04)
+
+
+### Features
+
+* **doc:** update title ([61db847](https://github.com/adobe/helix-pages/commit/61db847fb5fbf3f99673fe315b26705c3c0278d5))
+
 ## [1.4.14](https://github.com/adobe/helix-pages/compare/v1.4.13...v1.4.14) (2020-03-04)
 
 
