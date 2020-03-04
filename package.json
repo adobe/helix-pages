@@ -22,7 +22,7 @@
   "dependencies": {
     "@adobe/helix-pipeline": "6.6.2",
     "@adobe/helix-shared": "6.0.2",
-    "@adobe/openwhisk-action-logger": "2.1.1",
+    "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.1.0",
     "algoliasearch": "4.0.3",
     "ferrum": "1.7.0",
