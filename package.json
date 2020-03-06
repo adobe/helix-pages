@@ -23,7 +23,7 @@
     "@adobe/helix-pipeline": "6.6.3",
     "@adobe/helix-shared": "6.0.2",
     "@adobe/openwhisk-action-logger": "2.2.0",
-    "@adobe/openwhisk-action-utils": "4.2.0",
+    "@adobe/openwhisk-action-utils": "4.2.1",
     "algoliasearch": "4.0.3",
     "ferrum": "1.7.0",
     "jquery": "3.4.1",
