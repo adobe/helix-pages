@@ -1,3 +1,11 @@
+## [1.5.1](https://github.com/adobe/helix-pages/compare/v1.5.0...v1.5.1) (2020-03-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.0 ([da7015d](https://github.com/adobe/helix-pages/commit/da7015d37b4c9654a6a2ea9397806e85ff6343a9))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.1 ([64f9af9](https://github.com/adobe/helix-pages/commit/64f9af96cfad638e22e4d55477c2caab57f3e7e1))
+
 # [1.5.0](https://github.com/adobe/helix-pages/compare/v1.4.14...v1.5.0) (2020-03-04)
 
 
