@@ -1,3 +1,11 @@
+## [1.5.2](https://github.com/adobe/helix-pages/compare/v1.5.1...v1.5.2) (2020-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v6.7.0 ([f884e61](https://github.com/adobe/helix-pages/commit/f884e6148d11a37f231d7295d9548a537a770284))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.2 ([1f91bc9](https://github.com/adobe/helix-pages/commit/1f91bc9a594103448c6c9ceb64d10aa8fb071a79))
+
 ## [1.5.1](https://github.com/adobe/helix-pages/compare/v1.5.0...v1.5.1) (2020-03-06)
 
 
