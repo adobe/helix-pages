@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/adobe/helix-pages/compare/v1.5.8...v1.6.0) (2020-03-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v6.7.3 ([5fb62a6](https://github.com/adobe/helix-pages/commit/5fb62a6db7133b046429602969615d7f6a75e5de))
+
+
+### Features
+
+* **log:** enable log to Coralogix ([#189](https://github.com/adobe/helix-pages/issues/189)) ([28e8920](https://github.com/adobe/helix-pages/commit/28e8920242475ba7b92689831572d7863dd5c9dc))
+
 ## [1.5.8](https://github.com/adobe/helix-pages/compare/v1.5.7...v1.5.8) (2020-03-17)
 
 
