@@ -55,7 +55,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL | cat
+          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -212,7 +212,7 @@ jobs:
 
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL | cat
+          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
 
       - run:
           name: Publish to Fastly
