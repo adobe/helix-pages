@@ -1,3 +1,10 @@
+## [1.5.8](https://github.com/adobe/helix-pages/compare/v1.5.7...v1.5.8) (2020-03-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v6.0.4 ([bfc6b4c](https://github.com/adobe/helix-pages/commit/bfc6b4ced6aa5e44fffae75b810f66e34daad5c4))
+
 ## [1.5.7](https://github.com/adobe/helix-pages/compare/v1.5.6...v1.5.7) (2020-03-17)
 
 
