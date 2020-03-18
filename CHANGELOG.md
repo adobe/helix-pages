@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/adobe/helix-pages/compare/v1.6.2...v1.7.0) (2020-03-18)
+
+
+### Features
+
+* **epsagon:** instrument with Epsagon ([#196](https://github.com/adobe/helix-pages/issues/196)) ([64ed95a](https://github.com/adobe/helix-pages/commit/64ed95ac8ceed28e86663eca8ce52e2a732f3445))
+
 ## [1.6.2](https://github.com/adobe/helix-pages/compare/v1.6.1...v1.6.2) (2020-03-17)
 
 
