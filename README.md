@@ -44,12 +44,11 @@ Create a domain mount point on GitHub
  * Create a new repository
    * Give it a short name (for the domain)
    * Make it Public
- * Inside repository, create a new file “fstab.json” with content:
+ * Inside repository, create a new [fstab](https://github.com/adobe/helix-shared/blob/master/docs/fstab.md) file “fstab.yaml” with content:
 ```
-{ "mountpoints": [ {
-      "root": "/",
-      "url": "https://drive.google.com/drive/folders/{id}"
-} ] }
+mountpoints:
+  /g: https://drive.google.com/drive/folders/{id}
+
 ```
 where “url” is the Google Drive folder URL above
 
@@ -60,5 +59,5 @@ Create a file for each page of the site
 
 Type your new website URL into a browser:
 ```
-  https://{repo}-{username}.hlx.page/index.html
+  https://{repo}-{username}.hlx.page/g/index.html
 ```
