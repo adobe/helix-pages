@@ -1,3 +1,10 @@
+## [1.7.3](https://github.com/adobe/helix-pages/compare/v1.7.2...v1.7.3) (2020-03-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v6.9.0 ([c4e85ad](https://github.com/adobe/helix-pages/commit/c4e85ada5814c9a00999f8ab2b3ff2b91db1766d))
+
 ## [1.7.2](https://github.com/adobe/helix-pages/compare/v1.7.1...v1.7.2) (2020-03-19)
 
 
