@@ -259,6 +259,14 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
+      - run_smoketests:
+          name: adobe/theblog-tests
+          owner: adobe
+          repo: theblog-tests
+          branch: master
+          script: test:smoke
+          requires:
+            - init_smoketests
       - run_generic_smoketests:
           name: adobe/ferrumjsorg
           owner: adobe
