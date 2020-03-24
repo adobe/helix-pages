@@ -1,3 +1,11 @@
+## [1.7.6](https://github.com/adobe/helix-pages/compare/v1.7.5...v1.7.6) (2020-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([3deb0d2](https://github.com/adobe/helix-pages/commit/3deb0d2ef309657165e57f36d3fb44c162fd2d7d))
+* **deps:** update dependency fs-extra to v9 ([#209](https://github.com/adobe/helix-pages/issues/209)) ([e4859ea](https://github.com/adobe/helix-pages/commit/e4859eaf693488a3224d41eeaffd83f104aa4cda))
+
 ## [1.7.5](https://github.com/adobe/helix-pages/compare/v1.7.4...v1.7.5) (2020-03-23)
 
 
