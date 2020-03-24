@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/adobe/helix-pages/compare/v1.7.6...v1.8.0) (2020-03-24)
+
+
+### Features
+
+* **tests:** add theblog smoke tests ([#205](https://github.com/adobe/helix-pages/issues/205)) ([13a90e0](https://github.com/adobe/helix-pages/commit/13a90e0764e9ca26c1d99caa7c8d86e35b0aa3aa))
+
 ## [1.7.6](https://github.com/adobe/helix-pages/compare/v1.7.5...v1.7.6) (2020-03-24)
 
 
