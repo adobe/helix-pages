@@ -1,3 +1,10 @@
+## [1.7.5](https://github.com/adobe/helix-pages/compare/v1.7.4...v1.7.5) (2020-03-23)
+
+
+### Bug Fixes
+
+* **buid:** trigger release ([b33ac76](https://github.com/adobe/helix-pages/commit/b33ac769a27c08104ded463a8327351d6a6b1543))
+
 ## [1.7.4](https://github.com/adobe/helix-pages/compare/v1.7.3...v1.7.4) (2020-03-19)
 
 

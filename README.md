@@ -22,6 +22,31 @@ The project requires some extensions of the default VCL provided by Helix. The p
 
 The patched version of the 3 subroutines adds the parsing of the host url to extract the content owner / repo that would override the one stored in the Fastly dictionary.
 
+## Incident management: revert to a previous working version
+
+In case of incident, you may want to revert the production environment to a earlier version.
+
+Requirements: you need to clone the current project and add a `.env` file which contains:
+
+```
+HLX_FASTLY_AUTH=<your auth token>
+HLX_FASTLY_NAMESPACE=<the helix-pages fastly service id>
+```
+
+Checkout a previous working tag: 
+
+```bash
+git checkout <tag>
+```
+
+and then run the publish command:
+
+```bash
+ hlx publish --custom-vcl='vcl/extensions.vcl'
+```
+
+After a few seconds, you can test a project like [https://theblog--adobe.hlx.page/](https://theblog--adobe.hlx.page/). Note that the browser cache needs to be clean, otherwise you may have false positives.
+
 ## How to use with Google Drive
 
 Go to your Google Drive account
@@ -44,12 +69,11 @@ Create a domain mount point on GitHub
  * Create a new repository
    * Give it a short name (for the domain)
    * Make it Public
- * Inside repository, create a new file “fstab.json” with content:
+ * Inside repository, create a new [fstab](https://github.com/adobe/helix-shared/blob/master/docs/fstab.md) file “fstab.yaml” with content:
 ```
-{ "mountpoints": [ {
-      "root": "/",
-      "url": "https://drive.google.com/drive/folders/{id}"
-} ] }
+mountpoints:
+  /g: https://drive.google.com/drive/folders/{id}
+
 ```
 where “url” is the Google Drive folder URL above
 
@@ -60,5 +84,5 @@ Create a file for each page of the site
 
 Type your new website URL into a browser:
 ```
-  https://{repo}-{username}.hlx.page/index.html
+  https://{repo}-{username}.hlx.page/g/index.html
 ```
