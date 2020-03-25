@@ -278,6 +278,7 @@ workflows:
             - adobe/helix-pages#master
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
+            - adobe/theblog-tests
       - publish:
           requires:
             - finalize_smoketests
