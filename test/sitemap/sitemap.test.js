@@ -69,7 +69,7 @@ describe('Sitemap Tests', () => {
   describe('Missing index', () => {
     before(() => {
       nock('https://raw.githubusercontent.com')
-        .get('/me/repo/master/helix-index.yaml')
+        .get('/me/repo/master/helix-query.yaml')
         .reply(404, 'Not found');
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
@@ -84,8 +84,8 @@ describe('Sitemap Tests', () => {
   describe('Index available, no fstab', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')
-        .get('/me/repo/master/helix-index.yaml')
-        .replyWithFile(200, resolve(__dirname, 'helix-index.yaml'));
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'helix-query.yaml'));
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .reply(404, 'Not found');
@@ -103,8 +103,8 @@ describe('Sitemap Tests', () => {
   describe('Index and fstab available', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')
-        .get('/me/repo/master/helix-index.yaml')
-        .replyWithFile(200, resolve(__dirname, 'helix-index.yaml'));
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'helix-query.yaml'));
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .replyWithFile(200, resolve(__dirname, 'fstab.yaml'));
