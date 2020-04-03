@@ -1,3 +1,10 @@
+## [1.8.11](https://github.com/adobe/helix-pages/compare/v1.8.10...v1.8.11) (2020-04-03)
+
+
+### Bug Fixes
+
+* **readme:** remove trailing spaces ([bf94256](https://github.com/adobe/helix-pages/commit/bf94256966af8e5c543f8cf2f6e9e1ab5dc522f9))
+
 ## [1.8.10](https://github.com/adobe/helix-pages/compare/v1.8.9...v1.8.10) (2020-04-03)
 
 
