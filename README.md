@@ -33,7 +33,7 @@ HLX_FASTLY_AUTH=<your auth token>
 HLX_FASTLY_NAMESPACE=<the helix-pages fastly service id>
 ```
 
-Checkout a previous working tag: 
+Checkout a previous working tag:
 
 ```bash
 git checkout <tag>
@@ -78,7 +78,7 @@ mountpoints:
 where “url” is the Google Drive folder URL above
 
 Create a file for each page of the site
- * Use drag & drop or the button “+ New” > Google Docs 
+ * Use drag & drop or the button “+ New” > Google Docs
  * Change the filename to index (no extension) or a page name (no extension)
  * Be sure to add an image (bug) and make a Heading 1 style title
 
