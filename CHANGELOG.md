@@ -1,3 +1,10 @@
+## [1.8.10](https://github.com/adobe/helix-pages/compare/v1.8.9...v1.8.10) (2020-04-03)
+
+
+### Bug Fixes
+
+* **sitemap:** use helix-query.yaml ([#224](https://github.com/adobe/helix-pages/issues/224)) ([e4fe013](https://github.com/adobe/helix-pages/commit/e4fe013962b16c33db6ccbfc739b91b63fb5ece6))
+
 ## [1.8.9](https://github.com/adobe/helix-pages/compare/v1.8.8...v1.8.9) (2020-04-03)
 
 
