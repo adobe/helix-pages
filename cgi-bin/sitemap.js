@@ -88,13 +88,13 @@ async function run(params) {
     forceHttp1: ALGOLIA_APP_ID === 'foo', // use http1 for tests
   });
 
-  const [indexYAML, fstabYAML] = await Promise.all([
-    downloader.fetchGithub({ ...coords, path: '/helix-index.yaml' }),
+  const [queryYAML, fstabYAML] = await Promise.all([
+    downloader.fetchGithub({ ...coords, path: '/helix-query.yaml' }),
     downloader.fetchGithub({ ...coords, path: '/fstab.yaml' }),
   ]);
 
-  if (indexYAML.status !== 200) {
-    log.error(`unable to fetch helix-index.yaml: ${indexYAML.status}`);
+  if (queryYAML.status !== 200) {
+    log.error(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
     return {
       statusCode: 500,
       body: 'No index definition found.',
@@ -104,7 +104,7 @@ async function run(params) {
     };
   }
   const config = (await new IndexConfig()
-    .withSource(indexYAML.body)
+    .withSource(queryYAML.body)
     .init()).toJSON();
 
   const roots = new Set();
