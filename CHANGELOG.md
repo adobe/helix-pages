@@ -1,3 +1,10 @@
+## [1.8.16](https://github.com/adobe/helix-pages/compare/v1.8.15...v1.8.16) (2020-04-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency jquery to v3.5.0 ([#229](https://github.com/adobe/helix-pages/issues/229)) ([31edfd4](https://github.com/adobe/helix-pages/commit/31edfd4769a5ac5142389230ef00e099d7e10703))
+
 ## [1.8.15](https://github.com/adobe/helix-pages/compare/v1.8.14...v1.8.15) (2020-04-14)
 
 
