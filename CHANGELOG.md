@@ -1,3 +1,10 @@
+## [1.8.15](https://github.com/adobe/helix-pages/compare/v1.8.14...v1.8.15) (2020-04-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v6.12.5 ([#230](https://github.com/adobe/helix-pages/issues/230)) ([eadbd80](https://github.com/adobe/helix-pages/commit/eadbd80cad700996fff3d0fd534183a0bd148d70))
+
 ## [1.8.14](https://github.com/adobe/helix-pages/compare/v1.8.13...v1.8.14) (2020-04-10)
 
 
