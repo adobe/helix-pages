@@ -1,3 +1,10 @@
+## [1.8.18](https://github.com/adobe/helix-pages/compare/v1.8.17...v1.8.18) (2020-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7 ([#232](https://github.com/adobe/helix-pages/issues/232)) ([e874771](https://github.com/adobe/helix-pages/commit/e874771761e9eda8418af83589cdf401f4027058))
+
 ## [1.8.17](https://github.com/adobe/helix-pages/compare/v1.8.16...v1.8.17) (2020-04-14)
 
 
