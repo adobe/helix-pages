@@ -1,3 +1,10 @@
+## [1.8.19](https://github.com/adobe/helix-pages/compare/v1.8.18...v1.8.19) (2020-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([d682441](https://github.com/adobe/helix-pages/commit/d6824416120f033accd08a77f4bf797afe981b5d))
+
 ## [1.8.18](https://github.com/adobe/helix-pages/compare/v1.8.17...v1.8.18) (2020-04-15)
 
 
