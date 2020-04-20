@@ -55,7 +55,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add default | cat
+          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -212,7 +212,7 @@ jobs:
 
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy | cat
+          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
 
       - run:
           name: Publish to Fastly
@@ -259,6 +259,14 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
+      - run_smoketests:
+          name: adobe/theblog-tests
+          owner: adobe
+          repo: theblog-tests
+          branch: master
+          script: test:smoke
+          requires:
+            - init_smoketests
       - run_generic_smoketests:
           name: adobe/ferrumjsorg
           owner: adobe
@@ -270,6 +278,7 @@ workflows:
             - adobe/helix-pages#master
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
+            - adobe/theblog-tests
       - publish:
           requires:
             - finalize_smoketests

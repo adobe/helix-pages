@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <esi:include src="/cgi-bin/sitemap.js?page=1" />
+  <esi:include src="/cgi-bin/sitemap.js?page=2" />
+  <esi:include src="/cgi-bin/sitemap.js?page=3" />
+  <esi:include src="/cgi-bin/sitemap.js?page=4" />
+  <esi:include src="/cgi-bin/sitemap.js?page=5" />
+  <esi:include src="/cgi-bin/sitemap.js?page=6" />
+  <esi:include src="/cgi-bin/sitemap.js?page=7" />
+  <esi:include src="/cgi-bin/sitemap.js?page=8" />
+  <esi:include src="/cgi-bin/sitemap.js?page=9" />
+  <esi:include src="/cgi-bin/sitemap.js?page=10" />
+</urlset>

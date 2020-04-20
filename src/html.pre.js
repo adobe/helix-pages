@@ -10,8 +10,6 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
-const fetchExternal = require('./fetch-external.js');
-const fetchFSTab = require('./fetch-fstab.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -56,78 +54,3 @@ function pre(context) {
 }
 
 module.exports.pre = pre;
-
-module.exports.before = {
-  fetch: async (context, action) => {
-    const { logger, request, secrets } = action;
-
-    // could be separate pipeline step or done completely in the dispatcher
-    const fstab = await fetchFSTab(context, action);
-    if (!fstab) {
-      logger.info('no fstab found');
-      return;
-    }
-    const idx = request.params.path.lastIndexOf('.');
-    const resourcePath = decodeURIComponent(request.params.path.substring(0, idx));
-
-    logger.info(`resourcePath=${resourcePath}`);
-
-    // sanitize the mountpoints
-    fstab.mountpoints.forEach((m) => {
-      if (!m.root.endsWith('/')) {
-        m.root += '/';
-      }
-      if (!m.type && m.url) {
-        if (!m.id && m.url.startsWith('https://drive.google.com/')) {
-          m.type = 'google';
-          m.id = m.url.split('/').pop();
-          return;
-        }
-        if (/https:\/\/.*\.sharepoint\.com/.test(m.url) || m.url.startsWith('https://1drv.ms/')) {
-          m.type = 'onedrive';
-        }
-      }
-    });
-    const mp = fstab.mountpoints.find((m) => resourcePath.startsWith(m.root));
-    if (!mp) {
-      logger.info(`no mount point for ${resourcePath}`);
-      return;
-    }
-
-    const relPath = resourcePath.substring(mp.root.length - 1);
-    logger.info(`relPath=${relPath}`);
-    const oldRaw = secrets.REPO_RAW_ROOT;
-    const params = {
-      path: relPath,
-    };
-
-    switch (mp.type) {
-      case 'google':
-        if (!mp.id) {
-          logger.warn('google docs mountpoint needs id');
-          return;
-        }
-        secrets.REPO_RAW_ROOT = 'https://adobeioruntime.net/api/v1/web/helix/helix-services/gdocs2md@latest';
-        params.rootId = mp.id;
-        break;
-      case 'onedrive':
-        secrets.REPO_RAW_ROOT = 'https://adobeioruntime.net/api/v1/web/helix/helix-services/word2md@latest';
-        params.shareLink = mp.url;
-        params.path += '.docx';
-        break;
-      default:
-        logger.info(`mount point type '${mp.type}' not supported.`);
-        return;
-    }
-
-    // ump the timeout a bit, since the external script might take a while to render
-    const oldTimeout = secrets.HTTP_TIMEOUT;
-    secrets.HTTP_TIMEOUT = 10000;
-    try {
-      await fetchExternal(context, action, params);
-    } finally {
-      secrets.REPO_RAW_ROOT = oldRaw;
-      secrets.HTTP_TIMEOUT = oldTimeout;
-    }
-  },
-};
