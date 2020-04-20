@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/adobe/helix-pages/compare/v1.8.21...v1.9.0) (2020-04-20)
+
+
+### Features
+
+* **meta:** allow meta data to be viewed by query users ([f1bf6c0](https://github.com/adobe/helix-pages/commit/f1bf6c0a2dde2c41bb6b7ee65dd69c5a2d8a3331))
+
 ## [1.8.21](https://github.com/adobe/helix-pages/compare/v1.8.20...v1.8.21) (2020-04-19)
 
 
