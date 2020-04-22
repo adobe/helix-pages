@@ -38,7 +38,10 @@ function pagesMonitor(err, response, body) {
 
   body.results.forEach((curr) => {
     const {
-      service_config, status_code, req_url, time_end_usec,
+      service_config, status_code, req_url, time_end_usec, client_geo_city,
+      client_geo_continent_code, client_geo_country_code, client_geo_region,
+      fastly_info_state, req_http_Referer, req_http_User_Agent,
+      req_http_X_CDN_Request_ID, resp_http_Content_Type, time_start_usec,
     } = curr;
     if (status_code === '502' || status_code === '503' || status_code === '504') {
       ACTUAL_50N.push(curr);
@@ -48,7 +51,22 @@ function pagesMonitor(err, response, body) {
     console.error(
       `Request to ${req_url} failed at ${new Date(parseInt(time_end_usec, 10) / 1000).toTimeString()} with Status Code: ${status_code} service config is: ${service_config}`,
     );
-    console.log('CDN Log entry:', curr);
+    console.log('CDN Log entry:', {
+      service_config,
+      status_code,
+      req_url,
+      time_end_usec,
+      time_start_usec,
+      client_geo_city,
+      client_geo_continent_code,
+      client_geo_country_code,
+      client_geo_region,
+      fastly_info_state,
+      req_http_Referer,
+      req_http_User_Agent,
+      req_http_X_CDN_Request_ID,
+      resp_http_Content_Type,
+    });
   });
 
   const sorted = backendCheck(ACTUAL_50N);
