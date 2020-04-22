@@ -236,6 +236,12 @@ jobs:
           name: Semantic Release
           command: npm run semantic-release
 
+      - helix-post-deploy/monitoring:
+          newrelic_url: https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@latest/error500
+          newrelic_script: ./monitoring/error500.js
+          newrelic_group_policy: Delivery Repeated Failure
+          incubator: true
+
 workflows:
   version: 2
   build:
@@ -280,6 +286,7 @@ workflows:
             - adobe/ferrumjsorg
             - adobe/theblog-tests
       - publish:
+          context: Project Helix
           requires:
             - finalize_smoketests
           filters:
