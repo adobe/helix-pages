@@ -9,8 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-console */
-/* eslint-disable camelcase */
+/* eslint-disable no-console, camelcase */
 
 const assert = require('assert');
 
@@ -60,7 +59,7 @@ function pagesMonitor(err, response, body) {
   assert.deepEqual(ACTUAL_500, EXPECTED, 'Request to helix-pages site(s) failed: see Script Log for more information');
 }
 
-/* eslint-disable no-undef */
+/* global $http */
 $http.post('$$$URL$$$',
   // Post data
   {
