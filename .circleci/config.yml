@@ -8,6 +8,9 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+orbs:
+  helix-post-deploy: adobe/helix-post-deploy@1.7.0
+
 references:
   run_smoketests: &run_smoketests
     executor: node10
