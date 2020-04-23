@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable */
+/* eslint-disable no-console, camelcase */
 
 const assert = require('assert');
 
@@ -24,7 +24,8 @@ function backendCheck(alerts) {
       return 0;
     }
   })
-    .filter((alert) => (alert.time_start_usec <= (parseInt(alerts[0].time_start_usec) + TIME_THRESHOLD).toString()));
+    .filter((alert) => (alert.time_start_usec
+      <= (parseInt(alerts[0].time_start_usec, 10) + TIME_THRESHOLD).toString()));
 }
 
 function pagesMonitor(err, response, body) {
@@ -35,29 +36,38 @@ function pagesMonitor(err, response, body) {
   const ACTUAL_50N = [];
   const THRESHOLD = 3;
 
-  if (body.results != []) {
-    body.results.forEach((curr) => {
-      const {
-        service_config, status_code, req_url, time_start_usec, time_end_usec,
-      } = curr;
-      if (status_code == 502 || status_code == 503 || status_code == 504) {
-        ACTUAL_50N.push(curr);
-      } else if (status_code == 500) {
-        ACTUAL_500.push(curr);
-      }
-      console.error(
-        `Request to ${req_url} failed at ${new Date(parseInt(time_end_usec) / 1000).toTimeString()} with Status Code: ${status_code} service config is: ${service_config}`,
-      );
-      console.log('CDN Log entry:', curr);
-    });
-  }
+  body.results.forEach((curr) => {
+    const {
+      service_config, status_code, req_url, time_end_usec,
+    } = curr;
+    if (status_code === '502' || status_code === '503' || status_code === '504') {
+      ACTUAL_50N.push(curr);
+    } else if (status_code === '500') {
+      ACTUAL_500.push(curr);
+    }
+    console.error(
+      `Request to ${req_url} failed at ${new Date(parseInt(time_end_usec, 10) / 1000).toTimeString()} with Status Code: ${status_code} service config is: ${service_config}`,
+    );
+    console.log('CDN Log entry:', curr);
+  });
 
   const sorted = backendCheck(ACTUAL_50N);
 
   if (sorted.length >= THRESHOLD) {
-    assert.fail(`There were ${sorted.length} BACKEND ERRORS reported`);
+    assert.fail(`There were ${sorted.length} BACKEND ERRORS reported in 1 minute`);
   }
   assert.deepEqual(ACTUAL_500, EXPECTED, 'Request to helix-pages site(s) failed: see Script Log for more information');
 }
 
+/* global $http */
+$http.post('$$$URL$$$',
+  // Post data
+  {
+    json: {
+      fromMins: 2,
+      toMins: 0,
+    },
+  },
+  // Callback
+  pagesMonitor);
 module.exports = pagesMonitor;

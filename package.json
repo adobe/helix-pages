@@ -1,6 +1,6 @@
 {
   "name": "helix-pages",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -21,7 +21,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-pipeline": "6.13.1",
-    "@adobe/helix-shared": "7.0.1",
+    "@adobe/helix-shared": "7.1.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
     "algoliasearch": "4.1.0",

@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* eslint-disable no-undef */
+
 const assert = require('assert');
 const pagesMonitor = require('../monitoring/error500.js');
 
@@ -69,10 +71,10 @@ describe('pages monitor tests', () => {
     };
 
     try {
-        pagesMonitor([], resp, body);
-        assert.fail('pageMonitor should have failed');
+      pagesMonitor([], resp, body);
+      assert.fail('pageMonitor should have failed');
     } catch (e) {
-        assert.equal(e.message, "There were 3 BACKEND ERRORS reported");
+      assert.equal(e.message, 'There were 3 BACKEND ERRORS reported in 1 minute');
     }
   });
 
@@ -87,7 +89,7 @@ describe('pages monitor tests', () => {
           status_code: '502',
           time_end_usec: '1586775330668499',
           time_start_usec: '1586768309539558',
-        }
+        },
       ],
     };
 
@@ -105,14 +107,15 @@ describe('pages monitor tests', () => {
           status_code: '500',
           time_end_usec: '1586775330668499',
           time_start_usec: '1586768309539558',
-        }
+        },
       ],
     };
 
-    try{
-        pagesMonitor([], resp, body);
+    try {
+      pagesMonitor([], resp, body);
+      assert.fail('Monitor should have failed');
     } catch (e) {
-        assert.equal(e.message, 'Request to helix-pages site(s) failed: see Script Log for more information');
+      assert.equal(e.message, 'Request to helix-pages site(s) failed: see Script Log for more information');
     }
   });
 });
