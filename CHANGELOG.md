@@ -1,3 +1,23 @@
+# [1.10.0](https://github.com/adobe/helix-pages/compare/v1.9.0...v1.10.0) (2020-04-23)
+
+
+### Bug Fixes
+
+* **ci:** trigger a new clean release ([8a35b1e](https://github.com/adobe/helix-pages/commit/8a35b1e9a27e2548ad6bc1b2f97ad5d80e4b37bc))
+* **deps:** update dependency @adobe/helix-shared to v7.1.0 ([c74300a](https://github.com/adobe/helix-pages/commit/c74300a17618dd1d95216d395630b2fe8b1e80a4))
+* **monitoring:** missing orb ([fce62f7](https://github.com/adobe/helix-pages/commit/fce62f750296d52a3ae8401ab6c19cb93f6e1425))
+* **monitoring:** missing statuspage group ([a94b469](https://github.com/adobe/helix-pages/commit/a94b4695d02abadb2c5833fa3cd44c863bd6bd45))
+
+
+### Features
+
+* **monitoring:** configure automation ([76c2826](https://github.com/adobe/helix-pages/commit/76c2826904e445269a3a51a9ae05a7176d14f9f0))
+
+
+### Performance Improvements
+
+* **error500.js:** house monitor script for pages ([2d850eb](https://github.com/adobe/helix-pages/commit/2d850ebf404efe75d174fd68f8a656ca77d3a154))
+
 # [1.9.0](https://github.com/adobe/helix-pages/compare/v1.8.21...v1.9.0) (2020-04-20)
 
 
