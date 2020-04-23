@@ -22,6 +22,15 @@ The project requires some extensions of the default VCL provided by Helix. The p
 
 The patched version of the 3 subroutines adds the parsing of the host url to extract the content owner / repo that would override the one stored in the Fastly dictionary.
 
+## "Redeploy" the current version
+
+It is sometimes useful to re-deploy the current version. Re-running the CI publish process does not work because `hlx deploy` use the current `helix-config.yaml` and does not find "something new" to deploy.
+To trigger a fresh new build, you simply need to push an empty commit to master (you need admin privileges) - the commit message must respect the semantic release logic to trigger what is needed. Here is an example:
+
+```
+git commit --allow-empty -m "fix(ci): trigger a new clean release"
+```
+
 ## Incident management: revert to a previous working version
 
 In case of incident, you may want to revert the production environment to a earlier version.
