@@ -292,6 +292,7 @@ workflows:
       - publish:
           context: Project Helix
           requires:
+            - setup
             - finalize_smoketests
           filters:
             branches:
