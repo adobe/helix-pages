@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/adobe/helix-pages/compare/v1.10.1...v1.10.2) (2020-04-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.2.1 ([883024c](https://github.com/adobe/helix-pages/commit/883024c086f630c1964f74a448499fe95065c08f))
+
 ## [1.10.1](https://github.com/adobe/helix-pages/compare/v1.10.0...v1.10.1) (2020-04-27)
 
 
