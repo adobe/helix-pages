@@ -1,3 +1,15 @@
+## [1.10.1](https://github.com/adobe/helix-pages/compare/v1.10.0...v1.10.1) (2020-04-27)
+
+
+### Bug Fixes
+
+* **package.json:** add statuspage ([56e10bf](https://github.com/adobe/helix-pages/commit/56e10bf08efc48579838c6f252149aa701113da1))
+
+
+### Performance Improvements
+
+* **error500.js:** house monitor script for pages ([4e9f7a0](https://github.com/adobe/helix-pages/commit/4e9f7a05adc59ea63d8339cbbdd47aa81eb1f5bf))
+
 # [1.10.0](https://github.com/adobe/helix-pages/compare/v1.9.0...v1.10.0) (2020-04-23)
 
 
