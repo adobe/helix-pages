@@ -1,3 +1,10 @@
+## [1.10.3](https://github.com/adobe/helix-pages/compare/v1.10.2...v1.10.3) (2020-04-28)
+
+
+### Bug Fixes
+
+* **deps:** update external ([#251](https://github.com/adobe/helix-pages/issues/251)) ([2c0deb0](https://github.com/adobe/helix-pages/commit/2c0deb0b2c54d1b2610de63b7f738bcb05337c85))
+
 ## [1.10.2](https://github.com/adobe/helix-pages/compare/v1.10.1...v1.10.2) (2020-04-27)
 
 
