@@ -1,3 +1,11 @@
+## [1.10.5](https://github.com/adobe/helix-pages/compare/v1.10.4...v1.10.5) (2020-04-28)
+
+
+### Bug Fixes
+
+* **monitoring:** module is not defined ([0053ec1](https://github.com/adobe/helix-pages/commit/0053ec178fd0d682ee08343654928d1d5a62dacd))
+* **monitoring:** module is not defined ([bb87817](https://github.com/adobe/helix-pages/commit/bb87817ad882a6ef2c4f0307189f008d2fad9307))
+
 ## [1.10.4](https://github.com/adobe/helix-pages/compare/v1.10.3...v1.10.4) (2020-04-28)
 
 
