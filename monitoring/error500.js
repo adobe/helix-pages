@@ -70,4 +70,3 @@ $http.post('$$$URL$$$',
   },
   // Callback
   pagesMonitor);
-module.exports = pagesMonitor;
