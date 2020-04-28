@@ -70,8 +70,3 @@ $http.post('$$$URL$$$',
   },
   // Callback
   pagesMonitor);
-
-// module will be undefined in New Relic runtime
-// eslint-disable-next-line no-global-assign
-if (!module) module = {};
-module.exports = pagesMonitor;
