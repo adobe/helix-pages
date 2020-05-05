@@ -56,11 +56,14 @@ function pre(context) {
 
   // extract metadata
   const { meta } = content;
-  // description: text from first paragraphs with more than 30 characters, limited to 171
+  // description: text from paragraphs with more than 30 characters and not starting with a link
   const desc = $sections
     .filter('.default')
     .find('p')
-    .filter(() => $(this).text().length > 30)
+    .filter(function minLength() {
+      const txt = $(this).text();
+      return txt.length > 30 && !txt.startsWith('http');
+    })
     .text()
     .trim();
   // truncate to 171 characters
