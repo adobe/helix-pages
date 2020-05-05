@@ -48,7 +48,10 @@ jobs:
       - run: mkdir junit
       - run:
           name: Unit tests
-          command: npm run test --reporter mocha-junit-reporter
+          command: npx mocha --exit --reporter mocha-junit-reporter test/unit/*.test.js
+          environment:
+              MOCHA_FILE: junit/test-results.xml
+          when: always    
       - store_test_results:
           path: junit
       - store_artifacts:
