@@ -21,7 +21,7 @@ const proxyquire = require('proxyquire');
 const { resolve } = require('path');
 
 const action = require('../../cgi-bin/sitemap.js');
-const AlgoliaIndex = require('./AlgoliaIndex');
+const AlgoliaIndex = require('./sitemap/AlgoliaIndex');
 
 /**
  * Proxy our real OW action and its requirements.
@@ -85,7 +85,7 @@ describe('Sitemap Tests', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/helix-query.yaml')
-        .replyWithFile(200, resolve(__dirname, 'helix-query.yaml'));
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'helix-query.yaml'));
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .reply(404, 'Not found');
@@ -95,7 +95,7 @@ describe('Sitemap Tests', () => {
       const response = await proxyaction().main(createParams());
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, await fse.readFile(
-        resolve(__dirname, 'sitemap-no-fstab.txt'), 'utf-8',
+        resolve(__dirname, 'sitemap', 'sitemap-no-fstab.txt'), 'utf-8',
       ));
     });
   });
@@ -104,17 +104,17 @@ describe('Sitemap Tests', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/helix-query.yaml')
-        .replyWithFile(200, resolve(__dirname, 'helix-query.yaml'));
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'helix-query.yaml'));
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
-        .replyWithFile(200, resolve(__dirname, 'fstab.yaml'));
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
     });
 
     it('Sitemap returns URLs without prefixes', async () => {
       const response = await proxyaction().main(createParams());
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, await fse.readFile(
-        resolve(__dirname, 'sitemap-fstab.txt'), 'utf-8',
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
     });
   });
