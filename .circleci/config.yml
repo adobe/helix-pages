@@ -269,10 +269,10 @@ workflows:
           requires:
             - build
       - run_smoketests:
-          name: adobe/helix-pages#master
+          name: adobe/helix-pages
           owner: adobe
           repo: helix-pages
-          branch: master
+          branch: $CIRCLE_BRANCH
           requires:
             - init_smoketests
       - run_smoketests:
@@ -299,7 +299,7 @@ workflows:
             - init_smoketests
       - finalize_smoketests:
           requires:
-            - adobe/helix-pages#master
+            - adobe/helix-pages
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests

@@ -35,7 +35,7 @@ const argv = require('yargs') // eslint-disable-line
   })
   .demandOption(['domain']).argv;
 
-describe('Helix Pages homepage smoke tests - subdomain extraction and some page content', () => {
+describe('homepage smoke tests - subdomain extraction and some page content', () => {
   function testHomePageContent(content) {
     const $ = jquery(new JSDOM(content).window);
 
@@ -74,5 +74,45 @@ describe('Helix Pages homepage smoke tests - subdomain extraction and some page 
 
   it(`master--helix-pages--adobe.${argv.domain} test`, async () => {
     await testHomePage(`https://master--helix-pages--adobe.${argv.domain}`);
+  });
+
+  describe('selectors tests', () => {
+    async function get$Page(host, path) {
+      const res = await chai.request(host)
+        .get(path)
+        .set('X-Debug', argv.serviceid || false);
+
+      expect(res).to.have.status(200);
+      return jquery(new JSDOM(res.text).window);
+    }
+
+    it(`www.${argv.domain}/index.plain.html test`, async () => {
+      const $ = await get$Page(`https://www.${argv.domain}`, '/index.plain.html');
+
+      // should contain no header, main, footer
+      expect($('header').length).to.be.equal(0);
+      expect($('main').length).to.be.equal(0);
+      expect($('footer').length).to.be.equal(0);
+
+      $('div').each((i, div) => {
+        // in plain mode, root divs do not get decorated
+        expect(div.classList.length).to.be.equal(0);
+      });
+    });
+
+    it(`www.${argv.domain}/index.embed.html test`, async () => {
+      const $ = await get$Page(`https://www.${argv.domain}`, '/index.embed.html');
+
+      // should contain no header, main, footer
+      expect($('header').length).to.be.equal(0);
+      expect($('main').length).to.be.equal(0);
+      expect($('footer').length).to.be.equal(0);
+
+      $('div').each((i, div) => {
+        // in plain mode, root divs are decorated
+        // eslint-disable-next-line no-unused-expressions
+        expect(div.classList.contains('default')).to.be.true;
+      });
+    });
   });
 });
