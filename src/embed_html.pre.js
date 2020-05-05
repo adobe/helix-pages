@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const preHTML = require('./html.pre');
+const preHTML = require('./html.pre').pre;
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -17,7 +17,7 @@ const preHTML = require('./html.pre');
  * @param context.content The content
  */
 function pre(context) {
-  context = preHTML(context);
+  preHTML(context);
 }
 
 module.exports.pre = pre;
