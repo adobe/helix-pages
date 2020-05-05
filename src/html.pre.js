@@ -17,7 +17,9 @@ const jquery = require('jquery');
  * @param context.content The content
  */
 function pre(context) {
-  const { document } = context.content;
+  const { request } = context;
+  const { content } = context;
+  const { document } = content;
   const $ = jquery(document.defaultView);
 
   const $sections = $(document.body).children('div');
@@ -48,9 +50,26 @@ function pre(context) {
   }
 
   // ensure content.data is present
-  if (!context.content.data) {
-    context.content.data = {};
+  if (!content.data) {
+    content.data = {};
   }
+
+  // extract metadata
+  const { meta } = content;
+  // description: text from first paragraphs with more than 30 characters, limited to 171
+  const desc = $sections
+    .filter('.default')
+    .find('p')
+    .filter(() => $(this).text().length > 30)
+    .text()
+    .trim();
+  // truncate to 171 characters
+  meta.description = desc.length > 171 ? `${desc.substring(0, desc.lastIndexOf(' ', 171))} ...` : desc;
+  // url: use outer CDN URL if possible
+  meta.url = request.headers['x-cdn-url']
+    ? request.headers['x-cdn-url']
+    : `https://${request.headers.host}${request.url}`;
+  meta.imageUrl = content.image;
 }
 
 module.exports.pre = pre;
