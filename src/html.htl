@@ -4,7 +4,7 @@
   <title>${content.title}</title>
   <meta data-sly-test.hash=${content.data.sourceHash} name="x-source-hash" content="${hash}"/>
   <link data-sly-test="${content.meta.url}" rel="canonical" href="${content.meta.url}"/>
-  <meta data-sly-test.desc="${content.meta.description}" name="description" content="${content.meta.description}"/>
+  <meta data-sly-test="${content.meta.description}" name="description" content="${content.meta.description}"/>
   <meta data-sly-test="${content.title}" property="og:title" content="${content.title}"/>
   <meta data-sly-test="${content.meta.description}" property="og:description" content="${content.meta.description}"/>
   <meta data-sly-test="${content.meta.url}" property="og:url" content="${content.meta.url}"/>
