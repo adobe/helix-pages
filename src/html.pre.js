@@ -17,8 +17,7 @@ const jquery = require('jquery');
  * @param context.content The content
  */
 function pre(context) {
-  const { request } = context;
-  const { content } = context;
+  const { request, content } = context;
   const { document } = content;
   const $ = jquery(document.defaultView);
 
@@ -50,9 +49,7 @@ function pre(context) {
   }
 
   // ensure content.data is present
-  if (!content.data) {
-    content.data = {};
-  }
+  content.data = content.data || {};
 
   // extract metadata
   const { meta } = content;
@@ -69,9 +66,7 @@ function pre(context) {
   // truncate to 171 characters
   meta.description = desc.length > 171 ? `${desc.substring(0, desc.lastIndexOf(' ', 171))} ...` : desc;
   // url: use outer CDN URL if possible
-  meta.url = request.headers['x-cdn-url']
-    ? request.headers['x-cdn-url']
-    : `https://${request.headers.host}${request.url}`;
+  meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
   meta.imageUrl = content.image;
 }
 
