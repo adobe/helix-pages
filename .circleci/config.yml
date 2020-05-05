@@ -45,6 +45,15 @@ jobs:
       - run:
           name: Lint
           command: npm run lint
+      - run: mkdir junit
+      - run:
+          name: Unit tests
+          command: npm run test --reporter mocha-junit-reporter
+      - store_test_results:
+          path: junit
+      - store_artifacts:
+          path: junit
+
 
   init_smoketests:
     executor: node10

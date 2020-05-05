@@ -12,7 +12,7 @@
 /* eslint-disable no-undef */
 
 const assert = require('assert');
-const pagesMonitor = require('../monitoring/error500.js');
+const pagesMonitor = require('../monitoring/error500.js
 
 describe('pages monitor tests', () => {
   it('multiple backend failures under threshold reported', () => {
