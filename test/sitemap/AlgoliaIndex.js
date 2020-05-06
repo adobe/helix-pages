@@ -14,6 +14,7 @@
 
 const fse = require('fs-extra');
 const { resolve } = require('path');
+const pick = require('lodash.pick');
 
 /**
  * Algolia compatible read-only index loaded from file for testing.
@@ -30,14 +31,16 @@ class AlgoliaIndex {
     }
   }
 
-  async search(_, { hitsPerPage, page }) {
+  async search(_, { hitsPerPage, page, attributesToRetrieve }) {
     await this.init();
 
     const startIndex = page * hitsPerPage;
     if (startIndex >= this._contents.length) {
       return [];
     }
-    const hits = this._contents.slice(startIndex, startIndex + hitsPerPage);
+    const hits = this._contents
+      .slice(startIndex, startIndex + hitsPerPage)
+      .map((hit) => pick(hit, attributesToRetrieve));
     return {
       nbHits: hits.length,
       hits,

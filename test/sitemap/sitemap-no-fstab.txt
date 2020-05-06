@@ -5,5 +5,5 @@
     <loc>https://myhost.com/ms/2.html</loc>
   </url>
   <url>
-    <loc>https://myhost.com/ms/3.html</loc>
+    <loc>https://myhost.com/g/3.html</loc>
   </url>
