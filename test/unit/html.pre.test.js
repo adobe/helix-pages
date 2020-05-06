@@ -87,10 +87,9 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
-  it('Meta description is extracted only from <p> with more than 30 chars', () => {
-    const author = 'Foo Bar Baz';
-    const lt30Desc = 'Lorem ipsum dolor sit amet.';
-    const gt30Desc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+  it('Meta description is extracted only from <p> with 10 or more words', () => {
+    const lt10WordsDesc = 'Lorem ipsum dolor sit amet.';
+    const gt10WordsDesc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
     const dom = new JSDOM(`
     <html>
       <head>
@@ -98,9 +97,9 @@ describe('Testing pre.js', () => {
       </head>
       <body>
         <div><h1>Title</h1></div>
-        <div><p>By ${author}</p></div>
-        <div><p>${lt30Desc}</p></div>
-        <div><p>${gt30Desc}</p></div>
+        <div><p>By Foo Bar Baz</p></div>
+        <div><p>${lt10WordsDesc}</p></div>
+        <div><p>${gt10WordsDesc}</p></div>
       </body>
     </html>`);
     const context = {
@@ -113,11 +112,10 @@ describe('Testing pre.js', () => {
     pre(context);
 
     assert.ok(context.content.meta.description);
-    assert.equal(context.content.meta.description.indexOf(author), -1);
-    assert.equal(context.content.meta.description, gt30Desc);
+    assert.equal(context.content.meta.description, gt10WordsDesc);
   });
 
-  it('Meta description is truncated after 171 chars', () => {
+  it('Meta description is truncated after 25 words', () => {
     const desc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
     const dom = new JSDOM(`
     <html>
@@ -138,7 +136,7 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.ok(context.content.meta.description.length === 170);
+    assert.equal(context.content.meta.description.split(' ').length, 26); // 25 words + ...
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 

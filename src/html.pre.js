@@ -60,18 +60,18 @@ function pre(context) {
 
   // extract metadata
   const { meta = {} } = content;
-  // description: text from paragraphs with more than 30 characters and not starting with a link
+  // description: text from paragraphs with 10 or more words
   const desc = $sections
     .filter('.default')
     .find('p')
     .filter(function minLength() {
-      const txt = $(this).text();
-      return txt.length > 30 && !txt.startsWith('http');
+      return $(this).text().split(' ').length >= 10;
     })
     .text()
     .trim();
-  // truncate to 171 characters
-  meta.description = desc.length > 171 ? `${desc.substring(0, desc.lastIndexOf(' ', 171))} ...` : desc;
+  // truncate after 25 words
+  const words = desc.split(' ');
+  meta.description = words.length > 25 ? `${words.slice(0, 25).join(' ')} ...` : desc;
   // url: use outer CDN URL if possible
   meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
   meta.imageUrl = content.image;
