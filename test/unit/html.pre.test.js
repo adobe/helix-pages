@@ -140,6 +140,32 @@ describe('Testing pre.js', () => {
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
+  it('Meta description has spaces between texts from multiple <p>', () => {
+    const desc1 = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const desc2 = 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><p>${desc1}</p></div>
+        <div><p>${desc2}</p></div>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.ok(context.content.meta.description.indexOf(' Ut wisi') > 0);
+  });
+
   it('Meta url uses x-cdn-url if available', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
     const context = {

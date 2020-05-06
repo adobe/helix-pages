@@ -67,6 +67,10 @@ function pre(context) {
     .filter(function minLength() {
       return $(this).text().split(' ').length >= 10;
     })
+    .map(function padWithSpaces(i) {
+      if (i > 0) $(this).text(` ${$(this).text()}`);
+      return this;
+    })
     .text()
     .trim();
   // truncate after 25 words
