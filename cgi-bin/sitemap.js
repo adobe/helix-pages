@@ -24,7 +24,7 @@ const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
 function loc(host, hit, roots) {
-  let { path } = hit;
+  let path = hit['external-path'] || hit.path;
 
   const sep = path.indexOf('/');
   if (sep !== -1 && roots.has(path.substr(0, sep + 1))) {
@@ -126,7 +126,7 @@ async function run(params) {
   const result = await index.search('', {
     hitsPerPage,
     page,
-    attributesToRetrieve: ['path'],
+    attributesToRetrieve: ['path', 'external-path'],
   });
 
   const scheme = headers['x-forwarded-proto'] || 'http';

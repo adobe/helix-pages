@@ -6,6 +6,7 @@
     "path": "ms/2.html"
   },
   {
-    "path": "ms/3.html"
+    "path": "g/publish/3.html",
+    "external-path": "g/3.html"
   }
 ]

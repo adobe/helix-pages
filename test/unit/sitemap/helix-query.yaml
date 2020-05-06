@@ -41,3 +41,7 @@ indices:
         value: |
           attribute(el, 'content')
         faceted: true
+      external-path:
+        select: none
+        value: |
+          replace(path, '/publish/', '/')
