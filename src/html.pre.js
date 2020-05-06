@@ -59,7 +59,7 @@ function pre(context) {
   content.data = content.data || {};
 
   // extract metadata
-  const { meta } = content;
+  const { meta = {} } = content;
   // description: text from paragraphs with more than 30 characters and not starting with a link
   const desc = $sections
     .filter('.default')
