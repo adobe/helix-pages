@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/adobe/helix-pages/compare/v1.11.0...v1.12.0) (2020-05-06)
+
+
+### Features
+
+* **sitemap:** use external path if available ([#267](https://github.com/adobe/helix-pages/issues/267)) ([59e2faf](https://github.com/adobe/helix-pages/commit/59e2fafc5e06de55bca279fdd6daf9a86b3e89aa))
+
 # [1.11.0](https://github.com/adobe/helix-pages/compare/v1.10.6...v1.11.0) (2020-05-05)
 
 
