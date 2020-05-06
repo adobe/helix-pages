@@ -43,8 +43,15 @@ function pre(context) {
     .addClass('default');
 
   // if there are no sections wrap everything in a default div
+  // with appropriate class names from meta
   if ($sections.length === 0) {
-    $(document.body).children().wrapAll('<div class="default"></div>');
+    const div = $('<div>').addClass('default');
+    if (context.content.meta && context.content.meta.class) {
+      context.content.meta.class.split(',').forEach((c) => {
+        div.addClass(c.trim());
+      });
+    }
+    $(document.body).children().wrapAll(div);
   }
 
   // ensure content.data is present

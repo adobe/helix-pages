@@ -1,3 +1,15 @@
+# [1.11.0](https://github.com/adobe/helix-pages/compare/v1.10.6...v1.11.0) (2020-05-05)
+
+
+### Bug Fixes
+
+* **rendering:** class in top Frontmatter not respected if no section ([9de3bfb](https://github.com/adobe/helix-pages/commit/9de3bfbba62ebca3635ce5b93bf545a45191ae9b))
+
+
+### Features
+
+* **rendering:** support for internal embeds ([16a35d2](https://github.com/adobe/helix-pages/commit/16a35d285c8a875b4f2881ea5e5efeaa79ec1531))
+
 ## [1.10.6](https://github.com/adobe/helix-pages/compare/v1.10.5...v1.10.6) (2020-05-04)
 
 

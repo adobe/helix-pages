@@ -45,6 +45,18 @@ jobs:
       - run:
           name: Lint
           command: npm run lint
+      - run: mkdir junit
+      - run:
+          name: Unit tests
+          command: npx mocha --exit --reporter mocha-junit-reporter test/unit/*.test.js
+          environment:
+              MOCHA_FILE: junit/test-results.xml
+          when: always    
+      - store_test_results:
+          path: junit
+      - store_artifacts:
+          path: junit
+
 
   init_smoketests:
     executor: node10
@@ -257,10 +269,10 @@ workflows:
           requires:
             - build
       - run_smoketests:
-          name: adobe/helix-pages#master
+          name: adobe/helix-pages
           owner: adobe
           repo: helix-pages
-          branch: master
+          branch: $CIRCLE_BRANCH
           requires:
             - init_smoketests
       - run_smoketests:
@@ -287,7 +299,7 @@ workflows:
             - init_smoketests
       - finalize_smoketests:
           requires:
-            - adobe/helix-pages#master
+            - adobe/helix-pages
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
