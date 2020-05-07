@@ -17,6 +17,9 @@
   <meta data-sly-test="${content.meta.section}" property="article:section" content="${section}"/>
   <meta data-sly-test="${content.meta.published_time}" property="article:published_time" content="${content.meta.published_time}"/>
   <meta data-sly-test="${content.meta.modified_time}" property="article:modified_time" content="${content.meta.modified_time}"/>
+  <meta data-sly-test="${content.title}" name="twitter:title" content="${content.title}"/>
+  <meta data-sly-test="${content.meta.description}" name="twitter:description" content="${content.meta.description}"/>
+  <meta data-sly-test="${content.meta.imageUrl}" name="twitter:image" content="${content.meta.imageUrl}"/>
   <esi:include src="/head.html" onerror="continue"/>
 </head>
 <body>
