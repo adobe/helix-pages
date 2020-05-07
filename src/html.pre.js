@@ -64,18 +64,21 @@ function pre(context) {
   const desc = $sections
     .filter('.default')
     .find('p')
-    .filter(function minLength() {
-      return $(this).text().split(' ').length >= 10;
+    .filter(function dropShortTexts() {
+      return $(this).text().split(/\s+/g).length >= 10;
     })
     .map(function padWithSpaces(i) {
-      if (i > 0) $(this).text(` ${$(this).text()}`);
+      if (i > 0) {
+        const $p = $(this);
+        $p.text(` ${$p.text()}`);
+      }
       return this;
     })
     .text()
-    .trim();
+    .trim()
+    .split(/\s+/g); // return words
   // truncate after 25 words
-  const words = desc.split(' ');
-  meta.description = words.length > 25 ? `${words.slice(0, 25).join(' ')} ...` : desc;
+  meta.description = desc.length > 25 ? `${desc.slice(0, 25).join(' ')} ...` : desc.join(' ');
   // url: use outer CDN URL if possible
   meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
   meta.imageUrl = content.image;
