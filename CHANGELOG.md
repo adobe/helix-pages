@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/adobe/helix-pages/compare/v1.13.0...v1.13.1) (2020-05-07)
+
+
+### Bug Fixes
+
+* nothing ([40c3e52](https://github.com/adobe/helix-pages/commit/40c3e52842f8508c80548f3e10af3cd6aa063554))
+
 # [1.13.0](https://github.com/adobe/helix-pages/compare/v1.12.0...v1.13.0) (2020-05-07)
 
 
