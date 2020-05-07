@@ -1,3 +1,19 @@
+# [1.13.0](https://github.com/adobe/helix-pages/compare/v1.12.0...v1.13.0) (2020-05-07)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([2c22a1f](https://github.com/adobe/helix-pages/commit/2c22a1ff0c173a6d3d97ab3c3f019e84cfd10b28))
+* **deps:** update dependency @adobe/helix-pipeline to v7 ([#256](https://github.com/adobe/helix-pages/issues/256)) ([fe254e9](https://github.com/adobe/helix-pages/commit/fe254e9c84c36f3fa6dbafb2de49385921a438ec))
+* **metadata:** use correct variables in output ([cc06c9c](https://github.com/adobe/helix-pages/commit/cc06c9cce1c168341e27aa61bae36d94c1467d93))
+
+
+### Features
+
+* **metadata:** add open graph meta tags ([421a5c6](https://github.com/adobe/helix-pages/commit/421a5c6e6ddb8e1c875abd055dbdec0c84c38e1a))
+* **metadata:** pad description text from multiple paragraphs with spaces ([b7e948f](https://github.com/adobe/helix-pages/commit/b7e948f17d2be5cecbffc12ee196bfb517c5cdd4))
+* **metadata:** use paragraphs with 10 or more words for description, limited to 25 words ([9ccb546](https://github.com/adobe/helix-pages/commit/9ccb546b402ce1f92136c736e2be476567c7cc0d))
+
 # [1.12.0](https://github.com/adobe/helix-pages/compare/v1.11.0...v1.12.0) (2020-05-06)
 
 
