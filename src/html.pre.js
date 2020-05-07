@@ -61,24 +61,24 @@ function pre(context) {
   // extract metadata
   const { meta = {} } = content;
   // description: text from paragraphs with 10 or more words
+  let match = false;
   const desc = $sections
-    .filter('.default')
     .find('p')
-    .filter(function dropShortTexts() {
-      return $(this).text().split(/\s+/g).length >= 10;
-    })
-    .map(function padWithSpaces(i) {
-      if (i > 0) {
-        const $p = $(this);
-        $p.text(` ${$p.text()}`);
+    .map(function exractWords() {
+      if (match) {
+        // already found paragraph for description
+        return null;
       }
-      return this;
+      const words = $(this).text().trim().split(/\s+/);
+      if (words.length < 10) {
+        // skip paragraphs with less than 10 words
+        return null;
+      }
+      match = true;
+      return words;
     })
-    .text()
-    .trim()
-    .split(/\s+/g); // return words
-  // truncate after 25 words
-  meta.description = desc.length > 25 ? `${desc.slice(0, 25).join(' ')} ...` : desc.join(' ');
+    .toArray();
+  meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   // url: use outer CDN URL if possible
   meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
   meta.imageUrl = content.image;

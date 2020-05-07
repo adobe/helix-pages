@@ -87,9 +87,9 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
-  it('Meta description is extracted only from <p> with 10 or more words', () => {
-    const lt10WordsDesc = 'Lorem ipsum dolor sit amet.';
-    const gt10WordsDesc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+  it('Meta description is extracted from first <p> with 10 or more words', () => {
+    const lt10Words = 'Lorem ipsum dolor sit amet.';
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
     const dom = new JSDOM(`
     <html>
       <head>
@@ -97,9 +97,8 @@ describe('Testing pre.js', () => {
       </head>
       <body>
         <div><h1>Title</h1></div>
-        <div><p>By Foo Bar Baz</p></div>
-        <div><p>${lt10WordsDesc}</p></div>
-        <div><p>${gt10WordsDesc}</p></div>
+        <div><p>${lt10Words}</p></div>
+        <div><p>${gt10Words}</p></div>
       </body>
     </html>`);
     const context = {
@@ -112,7 +111,7 @@ describe('Testing pre.js', () => {
     pre(context);
 
     assert.ok(context.content.meta.description);
-    assert.equal(context.content.meta.description, gt10WordsDesc);
+    assert.equal(context.content.meta.description, gt10Words);
   });
 
   it('Meta description is truncated after 25 words', () => {
@@ -138,32 +137,6 @@ describe('Testing pre.js', () => {
 
     assert.equal(context.content.meta.description.split(' ').length, 26); // 25 words + ...
     assert.ok(context.content.meta.description.endsWith('...'));
-  });
-
-  it('Meta description has spaces between texts from multiple <p>', () => {
-    const desc1 = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
-    const desc2 = 'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
-    const dom = new JSDOM(`
-    <html>
-      <head>
-        <title>Foo</title>
-      </head>
-      <body>
-        <div><p>${desc1}</p></div>
-        <div><p>${desc2}</p></div>
-      </body>
-    </html>
-    `);
-    const context = {
-      content: {
-        document: dom.window.document,
-        meta: {},
-      },
-      request,
-    };
-    pre(context);
-
-    assert.ok(context.content.meta.description.indexOf(' Ut wisi') > 0);
   });
 
   it('Meta url uses x-cdn-url if available', () => {
