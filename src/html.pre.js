@@ -17,7 +17,8 @@ const jquery = require('jquery');
  * @param context.content The content
  */
 function pre(context) {
-  const { document } = context.content;
+  const { request, content } = context;
+  const { document } = content;
   const $ = jquery(document.defaultView);
 
   const $sections = $(document.body).children('div');
@@ -55,9 +56,32 @@ function pre(context) {
   }
 
   // ensure content.data is present
-  if (!context.content.data) {
-    context.content.data = {};
-  }
+  content.data = content.data || {};
+
+  // extract metadata
+  const { meta = {} } = content;
+  // description: text from paragraphs with 10 or more words
+  let match = false;
+  const desc = $sections
+    .find('p')
+    .map(function exractWords() {
+      if (match) {
+        // already found paragraph for description
+        return null;
+      }
+      const words = $(this).text().trim().split(/\s+/);
+      if (words.length < 10) {
+        // skip paragraphs with less than 10 words
+        return null;
+      }
+      match = true;
+      return words;
+    })
+    .toArray();
+  meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
+  // url: use outer CDN URL if possible
+  meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
+  meta.imageUrl = content.image;
 }
 
 module.exports.pre = pre;

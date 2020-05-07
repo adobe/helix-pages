@@ -15,6 +15,14 @@ const { JSDOM } = require('jsdom');
 
 const { pre } = require('../../src/html.pre.js');
 
+const request = {
+  headers: {
+    host: 'foo.bar',
+    'x-cdn-url': 'https://foo.bar/baz.html',
+  },
+  url: '/baz.html',
+};
+
 describe('Testing pre requirements for main function', () => {
   it('Exports pre', () => {
     assert.ok(pre);
@@ -32,6 +40,7 @@ describe('Testing pre.js', () => {
       content: {
         document: dom.window.document,
       },
+      request,
     };
     pre(context);
 
@@ -50,6 +59,7 @@ describe('Testing pre.js', () => {
           class: 'customcssclass',
         },
       },
+      request,
     };
     pre(context);
 
@@ -67,6 +77,7 @@ describe('Testing pre.js', () => {
           class: 'customcssclass, customcssclass2',
         },
       },
+      request,
     };
     pre(context);
 
@@ -74,5 +85,108 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('default'));
     assert.ok(div.classList.contains('customcssclass'));
     assert.ok(div.classList.contains('customcssclass2'));
+  });
+
+  it('Meta description is extracted from first <p> with 10 or more words', () => {
+    const lt10Words = 'Lorem ipsum dolor sit amet.';
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p>${lt10Words}</p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.ok(context.content.meta.description);
+    assert.equal(context.content.meta.description, gt10Words);
+  });
+
+  it('Meta description is truncated after 25 words', () => {
+    const desc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><p>${desc}</p></div>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.equal(context.content.meta.description.split(' ').length, 26); // 25 words + ...
+    assert.ok(context.content.meta.description.endsWith('...'));
+  });
+
+  it('Meta url uses x-cdn-url if available', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.ok(context.content.meta.url);
+    assert.equal(context.content.meta.url, request.headers['x-cdn-url']);
+  });
+
+  it('Meta url uses host header and request.url if no x-cdn-url available', () => {
+    const req = {
+      ...request,
+      headers: {
+        ...request.headers,
+        'x-cdn-url': undefined,
+      },
+    };
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: req,
+    };
+    pre(context);
+
+    assert.equal(context.content.meta.url, `https://${context.request.headers.host}${context.request.url}`);
+  });
+
+  it('Meta imageUrl uses content.image', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: 'https://foo.bar/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.equal(context.content.meta.imageUrl, context.content.image);
   });
 });
