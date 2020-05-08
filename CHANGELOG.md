@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/adobe/helix-pages/compare/v1.13.1...v1.14.0) (2020-05-08)
+
+
+### Features
+
+* **seo:** add twitter tags ([4dbf538](https://github.com/adobe/helix-pages/commit/4dbf538fb46a8e3e576ae204ed67bca8c2fd814c))
+
 ## [1.13.1](https://github.com/adobe/helix-pages/compare/v1.13.0...v1.13.1) (2020-05-07)
 
 
