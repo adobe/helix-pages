@@ -135,12 +135,13 @@ blockquote {
 pre {
     background-color: lightgrey;
     padding: 1em;
-    border-radius: 1em;
-    overflow: hidden;
+    border-radius: .25em;
+    overflow-x: auto;
+    white-space: pre;
 }
 
 code {
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 h3 code {
