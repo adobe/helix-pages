@@ -15,6 +15,6 @@ module.exports = {
   extends: '@adobe/helix',
   rules: {
     // allow reassigning param
-    "no-param-reassign": [2, { "props": false }],
-  }
+    'no-param-reassign': [2, { props: false }],
+  },
 };
