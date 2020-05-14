@@ -8,9 +8,6 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
-orbs:
-  helix-post-deploy: adobe/helix-post-deploy@1.9.0
-
 references:
   run_smoketests: &run_smoketests
     executor: node10
@@ -250,15 +247,6 @@ jobs:
       - run:
           name: Semantic Release
           command: npm run semantic-release
-
-      - helix-post-deploy/monitoring:
-          # statuspage_group: Delivery
-          newrelic_url: https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@latest/error500
-          newrelic_script: ./monitoring/error500.js
-          newrelic_locations: AWS_US_WEST_1
-          newrelic_frequency: 1
-          # newrelic_group_policy: Delivery Repeated Failure
-          incubator: true
 
 workflows:
   version: 2
