@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
+const { getOriginalHost } = require('../src/utils');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -80,7 +81,7 @@ function pre(context) {
     .toArray();
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   // url: use outer CDN URL if possible
-  meta.url = request.headers['x-cdn-url'] || `https://${request.headers.host}${request.url}`;
+  meta.url = `https://${getOriginalHost(request.headers)}${request.url}`;
   meta.imageUrl = content.image;
 }
 
