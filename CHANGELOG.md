@@ -1,3 +1,13 @@
+## [1.14.5](https://github.com/adobe/helix-pages/compare/v1.14.4...v1.14.5) (2020-05-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v7.1.2 ([b530fe2](https://github.com/adobe/helix-pages/commit/b530fe2b55f169750cd730348d3ec7a7c9be9aaf))
+* **deps:** update dependency @adobe/helix-pipeline to v7.1.3 ([17e0aee](https://github.com/adobe/helix-pages/commit/17e0aeeb8639b8dae1c9243cf9fbd0042f564750))
+* **deps:** update dependency @adobe/helix-pipeline to v7.1.4 ([22708ce](https://github.com/adobe/helix-pages/commit/22708ce79b102988cfc8b125f327b16c8e859d1a))
+* **deps:** update dependency @adobe/helix-pipeline to v7.1.5 ([#290](https://github.com/adobe/helix-pages/issues/290)) ([d95b890](https://github.com/adobe/helix-pages/commit/d95b890241d4b9e6d9765125e83e263e51dc84a2))
+
 ## [1.14.4](https://github.com/adobe/helix-pages/compare/v1.14.3...v1.14.4) (2020-05-14)
 
 
