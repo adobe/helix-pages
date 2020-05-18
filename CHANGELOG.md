@@ -1,3 +1,10 @@
+## [1.14.7](https://github.com/adobe/helix-pages/compare/v1.14.6...v1.14.7) (2020-05-18)
+
+
+### Bug Fixes
+
+* revert commit f413610 to master ([4fb00ee](https://github.com/adobe/helix-pages/commit/4fb00ee8cfef8390505ff18b2d5761416bd0a5cb))
+
 ## [1.14.6](https://github.com/adobe/helix-pages/compare/v1.14.5...v1.14.6) (2020-05-18)
 
 
