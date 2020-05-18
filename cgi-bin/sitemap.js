@@ -12,9 +12,9 @@
 const algoliasearch = require('algoliasearch');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
+
 const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
 const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
-const { getOriginalHost } = require('../src/utils');
 
 /**
  * Return the location element containing the absolute path to a hit in the index.
@@ -34,6 +34,16 @@ function loc(host, hit, roots) {
     <loc>${host}/${path}</loc>
   </url>
 `;
+}
+
+function getOriginalHost(headers) {
+  if (headers['x-hlx-pages-host']) {
+    return headers['x-hlx-pages-host'];
+  }
+  if (headers['x-forwarded-host']) {
+    return headers['x-forwarded-host'].split(',')[0].trim();
+  }
+  return headers.host;
 }
 
 async function run(params) {
