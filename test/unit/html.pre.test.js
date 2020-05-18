@@ -18,8 +18,7 @@ const { pre } = require('../../src/html.pre.js');
 const request = {
   headers: {
     host: 'foo.bar',
-    'x-hlx-pages-host': 'www.foo.bar',
-    'x-forwarded-host': 'www.baz.bar',
+    'x-cdn-url': 'https://foo.bar/baz.html',
   },
   url: '/baz.html',
 };
@@ -140,7 +139,7 @@ describe('Testing pre.js', () => {
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
-  it('Meta url uses x-hlx-pages-host if available', () => {
+  it('Meta url uses x-cdn-url if available', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
     const context = {
       content: {
@@ -152,15 +151,15 @@ describe('Testing pre.js', () => {
     pre(context);
 
     assert.ok(context.content.meta.url);
-    assert.equal(context.content.meta.url, `https://${context.request.headers['x-hlx-pages-host']}${context.request.url}`);
+    assert.equal(context.content.meta.url, request.headers['x-cdn-url']);
   });
 
-  it('Meta url uses x-forwarded-host header if no x-hlx-pages-host available', () => {
+  it('Meta url uses host header and request.url if no x-cdn-url available', () => {
     const req = {
       ...request,
       headers: {
         ...request.headers,
-        'x-hlx-pages-host': undefined,
+        'x-cdn-url': undefined,
       },
     };
     const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
@@ -173,7 +172,7 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.url, `https://${context.request.headers['x-forwarded-host']}${context.request.url}`);
+    assert.equal(context.content.meta.url, `https://${context.request.headers.host}${context.request.url}`);
   });
 
   it('Meta imageUrl uses content.image', () => {
