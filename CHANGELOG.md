@@ -1,3 +1,10 @@
+## [1.14.8](https://github.com/adobe/helix-pages/compare/v1.14.7...v1.14.8) (2020-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v7.2.0 ([a57cf17](https://github.com/adobe/helix-pages/commit/a57cf177e5b27fd2aef3b2bdac87eb89512e46d6))
+
 ## [1.14.7](https://github.com/adobe/helix-pages/compare/v1.14.6...v1.14.7) (2020-05-18)
 
 
