@@ -80,7 +80,6 @@ function pre(context) {
     })
     .toArray();
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
-  // url: use outer CDN URL if possible
   meta.url = `https://${getOriginalHost(request.headers)}${request.url}`;
   meta.imageUrl = content.image;
 }
