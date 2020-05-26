@@ -77,19 +77,35 @@ async function run(params) {
   const downloader = new Downloader({}, action, {
     forceHttp1: ALGOLIA_APP_ID === 'foo', // use http1 for tests
   });
+  let files;
 
-  const [queryYAML, fstabYAML] = await Promise.all([
-    downloader.fetchGithub({ ...coords, path: '/helix-query.yaml' }),
-    downloader.fetchGithub({ ...coords, path: '/fstab.yaml' }),
-  ]);
-
-  if (queryYAML.status !== 200) {
-    log.error(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
+  try {
+    files = await Promise.all([
+      downloader.fetchGithub({ ...coords, path: '/helix-query.yaml' }),
+      downloader.fetchGithub({ ...coords, path: '/fstab.yaml' }),
+    ]);
+  } catch (e) {
+    log.error(e.message);
     return {
       statusCode: 500,
-      body: 'No index definition found.',
+      body: e.message,
       headers: {
         'Content-Type': 'text/plain',
+      },
+    };
+  } finally {
+    downloader.destroy();
+  }
+
+  const [queryYAML, fstabYAML] = files;
+  if (queryYAML.status !== 200) {
+    const logout = (queryYAML.status === 404 ? log.info : log.error).bind(log);
+    logout(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
+    return {
+      statusCode: 200,
+      body: '',
+      headers: {
+        'Content-Type': 'application/xml',
       },
     };
   }
