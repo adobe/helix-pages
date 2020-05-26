@@ -84,12 +84,12 @@ async function run(params) {
   ]);
 
   if (queryYAML.status !== 200) {
-    log.error(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
+    log.info(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
     return {
-      statusCode: 500,
-      body: 'No index definition found.',
+      statusCode: 200,
+      body: '',
       headers: {
-        'Content-Type': 'text/plain',
+        'Content-Type': 'application/xml',
       },
     };
   }
