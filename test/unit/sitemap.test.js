@@ -82,6 +82,21 @@ describe('Sitemap Tests', () => {
     });
   });
 
+  describe('Other failure reading index', () => {
+    before(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .reply(500, 'Something went wrong');
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .reply(404, 'Not found');
+    });
+    it('failing to read index should report error', async () => {
+      const response = await proxyaction().main(createParams());
+      assert.equal(response.statusCode, 500);
+    });
+  });
+
   describe('Index available, no fstab', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')
