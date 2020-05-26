@@ -1,3 +1,11 @@
+## [1.14.9](https://github.com/adobe/helix-pages/compare/v1.14.8...v1.14.9) (2020-05-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v7.4.1 ([0071981](https://github.com/adobe/helix-pages/commit/007198197dabde7f9762823cfb71762a3c753e09))
+* **sitemap:** missing helix-query.yaml shouldn't report 500 ([#302](https://github.com/adobe/helix-pages/issues/302)) ([155d0ab](https://github.com/adobe/helix-pages/commit/155d0ab8e31d61b181a5a273f74815f2b1e36e1e))
+
 ## [1.14.8](https://github.com/adobe/helix-pages/compare/v1.14.7...v1.14.8) (2020-05-19)
 
 
