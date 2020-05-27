@@ -1,3 +1,10 @@
+## [1.14.10](https://github.com/adobe/helix-pages/compare/v1.14.9...v1.14.10) (2020-05-27)
+
+
+### Bug Fixes
+
+* **url:** use more reasonable headers to retrieve outer CDN hostname ([405a12c](https://github.com/adobe/helix-pages/commit/405a12c54c69e4f46516aaff60dbebefe3979cf9))
+
 ## [1.14.9](https://github.com/adobe/helix-pages/compare/v1.14.8...v1.14.9) (2020-05-26)
 
 
