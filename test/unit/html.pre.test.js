@@ -140,8 +140,7 @@ describe('Testing pre.js', () => {
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
-  // skipped due to workaround for https://github.com/adobe/helix-pages/issues/284
-  it.skip('Meta url uses x-hlx-pages-host if available', () => {
+  it('Meta url uses x-hlx-pages-host if available', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
     const context = {
       content: {
@@ -156,8 +155,7 @@ describe('Testing pre.js', () => {
     assert.equal(context.content.meta.url, `https://${context.request.headers['x-hlx-pages-host']}${context.request.url}`);
   });
 
-  // skipped due to workaround for https://github.com/adobe/helix-pages/issues/284
-  it.skip('Meta url uses x-forwarded-host header if no x-hlx-pages-host available', () => {
+  it('Meta url uses x-cdn-url header if no x-hlx-pages-host available', () => {
     const req = {
       ...request,
       headers: {
@@ -178,8 +176,7 @@ describe('Testing pre.js', () => {
     assert.equal(context.content.meta.url, req.headers['x-cdn-url']);
   });
 
-  // switched from absolute to relative URL as a workaround for https://github.com/adobe/helix-pages/issues/284
-  it('Meta url uses relative URL if no host header is available', () => {
+  it('Meta url uses host header if no x-cdn-url available', () => {
     const req = {
       ...request,
       headers: {
@@ -198,7 +195,7 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.url, req.url);
+    assert.equal(context.content.meta.url, `https://${req.headers.host}${req.url}`);
   });
 
   it('Meta imageUrl uses content.image', () => {
