@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const jquery = require('jquery');
-const { getOriginalHost } = require('../src/utils');
+// const { getOriginalHost } = require('../src/utils');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
