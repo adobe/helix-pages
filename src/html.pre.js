@@ -80,7 +80,9 @@ function pre(context) {
     })
     .toArray();
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
-  meta.url = `https://${getOriginalHost(request.headers)}${request.url}`;
+  // switched from absolute to relative URL as a workaround for https://github.com/adobe/helix-pages/issues/284
+  // meta.url = `https://${getOriginalHost(request.headers)}${request.url}`;
+  meta.url = request.url;
   meta.imageUrl = content.image;
 }
 
