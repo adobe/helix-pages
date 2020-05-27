@@ -1,3 +1,10 @@
+## [1.14.11](https://github.com/adobe/helix-pages/compare/v1.14.10...v1.14.11) (2020-05-27)
+
+
+### Bug Fixes
+
+* **seo:** workaround: use relative URL for canonical link ([8a11b44](https://github.com/adobe/helix-pages/commit/8a11b44bfb83bdbe2c16648d3410c9bae0350f83))
+
 ## [1.14.10](https://github.com/adobe/helix-pages/compare/v1.14.9...v1.14.10) (2020-05-27)
 
 
