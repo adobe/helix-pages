@@ -213,4 +213,19 @@ describe('Testing pre.js', () => {
 
     assert.equal(context.content.meta.imageUrl, context.content.image);
   });
+
+  it('Meta imageUrl uses content.image as absolute URL', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: '/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.equal(context.content.meta.imageUrl, `https://${request.headers['x-hlx-pages-host']}${context.content.image}`);
+  });
 });
