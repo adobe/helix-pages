@@ -1,3 +1,12 @@
+## [1.14.15](https://github.com/adobe/helix-pages/compare/v1.14.14...v1.14.15) (2020-05-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v7.6.0 ([a419bb3](https://github.com/adobe/helix-pages/commit/a419bb31c29b871c0db4458529a406a6e127d6ef))
+* **deps:** update dependency @adobe/helix-pipeline to v7.7.0 ([01604f2](https://github.com/adobe/helix-pages/commit/01604f22d76d5504c5df4c8b275c929a0481b4a8))
+* **seo:** make sure image url is absolute ([172a65d](https://github.com/adobe/helix-pages/commit/172a65dc84ff57b251427ac3cf56f5db83985d30))
+
 ## [1.14.14](https://github.com/adobe/helix-pages/compare/v1.14.13...v1.14.14) (2020-05-28)
 
 
