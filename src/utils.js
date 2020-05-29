@@ -25,6 +25,23 @@ function getOriginalHost(headers) {
   return headers.host;
 }
 
+/**
+ * Turns arelative into an absolute URL.
+ * @param {object} headers The request headers
+ * @param {string} url The relative or absolute URL
+ * @returns {string} The absolute URL or <code>null</code>
+ *                   if <code>url</code> is not a string
+ */
+function getAbsoluteUrl(headers, url) {
+  if (typeof url !== 'string') {
+    return null;
+  }
+  return url.startsWith('/')
+    ? `https://${getOriginalHost(headers)}${url}`
+    : url;
+}
+
 module.exports = {
   getOriginalHost,
+  getAbsoluteUrl,
 };
