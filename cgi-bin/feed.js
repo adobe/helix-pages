@@ -31,7 +31,10 @@ function loc(host, hit, roots) {
     path = path.substr(sep + 1);
   }
   return `  <entry>
-    <esi:include src="/${path}.entry.html"></esi:include>
+    <id>${host}/${path}</id>
+    <title>${hit.title}</title>
+    <updated>${new Date(hit.date * 1000).toISOString()}</updated>
+    <content><esi:include src="/${path.replace(/\.html$/, '.embed.html')}"></esi:include></content>
   </entry>
 `;
 }
@@ -132,7 +135,7 @@ async function run(params) {
   const result = await index.search('', {
     hitsPerPage,
     page,
-    attributesToRetrieve: ['path', 'external-path'],
+    attributesToRetrieve: ['path', 'external-path', 'title', 'author', 'date'],
   });
 
   const scheme = headers['x-forwarded-proto'] || 'http';

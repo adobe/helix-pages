@@ -1,12 +1,53 @@
 [
   {
-    "path": "ms/1.html"
+    "path": "ms/1.html",
+    "topics": [
+      "Creativity",
+      "Creative Inspirations & Trends",
+      "News"
+    ],
+    "products": [
+      ""
+    ],
+    "hero": "/hlx_6308ccba2039f18bd0a90455b2f158e297defb38.jpeg",
+    "date": 1586822400,
+    "title": "#HonorHeroes with Creativity During COVID-19",
+    "teaser": "In times like this, we are reminded of how community and creativity have the power to change the world. Everyday people are doing extraordinary things: healthcare workers,",
+    "author": "Adobe Communications Team",
+    "objectID": "0.8503652451707175"
   },
   {
-    "path": "ms/2.html"
+    "path": "ms/2.html",
+    "topics": [
+      "Adobe Leaders",
+      "Future Tech"
+    ],
+    "products": [
+      ""
+    ],
+    "hero": "/hlx_9c38f13071c4508bb4fb43aa44f761dd95e42a66.jpeg",
+    "date": 1586217600,
+    "title": "Business Resilience: Leading Through Change",
+    "teaser": "“It is not the strongest of the species that survives, nor the most intelligent that survives. It is the one that is most adaptable to change.” — Charles Darwin\n\nWe certai",
+    "author": "Aseem Chandra",
+    "objectID": "0.6708625046693157"
   },
   {
     "path": "g/publish/3.html",
-    "external-path": "g/3.html"
+    "external-path": "g/3.html",
+    "topics": [
+      "Personalization",
+      "Campaign Management",
+      "Digital Insights"
+    ],
+    "products": [
+      "Target"
+    ],
+    "hero": "/hlx_2de2208cb96a50d4f6c3d203099285c12d3c6dd4.jpeg",
+    "date": 1590537600,
+    "title": "Study: Where is Personalization Missing the Mark?",
+    "teaser": "Marketers talk about prioritizing personalization—and rightfully so. But a new study finds that many marketers are still missing the mark when it comes to delivering perso",
+    "author": "Giselle Abramovich",
+    "objectID": "0.07812316646577755"
   }
 ]
