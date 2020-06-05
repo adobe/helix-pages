@@ -1,3 +1,13 @@
+## [1.14.19](https://github.com/adobe/helix-pages/compare/v1.14.18...v1.14.19) (2020-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.4 ([c8b49f0](https://github.com/adobe/helix-pages/commit/c8b49f0bf2e2d383f6e028eb4f91b7f63c1d5075))
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.5 ([6140064](https://github.com/adobe/helix-pages/commit/614006477bfbecf5fbabfc4b190abfd191f9b6ab))
+* **deps:** update dependency @adobe/helix-shared to v7.4.0 ([e708803](https://github.com/adobe/helix-pages/commit/e70880352b75af9346101d9b88d091a634f26666))
+* **seo:** use hlx-forwarded-host header and switch canonical url back to absolute ([ee8f166](https://github.com/adobe/helix-pages/commit/ee8f166d00a7ba9631b225a66ea50f07d45c12c2))
+
 ## [1.14.18](https://github.com/adobe/helix-pages/compare/v1.14.17...v1.14.18) (2020-06-03)
 
 
