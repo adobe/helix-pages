@@ -1,3 +1,10 @@
+## [1.14.20](https://github.com/adobe/helix-pages/compare/v1.14.19...v1.14.20) (2020-06-05)
+
+
+### Bug Fixes
+
+* **seo:** split hlx-forwarded-host list and use first ([b938fb8](https://github.com/adobe/helix-pages/commit/b938fb8a1e06a09c66982c58405baaf6224f9b05))
+
 ## [1.14.19](https://github.com/adobe/helix-pages/compare/v1.14.18...v1.14.19) (2020-06-05)
 
 
