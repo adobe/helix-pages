@@ -18,8 +18,7 @@ const { pre } = require('../../src/html.pre.js');
 const request = {
   headers: {
     host: 'foo.bar',
-    'x-hlx-pages-host': 'www.foo.bar',
-    'x-cdn-url': 'https://www.baz.bar/baz.html',
+    'hlx-forwarded-host': 'www.foo.bar',
   },
   url: '/baz.html',
 };
@@ -140,8 +139,8 @@ describe('Testing pre.js', () => {
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
-  it('Meta url uses x-hlx-pages-host if available', () => {
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+  it('Meta url uses hlx-forwarded-host header if available', () => {
+    const dom = new JSDOM('<html></html>');
     const context = {
       content: {
         document: dom.window.document,
@@ -151,16 +150,15 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.ok(context.content.meta.url);
-    assert.equal(context.content.meta.url, `https://${context.request.headers['x-hlx-pages-host']}${context.request.url}`);
+    assert.equal(context.content.meta.url, `https://${request.headers['hlx-forwarded-host']}${request.url}`);
   });
 
-  it('Meta url uses x-cdn-url header if no x-hlx-pages-host available', () => {
+  it('Meta url uses host header if no hlx-forwarded-host available', () => {
     const req = {
       ...request,
       headers: {
         ...request.headers,
-        'x-hlx-pages-host': undefined,
+        'hlx-forwarded-host': undefined,
       },
     };
     const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
@@ -173,34 +171,11 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.url, req.headers['x-cdn-url']);
-  });
-
-  // switched from absolute to relative URL as a workaround for https://github.com/adobe/helix-pages/issues/284
-  it('Meta canonical url uses relative URL', () => {
-    const req = {
-      ...request,
-      headers: {
-        ...request.headers,
-        'x-cdn-url': undefined,
-        'x-hlx-pages-host': undefined,
-      },
-    };
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
-    const context = {
-      content: {
-        document: dom.window.document,
-        meta: {},
-      },
-      request: req,
-    };
-    pre(context);
-
-    assert.equal(context.content.meta.canonicalUrl, req.url);
+    assert.equal(context.content.meta.url, `https://${req.headers.host}${req.url}`);
   });
 
   it('Meta imageUrl uses content.image', () => {
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const dom = new JSDOM('<html></html');
     const context = {
       content: {
         document: dom.window.document,
@@ -215,7 +190,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta imageUrl uses content.image as absolute URL', () => {
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body></body></html');
+    const dom = new JSDOM('<html></html>');
     const context = {
       content: {
         document: dom.window.document,
@@ -226,6 +201,6 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.imageUrl, `https://${request.headers['x-hlx-pages-host']}${context.content.image}`);
+    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host']}${context.content.image}`);
   });
 });

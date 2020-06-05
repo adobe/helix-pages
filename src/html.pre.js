@@ -81,8 +81,6 @@ function pre(context) {
     .toArray();
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  // switched from absolute to relative URL for the canonical link, see https://github.com/adobe/helix-pages/issues/284
-  meta.canonicalUrl = request.url;
   meta.imageUrl = getAbsoluteUrl(request.headers, content.image);
 }
 
