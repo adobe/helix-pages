@@ -45,7 +45,7 @@ const createParams = () => ({
   ALGOLIA_API_KEY: 'bar',
   __ow_headers: {
     'x-forwarded-proto': 'https',
-    'x-cdn-url': 'https://myhost.com/sitemap.xml',
+    'hlx-forwarded-host': 'myhost.com',
   },
 });
 
