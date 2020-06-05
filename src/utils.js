@@ -17,7 +17,7 @@
  */
 function getOriginalHost(headers) {
   if (headers['hlx-forwarded-host']) {
-    return headers['hlx-forwarded-host'];
+    return headers['hlx-forwarded-host'].split(',')[0].trim();
   }
   return headers.host;
 }

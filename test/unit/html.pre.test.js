@@ -18,7 +18,7 @@ const { pre } = require('../../src/html.pre.js');
 const request = {
   headers: {
     host: 'foo.bar',
-    'hlx-forwarded-host': 'www.foo.bar',
+    'hlx-forwarded-host': 'www.foo.bar, foo-baz.hlx.page',
   },
   url: '/baz.html',
 };
@@ -150,7 +150,7 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.url, `https://${request.headers['hlx-forwarded-host']}${request.url}`);
+    assert.equal(context.content.meta.url, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url}`);
   });
 
   it('Meta url uses host header if no hlx-forwarded-host available', () => {
@@ -201,6 +201,6 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host']}${context.content.image}`);
+    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}`);
   });
 });
