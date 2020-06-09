@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/adobe/helix-pages/compare/v2.0.0...v2.0.1) (2020-06-09)
+
+
+### Bug Fixes
+
+* **seo:** move robots.txt to htdocs ([74c46ab](https://github.com/adobe/helix-pages/commit/74c46ab70e1ad74e377f901203dc481c8f1e6e9f))
+
 # [2.0.0](https://github.com/adobe/helix-pages/compare/v1.14.21...v2.0.0) (2020-06-09)
 
 
