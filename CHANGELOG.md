@@ -1,3 +1,18 @@
+# [2.0.0](https://github.com/adobe/helix-pages/compare/v1.14.21...v2.0.0) (2020-06-09)
+
+
+### Features
+
+* **seo:** keep robots out by default ([8953df0](https://github.com/adobe/helix-pages/commit/8953df0fc7b230b054105f31b69c96efe2c3e720))
+
+
+* Merge pull request #330 from adobe/robots ([3c79c6d](https://github.com/adobe/helix-pages/commit/3c79c6d15088788d3b9df338f6db7aa2e2cb3c14)), closes [#330](https://github.com/adobe/helix-pages/issues/330)
+
+
+### BREAKING CHANGES
+
+* Add a robots.txt to your Helix Pages project to enable crawling and indexing.
+
 ## [1.14.21](https://github.com/adobe/helix-pages/compare/v1.14.20...v1.14.21) (2020-06-08)
 
 
