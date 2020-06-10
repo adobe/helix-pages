@@ -56,6 +56,10 @@ and then run the publish command:
 
 After a few seconds, you can test a project like [https://theblog--adobe.hlx.page/](https://theblog--adobe.hlx.page/). Note that the browser cache needs to be clean, otherwise you may have false positives.
 
+## Tracing
+
+All actions on Runtime and the Fasty service config are instrumented (via CircleCI env vars) with Epsagon tracing instructions in the "Helix Services" app.
+
 ## How to use with Google Drive
 
 Go to your Google Drive account
