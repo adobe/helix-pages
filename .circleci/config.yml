@@ -88,7 +88,15 @@ jobs:
               echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
           name: Publish to Fastly
-          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+          command: |
+            if [[ $CIRCLE_BRANCH == *"-publish-ci"* ]]; then
+                echo "Using CI Publish"
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci | cat
+            else
+                echo "Using regular Publish"
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+            fi
+            
 
       - run: mkdir junit
 
