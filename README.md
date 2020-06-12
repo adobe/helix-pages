@@ -29,6 +29,7 @@ The patched version of the 3 subroutines adds the parsing of the host url to ext
 3. Helix Pages test builds will use the `helix-publish@ci` version
 4. When everything works, merge the branch in `helix-publish` first, then in `helix-pages`
 
+
 ## "Redeploy" the current version
 
 It is sometimes useful to re-deploy the current version. Re-running the CI publish process does not work because `hlx deploy` use the current `helix-config.yaml` and does not find "something new" to deploy.
