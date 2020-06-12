@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/adobe/helix-pages/compare/v2.0.1...v2.0.2) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** epsagon tracing ([ea73fd9](https://github.com/adobe/helix-pages/commit/ea73fd9d963b464cf21ec2316643993daf357aa7))
+
 ## [2.0.1](https://github.com/adobe/helix-pages/compare/v2.0.0...v2.0.1) (2020-06-09)
 
 
