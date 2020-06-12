@@ -15,30 +15,8 @@ const { fetch } = require('@adobe/helix-fetch');
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { dom } = require('@adobe/helix-shared');
-const { HtmlDiffer } = require('html-differ');
-const logger = require('html-differ/lib/logger');
 
 const testDomain = process.env.TEST_DOMAIN;
-const htmlDiffer = new HtmlDiffer({
-  ignoreAttributes: [],
-  compareAttributesAsJSON: [],
-  ignoreWhitespaces: true,
-  ignoreComments: true,
-  ignoreEndTags: false,
-  ignoreDuplicateAttributes: false,
-});
-
-function isEquivalent(original, newPage, orig_url) {
-  const actual = dom.nodeIsEquivalent(original, newPage);
-  if (actual === false) {
-    const check = htmlDiffer.isEqual(original.innerHTML, newPage.innerHTML);
-    if (check === false) {
-      const diff = htmlDiffer.diffHtml(original.innerHTML, newPage.innerHTML);
-      logger.logDiffText(diff, { charsAroundDiff: 50 });
-    }
-  }
-  assert.equal(true, actual, `changes to markup detected for ${orig_url}`);
-}
 
 let bases = [];
 let changes = [];
@@ -46,8 +24,8 @@ let base_urls = [];
 
 async function getDoms() {
   const json = {
-    limit: 2,
-    threshold: 400,
+    limit: 10,
+    threshold: 100,
   };
   const method = 'post';
   const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
@@ -81,11 +59,11 @@ function documentTests() {
       const new_dom = new JSDOM(changes[idx]).window.document;
       const { req_url } = base_urls[idx];
       it(`testing body node of hlx page: ${req_url}`, () => {
-        isEquivalent(orig_dom.body, new_dom.head, req_url);
+        dom.assertEquivalentNode(orig_dom.body, new_dom.body);
       });
 
       it(`testing head node of hlx page: ${req_url}`, () => {
-        isEquivalent(orig_dom.head, new_dom.head, req_url);
+        dom.assertEquivalentNode(orig_dom.head, new_dom.head);
       });
     });
   });

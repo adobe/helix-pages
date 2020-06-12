@@ -256,7 +256,11 @@ jobs:
       - attach_workspace:
           at: /home/circleci
 
-      - run: mkdir junit
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
 
       - run:
           name: Run Helix Page Diff tests
