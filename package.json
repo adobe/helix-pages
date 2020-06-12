@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {

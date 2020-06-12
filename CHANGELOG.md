@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/adobe/helix-pages/compare/v2.0.2...v2.0.3) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** trigger new publish ([c3e5121](https://github.com/adobe/helix-pages/commit/c3e5121fc8de23378969c7fbffb0312ea4c43fe3))
+
 ## [2.0.2](https://github.com/adobe/helix-pages/compare/v2.0.1...v2.0.2) (2020-06-12)
 
 
