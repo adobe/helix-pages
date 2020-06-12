@@ -22,6 +22,13 @@ The project requires some extensions of the default VCL provided by Helix. The p
 
 The patched version of the 3 subroutines adds the parsing of the host url to extract the content owner / repo that would override the one stored in the Fastly dictionary.
 
+## Testing with a new `helix-publish` version
+
+1. create a branch in `helix-publish`
+2. create a branch in `helix-pages` where the name contains `-publish-ci`
+3. Helix Pages test builds will use the `helix-publish@ci` version
+4. When everything works, merge the branch in `helix-publish` first, then in `helix-pages`
+
 ## "Redeploy" the current version
 
 It is sometimes useful to re-deploy the current version. Re-running the CI publish process does not work because `hlx deploy` use the current `helix-config.yaml` and does not find "something new" to deploy.
