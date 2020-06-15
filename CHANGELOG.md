@@ -1,3 +1,11 @@
+## [2.0.5](https://github.com/adobe/helix-pages/compare/v2.0.4...v2.0.5) (2020-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.6.0 ([a13b72d](https://github.com/adobe/helix-pages/commit/a13b72d36ebeff8f75674d7e2809833680869fbb))
+* **deps:** update external ([46aac83](https://github.com/adobe/helix-pages/commit/46aac8372cfe534836e0f7fbc443d1866b80ee25))
+
 ## [2.0.4](https://github.com/adobe/helix-pages/compare/v2.0.3...v2.0.4) (2020-06-13)
 
 
