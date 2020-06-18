@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "2.0.1",
+  "version": "2.0.8",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -21,11 +21,11 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-pipeline": "8.0.6",
-    "@adobe/helix-shared": "7.5.0",
+    "@adobe/helix-pipeline": "10.0.3",
+    "@adobe/helix-shared": "7.6.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
-    "algoliasearch": "4.2.0",
+    "algoliasearch": "4.3.0",
     "ferrum": "1.7.0",
     "jquery": "3.5.1",
     "request": "2.88.2",
@@ -33,8 +33,8 @@
     "yaml": "1.10.0"
   },
   "devDependencies": {
-    "@adobe/eslint-config-helix": "1.1.1",
-    "@adobe/helix-fetch": "^1.6.1",
+    "@adobe/helix-fetch": "1.6.2",
+    "@adobe/eslint-config-helix": "1.1.3",
     "@adobe/helix-ops": "1.11.2",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.0",
@@ -44,7 +44,7 @@
     "dotenv": "8.2.0",
     "eslint": "7.2.0",
     "eslint-plugin-header": "3.0.0",
-    "eslint-plugin-import": "2.21.1",
+    "eslint-plugin-import": "2.21.2",
     "fs-extra": "9.0.1",
     "jsdom": "16.2.2",
     "lodash.pick": "4.4.0",

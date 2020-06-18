@@ -1,3 +1,53 @@
+## [2.0.8](https://github.com/adobe/helix-pages/compare/v2.0.7...v2.0.8) (2020-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.2 ([#346](https://github.com/adobe/helix-pages/issues/346)) ([25c5917](https://github.com/adobe/helix-pages/commit/25c591729e250cd371a4ee97e6856119b845d1c0))
+
+## [2.0.7](https://github.com/adobe/helix-pages/compare/v2.0.6...v2.0.7) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.1 ([#344](https://github.com/adobe/helix-pages/issues/344)) ([2316067](https://github.com/adobe/helix-pages/commit/23160678824f879ca9fca528c23e6ae536c60cda))
+
+## [2.0.6](https://github.com/adobe/helix-pages/compare/v2.0.5...v2.0.6) (2020-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10 ([71c71f1](https://github.com/adobe/helix-pages/commit/71c71f14b0daec8d5c8d7cd3db03ce4634b6e702))
+
+## [2.0.5](https://github.com/adobe/helix-pages/compare/v2.0.4...v2.0.5) (2020-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.6.0 ([a13b72d](https://github.com/adobe/helix-pages/commit/a13b72d36ebeff8f75674d7e2809833680869fbb))
+* **deps:** update external ([46aac83](https://github.com/adobe/helix-pages/commit/46aac8372cfe534836e0f7fbc443d1866b80ee25))
+
+## [2.0.4](https://github.com/adobe/helix-pages/compare/v2.0.3...v2.0.4) (2020-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v9 ([#336](https://github.com/adobe/helix-pages/issues/336)) ([8cff87e](https://github.com/adobe/helix-pages/commit/8cff87e5a7afe2f61dd8bb06733d620d6b48436d))
+
+## [2.0.3](https://github.com/adobe/helix-pages/compare/v2.0.2...v2.0.3) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** trigger new publish ([c3e5121](https://github.com/adobe/helix-pages/commit/c3e5121fc8de23378969c7fbffb0312ea4c43fe3))
+
+## [2.0.2](https://github.com/adobe/helix-pages/compare/v2.0.1...v2.0.2) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** epsagon tracing ([ea73fd9](https://github.com/adobe/helix-pages/commit/ea73fd9d963b464cf21ec2316643993daf357aa7))
+
 ## [2.0.1](https://github.com/adobe/helix-pages/compare/v2.0.0...v2.0.1) (2020-06-09)
 
 

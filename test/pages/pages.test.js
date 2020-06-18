@@ -30,6 +30,7 @@ async function getDoms() {
   const method = 'post';
   const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
   if (!res.ok) {
+    await res.text();
     assert.fail('test setup failed to gather test urls');
   }
   base_urls = (await res.json()).results;
@@ -38,9 +39,6 @@ async function getDoms() {
     // eslint-disable-next-line camelcase
     const { req_url } = obj;
     const { pathname, hostname } = new URL(req_url);
-    const headers = {
-      host: hostname,
-    };
     const thirdLvl = req_url.split('.')[0];
     const changed = [thirdLvl, testDomain].join('.') + pathname;
 

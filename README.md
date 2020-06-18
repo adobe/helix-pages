@@ -22,6 +22,14 @@ The project requires some extensions of the default VCL provided by Helix. The p
 
 The patched version of the 3 subroutines adds the parsing of the host url to extract the content owner / repo that would override the one stored in the Fastly dictionary.
 
+## Testing with a new `helix-publish` version
+
+1. create a branch in `helix-publish`
+2. create a branch in `helix-pages` where the name contains `-publish-ci`
+3. Helix Pages test builds will use the `helix-publish@ci` version
+4. When everything works, merge the branch in `helix-publish` first, then in `helix-pages`
+
+
 ## "Redeploy" the current version
 
 It is sometimes useful to re-deploy the current version. Re-running the CI publish process does not work because `hlx deploy` use the current `helix-config.yaml` and does not find "something new" to deploy.
@@ -55,6 +63,10 @@ and then run the publish command:
 ```
 
 After a few seconds, you can test a project like [https://theblog--adobe.hlx.page/](https://theblog--adobe.hlx.page/). Note that the browser cache needs to be clean, otherwise you may have false positives.
+
+## Tracing
+
+All actions on Runtime and the Fasty service config are instrumented (via CircleCI env vars) with Epsagon tracing instructions in the "Helix Services" app.
 
 ## How to use with Google Drive
 
