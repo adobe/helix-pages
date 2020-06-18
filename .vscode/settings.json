@@ -2,6 +2,5 @@
   "debug.allowBreakpointsEverywhere": true,
   "files.associations": {
     "*.htl": "html"
-  },
-  "mochaExplorer.files": "test/unit/sitemap.test.js"
+  }
 }
