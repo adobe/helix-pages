@@ -203,4 +203,18 @@ describe('Testing pre.js', () => {
 
     assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}`);
   });
+
+  it('Meta imageUrl uses default meta image if no content.image available', () => {
+    const dom = new JSDOM('<html></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
+  });
 });

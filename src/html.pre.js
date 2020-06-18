@@ -81,7 +81,7 @@ function pre(context) {
     .toArray();
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = getAbsoluteUrl(request.headers, content.image);
+  meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
 }
 
 module.exports.pre = pre;
