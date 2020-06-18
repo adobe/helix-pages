@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/adobe/helix-pages/compare/v2.1.0...v2.2.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** default meta image ([ddd59a6](https://github.com/adobe/helix-pages/commit/ddd59a6d0561d20a453a23ae8a88c9297707e1a9))
+
 # [2.1.0](https://github.com/adobe/helix-pages/compare/v2.0.8...v2.1.0) (2020-06-18)
 
 
