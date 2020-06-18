@@ -43,8 +43,8 @@ async function getDoms() {
     const changed = [thirdLvl, testDomain].join('.') + pathname;
 
     // fetch page before change and page after change; and construct DOM
-    bases.push(fetch(req_url, { headers }).then((data) => data.text()));
-    return fetch(changed, { headers }).then((data) => data.text());
+    bases.push(fetch(req_url).then((data) => data.text()));
+    return fetch(changed).then((data) => data.text());
   });
   bases = await Promise.all(bases);
   changes = await Promise.all(changes);
