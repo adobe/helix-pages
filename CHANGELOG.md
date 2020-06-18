@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/adobe/helix-pages/compare/v2.2.0...v2.3.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** keep robots out on fastly instead ([84bfb37](https://github.com/adobe/helix-pages/commit/84bfb37f4e779940397d6d3f41a14f98e1bbcb56))
+
 # [2.2.0](https://github.com/adobe/helix-pages/compare/v2.1.0...v2.2.0) (2020-06-18)
 
 
