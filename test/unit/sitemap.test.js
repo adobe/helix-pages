@@ -53,7 +53,7 @@ describe('Sitemap Tests', () => {
   describe('Argument checking', () => {
     // Invoke our action with missing combinations of parameters
     const requiredParamNames = [
-      '__hlx_owner', '__hlx_repo', '__hlx_ref', 'ALGOLIA_API_KEY', 'ALGOLIA_APP_ID',
+      '__hlx_owner', '__hlx_repo', '__hlx_ref',
     ];
     for (let i = 0; i <= requiredParamNames.length - 1; i += 1) {
       const params = requiredParamNames.slice(0, i).reduce((acc, name) => {
@@ -105,6 +105,10 @@ describe('Sitemap Tests', () => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .reply(404, 'Not found');
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'query-index.json'));
     });
 
     it('Sitemap returns URLs with prefixes', async () => {
@@ -124,6 +128,10 @@ describe('Sitemap Tests', () => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'query-index.json'));
     });
 
     it('Sitemap returns URLs without prefixes', async () => {
