@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/adobe/helix-pages/compare/v2.3.2...v2.4.0) (2020-06-22)
+
+
+### Features
+
+* **sitemap:** Allow sitemap entries to be fed from a json endpoint ([#352](https://github.com/adobe/helix-pages/issues/352)) ([1440541](https://github.com/adobe/helix-pages/commit/1440541e8d9d51072cb00c29b27e30de16d133b8))
+
 ## [2.3.2](https://github.com/adobe/helix-pages/compare/v2.3.1...v2.3.2) (2020-06-19)
 
 
