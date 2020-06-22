@@ -11,7 +11,6 @@
  */
 const algoliasearch = require('algoliasearch');
 const pick = require('lodash.pick');
-const rp = require('request-promise-native');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
@@ -26,7 +25,7 @@ const { getOriginalHost } = require('../src/utils');
  * @returns provider instance
  */
 function createSearchProvider(index, params) {
-  const { owner, repo } = params;
+  const { owner, repo, downloader } = params;
 
   const { sitemap } = index;
   if (sitemap) {
@@ -36,12 +35,14 @@ function createSearchProvider(index, params) {
         page,
         attributesToRetrieve,
       }) => {
-        const uri = index.fetch.replace(/\{owner\}/g, owner).replace(/\{repo\}/g, repo).replace(/\{path\}/g, sitemap);
-        const qs = {
-          limit: hitsPerPage,
-          offset: page * hitsPerPage,
-        };
-        const hits = await rp.get(uri, { qs, json: true });
+        const uri = new URL(index.fetch.replace(/\{owner\}/g, owner).replace(/\{repo\}/g, repo).replace(/\{path\}/g, sitemap));
+        uri.searchParams.append('limit', hitsPerPage);
+        uri.searchParams.append('offset', page * hitsPerPage);
+        const res = await downloader.fetch({ uri: uri.toString() });
+        if (res.status !== 200) {
+          return {};
+        }
+        const hits = JSON.parse(res.body);
         return {
           hits: hits.map((hit) => pick(hit, attributesToRetrieve)),
         };
@@ -176,6 +177,7 @@ async function run(params) {
     owner,
     repo,
     ref,
+    downloader,
   });
 
   const result = await provider.search('', {
