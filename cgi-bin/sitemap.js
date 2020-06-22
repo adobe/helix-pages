@@ -10,11 +10,61 @@
  * governing permissions and limitations under the License.
  */
 const algoliasearch = require('algoliasearch');
+const pick = require('lodash.pick');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
 const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
 const { getOriginalHost } = require('../src/utils');
+
+/**
+ * Create the search provider that will return all paths for the sitemap.
+ *
+ * @param {object} index index configuration
+ * @param {object} params parameters relevant for the provider
+ * @returns provider instance
+ */
+function createSearchProvider(index, params) {
+  const { owner, repo, downloader } = params;
+
+  const { sitemap } = index;
+  if (sitemap) {
+    return {
+      search: async (query, {
+        hitsPerPage,
+        page,
+        attributesToRetrieve,
+      }) => {
+        const uri = new URL(index.fetch.replace(/\{owner\}/g, owner).replace(/\{repo\}/g, repo).replace(/\{path\}/g, sitemap));
+        uri.searchParams.append('limit', hitsPerPage);
+        uri.searchParams.append('offset', page * hitsPerPage);
+        const res = await downloader.fetch({ uri: uri.toString() });
+        if (res.status !== 200) {
+          return {};
+        }
+        const hits = JSON.parse(res.body);
+        return {
+          hits: hits.map((hit) => pick(hit, attributesToRetrieve)),
+        };
+      },
+    };
+  }
+
+  const {
+    ALGOLIA_API_KEY, ALGOLIA_APP_ID,
+  } = params;
+
+  if (!ALGOLIA_API_KEY) {
+    throw new Error('ALGOLIA_API_KEY parameter missing.');
+  }
+  if (!ALGOLIA_APP_ID) {
+    throw new Error('ALGOLIA_APP_ID parameter missing.');
+  }
+
+  const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
+  const indexname = `${owner}--${repo}--${index.name}`;
+  return algolia.initIndex(indexname);
+}
 
 /**
  * Return the location element containing the absolute path to a hit in the index.
@@ -57,12 +107,6 @@ async function run(params) {
   }
   if (!ref) {
     throw new Error('__hlx_ref parameter missing.');
-  }
-  if (!ALGOLIA_API_KEY) {
-    throw new Error('ALGOLIA_API_KEY parameter missing.');
-  }
-  if (!ALGOLIA_APP_ID) {
-    throw new Error('ALGOLIA_APP_ID parameter missing.');
   }
   const coords = { owner, repo, ref };
   const action = {
@@ -126,10 +170,17 @@ async function run(params) {
   }
 
   // TODO: when there are multiple indices, find the one appropriate for sitemap generation
-  const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
-  const indexname = `${owner}--${repo}--${Object.keys(config.indices)[0]}`;
-  const index = algolia.initIndex(indexname);
-  const result = await index.search('', {
+  const firstIndexName = Object.keys(config.indices)[0];
+  const provider = createSearchProvider(config.indices[firstIndexName], {
+    ALGOLIA_APP_ID,
+    ALGOLIA_API_KEY,
+    owner,
+    repo,
+    ref,
+    downloader,
+  });
+
+  const result = await provider.search('', {
     hitsPerPage,
     page,
     attributesToRetrieve: ['path', 'external-path'],
