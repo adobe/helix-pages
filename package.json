@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "2.0.8",
+  "version": "2.4.0",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -28,6 +28,7 @@
     "algoliasearch": "4.3.0",
     "ferrum": "1.7.0",
     "jquery": "3.5.1",
+    "lodash.pick": "4.4.0",
     "request": "2.88.2",
     "request-promise-native": "1.0.8",
     "yaml": "1.10.0"
@@ -47,7 +48,6 @@
     "eslint-plugin-import": "2.21.2",
     "fs-extra": "9.0.1",
     "jsdom": "16.2.2",
-    "lodash.pick": "4.4.0",
     "mocha": "7.2.0",
     "mocha-junit-reporter": "2.0.0",
     "mocha-parallel-tests": "2.3.0",

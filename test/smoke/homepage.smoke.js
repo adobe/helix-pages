@@ -11,7 +11,8 @@
  */
 
 /* eslint-disable no-console */
-/* eslint-disable no-undef */
+/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
 
 const { expect } = require('chai');
 const chai = require('chai');
@@ -74,6 +75,31 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
 
   it(`master--helix-pages--adobe.${argv.domain} test`, async () => {
     await testHomePage(`https://master--helix-pages--adobe.${argv.domain}`);
+  });
+
+  describe('VCL Tests', () => {
+    it('README gets delivered', async () => {
+      await chai
+        .request(`https://master--helix-pages--adobe.${argv.domain}`)
+        .get('/README.html')
+        .then((response) => {
+          expect(response).to.be.html;
+          expect(response).to.have.status(200);
+        }).catch((e) => {
+          throw e;
+        });
+    });
+
+    it('/etc/passwd does not get delivered', async () => {
+      await chai
+        .request(`https://master--helix-pages--adobe.${argv.domain}`)
+        .get('//etc/passwd')
+        .then((response) => {
+          expect(response).to.have.status(403);
+        }).catch((e) => {
+          throw e;
+        });
+    });
   });
 
   describe('selectors tests', () => {

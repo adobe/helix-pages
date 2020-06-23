@@ -1,3 +1,50 @@
+# [2.4.0](https://github.com/adobe/helix-pages/compare/v2.3.2...v2.4.0) (2020-06-22)
+
+
+### Features
+
+* **sitemap:** Allow sitemap entries to be fed from a json endpoint ([#352](https://github.com/adobe/helix-pages/issues/352)) ([1440541](https://github.com/adobe/helix-pages/commit/1440541e8d9d51072cb00c29b27e30de16d133b8))
+
+## [2.3.2](https://github.com/adobe/helix-pages/compare/v2.3.1...v2.3.2) (2020-06-19)
+
+
+### Bug Fixes
+
+* **ci:** trigger a new clean release ([cb90dd2](https://github.com/adobe/helix-pages/commit/cb90dd29e3794a0f6636b4345f7ea9f3c3d194bf))
+
+## [2.3.1](https://github.com/adobe/helix-pages/compare/v2.3.0...v2.3.1) (2020-06-19)
+
+
+### Bug Fixes
+
+* **ci:** trigger a new clean release ([3172b5a](https://github.com/adobe/helix-pages/commit/3172b5a8ba5bffcc495e1a030b4550880e8d4faa))
+
+# [2.3.0](https://github.com/adobe/helix-pages/compare/v2.2.0...v2.3.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** keep robots out on fastly instead ([84bfb37](https://github.com/adobe/helix-pages/commit/84bfb37f4e779940397d6d3f41a14f98e1bbcb56))
+
+# [2.2.0](https://github.com/adobe/helix-pages/compare/v2.1.0...v2.2.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** default meta image ([ddd59a6](https://github.com/adobe/helix-pages/commit/ddd59a6d0561d20a453a23ae8a88c9297707e1a9))
+
+# [2.1.0](https://github.com/adobe/helix-pages/compare/v2.0.8...v2.1.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.3 ([139aee2](https://github.com/adobe/helix-pages/commit/139aee24496f09f8c87da94472438bc8734c9ef1))
+
+
+### Features
+
+* **publish:** use new publish version with blocklist ([8d740a5](https://github.com/adobe/helix-pages/commit/8d740a5e01ef2082e9b95e4ee1804ec3f9637cd3))
+
 ## [2.0.8](https://github.com/adobe/helix-pages/compare/v2.0.7...v2.0.8) (2020-06-17)
 
 
