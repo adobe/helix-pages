@@ -14,7 +14,7 @@
 const { fetch } = require('@adobe/helix-fetch');
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
-const { dom } = require('@adobe/helix-shared');
+const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
 const testDomain = process.env.TEST_DOMAIN;
 
@@ -24,7 +24,7 @@ let base_urls = [];
 
 async function getDoms() {
   const json = {
-    limit: 10,
+    limit: 20,
     threshold: 100,
   };
   const method = 'post';
@@ -37,8 +37,8 @@ async function getDoms() {
   // construct array of promises from fetch
   changes = base_urls.map((obj) => {
     // eslint-disable-next-line camelcase
-    const { req_url } = obj;
-    const { pathname, hostname } = new URL(req_url);
+    const req_url = obj.req_url.replace('.project-helix.page', '.hlx.page');
+    const { pathname } = new URL(req_url);
     const thirdLvl = req_url.split('.')[0];
     const changed = [thirdLvl, testDomain].join('.') + pathname;
 
@@ -57,12 +57,14 @@ function documentTests() {
       const new_dom = new JSDOM(changes[idx]).window.document;
       const { req_url } = base_urls[idx];
       it(`testing body node of hlx page: ${req_url}`, () => {
-        dom.assertEquivalentNode(orig_dom.body, new_dom.body);
-      });
+        dumpDOM(orig_dom.body, new_dom.body);
+        assertEquivalentNode(orig_dom.body, new_dom.body);
+      }).timeout(20000);
 
-      it(`testing head node of hlx page: ${req_url}`, () => {
-        dom.assertEquivalentNode(orig_dom.head, new_dom.head);
-      });
+      it.skip(`testing head node of hlx page: ${req_url}`, () => {
+        dumpDOM(orig_dom.head, new_dom.head);
+        assertEquivalentNode(orig_dom.head, new_dom.head);
+      }).timeout(20000);
     });
   });
   run();
