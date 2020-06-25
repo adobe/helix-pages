@@ -1,3 +1,11 @@
+## [2.4.1](https://github.com/adobe/helix-pages/compare/v2.4.0...v2.4.1) (2020-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([12014f4](https://github.com/adobe/helix-pages/commit/12014f4c384b4d6b81eeb674af2353eff75b37c7))
+* **vcl:** vary XFH ([f707345](https://github.com/adobe/helix-pages/commit/f707345d278b2164fd87b56c84bcfd9bb24d08e4))
+
 # [2.4.0](https://github.com/adobe/helix-pages/compare/v2.3.2...v2.4.0) (2020-06-22)
 
 
