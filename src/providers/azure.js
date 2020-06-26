@@ -28,7 +28,7 @@ class AzureIndex {
     url.searchParams.append('api-version', '2019-05-06');
     url.searchParams.append('$top', hitsPerPage);
     url.searchParams.append('$skip', page * hitsPerPage);
-    url.searchParams.append('$select', attributesToRetrieve.join(','));
+    url.searchParams.append('$select', attributesToRetrieve.map((k) => k.replace(/-/g, '_')).join(','));
 
     const headers = {
       'api-key': this._apiKey,
@@ -40,7 +40,14 @@ class AzureIndex {
     }
     const result = JSON.parse(res.body);
     return {
-      hits: result.value,
+      hits: result.value
+        .map((hit) => Object.entries(hit)
+          .reduce((acc, [k, v]) => {
+            if (!/^@/.test(k)) {
+              acc[k.replace(/_/g, '-')] = v;
+            }
+            return acc;
+          }, {})),
     };
   }
 }
