@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const pick = require('lodash.pick');
+const pickBy = require('lodash.pickby');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
@@ -177,6 +178,7 @@ async function run(params) {
       repo,
       ref,
       downloader,
+      ...pickBy(params, (value, key) => /^[A-Z_]+$/.test(key)),
     });
   } catch (e) {
     log.error('Unable to create search provider', e);
