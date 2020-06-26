@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/adobe/helix-pages/compare/v2.4.1...v2.5.0) (2020-06-26)
+
+
+### Features
+
+* **pages.test.js:** add tests to detect changes ([#337](https://github.com/adobe/helix-pages/issues/337)) ([39c47e2](https://github.com/adobe/helix-pages/commit/39c47e2f6ce2a91427a506a7c22e3e7a0169afd3)), closes [#355](https://github.com/adobe/helix-pages/issues/355)
+
 ## [2.4.1](https://github.com/adobe/helix-pages/compare/v2.4.0...v2.4.1) (2020-06-25)
 
 
