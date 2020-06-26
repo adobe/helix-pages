@@ -9,13 +9,22 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const algoliasearch = require('algoliasearch');
 const pick = require('lodash.pick');
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
 const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
 const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
 const { getOriginalHost } = require('../src/utils');
+
+const algolia = require('../src/providers/algolia.js');
+const azure = require('../src/providers/azure.js');
+
+/**
+ * List of known index providers.
+ */
+const providers = [
+  algolia, azure,
+];
 
 /**
  * Create the search provider that will return all paths for the sitemap.
@@ -27,7 +36,7 @@ const { getOriginalHost } = require('../src/utils');
 function createSearchProvider(index, params) {
   const { owner, repo, downloader } = params;
 
-  const { sitemap } = index;
+  const { sitemap, target } = index;
   if (sitemap) {
     return {
       search: async (query, {
@@ -50,20 +59,11 @@ function createSearchProvider(index, params) {
     };
   }
 
-  const {
-    ALGOLIA_API_KEY, ALGOLIA_APP_ID,
-  } = params;
-
-  if (!ALGOLIA_API_KEY) {
-    throw new Error('ALGOLIA_API_KEY parameter missing.');
+  const candidate = providers.find((c) => c.match(target));
+  if (!candidate) {
+    throw new Error(`No search provider match for target: ${target}`);
   }
-  if (!ALGOLIA_APP_ID) {
-    throw new Error('ALGOLIA_APP_ID parameter missing.');
-  }
-
-  const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
-  const indexname = `${owner}--${repo}--${index.name}`;
-  return algolia.initIndex(indexname);
+  return candidate.create(index, params);
 }
 
 /**
@@ -93,8 +93,6 @@ async function run(params) {
     __hlx_ref: ref,
     page = 0,
     hitsPerPage = 100,
-    ALGOLIA_API_KEY,
-    ALGOLIA_APP_ID,
     __ow_headers: headers,
     __ow_logger: log,
   } = params;
@@ -119,7 +117,7 @@ async function run(params) {
   };
 
   const downloader = new Downloader({}, action, {
-    forceHttp1: ALGOLIA_APP_ID === 'foo', // use http1 for tests
+    forceHttp1: owner === 'me', // use http1 for tests
   });
   let files;
 
@@ -171,14 +169,22 @@ async function run(params) {
 
   // TODO: when there are multiple indices, find the one appropriate for sitemap generation
   const firstIndexName = Object.keys(config.indices)[0];
-  const provider = createSearchProvider(config.indices[firstIndexName], {
-    ALGOLIA_APP_ID,
-    ALGOLIA_API_KEY,
-    owner,
-    repo,
-    ref,
-    downloader,
-  });
+  let provider;
+
+  try {
+    provider = createSearchProvider(config.indices[firstIndexName], {
+      owner,
+      repo,
+      ref,
+      downloader,
+    });
+  } catch (e) {
+    log.error('Unable to create search provider', e);
+    return {
+      statusCode: 500,
+      reason: e.message,
+    };
+  }
 
   const result = await provider.search('', {
     hitsPerPage,
