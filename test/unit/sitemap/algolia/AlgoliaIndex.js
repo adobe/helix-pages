@@ -17,12 +17,12 @@ const { resolve } = require('path');
 const pick = require('lodash.pick');
 
 /**
- * Algolia compatible read-only index loaded from file for testing.
+ * Mockup algolia index that returns contents from a file.
  */
 class AlgoliaIndex {
   constructor(name) {
     this._name = name;
-    this._file = resolve(__dirname, `${name}.json`);
+    this._file = resolve(__dirname, 'index.json');
   }
 
   async init() {
@@ -45,27 +45,6 @@ class AlgoliaIndex {
       nbHits: hits.length,
       hits,
     };
-  }
-
-  async deleteObject(objectID) {
-    await this.init();
-
-    const idx = this._contents.findIndex((item) => item.objectID);
-    if (idx !== -1) {
-      this._contents.splice(idx);
-    }
-    return objectID;
-  }
-
-  async saveObjects(docs) {
-    await this.init();
-
-    this._contents.push(...docs);
-    return docs.length;
-  }
-
-  get name() {
-    return this._name;
   }
 }
 

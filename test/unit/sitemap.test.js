@@ -19,8 +19,27 @@ const assert = require('assert');
 const fse = require('fs-extra');
 const nock = require('nock');
 const { resolve } = require('path');
+const proxyquire = require('proxyquire');
 
-const action = require('../../cgi-bin/sitemap.js');
+const AlgoliaIndex = require('./sitemap/algolia/AlgoliaIndex.js');
+
+/**
+ * Algolia provider proxy.
+ */
+const algolia = proxyquire('../../src/providers/algolia.js', {
+  algoliasearch: () => ({
+    initIndex: (name) => new AlgoliaIndex(name),
+  }),
+});
+
+/**
+ * Proxy our real OW action and its requirements.
+ *
+ * @param {Function} invoke OW action to invoke
+ */
+const action = proxyquire('../../cgi-bin/sitemap.js', {
+  '../src/providers/algolia.js': algolia,
+});
 
 /**
  * Create params object for sitemap action.
@@ -123,6 +142,52 @@ describe('Sitemap Tests', () => {
 
     it('Sitemap returns URLs without prefixes', async () => {
       const response = await action.main(createParams());
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body, await fse.readFile(
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
+      ));
+    });
+  });
+
+  describe('Algolia provider test', () => {
+    beforeEach(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'algolia', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+    });
+    it('Algolia provider returns sitemap', async () => {
+      const response = await action.main(createParams({
+        ALGOLIA_API_KEY: 'foo',
+        ALGOLIA_APP_ID: 'bar',
+      }));
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body, await fse.readFile(
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
+      ));
+    });
+  });
+
+  describe('Azure provider test', () => {
+    before(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'azure', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://theblog2.search.windows.net')
+        .get('/indexes/me--repo--blog-posts/docs')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'azure', 'searchresult.json'));
+    });
+    it('Azure provider returns sitemap', async () => {
+      const response = await action.main(createParams({
+        AZURE_SEARCH_API_KEY: 'foo',
+        AZURE_SEARCH_SERVICE_NAME: 'theblog2',
+      }));
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
