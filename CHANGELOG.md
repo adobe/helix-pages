@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/adobe/helix-pages/compare/v2.5.3...v2.6.0) (2020-06-26)
+
+
+### Features
+
+* **sitemap:** add azure provider ([#360](https://github.com/adobe/helix-pages/issues/360)) ([dd37a95](https://github.com/adobe/helix-pages/commit/dd37a9509d6e737c45c2a65e42acd5d99c31242d))
+
 ## [2.5.3](https://github.com/adobe/helix-pages/compare/v2.5.2...v2.5.3) (2020-06-26)
 
 
