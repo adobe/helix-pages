@@ -1,3 +1,10 @@
+## [2.5.3](https://github.com/adobe/helix-pages/compare/v2.5.2...v2.5.3) (2020-06-26)
+
+
+### Bug Fixes
+
+* **pages.tests.js:** increases test timeout ([889be8d](https://github.com/adobe/helix-pages/commit/889be8dd83e186fb88ce3b3d10350fec4f7a58c1))
+
 ## [2.5.2](https://github.com/adobe/helix-pages/compare/v2.5.1...v2.5.2) (2020-06-26)
 
 
