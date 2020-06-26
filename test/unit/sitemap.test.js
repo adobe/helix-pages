@@ -158,6 +158,7 @@ describe('Sitemap Tests', () => {
         .query(true)
         .reply((uri) => {
           const qs = querystring.parse(uri.substring(uri.indexOf('?') + 1));
+          // eslint-disable-next-line no-console
           console.log(qs);
           const body = [];
           const limit = Number.parseInt(qs.limit, 10);

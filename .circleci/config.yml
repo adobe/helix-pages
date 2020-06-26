@@ -255,6 +255,33 @@ jobs:
       - run:
           name: Semantic Release
           command: npm run semantic-release
+  
+  run_diff_tests:
+    executor: node10
+    steps:
+      - setup
+
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run Helix Page Diff tests
+          command: npm run test:pages  -- --reporter mocha-junit-reporter
+          environment:
+              MOCHA_FILE: junit/test-results.xml
+          when: always
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
 
 workflows:
   version: 2
@@ -299,6 +326,9 @@ workflows:
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
+      - run_diff_tests:
+          requires:
+            - init_smoketests
       - publish:
           context: Project Helix
           requires:
