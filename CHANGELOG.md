@@ -1,3 +1,11 @@
+## [2.5.1](https://github.com/adobe/helix-pages/compare/v2.5.0...v2.5.1) (2020-06-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.5 ([84c35ae](https://github.com/adobe/helix-pages/commit/84c35ae22b9f93bd7820bdabf1a125ab5dbd783b))
+* **deps:** update dependency @adobe/helix-shared to v7.8.0 ([1c833d8](https://github.com/adobe/helix-pages/commit/1c833d891db95a7ebf308feead7408e64646dee0))
+
 # [2.5.0](https://github.com/adobe/helix-pages/compare/v2.4.1...v2.5.0) (2020-06-26)
 
 
