@@ -59,7 +59,7 @@ function documentTests() {
       it(`testing body node of hlx page: ${req_url}`, () => {
         dumpDOM(orig_dom.body, new_dom.body);
         assertEquivalentNode(orig_dom.body, new_dom.body);
-      }).timeout(20000);
+      }).timeout(50000);
 
       it.skip(`testing head node of hlx page: ${req_url}`, () => {
         dumpDOM(orig_dom.head, new_dom.head);
