@@ -22,7 +22,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-pipeline": "10.0.6",
-    "@adobe/helix-shared": "7.8.1",
+    "@adobe/helix-shared": "7.9.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.2.2",
     "algoliasearch": "4.3.0",
