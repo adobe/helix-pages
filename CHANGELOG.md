@@ -1,3 +1,14 @@
+## [2.6.1](https://github.com/adobe/helix-pages/compare/v2.6.0...v2.6.1) (2020-06-29)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency lodash.pickby to 4.6.0 ([2386b40](https://github.com/adobe/helix-pages/commit/2386b408744ed1886ca0d7c09b32c4a33d54eb6d))
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.6 ([6411661](https://github.com/adobe/helix-pages/commit/641166128e5c9d58ff636ce58dd5a62f8e5f55a5))
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.7 ([5689693](https://github.com/adobe/helix-pages/commit/5689693149a17c4de5ec07eb326c7360d2fba83c))
+* **deps:** update dependency @adobe/helix-shared to v7.9.0 ([a0d9d10](https://github.com/adobe/helix-pages/commit/a0d9d10738f97cf63d4ccebf174ebf5d66241dc7))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.3 ([0c56130](https://github.com/adobe/helix-pages/commit/0c561309de0b48a15ef293bf878d106156f67885))
+
 # [2.6.0](https://github.com/adobe/helix-pages/compare/v2.5.3...v2.6.0) (2020-06-26)
 
 
