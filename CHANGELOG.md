@@ -1,3 +1,12 @@
+# [2.7.0](https://github.com/adobe/helix-pages/compare/v2.6.1...v2.7.0) (2020-06-29)
+
+
+### Features
+
+* **ci:** diff test blocks publish and shares test file ([8591689](https://github.com/adobe/helix-pages/commit/859168909a3b2e44f4e5700de534b6abf491a6ff))
+* **ci:** diff test blocks publish and shares test file ([3663ef1](https://github.com/adobe/helix-pages/commit/3663ef15082914ec88db458426173216f00002de))
+* **ci:** diff test blocks publish and shares test file ([e2308ed](https://github.com/adobe/helix-pages/commit/e2308edcd04aca5decc1f62caf79c1fea1e24113))
+
 ## [2.6.1](https://github.com/adobe/helix-pages/compare/v2.6.0...v2.6.1) (2020-06-29)
 
 
