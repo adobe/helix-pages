@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-sly-attribute="${content.document.body.attributesMap}">
 <head>
   <title>${content.title}</title>
   <meta data-sly-test.hash=${content.data.sourceHash} name="x-source-hash" content="${hash}"/>
@@ -26,7 +26,7 @@
   <!--  header -->
   <header><esi:include src="/header.plain.html" onerror="continue"/></header>
   <!--  main content -->
-  <main>${content.document.body}</main>
+  <main data-sly-list="${content.document.body.children}">${item}</main>
   <!--  footer -->
   <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
 </body>
