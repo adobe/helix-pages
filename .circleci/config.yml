@@ -272,7 +272,7 @@ jobs:
 
       - run:
           name: Run Helix Page Diff tests
-          command: npm run test:pages  -- --reporter mocha-junit-reporter
+          command: npm run test:pages --reporter mocha-junit-reporter
           environment:
               MOCHA_FILE: junit/tests-results-run_diff_tests.xml
           when: always
