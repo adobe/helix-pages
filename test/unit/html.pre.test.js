@@ -217,4 +217,21 @@ describe('Testing pre.js', () => {
 
     assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
   });
+
+  it('Adds wrapper div attributes to the body tag as a custom map', () => {
+    const dom = new JSDOM('<html><body><div class="foo" bar="baz" data-qux="corge"><h1>Grault</h1><p>Garply</p></div></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    assert.deepEqual(dom.window.document.body.attributesMap, {
+      class: 'foo',
+      bar: 'baz',
+      'data-qux': 'corge',
+    });
+  });
 });

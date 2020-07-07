@@ -25,7 +25,7 @@ function pre(context) {
   // if there is only a single child, merge its properties on the body node
   // and attach its children directly to the body
   document.body.attributesMap = {};
-  if (document.body.children.length === 1) {
+  if (document.body.children.length === 1 && document.body.children[0].nodeName === 'DIV') {
     const rootElement = document.body.children[0];
     // Merge the root element properties onto the body element
     [...rootElement.attributes].forEach((attr) => {
@@ -36,7 +36,7 @@ function pre(context) {
     document.body.removeChild(rootElement);
   }
 
-  const $sections = $(document.body).children('div');
+  let $sections = $(document.body).children('div');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
   $sections
@@ -68,6 +68,7 @@ function pre(context) {
       });
     }
     $(document.body).children().wrapAll(div);
+    $sections = $(document.body).children('div');
   }
 
   // ensure content.data is present
