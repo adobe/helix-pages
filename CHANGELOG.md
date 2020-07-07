@@ -1,3 +1,10 @@
+## [2.7.3](https://github.com/adobe/helix-pages/compare/v2.7.2...v2.7.3) (2020-07-07)
+
+
+### Bug Fixes
+
+* **readme:** no-change to deploy with helix-publish@6.1.0 ([05affde](https://github.com/adobe/helix-pages/commit/05affde92deac4b2f0bf5bcc7a179a8ca35b391f))
+
 ## [2.7.2](https://github.com/adobe/helix-pages/compare/v2.7.1...v2.7.2) (2020-07-07)
 
 
