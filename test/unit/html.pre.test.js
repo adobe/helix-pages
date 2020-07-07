@@ -218,8 +218,17 @@ describe('Testing pre.js', () => {
     assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
   });
 
-  it('Adds wrapper div attributes to the body tag as a custom map', () => {
-    const dom = new JSDOM('<html><body><div class="foo" bar="baz" data-qux="corge"><h1>Grault</h1><p>Garply</p></div></body></html>');
+  it('Adds wrapper div attributes to the body tag as a custom map and re-attaches children to the body directly', () => {
+    const dom = new JSDOM(
+      `<html><body>
+        <div class="foo" bar="baz" data-qux="corge">
+          <div class="default">
+            <h1>Grault</h1>
+            <p>Garply</p>
+          </div>
+        </div>
+      </body></html>`,
+    );
     const context = {
       content: {
         document: dom.window.document,
@@ -228,6 +237,9 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
+    assert.equal(dom.window.document.querySelector('.foo'), null);
+    assert.ok(dom.window.document.querySelector('body > .default > h1'));
+    assert.ok(dom.window.document.querySelector('body > .default > p'));
     assert.deepEqual(dom.window.document.body.attributesMap, {
       class: 'foo',
       bar: 'baz',
