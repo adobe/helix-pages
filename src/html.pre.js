@@ -22,11 +22,13 @@ function pre(context) {
   const { document } = content;
   const $ = jquery(document.defaultView);
 
-  // Expose the body attributes so they can be used in the HTL
-  document.body.attributesMap = [...document.body.attributes].reduce((map, attr) => {
-    map[attr.name] = attr.value;
-    return map;
-  }, {});
+  // Expose the html & body attributes so they can be used in the HTL
+  [document.documentElement, document.body].forEach((el) => {
+    el.attributesMap = [...el.attributes].reduce((map, attr) => {
+      map[attr.name] = attr.value;
+      return map;
+    }, {});
+  });
 
   let $sections = $(document.body).children('div');
 

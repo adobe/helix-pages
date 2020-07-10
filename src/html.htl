@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-sly-attribute="${content.document.body.attributesMap}">
+<html data-sly-attribute="${content.document.documentElement.attributesMap}">
 <head>
   <title>${content.title}</title>
   <meta data-sly-test.hash=${content.data.sourceHash} name="x-source-hash" content="${hash}"/>
@@ -22,11 +22,11 @@
   <meta data-sly-test="${content.meta.imageUrl}" name="twitter:image" content="${content.meta.imageUrl}"/>
   <esi:include src="/head.html" onerror="continue"/>
 </head>
-<body>
+<body data-sly-attribute="${content.document.body.attributesMap}">
   <!--  header -->
   <header><esi:include src="/header.plain.html" onerror="continue"/></header>
   <!--  main content -->
-  <main data-sly-list="${content.document.body.children}">${item}</main>
+  <main>${content.document.body}</main>
   <!--  footer -->
   <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
 </body>
