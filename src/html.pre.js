@@ -22,19 +22,11 @@ function pre(context) {
   const { document } = content;
   const $ = jquery(document.defaultView);
 
-  // if there is only a single child, merge its properties on the body node
-  // and attach its children directly to the body
-  document.body.attributesMap = {};
-  if (document.body.children.length === 1 && document.body.children[0].nodeName === 'DIV') {
-    const rootElement = document.body.children[0];
-    // Merge the root element properties onto the body element
-    [...rootElement.attributes].forEach((attr) => {
-      document.body.attributesMap[attr.name] = attr.value;
-    });
-    // Re-attach root element children directly to the body
-    [...rootElement.children].forEach((child) => document.body.appendChild(child));
-    document.body.removeChild(rootElement);
-  }
+  // Expose the body attributes so they can be used in the HTL
+  document.body.attributesMap = [...document.body.attributes].reduce((map, attr) => {
+    map[attr.name] = attr.value;
+    return map;
+  }, {});
 
   let $sections = $(document.body).children('div');
 
