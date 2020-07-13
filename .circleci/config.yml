@@ -8,6 +8,9 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+orbs:
+  puppeteer: threetreeslight/puppeteer@0.1.2
+
 references:
   run_smoketests: &run_smoketests
     executor: node10
@@ -99,6 +102,7 @@ jobs:
 
 
       - run: mkdir junit
+      - puppeteer/install
 
       - persist_to_workspace:
           root: /home/circleci
