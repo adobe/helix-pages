@@ -101,8 +101,7 @@ jobs:
             fi
 
 
-      - run: mkdir junit
-      - puppeteer/install
+      - run: mkdir junit    
 
       - persist_to_workspace:
           root: /home/circleci
@@ -145,6 +144,9 @@ jobs:
           name: Installing << parameters.repo >>
           command: npm install
           working_directory: << parameters.repo >>
+
+      # required by some smoketests (no way to install it via npm only)
+      - puppeteer/install
 
       - run:
           name: Run the smoke tests for repo << parameters.repo >>
