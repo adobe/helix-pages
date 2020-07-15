@@ -14,37 +14,20 @@
 const { fetch } = require('@adobe/helix-fetch');
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
+const { getUrls } = require('../utils.js');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
-const testDomain = process.env.TEST_DOMAIN;
-
+let urls;
 let bases = [];
 let changes = [];
-let base_urls = [];
 
 async function getDoms() {
-  const json = {
-    limit: 20,
-    threshold: 100,
-  };
-  const method = 'post';
-  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
-  if (!res.ok) {
-    await res.text();
-    assert.fail('test setup failed to gather test urls');
-  }
-  base_urls = (await res.json()).results;
-  // construct array of promises from fetch
-  changes = base_urls.map((obj) => {
-    // eslint-disable-next-line camelcase
-    const req_url = obj.req_url.replace('.project-helix.page', '.hlx.page');
-    const { pathname } = new URL(req_url);
-    const thirdLvl = req_url.split('.')[0];
-    const changed = [thirdLvl, testDomain].join('.') + pathname;
-
+  urls = await getUrls();
+  changes = urls.map((obj) => {
+    const { base, branch } = obj;
     // fetch page before change and page after change; and construct DOM
-    bases.push(fetch(req_url).then((data) => data.text()));
-    return fetch(changed).then((data) => data.text());
+    bases.push(fetch(base).then((data) => data.text()));
+    return fetch(branch).then((data) => data.text());
   });
   bases = await Promise.all(bases);
   changes = await Promise.all(changes);
@@ -55,7 +38,7 @@ function documentTests() {
     bases.forEach((base, idx) => {
       const orig_dom = new JSDOM(base).window.document;
       const new_dom = new JSDOM(changes[idx]).window.document;
-      const { req_url } = base_urls[idx];
+      const { req_url } = urls[idx];
       it(`testing body node of hlx page: ${req_url}`, () => {
         dumpDOM(orig_dom.body, new_dom.body);
         assertEquivalentNode(orig_dom.body, new_dom.body);
