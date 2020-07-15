@@ -1,3 +1,18 @@
+## [2.7.3](https://github.com/adobe/helix-pages/compare/v2.7.2...v2.7.3) (2020-07-07)
+
+
+### Bug Fixes
+
+* **readme:** no-change to deploy with helix-publish@6.1.0 ([05affde](https://github.com/adobe/helix-pages/commit/05affde92deac4b2f0bf5bcc7a179a8ca35b391f))
+
+## [2.7.2](https://github.com/adobe/helix-pages/compare/v2.7.1...v2.7.2) (2020-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.1 ([#383](https://github.com/adobe/helix-pages/issues/383)) ([9458cc9](https://github.com/adobe/helix-pages/commit/9458cc9d3aadfa29b515f1fa7485aff858c5c328))
+* **deps:** update minor ([c70dcac](https://github.com/adobe/helix-pages/commit/c70dcac01b593f0ab74701ba6e01725520020071))
+
 ## [2.7.1](https://github.com/adobe/helix-pages/compare/v2.7.0...v2.7.1) (2020-06-30)
 
 
