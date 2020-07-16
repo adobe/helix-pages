@@ -11,11 +11,10 @@
  */
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
+const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 const { fetch } = require('@adobe/helix-fetch');
-const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { getUrls } = require('../utils.js');
-const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
 let urls;
 let bases = [];

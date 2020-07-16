@@ -13,55 +13,73 @@
 /* eslint-disable camelcase */
 const { fetch } = require('@adobe/helix-fetch');
 const assert = require('assert');
-const { number } = require('yargs');
 
 const testDomain = process.env.TEST_DOMAIN;
 
 /**
  * gets a list of urls from by sending a request to helix-run-query
- * 
+ *
  * return list of objects i.e. {base: 'blog.adobe.com', branch: 'blog.adobe.hlx.page'}
  */
-async function getUrls(){
-    const json = {
-        limit: 20,
-        threshold: 100,
-      };
-      const method = 'post';
-      const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
-      if (!res.ok) {
-        await res.text();
-        assert.fail('test setup failed to gather test urls');
-      }
-      const urls = (await res.json()).results;
+async function getUrls() {
+  const json = {
+    limit: 20,
+    threshold: 100,
+  };
+  const method = 'post';
+  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
+  if (!res.ok) {
+    await res.text();
+    assert.fail('test setup failed to gather test urls');
+  }
+  const urls = (await res.json()).results;
 
-      return urls.map((obj) => {
-        // eslint-disable-next-line camelcase
-        const base = obj.req_url.replace('.project-helix.page', '.hlx.page');
-        const { pathname } = new URL(base);
-        const thirdLvl = base.split('.')[0];
-        const branch = [thirdLvl, testDomain].join('.') + pathname;
+  return urls.map((obj) => {
+    // eslint-disable-next-line camelcase
+    const base = obj.req_url.replace('.project-helix.page', '.hlx.page');
+    const { pathname } = new URL(base);
+    const thirdLvl = base.split('.')[0];
+    const branch = [thirdLvl, testDomain].join('.') + pathname;
 
-        return {base, branch};
-      });
+    return { base, branch };
+  });
 }
 
 /**
  * random number generator
- * 
+ *
  * @param {number} max maximum positional value in range of options
  * @param {number} min minimum positional value in range of options
- * 
+ *
  * returns a random number generated between [min, max]
  */
-function getRandom(min, max){
-    if (max <= min){
-        throw new Error(`max ${max} is smaller or equal to min ${min}`);
-    }
-    return Math.round(Math.random() * (max - min) + min);
+function getRandom(min, max) {
+  if (max <= min) {
+    throw new Error(`max ${max} is smaller or equal to min ${min}`);
+  }
+  return Math.round(Math.random() * (max - min) + min);
+}
+
+/**
+ * construct object from server-timing for comparison
+ *
+ * @param {string} serverTiming rendering time string for a branch
+ *
+ * returns map between pipeline step names and rendering time
+ */
+function parseTiming(serverTiming) {
+  const baseComponents = serverTiming.split(',');
+  return baseComponents.reduce((prev, curr) => {
+    const item = curr.split(';');
+    const duration = item[1].split('=')[1];
+    const desc = item[2] ? item[2].split('=')[1].trim() : item[0].trim();
+    prev[desc] = parseFloat(duration);
+    return prev;
+  }, {});
 }
 
 module.exports = {
-    getUrls,
-    getRandom,
-}
+  getUrls,
+  getRandom,
+  parseTiming,
+};

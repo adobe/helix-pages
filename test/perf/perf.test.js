@@ -12,118 +12,97 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 const { fetch } = require('@adobe/helix-fetch');
-const { getUrls, getRandom } = require('../utils');
-const _ = require('lodash/fp');
 const assert = require('assert');
-const DEFAULT_STRAIN = 'default';
-const token = process.env.HLX_FASTLY_AUTH;
+const { getUrls, parseTiming } = require('../utils');
+
 const service = process.env.HLX_FASTLY_NAMESPACE;
 
-const devices = ['MotorolaMotoG4',
-'iPhone5',
-'iPhone6',
-'iPhone6Plus',
-'iPhone7',
-'iPhone8',
-'Nexus5X',
-'Nexus6P',
-'GalaxyS5',
-'iPad',
-'iPadPro'];
-
-const connections = ['regular2G',
-'good2G',
-'slow3G',
-'regular3G',
-'good3G',
-'emergingMarkets',
-'regular4G',
-'LTE',
-'dsl',
-'wifi',
-'cable'];
-
-const locations = ['NorthVirginia',
-'Frankfurt',
-'Sydney',
-'Ohio',
-'California',
-'Oregon',
-'Canada',
-'Ireland',
-'Tokyo',
-'Seoul',
-'Singapore',
-'Mumbai',
-'SaoPaulo',
-'London'];
-
-//tests will take urls of most visited pages
-//check performance of base site
-//check performance of branch site
-//compare the metrics returned from helix-perf. 
-//repeat this for distinct points of triples (location, device, strain) projected onto a x,y space as the strains must match in terms of conditions etc. 
-async function sendPerfRequests() {
-    const urls = await getUrls();
-    const perfUrl = 'https://adobeioruntime.net/api/v1/web/helix/helix-services/perf@v1';
-    const tests = urls.reduce((prev, curr) => {
-        const location = locations[getRandom(0, 13)], device = devices[getRandom(0, 10)], connection = connections[getRandom(0, 10)];
-        prev.push({
-        url: curr.base,
-        location,
-        device,
-        connection,
-        strain: 'page_test',
-        });
-        prev.push({
-        url: curr.branch,
-        location,
-        device,
-        connection,
-        strain: 'page_test',
-        });
-        return prev;
-    }, []); 
-    const method = 'POST';
-    const json = {
-        service,
-        token,
-        tests: _.flatten(tests)
-    };
-    const res = await fetch(perfUrl, { method, json });
-    if (!res.ok){
-        const {status, statusText} = res;
-        const text = await res.text();
-        throw new Error(`failed with error code: ${status} and message: ${statusText}`);
+/**
+ * executes tests for equality
+ *
+ * @param {*} timeObj1 object of pipeline step times and desc
+ * @param {*} timeObj2 object of pipeline step times and desc
+ */
+function testTiming(timeObj1, timeObj2) {
+  const actual = Object.keys(timeObj2).reduce((prev, curr) => {
+    if (curr in timeObj1) {
+      const baseTime = timeObj1[curr];
+      const branchTime = timeObj2[curr];
+      // eslint-disable-next-line no-param-reassign
+      prev += `commit will ${baseTime < branchTime ? 'INCREASE' : 'DECREASE'} time of step: ${curr} by ${Number(branchTime - baseTime).toFixed(4)}\n`;
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      prev += `commit adds step ${curr}: ${branchTime}ms\n`;
     }
-    return res.json();
+    return prev;
+  }, '\n');
+
+  const expected = Object.keys(timeObj1).reduce((prev, curr) => {
+    if (curr in timeObj2) {
+      const baseTime = timeObj1[curr];
+      // eslint-disable-next-line no-param-reassign
+      prev += `commit removes step ${curr}: ${baseTime}ms\n`;
+    }
+    return prev;
+  }, actual);
+
+  return { actual, expected };
+}
+
+async function sendPerfRequests() {
+  const urls = await getUrls();
+  const headers = {
+    'X-DEBUG': service,
+    'cache-control': 'no-cache',
+  };
+  const visits = urls.reduce((prev, curr) => {
+    prev.push(fetch(`${curr.base}`, { headers }).then((res) => {
+      // consume response
+      res.text();
+      return res;
+    }));
+    prev.push(fetch(`${curr.branch}`, { headers }).then((res) => {
+      // consume response
+      res.text();
+      return res;
+    }));
+    return prev;
+  }, []);
+
+  return Promise.all(visits);
 }
 /**
  * runs performance tests and compares metrics
- * 
+ *
  */
 async function runPerfTests(res) {
-    describe('performance testing', () => {
-        res.forEach((test, idx) => {
-        console.log(test);
-        /*
-        it(`testing body node of hlx page: ${req_url}`, () => {
-            dumpDOM(orig_dom.body, new_dom.body);
-            assertEquivalentNode(orig_dom.body, new_dom.body);
-        }).timeout(50000);
-    
-        it.skip(`testing head node of hlx page: ${req_url}`, () => {
-            dumpDOM(orig_dom.head, new_dom.head);
-            assertEquivalentNode(orig_dom.head, new_dom.head);
-        }).timeout(20000);
-        */
+  describe('pipeline rendering time', () => {
+    for (let idx = 0; idx < res.length; idx += 2) {
+      const { url } = res[idx];
+      const baseTime = res[idx].headers.get('server-timing');
+      const branchTime = res[idx + 1].headers.get('server-timing');
+      if (baseTime && branchTime) {
+        const baseTimeObj = parseTiming(baseTime);
+        const branchTimeObj = parseTiming(branchTime);
+        it(`testing pipeline rendering time for ${url}`, () => {
+          try {
+            assert.deepEqual(baseTimeObj, branchTimeObj);
+          } catch {
+            const { actual, expected } = testTiming(baseTimeObj, branchTimeObj);
+            throw new assert.AssertionError({
+              message: actual,
+              actual,
+              expected,
+              stackStartFn: runPerfTests,
+            });
+          }
         });
-    });
-    run();
+      }
+    }
+  });
+  run();
 }
 
 sendPerfRequests().then((res) => {
-    runPerfTests(res);
+  runPerfTests(res);
 });
-
-

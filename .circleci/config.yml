@@ -294,6 +294,37 @@ jobs:
           paths:
             - project/junit
 
+  run_perf_tests:
+    executor: node10
+    steps:
+      - setup
+
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run Helix Perf tests
+          command: npm run test:perf --reporter mocha-junit-reporter
+          environment:
+              MOCHA_FILE: junit/tests-results-run_perf_tests.xml
+          when: always
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/junit
 workflows:
   version: 2
   build:
@@ -334,6 +365,9 @@ workflows:
       - run_diff_tests:
           requires:
             - init_smoketests
+      - run_perf_tests:
+          requires:
+            - init_smoketests
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
@@ -341,6 +375,7 @@ workflows:
             - adobe/ferrumjsorg
             - adobe/theblog-tests
             - run_diff_tests
+            - run_perf_tests
       - publish:
           context: Project Helix
           requires:
