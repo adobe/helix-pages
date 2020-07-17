@@ -12,13 +12,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 const { fetch } = require('@adobe/helix-fetch');
-const assert = require('assert');
 const { getUrls, parseTiming } = require('../utils');
 
-const service = process.env.HLX_FASTLY_NAMESPACE;
-
+const baseService = process.env.HLX_FASTLY_NAMESPACE;
+const testService = process.env.TEST_SERVICE;
 /**
- * executes tests for equality
+ * generates strings with information about changes in rendering time
  *
  * @param {*} timeObj1 object of pipeline step times and desc
  * @param {*} timeObj2 object of pipeline step times and desc
@@ -28,8 +27,9 @@ function testTiming(timeObj1, timeObj2) {
     if (curr in timeObj1) {
       const baseTime = timeObj1[curr];
       const branchTime = timeObj2[curr];
+      const diff = branchTime - baseTime;
       // eslint-disable-next-line no-param-reassign
-      prev += `commit will ${baseTime < branchTime ? 'INCREASE' : 'DECREASE'} time of step: ${curr} by ${Number(branchTime - baseTime).toFixed(4)}\n`;
+      prev += `commit will ${diff < 0 ? 'DECREASE' : 'INCREASE'} time of step: ${curr} by ${Number(diff < 0 ? (-1.0 * diff) : diff).toFixed(4)}ms\n`;
     } else {
       // eslint-disable-next-line no-param-reassign
       prev += `commit adds step ${curr}: ${branchTime}ms\n`;
@@ -38,7 +38,7 @@ function testTiming(timeObj1, timeObj2) {
   }, '\n');
 
   const expected = Object.keys(timeObj1).reduce((prev, curr) => {
-    if (curr in timeObj2) {
+    if (!(curr in timeObj2)) {
       const baseTime = timeObj1[curr];
       // eslint-disable-next-line no-param-reassign
       prev += `commit removes step ${curr}: ${baseTime}ms\n`;
@@ -49,19 +49,27 @@ function testTiming(timeObj1, timeObj2) {
   return { actual, expected };
 }
 
+/**
+ * constructs list of promises of calls to fetch
+ *
+ */
 async function sendPerfRequests() {
   const urls = await getUrls();
-  const headers = {
-    'X-DEBUG': service,
+  const baseHeaders = {
+    'X-DEBUG': baseService,
+    'cache-control': 'no-cache',
+  };
+  const testHeaders = {
+    'X-DEBUG': testService,
     'cache-control': 'no-cache',
   };
   const visits = urls.reduce((prev, curr) => {
-    prev.push(fetch(`${curr.base}`, { headers }).then((res) => {
+    prev.push(fetch(`${curr.base}`, { headers: baseHeaders }).then((res) => {
       // consume response
       res.text();
       return res;
     }));
-    prev.push(fetch(`${curr.branch}`, { headers }).then((res) => {
+    prev.push(fetch(`${curr.branch}`, { headers: testHeaders }).then((res) => {
       // consume response
       res.text();
       return res;
@@ -85,17 +93,9 @@ async function runPerfTests(res) {
         const baseTimeObj = parseTiming(baseTime);
         const branchTimeObj = parseTiming(branchTime);
         it(`testing pipeline rendering time for ${url}`, () => {
-          try {
-            assert.deepEqual(baseTimeObj, branchTimeObj);
-          } catch {
-            const { actual, expected } = testTiming(baseTimeObj, branchTimeObj);
-            throw new assert.AssertionError({
-              message: actual,
-              actual,
-              expected,
-              stackStartFn: runPerfTests,
-            });
-          }
+          const { actual } = testTiming(baseTimeObj, branchTimeObj);
+          // eslint-disable-next-line no-console
+          console.log(actual);
         });
       }
     }
