@@ -42,7 +42,7 @@
     "chai": "4.2.0",
     "chai-http": "4.3.0",
     "dotenv": "8.2.0",
-    "eslint": "7.4.0",
+    "eslint": "7.5.0",
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.22.0",
     "fs-extra": "9.0.1",
