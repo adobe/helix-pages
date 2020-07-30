@@ -1,3 +1,11 @@
+## [2.7.6](https://github.com/adobe/helix-pages/compare/v2.7.5...v2.7.6) (2020-07-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.0 ([fb53660](https://github.com/adobe/helix-pages/commit/fb53660b8f84df4df216593b048ed09f9ce38fcc))
+* **deps:** update dependency algoliasearch to v4.3.1 ([5dda40e](https://github.com/adobe/helix-pages/commit/5dda40ebdf64b298baa6bc6507381ddf45b31e58))
+
 ## [2.7.5](https://github.com/adobe/helix-pages/compare/v2.7.4...v2.7.5) (2020-07-21)
 
 
