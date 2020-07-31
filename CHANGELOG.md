@@ -1,3 +1,41 @@
+## [2.7.6](https://github.com/adobe/helix-pages/compare/v2.7.5...v2.7.6) (2020-07-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.0 ([fb53660](https://github.com/adobe/helix-pages/commit/fb53660b8f84df4df216593b048ed09f9ce38fcc))
+* **deps:** update dependency algoliasearch to v4.3.1 ([5dda40e](https://github.com/adobe/helix-pages/commit/5dda40ebdf64b298baa6bc6507381ddf45b31e58))
+
+## [2.7.5](https://github.com/adobe/helix-pages/compare/v2.7.4...v2.7.5) (2020-07-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.4 ([#399](https://github.com/adobe/helix-pages/issues/399)) ([554aab6](https://github.com/adobe/helix-pages/commit/554aab64ffc442a3975d5ba8645ed9b8342121df))
+* **deps:** update dependency @adobe/helix-shared to v7.10.0 ([#398](https://github.com/adobe/helix-pages/issues/398)) ([d39da5d](https://github.com/adobe/helix-pages/commit/d39da5debe4b0148d11bacb365ee25720981b574))
+
+## [2.7.4](https://github.com/adobe/helix-pages/compare/v2.7.3...v2.7.4) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.2 ([#392](https://github.com/adobe/helix-pages/issues/392)) ([b9f34bd](https://github.com/adobe/helix-pages/commit/b9f34bdd027b998c8f78be09ba7a2f22d0b120d7))
+
+## [2.7.3](https://github.com/adobe/helix-pages/compare/v2.7.2...v2.7.3) (2020-07-07)
+
+
+### Bug Fixes
+
+* **readme:** no-change to deploy with helix-publish@6.1.0 ([05affde](https://github.com/adobe/helix-pages/commit/05affde92deac4b2f0bf5bcc7a179a8ca35b391f))
+
+## [2.7.2](https://github.com/adobe/helix-pages/compare/v2.7.1...v2.7.2) (2020-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.1 ([#383](https://github.com/adobe/helix-pages/issues/383)) ([9458cc9](https://github.com/adobe/helix-pages/commit/9458cc9d3aadfa29b515f1fa7485aff858c5c328))
+* **deps:** update minor ([c70dcac](https://github.com/adobe/helix-pages/commit/c70dcac01b593f0ab74701ba6e01725520020071))
+
 ## [2.7.1](https://github.com/adobe/helix-pages/compare/v2.7.0...v2.7.1) (2020-06-30)
 
 
