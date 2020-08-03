@@ -15,7 +15,7 @@ sub hlx_type_pipeline_before {
     # If you have an outer CDN, then it looks like "www.mydomain.com, repo--user.hlx.page"
     # The filter below tests if you have an outer CDN and turns off the development mode
     # caching (i.e. re-enables caching in helix-dispatch)
-    if(regsuball(regsuball(req.http.x-forwarded-host, "[^,]*(\.hlx\.page|\.project\-helix\.page|\.fastlydemo\.net)", ""), "[, ]", "") == "") {
+    if(regsuball(regsuball(req.http.x-forwarded-host, "[^,]*(\.hlx(-[0-9]+)?\.page|\.project\-helix\.page|\.fastlydemo\.net)", ""), "[, ]", "") == "") {
         set req.http.X-Dispatch-NoCache = "true";
     }
 }
