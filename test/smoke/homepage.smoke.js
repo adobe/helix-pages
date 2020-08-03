@@ -85,7 +85,7 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .then((response) => {
           expect(response).to.be.html;
           expect(response).to.have.status(200);
-          expect(response).to.have.header('cache-control', /^private/);
+          expect(response).to.have.header('cache-control', /private/);
         }).catch((e) => {
           throw e;
         });
