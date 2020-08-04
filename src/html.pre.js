@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const jquery = require('jquery');
+// const jquery = require('jquery');
 const { getAbsoluteUrl } = require('./utils.js');
 
 /**
@@ -20,6 +20,7 @@ const { getAbsoluteUrl } = require('./utils.js');
 function pre(context) {
   const { request, content } = context;
   const { document } = content;
+  /*
   const $ = jquery(document.defaultView);
 
   const $sections = $(document.body).children('div');
@@ -55,6 +56,7 @@ function pre(context) {
     }
     $(document.body).children().wrapAll(div);
   }
+  */
 
   // ensure content.data is present
   content.data = content.data || {};
@@ -62,23 +64,21 @@ function pre(context) {
   // extract metadata
   const { meta = {} } = content;
   // description: text from paragraphs with 10 or more words
-  let match = false;
-  const desc = $sections
-    .find('p')
-    .map(function exractWords() {
-      if (match) {
+  let desc = [];
+  Array.from(document.querySelectorAll('div > p'))
+    // .filter((p) => p.innerText) // skip paragraphs with no text
+    .map((p) => {
+      if (desc.length > 0) {
         // already found paragraph for description
         return null;
       }
-      const words = $(this).text().trim().split(/\s+/);
+      const words = p.innerHTML.trim().split(/\s+/);
       if (words.length < 10) {
         // skip paragraphs with less than 10 words
         return null;
       }
-      match = true;
-      return words;
-    })
-    .toArray();
+      desc = desc.concat(words);
+    });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
   meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
