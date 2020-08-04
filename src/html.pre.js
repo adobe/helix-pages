@@ -65,20 +65,14 @@ function pre(context) {
   const { meta = {} } = content;
   // description: text from paragraphs with 10 or more words
   let desc = [];
-  Array.from(document.querySelectorAll('div > p'))
-    // .filter((p) => p.innerText) // skip paragraphs with no text
-    .map((p) => {
-      if (desc.length > 0) {
-        // already found paragraph for description
-        return null;
-      }
+  document.querySelectorAll('div > p').forEach((p) => {
+    if (desc.length === 0) {
       const words = p.innerHTML.trim().split(/\s+/);
-      if (words.length < 10) {
-        // skip paragraphs with less than 10 words
-        return null;
+      if (words.length >= 10) {
+        desc = desc.concat(words);
       }
-      desc = desc.concat(words);
-    });
+    }
+  });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
   meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
