@@ -1,1 +1,3 @@
+<div class="embed-internal">
 ${content.document.body}
+</div>
