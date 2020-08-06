@@ -105,7 +105,6 @@ describe('Atom Feed Tests', () => {
         },
       ]);
 
-
     const response = await proxyaction().main(createParams());
     assert.equal(response.statusCode, 200);
     assert.equal(response.body, await fse.readFile(
