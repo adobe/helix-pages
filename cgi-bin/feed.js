@@ -9,11 +9,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const algoliasearch = require('algoliasearch');
+const fetchAPI = require('@adobe/helix-fetch');
+
+function createFetchContext() {
+  /* istanbul ignore next */
+  if (process.env.HELIX_FETCH_FORCE_HTTP1) {
+    return fetchAPI.context({ httpProtocol: 'http1', httpsProtocols: ['http1'] });
+  }
+  /* istanbul ignore next */
+  return fetchAPI.context({});
+}
+const fetchContext = createFetchContext();
+const { fetch } = fetchContext;
+
 const { logger } = require('@adobe/openwhisk-action-logger');
 const { wrap } = require('@adobe/openwhisk-action-utils');
-const Downloader = require('@adobe/helix-pipeline/src/utils/Downloader.js');
-const { MountConfig, IndexConfig } = require('@adobe/helix-shared');
 const { getOriginalHost } = require('../src/utils');
 
 /**
@@ -23,122 +33,26 @@ const { getOriginalHost } = require('../src/utils');
  * @param {object} hit index hit, containing at least a path
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
-function loc(host, hit, roots) {
-  let path = hit['external-path'] || hit.path;
-
-  const sep = path.indexOf('/');
-  if (sep !== -1 && roots.has(path.substr(0, sep + 1))) {
-    path = path.substr(sep + 1);
-  }
+function loc(host, hit) {
   return `  <entry>
-    <id>${host}/${path}</id>
+    <id>${host}/${hit.id}</id>
     <title>${hit.title}</title>
-    <updated>${new Date(hit.date * 1000).toISOString()}</updated>
-    <content><esi:include src="/${path.replace(/\.html$/, '.embed.html')}"></esi:include></content>
+    <updated>${hit.updated.toISOString()}</updated>
+    <content><esi:include src="/${hit.id.replace(/\.html$/, '.embed.html')}"></esi:include></content>
   </entry>
 `;
 }
 
 async function run(params) {
   const {
-    __hlx_owner: owner,
-    __hlx_repo: repo,
-    __hlx_ref: ref,
-    page = 0,
-    hitsPerPage = 10,
-    ALGOLIA_API_KEY,
-    ALGOLIA_APP_ID,
+    src,
+    id,
+    title,
+    updated,
     __ow_headers: headers,
-    __ow_logger: log,
+    // __ow_logger: log,
   } = params;
 
-  if (!owner) {
-    throw new Error('__hlx_owner parameter missing.');
-  }
-  if (!repo) {
-    throw new Error('__hlx_repo parameter missing.');
-  }
-  if (!ref) {
-    throw new Error('__hlx_ref parameter missing.');
-  }
-  if (!ALGOLIA_API_KEY) {
-    throw new Error('ALGOLIA_API_KEY parameter missing.');
-  }
-  if (!ALGOLIA_APP_ID) {
-    throw new Error('ALGOLIA_APP_ID parameter missing.');
-  }
-  const coords = { owner, repo, ref };
-  const action = {
-    request: { params: coords },
-    secrets: {
-      REPO_RAW_ROOT: 'https://raw.githubusercontent.com/',
-      HTTP_TIMEOUT: 1000,
-    },
-    logger: log,
-  };
-
-  const downloader = new Downloader({}, action, {
-    forceHttp1: ALGOLIA_APP_ID === 'foo', // use http1 for tests
-  });
-  let files;
-
-  try {
-    files = await Promise.all([
-      downloader.fetchGithub({ ...coords, path: '/helix-query.yaml' }),
-      downloader.fetchGithub({ ...coords, path: '/fstab.yaml' }),
-    ]);
-  } catch (e) {
-    log.error(e.message);
-    return {
-      statusCode: 500,
-      body: e.message,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    };
-  } finally {
-    downloader.destroy();
-  }
-
-  const [queryYAML, fstabYAML] = files;
-  if (queryYAML.status !== 200) {
-    const logout = (queryYAML.status === 404 ? log.info : log.error).bind(log);
-    logout(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
-    return {
-      statusCode: 200,
-      body: '',
-      headers: {
-        'Content-Type': 'application/xml',
-      },
-    };
-  }
-  const config = (await new IndexConfig()
-    .withSource(queryYAML.body)
-    .init()).toJSON();
-
-  const roots = new Set();
-  if (fstabYAML.status === 200) {
-    const fstab = await new MountConfig()
-      .withSource(fstabYAML.body)
-      .init();
-    fstab.mountpoints.forEach((entry) => {
-      roots.add(entry.path.substr(1));
-    });
-  } else {
-    log.warn(`unable to fetch fstab.yaml: ${fstabYAML.status}`);
-  }
-
-  // TODO: when there are multiple indices, find the one appropriate for sitemap generation
-  const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
-  const indexname = `${owner}--${repo}--${Object.keys(config.indices)[0]}`;
-  const index = algolia.initIndex(indexname);
-  const result = await index.search('', {
-    hitsPerPage,
-    page,
-    attributesToRetrieve: ['path', 'external-path', 'title', 'author', 'date'],
-  });
-
-  const scheme = headers['x-forwarded-proto'] || 'http';
   // Runtime currently overwrites the initial contents of the X-Forwarded-Host header,
   // (see https://jira.corp.adobe.com/browse/RUNNER-3006), so we allow specifying a host
   // header in the action itself
@@ -147,8 +61,23 @@ async function run(params) {
     originalHost = getOriginalHost(headers);
   }
 
-  const body = `  <updated>${new Date().toISOString()}</updated>\n${result.hits.map(
-    (hit) => loc(`${scheme}://${originalHost}`, hit, roots),
+  const res = await fetch(`https://${originalHost}${src}`);
+  const json = await res.json();
+
+  const results = Array.isArray(json) ? json : json.data;
+  const hits = results.map((result) => ({
+    id: result[id],
+    title: result[title],
+    updated: Number.isInteger(result[updated])
+      ? new Date(result[updated] * 1000)
+      : new Date(result[updated]),
+  }));
+
+  const mostRecent = new Date(Math.max(...hits.map((hit) => hit.updated)));
+
+  const body = `  <updated>${mostRecent.toISOString()}</updated>
+${hits.map(
+    (hit) => loc(`https://${originalHost}`, hit),
   ).join('\n')}`;
 
   return {
