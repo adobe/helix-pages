@@ -1,0 +1,18 @@
+{
+  "@odata.context": "https://theblog2.search.windows.net/indexes('adobe--theblog--blog-posts')/$metadata#docs(*)",
+  "value": [
+    {
+      "@search.score": 1.0,
+      "path": "ms/1.html"
+    },
+    {
+      "@search.score": 1.0,
+      "path": "ms/2.html"
+    },
+    {
+      "@search.score": 1.0,
+      "path": "g/publish/3.html",
+      "external_path": "g/3.html"
+    }
+  ]
+}
