@@ -14,6 +14,8 @@
 
 'use strict';
 
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+
 const assert = require('assert');
 const fse = require('fs-extra');
 const nock = require('nock');
@@ -38,13 +40,12 @@ const createParams = () => ({
   updated: 'date',
   __ow_headers: {
     'x-forwarded-proto': 'https',
+    'hlx-forwarded-host': 'blog.adobe.com',
     'x-cdn-url': 'https://blog.adobe.com/atom.xml',
   },
 });
 describe('Atom Feed Tests', () => {
   it('Atom Feed returns ESIs without prefixes', async () => {
-    process.env.HELIX_FETCH_FORCE_HTTP1 = true;
-
     nock('https://blog.adobe.com')
       .get('/en/query-index.json?limit=10')
       .reply(200, [
