@@ -19,7 +19,8 @@ const preHTML = require('./html.pre').pre;
 function pre(context) {
   preHTML(context);
 
-  context.content.meta.basename = context.request.pathInfo.split('/').pop().split('.')[0];
+  const [basename] = context.request.pathInfo.split('/').pop().split('.');
+  context.content.meta.basename = basename;
 }
 
 module.exports.pre = pre;
