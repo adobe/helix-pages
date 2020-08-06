@@ -14,46 +14,52 @@
 
 'use strict';
 
+const querystring = require('querystring');
 const assert = require('assert');
 const fse = require('fs-extra');
 const nock = require('nock');
-const proxyquire = require('proxyquire');
 const { resolve } = require('path');
+const proxyquire = require('proxyquire');
 
-const action = require('../../cgi-bin/sitemap.js');
-const AlgoliaIndex = require('./sitemap/AlgoliaIndex');
+const AlgoliaIndex = require('./sitemap/algolia/AlgoliaIndex.js');
 
 /**
- * Proxy our real OW action and its requirements.
- *
- * @param {Function} invoke OW action to invoke
+ * Algolia provider proxy.
  */
-const proxyaction = () => proxyquire('../../cgi-bin/sitemap.js', {
+const algolia = proxyquire('../../src/providers/algolia.js', {
   algoliasearch: () => ({
     initIndex: (name) => new AlgoliaIndex(name),
   }),
 });
 
 /**
+ * Proxy our real OW action and its requirements.
+ *
+ * @param {Function} invoke OW action to invoke
+ */
+const action = proxyquire('../../cgi-bin/sitemap.js', {
+  '../src/providers/algolia.js': algolia,
+});
+
+/**
  * Create params object for sitemap action.
  */
-const createParams = () => ({
+const createParams = (opts) => ({
   __hlx_owner: 'me',
   __hlx_repo: 'repo',
   __hlx_ref: 'master',
-  ALGOLIA_APP_ID: 'foo',
-  ALGOLIA_API_KEY: 'bar',
   __ow_headers: {
     'x-forwarded-proto': 'https',
-    'x-cdn-url': 'https://myhost.com/sitemap.xml',
+    'hlx-forwarded-host': 'myhost.com, myrepo-myorg.hlx.page',
   },
+  ...opts,
 });
 
 describe('Sitemap Tests', () => {
   describe('Argument checking', () => {
     // Invoke our action with missing combinations of parameters
     const requiredParamNames = [
-      '__hlx_owner', '__hlx_repo', '__hlx_ref', 'ALGOLIA_API_KEY', 'ALGOLIA_APP_ID',
+      '__hlx_owner', '__hlx_repo', '__hlx_ref',
     ];
     for (let i = 0; i <= requiredParamNames.length - 1; i += 1) {
       const params = requiredParamNames.slice(0, i).reduce((acc, name) => {
@@ -76,7 +82,7 @@ describe('Sitemap Tests', () => {
         .reply(404, 'Not found');
     });
     it('missing index returns 200 and empty body', async () => {
-      const response = await proxyaction().main(createParams());
+      const response = await action.main(createParams());
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, '');
     });
@@ -92,7 +98,7 @@ describe('Sitemap Tests', () => {
         .reply(404, 'Not found');
     });
     it('failing to read index should report error', async () => {
-      const response = await proxyaction().main(createParams());
+      const response = await action.main(createParams());
       assert.equal(response.statusCode, 500);
     });
   });
@@ -105,10 +111,14 @@ describe('Sitemap Tests', () => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .reply(404, 'Not found');
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'query-index.json'));
     });
 
     it('Sitemap returns URLs with prefixes', async () => {
-      const response = await proxyaction().main(createParams());
+      const response = await action.main(createParams());
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-no-fstab.txt'), 'utf-8',
@@ -124,14 +134,132 @@ describe('Sitemap Tests', () => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/fstab.yaml')
         .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'query-index.json'));
     });
 
     it('Sitemap returns URLs without prefixes', async () => {
-      const response = await proxyaction().main(createParams());
+      const response = await action.main(createParams());
       assert.equal(response.statusCode, 200);
       assert.equal(response.body, await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
+    });
+  });
+
+  describe('Algolia provider test', () => {
+    beforeEach(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'algolia', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+    });
+    it('Algolia provider returns sitemap', async () => {
+      const response = await action.main(createParams({
+        ALGOLIA_API_KEY: 'foo',
+        ALGOLIA_APP_ID: 'bar',
+      }));
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body, await fse.readFile(
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
+      ));
+    });
+  });
+
+  describe('Azure provider test', () => {
+    before(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'azure', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://theblog2.search.windows.net')
+        .get('/indexes/me--repo--blog-posts/docs')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'azure', 'searchresult.json'));
+    });
+    it('Azure provider returns sitemap', async () => {
+      const response = await action.main(createParams({
+        AZURE_SEARCH_API_KEY: 'foo',
+        AZURE_SEARCH_SERVICE_NAME: 'theblog2',
+      }));
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body, await fse.readFile(
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
+      ));
+    });
+  });
+
+  describe('sends correct limit and offset', () => {
+    beforeEach(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .reply((uri) => {
+          const qs = querystring.parse(uri.substring(uri.indexOf('?') + 1));
+          // eslint-disable-next-line no-console
+          console.log(qs);
+          const body = [];
+          const limit = Number.parseInt(qs.limit, 10);
+          const offset = Number.parseInt(qs.offset, 10);
+          for (let i = 1; i <= limit; i += 1) {
+            body.push({ path: `/${i + offset}.html` });
+          }
+          return [200, JSON.stringify(body)];
+        });
+    });
+
+    it('retrieves first page by default', async () => {
+      const response = await action.main(createParams({
+      }));
+      const expected = [];
+      for (let i = 1; i <= 100; i += 1) {
+        expected.push('  <url>');
+        expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
+        expected.push('  </url>');
+      }
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body.trim(), expected.join('\n').trim());
+    });
+
+    it('can set page size', async () => {
+      const response = await action.main(createParams({
+        hitsPerPage: 4,
+      }));
+      const expected = [];
+      for (let i = 1; i <= 4; i += 1) {
+        expected.push('  <url>');
+        expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
+        expected.push('  </url>');
+      }
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body.trim(), expected.join('\n').trim());
+    });
+
+    it('can select different page', async () => {
+      const response = await action.main(createParams({
+        hitsPerPage: 4,
+        page: 2,
+      }));
+      const expected = [];
+      for (let i = 9; i <= 12; i += 1) {
+        expected.push('  <url>');
+        expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
+        expected.push('  </url>');
+      }
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body.trim(), expected.join('\n').trim());
     });
   });
 });

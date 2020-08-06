@@ -16,11 +16,8 @@
  * @returns {string} The original host
  */
 function getOriginalHost(headers) {
-  if (headers['x-hlx-pages-host']) {
-    return headers['x-hlx-pages-host'];
-  }
-  if (headers['x-cdn-url']) {
-    return new URL(headers['x-cdn-url']).hostname;
+  if (headers['hlx-forwarded-host']) {
+    return headers['hlx-forwarded-host'].split(',')[0].trim();
   }
   return headers.host;
 }

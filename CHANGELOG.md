@@ -1,3 +1,262 @@
+## [2.7.6](https://github.com/adobe/helix-pages/compare/v2.7.5...v2.7.6) (2020-07-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.0 ([fb53660](https://github.com/adobe/helix-pages/commit/fb53660b8f84df4df216593b048ed09f9ce38fcc))
+* **deps:** update dependency algoliasearch to v4.3.1 ([5dda40e](https://github.com/adobe/helix-pages/commit/5dda40ebdf64b298baa6bc6507381ddf45b31e58))
+
+## [2.7.5](https://github.com/adobe/helix-pages/compare/v2.7.4...v2.7.5) (2020-07-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.4 ([#399](https://github.com/adobe/helix-pages/issues/399)) ([554aab6](https://github.com/adobe/helix-pages/commit/554aab64ffc442a3975d5ba8645ed9b8342121df))
+* **deps:** update dependency @adobe/helix-shared to v7.10.0 ([#398](https://github.com/adobe/helix-pages/issues/398)) ([d39da5d](https://github.com/adobe/helix-pages/commit/d39da5debe4b0148d11bacb365ee25720981b574))
+
+## [2.7.4](https://github.com/adobe/helix-pages/compare/v2.7.3...v2.7.4) (2020-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.2 ([#392](https://github.com/adobe/helix-pages/issues/392)) ([b9f34bd](https://github.com/adobe/helix-pages/commit/b9f34bdd027b998c8f78be09ba7a2f22d0b120d7))
+
+## [2.7.3](https://github.com/adobe/helix-pages/compare/v2.7.2...v2.7.3) (2020-07-07)
+
+
+### Bug Fixes
+
+* **readme:** no-change to deploy with helix-publish@6.1.0 ([05affde](https://github.com/adobe/helix-pages/commit/05affde92deac4b2f0bf5bcc7a179a8ca35b391f))
+
+## [2.7.2](https://github.com/adobe/helix-pages/compare/v2.7.1...v2.7.2) (2020-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.1.1 ([#383](https://github.com/adobe/helix-pages/issues/383)) ([9458cc9](https://github.com/adobe/helix-pages/commit/9458cc9d3aadfa29b515f1fa7485aff858c5c328))
+* **deps:** update minor ([c70dcac](https://github.com/adobe/helix-pages/commit/c70dcac01b593f0ab74701ba6e01725520020071))
+
+## [2.7.1](https://github.com/adobe/helix-pages/compare/v2.7.0...v2.7.1) (2020-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.8 ([#372](https://github.com/adobe/helix-pages/issues/372)) ([5507a5b](https://github.com/adobe/helix-pages/commit/5507a5b779fb5a9f5003cf02d6c4ec611b84fd08))
+
+# [2.7.0](https://github.com/adobe/helix-pages/compare/v2.6.1...v2.7.0) (2020-06-29)
+
+
+### Features
+
+* **ci:** diff test blocks publish and shares test file ([8591689](https://github.com/adobe/helix-pages/commit/859168909a3b2e44f4e5700de534b6abf491a6ff))
+* **ci:** diff test blocks publish and shares test file ([3663ef1](https://github.com/adobe/helix-pages/commit/3663ef15082914ec88db458426173216f00002de))
+* **ci:** diff test blocks publish and shares test file ([e2308ed](https://github.com/adobe/helix-pages/commit/e2308edcd04aca5decc1f62caf79c1fea1e24113))
+
+## [2.6.1](https://github.com/adobe/helix-pages/compare/v2.6.0...v2.6.1) (2020-06-29)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency lodash.pickby to 4.6.0 ([2386b40](https://github.com/adobe/helix-pages/commit/2386b408744ed1886ca0d7c09b32c4a33d54eb6d))
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.6 ([6411661](https://github.com/adobe/helix-pages/commit/641166128e5c9d58ff636ce58dd5a62f8e5f55a5))
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.7 ([5689693](https://github.com/adobe/helix-pages/commit/5689693149a17c4de5ec07eb326c7360d2fba83c))
+* **deps:** update dependency @adobe/helix-shared to v7.9.0 ([a0d9d10](https://github.com/adobe/helix-pages/commit/a0d9d10738f97cf63d4ccebf174ebf5d66241dc7))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.2.3 ([0c56130](https://github.com/adobe/helix-pages/commit/0c561309de0b48a15ef293bf878d106156f67885))
+
+# [2.6.0](https://github.com/adobe/helix-pages/compare/v2.5.3...v2.6.0) (2020-06-26)
+
+
+### Features
+
+* **sitemap:** add azure provider ([#360](https://github.com/adobe/helix-pages/issues/360)) ([dd37a95](https://github.com/adobe/helix-pages/commit/dd37a9509d6e737c45c2a65e42acd5d99c31242d))
+
+## [2.5.3](https://github.com/adobe/helix-pages/compare/v2.5.2...v2.5.3) (2020-06-26)
+
+
+### Bug Fixes
+
+* **pages.tests.js:** increases test timeout ([889be8d](https://github.com/adobe/helix-pages/commit/889be8dd83e186fb88ce3b3d10350fec4f7a58c1))
+
+## [2.5.2](https://github.com/adobe/helix-pages/compare/v2.5.1...v2.5.2) (2020-06-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.8.1 ([b8bae02](https://github.com/adobe/helix-pages/commit/b8bae02e65dc145d331b28e3e7d45262b00b15d7))
+
+## [2.5.1](https://github.com/adobe/helix-pages/compare/v2.5.0...v2.5.1) (2020-06-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.5 ([84c35ae](https://github.com/adobe/helix-pages/commit/84c35ae22b9f93bd7820bdabf1a125ab5dbd783b))
+* **deps:** update dependency @adobe/helix-shared to v7.8.0 ([1c833d8](https://github.com/adobe/helix-pages/commit/1c833d891db95a7ebf308feead7408e64646dee0))
+
+# [2.5.0](https://github.com/adobe/helix-pages/compare/v2.4.1...v2.5.0) (2020-06-26)
+
+
+### Features
+
+* **pages.test.js:** add tests to detect changes ([#337](https://github.com/adobe/helix-pages/issues/337)) ([39c47e2](https://github.com/adobe/helix-pages/commit/39c47e2f6ce2a91427a506a7c22e3e7a0169afd3)), closes [#355](https://github.com/adobe/helix-pages/issues/355)
+
+## [2.4.1](https://github.com/adobe/helix-pages/compare/v2.4.0...v2.4.1) (2020-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) ([12014f4](https://github.com/adobe/helix-pages/commit/12014f4c384b4d6b81eeb674af2353eff75b37c7))
+* **vcl:** vary XFH ([f707345](https://github.com/adobe/helix-pages/commit/f707345d278b2164fd87b56c84bcfd9bb24d08e4))
+
+# [2.4.0](https://github.com/adobe/helix-pages/compare/v2.3.2...v2.4.0) (2020-06-22)
+
+
+### Features
+
+* **sitemap:** Allow sitemap entries to be fed from a json endpoint ([#352](https://github.com/adobe/helix-pages/issues/352)) ([1440541](https://github.com/adobe/helix-pages/commit/1440541e8d9d51072cb00c29b27e30de16d133b8))
+
+## [2.3.2](https://github.com/adobe/helix-pages/compare/v2.3.1...v2.3.2) (2020-06-19)
+
+
+### Bug Fixes
+
+* **ci:** trigger a new clean release ([cb90dd2](https://github.com/adobe/helix-pages/commit/cb90dd29e3794a0f6636b4345f7ea9f3c3d194bf))
+
+## [2.3.1](https://github.com/adobe/helix-pages/compare/v2.3.0...v2.3.1) (2020-06-19)
+
+
+### Bug Fixes
+
+* **ci:** trigger a new clean release ([3172b5a](https://github.com/adobe/helix-pages/commit/3172b5a8ba5bffcc495e1a030b4550880e8d4faa))
+
+# [2.3.0](https://github.com/adobe/helix-pages/compare/v2.2.0...v2.3.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** keep robots out on fastly instead ([84bfb37](https://github.com/adobe/helix-pages/commit/84bfb37f4e779940397d6d3f41a14f98e1bbcb56))
+
+# [2.2.0](https://github.com/adobe/helix-pages/compare/v2.1.0...v2.2.0) (2020-06-18)
+
+
+### Features
+
+* **seo:** default meta image ([ddd59a6](https://github.com/adobe/helix-pages/commit/ddd59a6d0561d20a453a23ae8a88c9297707e1a9))
+
+# [2.1.0](https://github.com/adobe/helix-pages/compare/v2.0.8...v2.1.0) (2020-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.3 ([139aee2](https://github.com/adobe/helix-pages/commit/139aee24496f09f8c87da94472438bc8734c9ef1))
+
+
+### Features
+
+* **publish:** use new publish version with blocklist ([8d740a5](https://github.com/adobe/helix-pages/commit/8d740a5e01ef2082e9b95e4ee1804ec3f9637cd3))
+
+## [2.0.8](https://github.com/adobe/helix-pages/compare/v2.0.7...v2.0.8) (2020-06-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.2 ([#346](https://github.com/adobe/helix-pages/issues/346)) ([25c5917](https://github.com/adobe/helix-pages/commit/25c591729e250cd371a4ee97e6856119b845d1c0))
+
+## [2.0.7](https://github.com/adobe/helix-pages/compare/v2.0.6...v2.0.7) (2020-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.0.1 ([#344](https://github.com/adobe/helix-pages/issues/344)) ([2316067](https://github.com/adobe/helix-pages/commit/23160678824f879ca9fca528c23e6ae536c60cda))
+
+## [2.0.6](https://github.com/adobe/helix-pages/compare/v2.0.5...v2.0.6) (2020-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10 ([71c71f1](https://github.com/adobe/helix-pages/commit/71c71f14b0daec8d5c8d7cd3db03ce4634b6e702))
+
+## [2.0.5](https://github.com/adobe/helix-pages/compare/v2.0.4...v2.0.5) (2020-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.6.0 ([a13b72d](https://github.com/adobe/helix-pages/commit/a13b72d36ebeff8f75674d7e2809833680869fbb))
+* **deps:** update external ([46aac83](https://github.com/adobe/helix-pages/commit/46aac8372cfe534836e0f7fbc443d1866b80ee25))
+
+## [2.0.4](https://github.com/adobe/helix-pages/compare/v2.0.3...v2.0.4) (2020-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v9 ([#336](https://github.com/adobe/helix-pages/issues/336)) ([8cff87e](https://github.com/adobe/helix-pages/commit/8cff87e5a7afe2f61dd8bb06733d620d6b48436d))
+
+## [2.0.3](https://github.com/adobe/helix-pages/compare/v2.0.2...v2.0.3) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** trigger new publish ([c3e5121](https://github.com/adobe/helix-pages/commit/c3e5121fc8de23378969c7fbffb0312ea4c43fe3))
+
+## [2.0.2](https://github.com/adobe/helix-pages/compare/v2.0.1...v2.0.2) (2020-06-12)
+
+
+### Bug Fixes
+
+* **readme:** epsagon tracing ([ea73fd9](https://github.com/adobe/helix-pages/commit/ea73fd9d963b464cf21ec2316643993daf357aa7))
+
+## [2.0.1](https://github.com/adobe/helix-pages/compare/v2.0.0...v2.0.1) (2020-06-09)
+
+
+### Bug Fixes
+
+* **seo:** move robots.txt to htdocs ([74c46ab](https://github.com/adobe/helix-pages/commit/74c46ab70e1ad74e377f901203dc481c8f1e6e9f))
+
+# [2.0.0](https://github.com/adobe/helix-pages/compare/v1.14.21...v2.0.0) (2020-06-09)
+
+
+### Features
+
+* **seo:** keep robots out by default ([8953df0](https://github.com/adobe/helix-pages/commit/8953df0fc7b230b054105f31b69c96efe2c3e720))
+
+
+* Merge pull request #330 from adobe/robots ([3c79c6d](https://github.com/adobe/helix-pages/commit/3c79c6d15088788d3b9df338f6db7aa2e2cb3c14)), closes [#330](https://github.com/adobe/helix-pages/issues/330)
+
+
+### BREAKING CHANGES
+
+* Add a robots.txt to your Helix Pages project to enable crawling and indexing.
+
+## [1.14.21](https://github.com/adobe/helix-pages/compare/v1.14.20...v1.14.21) (2020-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.6 ([#325](https://github.com/adobe/helix-pages/issues/325)) ([4597187](https://github.com/adobe/helix-pages/commit/459718761a7779271e5fec15f4334d111c63d4c4))
+
+## [1.14.20](https://github.com/adobe/helix-pages/compare/v1.14.19...v1.14.20) (2020-06-05)
+
+
+### Bug Fixes
+
+* **seo:** split hlx-forwarded-host list and use first ([b938fb8](https://github.com/adobe/helix-pages/commit/b938fb8a1e06a09c66982c58405baaf6224f9b05))
+
+## [1.14.19](https://github.com/adobe/helix-pages/compare/v1.14.18...v1.14.19) (2020-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.4 ([c8b49f0](https://github.com/adobe/helix-pages/commit/c8b49f0bf2e2d383f6e028eb4f91b7f63c1d5075))
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.5 ([6140064](https://github.com/adobe/helix-pages/commit/614006477bfbecf5fbabfc4b190abfd191f9b6ab))
+* **deps:** update dependency @adobe/helix-shared to v7.4.0 ([e708803](https://github.com/adobe/helix-pages/commit/e70880352b75af9346101d9b88d091a634f26666))
+* **seo:** use hlx-forwarded-host header and switch canonical url back to absolute ([ee8f166](https://github.com/adobe/helix-pages/commit/ee8f166d00a7ba9631b225a66ea50f07d45c12c2))
+
+## [1.14.18](https://github.com/adobe/helix-pages/compare/v1.14.17...v1.14.18) (2020-06-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v8.0.3 ([67c0476](https://github.com/adobe/helix-pages/commit/67c0476f05ed48fdf1891e77fc36d82032209674))
+
 ## [1.14.17](https://github.com/adobe/helix-pages/compare/v1.14.16...v1.14.17) (2020-06-02)
 
 

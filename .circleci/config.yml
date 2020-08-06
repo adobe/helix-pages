@@ -8,6 +8,9 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+orbs:
+  puppeteer: threetreeslight/puppeteer@0.1.2
+
 references:
   run_smoketests: &run_smoketests
     executor: node10
@@ -48,7 +51,7 @@ jobs:
           command: npx mocha --exit --reporter mocha-junit-reporter test/unit/*.test.js
           environment:
               MOCHA_FILE: junit/test-results.xml
-          when: always    
+          when: always
       - store_test_results:
           path: junit
       - store_artifacts:
@@ -67,7 +70,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -88,9 +91,17 @@ jobs:
               echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
       - run:
           name: Publish to Fastly
-          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+          command: |
+            if [[ $CIRCLE_BRANCH == *"-publish-ci"* ]]; then
+                echo "Using CI Publish"
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci | cat
+            else
+                echo "Using regular Publish"
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+            fi
 
-      - run: mkdir junit
+
+      - run: mkdir junit    
 
       - persist_to_workspace:
           root: /home/circleci
@@ -133,6 +144,9 @@ jobs:
           name: Installing << parameters.repo >>
           command: npm install
           working_directory: << parameters.repo >>
+
+      # required by some smoketests (no way to install it via npm only)
+      - puppeteer/install
 
       - run:
           name: Run the smoke tests for repo << parameters.repo >>
@@ -224,7 +238,7 @@ jobs:
 
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
 
       - run:
           name: Publish to Fastly
@@ -247,6 +261,38 @@ jobs:
       - run:
           name: Semantic Release
           command: npm run semantic-release
+
+  run_diff_tests:
+    executor: node10
+    steps:
+      - setup
+
+      - attach_workspace:
+          at: /home/circleci
+
+      - run:
+          name: Load environment variables
+          command: |
+            cat env/TEST_DOMAIN >> $BASH_ENV
+            cat env/TEST_SERVICE >> $BASH_ENV
+
+      - run:
+          name: Run Helix Page Diff tests
+          command: npm run test:pages --reporter mocha-junit-reporter
+          environment:
+              MOCHA_FILE: junit/tests-results-run_diff_tests.xml
+          when: always
+
+      - store_test_results:
+          path: junit
+
+      - store_artifacts:
+          path: junit
+
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/junit
 
 workflows:
   version: 2
@@ -285,12 +331,16 @@ workflows:
           repo: ferrumjsorg
           requires:
             - init_smoketests
+      - run_diff_tests:
+          requires:
+            - init_smoketests
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
+            - run_diff_tests
       - publish:
           context: Project Helix
           requires:
