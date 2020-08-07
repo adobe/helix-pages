@@ -14,7 +14,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-const { expect, assert } = require('chai');
+const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jquery = require('jquery');
