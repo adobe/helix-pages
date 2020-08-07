@@ -98,7 +98,7 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .set('X-Request-Type', 'Static/Redirect')
         .then((response) => {
           expect(response).to.have.status(200);
-          expect(response).to.have.have('Cache-Control', 'max-age=31622400,immutable');
+          expect(response).to.have.header('Cache-Control', 'max-age=31622400,immutable');
           console.log(response.body);
         })
         .catch((e) => {
