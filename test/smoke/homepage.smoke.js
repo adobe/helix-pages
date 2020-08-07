@@ -91,14 +91,15 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
     });
 
     it('README gets delivered as Raw', async () => {
+      console.log(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md`);
       await chai
         .request(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}`)
         .get('/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
         .set('X-Backend-URL', '/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
         .set('X-Request-Type', 'Static/Redirect')
         .then((response) => {
-          expect(response).to.be.text;
           expect(response).to.have.status(200);
+          expect(response).to.be.text;
         })
         .catch((e) => {
           throw e;
