@@ -14,7 +14,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-const { expect } = require('chai');
+const { expect, assert } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jquery = require('jquery');
@@ -102,6 +102,7 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
           expect(response).to.be.text;
         })
         .catch((e) => {
+          console.log(Object.keys(e));
           throw e;
         });
     });
