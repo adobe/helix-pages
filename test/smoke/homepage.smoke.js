@@ -91,7 +91,6 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
     });
 
     it('README gets delivered as Raw', async () => {
-      console.log(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md`.toUpperCase());
       await chai
         .request(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}`)
         .get('/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
@@ -100,11 +99,12 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .then((response) => {
           expect(response).to.have.status(200);
           expect(response).to.have.header('content-type', /^text/);
+          expect(response).to.have.have('cache-control', 'max-age=31622400,immutable');
         })
         .catch((e) => {
-          console.log(Object.keys(e));
           throw e;
         });
+      console.log(chai.request, Object.keys(chai.request));
     });
 
     it('/etc/passwd does not get delivered', async () => {
