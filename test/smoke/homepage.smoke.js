@@ -99,7 +99,7 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .set('X-Request-Type', 'Static/Redirect')
         .then((response) => {
           expect(response).to.have.status(200);
-          expect(response).to.be.text;
+          expect(response).to.have.header('content-type', /^text/);
         })
         .catch((e) => {
           console.log(Object.keys(e));
