@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="4.0080" tests="25" failures="1">
+  <testsuite name="Root Suite" timestamp="2020-08-06T15:58:32" tests="0" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Atom Feed Tests" timestamp="2020-08-06T15:58:32" tests="1" file="/code/helix-pages/test/unit/feed.test.js" time="0.0420" failures="1">
+    <testcase name="Atom Feed Tests Atom Feed returns ESIs without prefixes" time="0.0420" classname="Atom Feed returns ESIs without prefixes">
+      <failure message="getaddrinfo ENOTFOUND undefined undefined:443" type="Error"><![CDATA[Error: getaddrinfo ENOTFOUND undefined undefined:443
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Testing pre requirements for main function" timestamp="2020-08-06T15:58:32" tests="2" file="/code/helix-pages/test/unit/html.pre.test.js" time="0.0000" failures="0">
+    <testcase name="Testing pre requirements for main function Exports pre" time="0.0000" classname="Exports pre">
+    </testcase>
+    <testcase name="Testing pre requirements for main function pre is a function" time="0.0000" classname="pre is a function">
+    </testcase>
+  </testsuite>
+  <testsuite name="Testing pre.js" timestamp="2020-08-06T15:58:32" tests="10" file="/code/helix-pages/test/unit/html.pre.test.js" time="0.3500" failures="0">
+    <testcase name="Testing pre.js Body content is wrapped in a div" time="0.1280" classname="Body content is wrapped in a div">
+    </testcase>
+    <testcase name="Testing pre.js Div is wrapped with class name" time="0.0220" classname="Div is wrapped with class name">
+    </testcase>
+    <testcase name="Testing pre.js Div is wrapped with multiple class names" time="0.0190" classname="Div is wrapped with multiple class names">
+    </testcase>
+    <testcase name="Testing pre.js Meta description is extracted from first &lt;p&gt; with 10 or more words" time="0.0230" classname="Meta description is extracted from first &lt;p&gt; with 10 or more words">
+    </testcase>
+    <testcase name="Testing pre.js Meta description is truncated after 25 words" time="0.0180" classname="Meta description is truncated after 25 words">
+    </testcase>
+    <testcase name="Testing pre.js Meta url uses hlx-forwarded-host header if available" time="0.0170" classname="Meta url uses hlx-forwarded-host header if available">
+    </testcase>
+    <testcase name="Testing pre.js Meta url uses host header if no hlx-forwarded-host available" time="0.0330" classname="Meta url uses host header if no hlx-forwarded-host available">
+    </testcase>
+    <testcase name="Testing pre.js Meta imageUrl uses content.image" time="0.0290" classname="Meta imageUrl uses content.image">
+    </testcase>
+    <testcase name="Testing pre.js Meta imageUrl uses content.image as absolute URL" time="0.0240" classname="Meta imageUrl uses content.image as absolute URL">
+    </testcase>
+    <testcase name="Testing pre.js Meta imageUrl uses default meta image if no content.image available" time="0.0370" classname="Meta imageUrl uses default meta image if no content.image available">
+    </testcase>
+  </testsuite>
+  <testsuite name="Sitemap Tests" timestamp="2020-08-06T15:58:32" tests="0" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="Argument checking" timestamp="2020-08-06T15:58:32" tests="3" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.0140" failures="0">
+    <testcase name="Sitemap Tests Argument checking index function bails if argument __hlx_owner is missing" time="0.0020" classname="index function bails if argument __hlx_owner is missing">
+    </testcase>
+    <testcase name="Sitemap Tests Argument checking index function bails if argument __hlx_repo is missing" time="0.0000" classname="index function bails if argument __hlx_repo is missing">
+    </testcase>
+    <testcase name="Sitemap Tests Argument checking index function bails if argument __hlx_ref is missing" time="0.0120" classname="index function bails if argument __hlx_ref is missing">
+    </testcase>
+  </testsuite>
+  <testsuite name="Missing index" timestamp="2020-08-06T15:58:32" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.3440" failures="0">
+    <testcase name="Sitemap Tests Missing index missing index returns 200 and empty body" time="0.3440" classname="missing index returns 200 and empty body">
+    </testcase>
+  </testsuite>
+  <testsuite name="Other failure reading index" timestamp="2020-08-06T15:58:32" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.1210" failures="0">
+    <testcase name="Sitemap Tests Other failure reading index failing to read index should report error" time="0.1210" classname="failing to read index should report error">
+    </testcase>
+  </testsuite>
+  <testsuite name="Index available, no fstab" timestamp="2020-08-06T15:58:32" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.5280" failures="0">
+    <testcase name="Sitemap Tests Index available, no fstab Sitemap returns URLs with prefixes" time="0.5280" classname="Sitemap returns URLs with prefixes">
+    </testcase>
+  </testsuite>
+  <testsuite name="Index and fstab available" timestamp="2020-08-06T15:58:33" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.3700" failures="0">
+    <testcase name="Sitemap Tests Index and fstab available Sitemap returns URLs without prefixes" time="0.3700" classname="Sitemap returns URLs without prefixes">
+    </testcase>
+  </testsuite>
+  <testsuite name="Algolia provider test" timestamp="2020-08-06T15:58:33" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.2480" failures="0">
+    <testcase name="Sitemap Tests Algolia provider test Algolia provider returns sitemap" time="0.2480" classname="Algolia provider returns sitemap">
+    </testcase>
+  </testsuite>
+  <testsuite name="Azure provider test" timestamp="2020-08-06T15:58:34" tests="1" file="/code/helix-pages/test/unit/sitemap.test.js" time="0.8960" failures="0">
+    <testcase name="Sitemap Tests Azure provider test Azure provider returns sitemap" time="0.8960" classname="Azure provider returns sitemap">
+    </testcase>
+  </testsuite>
+  <testsuite name="sends correct limit and offset" timestamp="2020-08-06T15:58:35" tests="3" file="/code/helix-pages/test/unit/sitemap.test.js" time="1.0950" failures="0">
+    <testcase name="Sitemap Tests sends correct limit and offset retrieves first page by default" time="0.3500" classname="retrieves first page by default">
+    </testcase>
+    <testcase name="Sitemap Tests sends correct limit and offset can set page size" time="0.3500" classname="can set page size">
+    </testcase>
+    <testcase name="Sitemap Tests sends correct limit and offset can select different page" time="0.3950" classname="can select different page">
+    </testcase>
+  </testsuite>
+</testsuites>
