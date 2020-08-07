@@ -99,12 +99,12 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .then((response) => {
           expect(response).to.have.status(200);
           expect(response).to.have.header('Cache-Control', 'max-age=31622400,immutable');
-          console.log(response.body);
+          expect(response).to.have.header('Content-Length', '4117');
+          expect(response.text).to.have.string('Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)');
         })
         .catch((e) => {
           throw e;
         });
-      console.log(chai.request, Object.keys(chai.request));
     });
 
     it('/etc/passwd does not get delivered', async () => {
