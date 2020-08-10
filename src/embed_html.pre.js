@@ -20,7 +20,7 @@ function pre(context) {
   preHTML(context);
 
   const [basename] = context.request.pathInfo.split('/').pop().split('.');
-  context.content.meta.basename = basename;
+  context.content.meta.basename = basename.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 module.exports.pre = pre;
