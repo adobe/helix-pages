@@ -16,16 +16,16 @@ const { getAbsoluteUrl } = require('./utils.js');
  * @param {array} nodes The nodes to wrap
  * @param {node} newparent The new parent node
  */
-function wrapNodes(newparent, nodes) {	
-  nodes.forEach((el) => {	
-    newparent.appendChild(el.cloneNode(true));	
-    if (newparent.children.length !== 1) {	
-      el.parentNode.removeChild(el);	
-    } else {	
-      el.parentNode.replaceChild(newparent, el);	
-    }	
-  });	
-}	
+function wrapNodes(newparent, nodes) {
+  nodes.forEach((el) => {
+    newparent.appendChild(el.cloneNode(true));
+    if (newparent.children.length !== 1) {
+      el.parentNode.removeChild(el);
+    } else {
+      el.parentNode.replaceChild(newparent, el);
+    }
+  });
+}
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
