@@ -35,7 +35,7 @@ function wrapNodes(newparent, nodes) {
 function pre(context) {
   const { request, content } = context;
   const { document } = content;
-  const $sections = document.querySelectorAll('div');
+  const $sections = document.querySelectorAll('body > div');
 
   // if there are no sections wrap everything in a default div
   // with appropriate class names from meta
