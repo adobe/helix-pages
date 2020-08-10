@@ -133,12 +133,6 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
       expect($('header').length).to.be.equal(0);
       expect($('main').length).to.be.equal(0);
       expect($('footer').length).to.be.equal(0);
-
-      $('div').each((i, div) => {
-        // in plain mode, root divs are decorated
-        // eslint-disable-next-line no-unused-expressions
-        expect(div.classList.contains('default')).to.be.true;
-      });
     });
   });
 });
