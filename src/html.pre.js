@@ -37,7 +37,7 @@ function pre(context) {
   const { document } = content;
   const $sections = document.querySelectorAll('body > div');
 
-  // if there are no sections wrap everything in a default div
+  // if there are no sections wrap everything in a div
   // with appropriate class names from meta
   if ($sections.length === 0) {
     const div = document.createElement('div');
