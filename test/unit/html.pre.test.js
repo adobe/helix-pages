@@ -84,14 +84,11 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
-  it('Section div gets custom class', () => {
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><h1>Title</h1></div></body></html>');
+  it('Section divs are left alone', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div class="customcssclass"><h1>Title</h1></div></body></html>');
     const context = {
       content: {
         document: dom.window.document,
-        meta: {
-          class: 'customcssclass',
-        },
       },
       request,
     };
