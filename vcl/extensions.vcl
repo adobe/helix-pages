@@ -11,7 +11,7 @@
 #
 
 sub hlx_type_pipeline_before {
-    # A non-production XFN header looks like: "repo--user.hlx.page"
+    # A non-production XFH header looks like: "repo--user.hlx.page"
     # If you have an outer CDN, then it looks like "www.mydomain.com, repo--user.hlx.page"
     # The filter below tests if you have an outer CDN and turns off the development mode
     # caching (i.e. re-enables caching in helix-dispatch)
