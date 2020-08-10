@@ -9,8 +9,23 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-// const jquery = require('jquery');
 const { getAbsoluteUrl } = require('./utils.js');
+
+/**
+ * Wraps nodes with a new parent node.
+ * @param {array} nodes The nodes to wrap
+ * @param {node} newparent The new parent node
+ */
+function wrapNodes(newparent, nodes) {	
+  nodes.forEach((el) => {	
+    newparent.appendChild(el.cloneNode(true));	
+    if (newparent.children.length !== 1) {	
+      el.parentNode.removeChild(el);	
+    } else {	
+      el.parentNode.replaceChild(newparent, el);	
+    }	
+  });	
+}	
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -20,43 +35,19 @@ const { getAbsoluteUrl } = require('./utils.js');
 function pre(context) {
   const { request, content } = context;
   const { document } = content;
-  /*
-  const $ = jquery(document.defaultView);
-
-  const $sections = $(document.body).children('div');
-
-  // first section has a starting image: add title class and wrap all subsequent items inside a div
-  $sections
-    .first()
-    .has('p:first-child>img')
-    .addClass('title')
-    .find(':nth-child(1n+2)')
-    .wrapAll('<div class="header"></div>');
-
-  // sections consisting of only one image
-  $sections
-    .filter('[data-hlx-types~="has-only-image"]')
-    .not('.title')
-    .addClass('image');
-
-  // sections without image and title class gets a default class
-  $sections
-    .not('.image')
-    .not('.title')
-    .addClass('default');
+  const $sections = document.querySelectorAll('div');
 
   // if there are no sections wrap everything in a default div
   // with appropriate class names from meta
   if ($sections.length === 0) {
-    const div = $('<div>').addClass('default');
+    const div = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
       context.content.meta.class.split(',').forEach((c) => {
-        div.addClass(c.trim());
+        div.classList.add(c.trim());
       });
     }
-    $(document.body).children().wrapAll(div);
+    wrapNodes(div, document.body.childNodes);
   }
-  */
 
   // ensure content.data is present
   content.data = content.data || {};

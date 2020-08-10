@@ -34,6 +34,73 @@ describe('Testing pre requirements for main function', () => {
 });
 
 describe('Testing pre.js', () => {
+  it('Body content is wrapped in a div', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok('A div must have been added', div);
+    assert.equal(div.innerHTML, '<h1>Title</h1>');
+  });
+
+  it('Div is wrapped with class name', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {
+          class: 'customcssclass',
+        },
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div.classList.contains('customcssclass'));
+  });
+
+  it('Div is wrapped with multiple class names', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {
+          class: 'customcssclass, customcssclass2',
+        },
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div.classList.contains('customcssclass'));
+    assert.ok(div.classList.contains('customcssclass2'));
+  });
+
+  if('Section div gets custom class', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><h1>Title</h1></div></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {
+          class: 'customcssclass',
+        },
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div.classList.contains('customcssclass'));
+  });
+
   it('Meta description is extracted from first <p> with 10 or more words', () => {
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
