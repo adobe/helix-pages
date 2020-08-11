@@ -1,3 +1,11 @@
+# [2.9.0](https://github.com/adobe/helix-pages/compare/v2.8.1...v2.9.0) (2020-08-11)
+
+
+### Features
+
+* **feed:** include link, title, and updated for each entry ([6597456](https://github.com/adobe/helix-pages/commit/6597456436f16784400099763033e8de19174a69))
+* **feeds:** add rough support for ESI-based feed generation ([808fd85](https://github.com/adobe/helix-pages/commit/808fd8570b6d004854abb4c4c6f4a5a6852a3bde))
+
 ## [2.8.1](https://github.com/adobe/helix-pages/compare/v2.8.0...v2.8.1) (2020-08-11)
 
 
