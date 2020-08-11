@@ -68,3 +68,7 @@ function takeMeThere() {
 <input onkeyup="change()" type="text" id="giturl">
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
 <span id="alert" class="alert" style="display:none"></span>
+
+## Do more
+
+- [Add an Atom feed to your site](docs/feed.md)

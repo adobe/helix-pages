@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
+    "@adobe/helix-fetch": "1.9.1",
     "@adobe/helix-pipeline": "10.2.4",
     "@adobe/helix-shared": "7.10.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
