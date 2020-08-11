@@ -10,7 +10,7 @@ You need a data source which lists page URLs, page titles, and page update times
 
 1. Add a file `feed.xml` to the root of your GitHub repository. You can use the [template](#xml-template) below.
 2. Replace the `Example Feed` with the name of your site. The value of this tag will be shown to users in teir feed readers
-3. Replace the `https://example.org/` (both occurences) mith the URL of your site
+3. Replace the `https://example.org/` (both occurences) with the URL of your site
 4. Replace the URL parameter values after `/cgi-bin/feed.xml` with:
   * `src` should be the URL encoded relative path of your JSON data source (note how you an use `limit` to control how many articles to show)
   * `id` should be the name of the property in your JSON feed that has the path of the page (something like `en/publish/2020/08/03/adobe-portfolio-is-now-free-for-1-year-for-2020-college-grads.html`)
