@@ -1,3 +1,25 @@
+# [3.0.0](https://github.com/adobe/helix-pages/compare/v2.9.0...v3.0.0) (2020-08-11)
+
+
+### Bug Fixes
+
+* **embed:** increase robustness ([bd9b7e6](https://github.com/adobe/helix-pages/commit/bd9b7e6b62a02cf2bceb5b39d588deb50da6fa8a))
+* **feed:** wrap feed entries with CDATA ([9f1d616](https://github.com/adobe/helix-pages/commit/9f1d6164fba4ca91af5f28a4c78a84b5b9713c16))
+
+
+### Features
+
+* **embed:** add directory basename to embed class ([f888ae4](https://github.com/adobe/helix-pages/commit/f888ae4cc5cfca8d57a63f10058ef6bfa7824a5a))
+* **embed:** add embed class to internal embeds ([4ba772f](https://github.com/adobe/helix-pages/commit/4ba772f8beccaa4c33a6a036278f4d1f1223fa92))
+* **embed:** add wrapping div around internal embeds ([34cce9a](https://github.com/adobe/helix-pages/commit/34cce9ab1d7659b66fd26999414895f6fe36700c))
+* **embeds:** include embedded file basename ([96b574b](https://github.com/adobe/helix-pages/commit/96b574b6e489cc5c1e4a4392c8d2846ce5836102)), closes [#408](https://github.com/adobe/helix-pages/issues/408)
+* **html:** add div.embed-internal around internal embeds ([438d7ca](https://github.com/adobe/helix-pages/commit/438d7ca428fcac004e927b1945335adb12f87dc8))
+
+
+### BREAKING CHANGES
+
+* **embed:** fixes #408
+
 # [2.9.0](https://github.com/adobe/helix-pages/compare/v2.8.1...v2.9.0) (2020-08-11)
 
 
