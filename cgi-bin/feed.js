@@ -38,7 +38,9 @@ function loc(host, hit) {
     <id>${host}/${hit.id}</id>
     <title>${hit.title}</title>
     <updated>${hit.updated.toISOString()}</updated>
-    <content><esi:include src="/${hit.id.replace(/\.html$/, '.embed.html')}"></esi:include></content>
+    <content><![CDATA[
+      <esi:include src="/${hit.id.replace(/\.html$/, '.embed.html')}"></esi:include>
+   ]]></content>
   </entry>
 `;
 }
