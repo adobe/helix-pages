@@ -45,6 +45,7 @@ describe('Testing pre.js', () => {
 
     pre(context);
     assert.equal(context.content.meta.basename, 'foo');
+    assert.equal(context.content.meta.dirname, 'components');
   });
 
   it('Basename stays cool even with special chars', () => {
@@ -66,6 +67,7 @@ describe('Testing pre.js', () => {
 
     pre(context);
     assert.equal(context.content.meta.basename, 'foo');
+    assert.equal(context.content.meta.dirname, 'components');
   });
 
   it('Dirname gets extracted, too', () => {
