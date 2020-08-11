@@ -19,8 +19,10 @@ const preHTML = require('./html.pre').pre;
 function pre(context) {
   preHTML(context);
 
-  const [basename] = context.request.pathInfo.split('/').pop().split('.');
-  context.content.meta.basename = basename.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const [filename, dirname] = context.request.pathInfo.split('/').reverse();
+  const [basename] = filename.split('.');
+  context.content.meta.basename = (basename || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  context.content.meta.dirname = (dirname || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 module.exports.pre = pre;

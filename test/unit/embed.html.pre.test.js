@@ -67,4 +67,48 @@ describe('Testing pre.js', () => {
     pre(context);
     assert.equal(context.content.meta.basename, 'foo');
   });
+
+  it('Dirname gets extracted, too', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: {
+        headers: {
+          host: 'foo.bar',
+          'hlx-forwarded-host': 'www.foo.bar, foo-baz.hlx.page',
+        },
+        url: '/baz.html',
+        pathInfo: '/en/promotions/xyz.html',
+      },
+    };
+
+    pre(context);
+    assert.equal(context.content.meta.basename, 'xyz');
+    assert.equal(context.content.meta.dirname, 'promotions');
+  });
+
+  it('Null test', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: {
+        headers: {
+          host: 'foo.bar',
+          'hlx-forwarded-host': 'www.foo.bar, foo-baz.hlx.page',
+        },
+        url: '/baz.html',
+        pathInfo: '',
+      },
+    };
+
+    pre(context);
+    assert.equal(context.content.meta.basename, '');
+    assert.equal(context.content.meta.dirname, '');
+  });
 });
