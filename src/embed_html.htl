@@ -1,1 +1,3 @@
+<div class="embed embed-internal embed-internal-${content.meta.basename} embed-internal-${content.meta.dirame}">
 ${content.document.body}
+</div>
