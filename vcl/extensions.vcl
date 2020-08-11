@@ -11,7 +11,13 @@
 #
 
 sub hlx_type_pipeline_before {
-    set req.http.X-Dispatch-NoCache = "true";
+    # A non-production XFH header looks like: "repo--user.hlx.page"
+    # If you have an outer CDN, then it looks like "www.mydomain.com, repo--user.hlx.page"
+    # The filter below tests if you have no outer CDN and turns on the development mode
+    # caching (i.e. disables caching in helix-dispatch)
+    if(regsuball(regsuball(req.http.x-forwarded-host, "[^,]*(\.hlx(-[0-9]+)?\.page|\.project\-helix\.page|\.fastlydemo\.net)", ""), "[, ]", "") == "") {
+        set req.http.X-Dispatch-NoCache = "true";
+    }
 }
 sub hlx_type_pipeline_after {}
 

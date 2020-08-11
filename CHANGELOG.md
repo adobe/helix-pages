@@ -1,3 +1,19 @@
+# [2.8.0](https://github.com/adobe/helix-pages/compare/v2.7.6...v2.8.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.1 ([aa4fe76](https://github.com/adobe/helix-pages/commit/aa4fe7614de1b3508066587ba9430ddeddc464b4))
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.2 ([39430ac](https://github.com/adobe/helix-pages/commit/39430ac97ada5b011835f66e42462b94a3112957))
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.3 ([fbc19e0](https://github.com/adobe/helix-pages/commit/fbc19e0c317252dbad816516d42235d73bbc7d85))
+* **deps:** update external fixes ([664b084](https://github.com/adobe/helix-pages/commit/664b084210662260ddbe3dd65a74a80e2b5cd026))
+* **vcl:** ensure test domains are considered, too ([8b55915](https://github.com/adobe/helix-pages/commit/8b5591556536c91f214dc94bd96a4a11cd470e0e)), closes [#402](https://github.com/adobe/helix-pages/issues/402)
+
+
+### Features
+
+* **vcl:** enable caching on sites with an outer CDN ([fade111](https://github.com/adobe/helix-pages/commit/fade1111591e02cb1e3de296161363e25428403a)), closes [#402](https://github.com/adobe/helix-pages/issues/402)
+
 ## [2.7.6](https://github.com/adobe/helix-pages/compare/v2.7.5...v2.7.6) (2020-07-30)
 
 
