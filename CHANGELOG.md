@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/adobe/helix-pages/compare/v3.0.0...v3.0.1) (2020-08-14)
+
+
+### Bug Fixes
+
+* **embed:** typo ([8722da3](https://github.com/adobe/helix-pages/commit/8722da35f98e5e22b72f0e89d5bfc6bf2e3d2f10))
+
 # [3.0.0](https://github.com/adobe/helix-pages/compare/v2.9.0...v3.0.0) (2020-08-11)
 
 
