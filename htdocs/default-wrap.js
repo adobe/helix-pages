@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* global window, document */
 
 /**
  * Creates a tag with the given name and attributes.
@@ -19,7 +20,7 @@
 function createTag(name, attrs) {
   const el = document.createElement(name);
   if (typeof attrs === 'object') {
-    for (let [key, value] of Object.entries(attrs)) {
+    for (const [key, value] of Object.entries(attrs)) {
       el.setAttribute(key, value);
     }
   }
@@ -49,16 +50,16 @@ function wrapNodes(newparent, nodes) {
  * @param {array|string} selectors The selectors for the affected nodes
  * @param {HTMLElement} root The root element for the query selector (defaults to document)
  */
-function wrap(classname, selectors, root) {	
+function wrap(classname, selectors, root) {
   if (!Array.isArray(selectors)) {
-    selectors=[selectors];
+    // eslint-disable-next-line no-param-reassign
+    selectors = [selectors];
   }
-  const div = createTag('div', { 'class' : classname });
+  const div = createTag('div', { class: classname });
 
-  root = root || document;
   selectors.forEach((selector) => {
-    const elems = root.querySelectorAll(selector);
-    wrapNodes(div, elems);	
+    const elems = (root || document).querySelectorAll(selector);
+    wrapNodes(div, elems);
   });
 }
 
@@ -66,15 +67,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('main > div');
 
   if (sections[0]) {
-    // first section has a starting image: add title class and wrap all subsequent items inside a div
+    // first section has starting image: add title class and wrap all subsequent items inside a div
     if (sections[0].querySelector('p:first-child>img')) {
       sections[0].classList.add('title');
-      wrap('header', ':nth-child(1n+2)', section[0]);
+      wrap('header', ':nth-child(1n+2)', sections[0]);
     }
   }
 
   sections.forEach((section) => {
-    console.log(section);
     // sections consisting of only one image
     if (!section.classList.contains('title')
       && section['data-hlx-types'] === 'has-only-image') {
