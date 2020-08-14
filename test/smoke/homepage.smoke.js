@@ -85,7 +85,25 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         .then((response) => {
           expect(response).to.be.html;
           expect(response).to.have.status(200);
+          expect(response).to.have.header('cache-control', /private/);
         }).catch((e) => {
+          throw e;
+        });
+    });
+
+    it('README gets delivered as Raw', async () => {
+      await chai
+        .request(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}`)
+        .get('/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
+        .set('X-Backend-URL', '/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
+        .set('X-Request-Type', 'Static/Redirect')
+        .then((response) => {
+          expect(response).to.have.status(200);
+          expect(response).to.have.header('Cache-Control', 'max-age=31622400,immutable');
+          expect(response).to.have.header('Content-Length', '4117');
+          expect(response.text).to.have.string('Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)');
+        })
+        .catch((e) => {
           throw e;
         });
     });
@@ -133,6 +151,15 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
       expect($('header').length).to.be.equal(0);
       expect($('main').length).to.be.equal(0);
       expect($('footer').length).to.be.equal(0);
+
+      // embed wraps everything
+      expect($('div.embed-internal-index').length).to.equal(1);
+
+      $('div.embed-internal-index > div').each((i, div) => {
+        // in plain mode, root divs are decorated
+        // eslint-disable-next-line no-unused-expressions
+        expect(div.classList.contains('default')).to.be.true;
+      });
     });
   });
 });
