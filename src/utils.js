@@ -52,5 +52,5 @@ function wrapContent(newparent, node) {
 module.exports = {
   getOriginalHost,
   getAbsoluteUrl,
-  wrapContent
+  wrapContent,
 };

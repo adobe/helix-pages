@@ -18,7 +18,7 @@ const { wrapContent } = require('../../src/utils.js');
 describe('Testing wrapNodes', () => {
   it('Wraps one element in one div', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
-    const document = dom.window.document;
+    const { document } = dom.window;
 
     const div = document.createElement('div');
     wrapContent(div, document.body);
@@ -28,7 +28,7 @@ describe('Testing wrapNodes', () => {
 
   it('Wraps multiple elements in one div', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>T1</h1><h1>T2</h1><h1>T3</h1></body></html>');
-    const document = dom.window.document;
+    const { document } = dom.window;
 
     const div = document.createElement('div');
     wrapContent(div, document.body);
@@ -46,7 +46,7 @@ describe('Testing wrapNodes', () => {
       Final text
       <div>A div</div>
     </body></html>`);
-    const document = dom.window.document;
+    const { document } = dom.window;
 
     const div = document.createElement('div');
     wrapContent(div, document.body);

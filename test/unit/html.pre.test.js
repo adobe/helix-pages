@@ -64,7 +64,7 @@ describe('Testing pre.js', () => {
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div !== null, 'A div must have been added');
-    assert.equal(dom.window.document.body.childNodes.length, 1), 'Body must have only one child';
+    assert.equal(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
     assert.equal(div.innerHTML, `
       <h1>Title</h1>
       This is a text.
