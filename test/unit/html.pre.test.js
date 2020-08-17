@@ -217,4 +217,35 @@ describe('Testing pre.js', () => {
 
     assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
   });
+
+  it('Exposes body attributes as a map to be consumed in the HTL', () => {
+    const dom = new JSDOM(
+      `<html class="foo" bar="baz" data-qux="corge">
+        <body class="grault" garply="waldo" data-fred="plugh">
+          <div class="default">
+            <h1>Grault</h1>
+            <p>Garply</p>
+          </div>
+        </body>
+      </html>`,
+    );
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    assert.deepEqual(dom.window.document.documentElement.attributesMap, {
+      class: 'foo',
+      bar: 'baz',
+      'data-qux': 'corge',
+    });
+    assert.deepEqual(dom.window.document.body.attributesMap, {
+      class: 'grault',
+      garply: 'waldo',
+      'data-fred': 'plugh',
+    });
+  });
 });

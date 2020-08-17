@@ -22,7 +22,15 @@ function pre(context) {
   const { document } = content;
   const $ = jquery(document.defaultView);
 
-  const $sections = $(document.body).children('div');
+  // Expose the html & body attributes so they can be used in the HTL
+  [document.documentElement, document.body].forEach((el) => {
+    el.attributesMap = [...el.attributes].reduce((map, attr) => {
+      map[attr.name] = attr.value;
+      return map;
+    }, {});
+  });
+
+  let $sections = $(document.body).children('div');
 
   // first section has a starting image: add title class and wrap all subsequent items inside a div
   $sections
@@ -54,6 +62,7 @@ function pre(context) {
       });
     }
     $(document.body).children().wrapAll(div);
+    $sections = $(document.body).children('div');
   }
 
   // ensure content.data is present
