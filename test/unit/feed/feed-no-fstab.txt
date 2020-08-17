@@ -1,0 +1,21 @@
+  <updated>2020-06-02T13:46:11.429Z</updated>
+  <entry>
+    <id>https://myhost.com/ms/1.html</id>
+    <title>#HonorHeroes with Creativity During COVID-19</title>
+    <updated>2020-04-14T00:00:00.000Z</updated>
+    <content><esi:include src="/ms/1.embed.html"></esi:include></content>
+  </entry>
+
+  <entry>
+    <id>https://myhost.com/ms/2.html</id>
+    <title>Business Resilience: Leading Through Change</title>
+    <updated>2020-04-07T00:00:00.000Z</updated>
+    <content><esi:include src="/ms/2.embed.html"></esi:include></content>
+  </entry>
+
+  <entry>
+    <id>https://myhost.com/g/3.html</id>
+    <title>Study: Where is Personalization Missing the Mark?</title>
+    <updated>2020-05-27T00:00:00.000Z</updated>
+    <content><esi:include src="/g/3.embed.html"></esi:include></content>
+  </entry>
