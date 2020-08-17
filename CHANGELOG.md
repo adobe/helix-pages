@@ -1,3 +1,18 @@
+# [3.1.0](https://github.com/adobe/helix-pages/compare/v3.0.2...v3.1.0) (2020-08-17)
+
+
+### Bug Fixes
+
+* properly adjust body and html tag properties for url markup match ([e18a8a9](https://github.com/adobe/helix-pages/commit/e18a8a9c078f7df66afde400c9775e82d8f21231))
+* properly adjust body and html tag properties for url markup match ([1a3ac61](https://github.com/adobe/helix-pages/commit/1a3ac61a7a5cf7e0966b964c9e09a950b191ebfc))
+
+
+### Features
+
+* **markup:** add helix markup properties to the html root node ([8217fd3](https://github.com/adobe/helix-pages/commit/8217fd3dd74b649b98d9ee624dcec8aa222f2a31))
+* **markup:** add helix markup properties to the html root node ([8d1726e](https://github.com/adobe/helix-pages/commit/8d1726ed5caad9ae2ed8545587c61fabecd2f4e3))
+* **markup:** add helix markup properties to the html root node ([b434cc8](https://github.com/adobe/helix-pages/commit/b434cc841ee41fded75551eec055ba421b80fa5f)), closes [adobe/theblog#241](https://github.com/adobe/theblog/issues/241)
+
 ## [3.0.2](https://github.com/adobe/helix-pages/compare/v3.0.1...v3.0.2) (2020-08-14)
 
 
