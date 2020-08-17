@@ -9,23 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const { getAbsoluteUrl } = require('./utils.js');
-
-/**
- * Wraps nodes with a new parent node.
- * @param {array} nodes The nodes to wrap
- * @param {node} newparent The new parent node
- */
-function wrapNodes(newparent, nodes) {
-  nodes.forEach((el) => {
-    newparent.appendChild(el.cloneNode(true));
-    if (newparent.children.length !== 1) {
-      el.parentNode.removeChild(el);
-    } else {
-      el.parentNode.replaceChild(newparent, el);
-    }
-  });
-}
+const { getAbsoluteUrl, wrapContent } = require('./utils.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -46,7 +30,7 @@ function pre(context) {
         div.classList.add(c.trim());
       });
     }
-    wrapNodes(div, document.body.childNodes);
+    wrapContent(div, document.body);
   }
 
   // ensure content.data is present

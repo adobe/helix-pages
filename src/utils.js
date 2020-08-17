@@ -38,7 +38,19 @@ function getAbsoluteUrl(headers, url) {
     : url;
 }
 
+/**
+ * Wraps the content of node with a new parent node.
+ * @param {node} node The content of the node to wrap
+ * @param {node} newparent The new parent node
+ */
+function wrapContent(newparent, node) {
+  newparent.innerHTML = node.innerHTML;
+  node.innerHTML = '';
+  node.appendChild(newparent);
+}
+
 module.exports = {
   getOriginalHost,
   getAbsoluteUrl,
+  wrapContent
 };
