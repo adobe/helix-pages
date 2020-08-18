@@ -1,3 +1,3 @@
-<div class="embed embed-internal embed-internal-${content.meta.basename} embed-internal-${content.meta.dirname}">
+<div class="embed embed-internal ${context.content.document.body.className || ''}">
 ${content.document.body}
 </div>
