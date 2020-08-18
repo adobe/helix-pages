@@ -45,8 +45,30 @@ describe('Testing pre.js', () => {
     pre(context);
 
     const div = dom.window.document.querySelector('div');
-    assert.ok('A div must have been added', div);
+    assert.ok(div, 'A div must have been added');
     assert.equal(div.innerHTML, '<h1>Title</h1>');
+  });
+
+  it('Mutliline and text node body content is wrapped in a div', () => {
+    const dom = new JSDOM(`<html><head><title>Foo</title></head><body>
+      <h1>Title</h1>
+      This is a text.
+    </body></html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div !== null, 'A div must have been added');
+    assert.equal(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
+    assert.equal(div.innerHTML, `
+      <h1>Title</h1>
+      This is a text.
+    `);
   });
 
   it('Div is wrapped with class name', () => {

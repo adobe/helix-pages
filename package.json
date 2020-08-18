@@ -28,7 +28,6 @@
     "@adobe/openwhisk-action-utils": "4.2.3",
     "algoliasearch": "4.4.0",
     "ferrum": "1.7.0",
-    "jquery": "3.5.1",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
     "yaml": "1.10.0"
@@ -47,6 +46,7 @@
     "eslint-plugin-header": "3.0.0",
     "eslint-plugin-import": "2.22.0",
     "fs-extra": "9.0.1",
+    "jquery": "3.5.1",
     "jsdom": "16.4.0",
     "mocha": "7.2.0",
     "mocha-junit-reporter": "2.0.0",
