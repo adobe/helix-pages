@@ -1,0 +1,45 @@
+  <updated>2020-08-03T00:00:00.000Z</updated>
+  <entry>
+    <id>https://blog.adobe.com/en/publish/2020/08/03/adobe-portfolio-is-now-free-for-1-year-for-2020-college-grads.html</id>
+    <title>Adobe Portfolio is Now Free for 1 Year for 2020 College Grads</title>
+    <updated>2020-08-03T00:00:00.000Z</updated>
+    <content><![CDATA[
+      <esi:include src="/en/publish/2020/08/03/adobe-portfolio-is-now-free-for-1-year-for-2020-college-grads.embed.html"></esi:include>
+   ]]></content>
+  </entry>
+
+  <entry>
+    <id>https://blog.adobe.com/en/publish/2020/08/03/cai-achieves-milestone-white-paper-sets-the-standard-for-content-attribution.html</id>
+    <title>CAI Achieves Milestone: White Paper Sets the Standard for Content Attribution</title>
+    <updated>2020-08-03T00:00:00.000Z</updated>
+    <content><![CDATA[
+      <esi:include src="/en/publish/2020/08/03/cai-achieves-milestone-white-paper-sets-the-standard-for-content-attribution.embed.html"></esi:include>
+   ]]></content>
+  </entry>
+
+  <entry>
+    <id>https://blog.adobe.com/en/publish/2020/08/03/midnight-gospel-on-netflix.html</id>
+    <title>Midnight Gospel on Netflix Animated by Titmouse</title>
+    <updated>2020-08-03T00:00:00.000Z</updated>
+    <content><![CDATA[
+      <esi:include src="/en/publish/2020/08/03/midnight-gospel-on-netflix.embed.html"></esi:include>
+   ]]></content>
+  </entry>
+
+  <entry>
+    <id>https://blog.adobe.com/en/publish/2020/08/03/tapping-into-the-power-of-ai-to-drive-better-b2b-event-marketing.html</id>
+    <title>Tapping into the Power of AI to Drive Better B2B Event Marketing</title>
+    <updated>2020-08-03T00:00:00.000Z</updated>
+    <content><![CDATA[
+      <esi:include src="/en/publish/2020/08/03/tapping-into-the-power-of-ai-to-drive-better-b2b-event-marketing.embed.html"></esi:include>
+   ]]></content>
+  </entry>
+
+  <entry>
+    <id>https://blog.adobe.com/en/publish/2020/08/03/the-american-red-cross-life-saving-work-using-digital-experiences.html</id>
+    <title>The American Red Cross: Life-saving work using digital experiences</title>
+    <updated>2020-08-03T00:00:00.000Z</updated>
+    <content><![CDATA[
+      <esi:include src="/en/publish/2020/08/03/the-american-red-cross-life-saving-work-using-digital-experiences.embed.html"></esi:include>
+   ]]></content>
+  </entry>

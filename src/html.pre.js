@@ -37,6 +37,14 @@ function pre(context) {
   const { document } = content;
   const $sections = document.querySelectorAll('body > div');
 
+  // Expose the html & body attributes so they can be used in the HTL
+  [document.documentElement, document.body].forEach((el) => {
+    el.attributesMap = [...el.attributes].reduce((map, attr) => {
+      map[attr.name] = attr.value;
+      return map;
+    }, {});
+  });
+
   // if there are no sections wrap everything in a div
   // with appropriate class names from meta
   if ($sections.length === 0) {

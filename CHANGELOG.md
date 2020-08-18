@@ -1,3 +1,85 @@
+# [3.1.0](https://github.com/adobe/helix-pages/compare/v3.0.2...v3.1.0) (2020-08-17)
+
+
+### Bug Fixes
+
+* properly adjust body and html tag properties for url markup match ([e18a8a9](https://github.com/adobe/helix-pages/commit/e18a8a9c078f7df66afde400c9775e82d8f21231))
+* properly adjust body and html tag properties for url markup match ([1a3ac61](https://github.com/adobe/helix-pages/commit/1a3ac61a7a5cf7e0966b964c9e09a950b191ebfc))
+
+
+### Features
+
+* **markup:** add helix markup properties to the html root node ([8217fd3](https://github.com/adobe/helix-pages/commit/8217fd3dd74b649b98d9ee624dcec8aa222f2a31))
+* **markup:** add helix markup properties to the html root node ([8d1726e](https://github.com/adobe/helix-pages/commit/8d1726ed5caad9ae2ed8545587c61fabecd2f4e3))
+* **markup:** add helix markup properties to the html root node ([b434cc8](https://github.com/adobe/helix-pages/commit/b434cc841ee41fded75551eec055ba421b80fa5f)), closes [adobe/theblog#241](https://github.com/adobe/theblog/issues/241)
+
+## [3.0.2](https://github.com/adobe/helix-pages/compare/v3.0.1...v3.0.2) (2020-08-14)
+
+
+### Bug Fixes
+
+* **docs:** trigger publish ([7d2e08b](https://github.com/adobe/helix-pages/commit/7d2e08b1e410f65a6552a084fa7ac050ced8cf8c))
+
+## [3.0.1](https://github.com/adobe/helix-pages/compare/v3.0.0...v3.0.1) (2020-08-14)
+
+
+### Bug Fixes
+
+* **embed:** typo ([8722da3](https://github.com/adobe/helix-pages/commit/8722da35f98e5e22b72f0e89d5bfc6bf2e3d2f10))
+
+# [3.0.0](https://github.com/adobe/helix-pages/compare/v2.9.0...v3.0.0) (2020-08-11)
+
+
+### Bug Fixes
+
+* **embed:** increase robustness ([bd9b7e6](https://github.com/adobe/helix-pages/commit/bd9b7e6b62a02cf2bceb5b39d588deb50da6fa8a))
+* **feed:** wrap feed entries with CDATA ([9f1d616](https://github.com/adobe/helix-pages/commit/9f1d6164fba4ca91af5f28a4c78a84b5b9713c16))
+
+
+### Features
+
+* **embed:** add directory basename to embed class ([f888ae4](https://github.com/adobe/helix-pages/commit/f888ae4cc5cfca8d57a63f10058ef6bfa7824a5a))
+* **embed:** add embed class to internal embeds ([4ba772f](https://github.com/adobe/helix-pages/commit/4ba772f8beccaa4c33a6a036278f4d1f1223fa92))
+* **embed:** add wrapping div around internal embeds ([34cce9a](https://github.com/adobe/helix-pages/commit/34cce9ab1d7659b66fd26999414895f6fe36700c))
+* **embeds:** include embedded file basename ([96b574b](https://github.com/adobe/helix-pages/commit/96b574b6e489cc5c1e4a4392c8d2846ce5836102)), closes [#408](https://github.com/adobe/helix-pages/issues/408)
+* **html:** add div.embed-internal around internal embeds ([438d7ca](https://github.com/adobe/helix-pages/commit/438d7ca428fcac004e927b1945335adb12f87dc8))
+
+
+### BREAKING CHANGES
+
+* **embed:** fixes #408
+
+# [2.9.0](https://github.com/adobe/helix-pages/compare/v2.8.1...v2.9.0) (2020-08-11)
+
+
+### Features
+
+* **feed:** include link, title, and updated for each entry ([6597456](https://github.com/adobe/helix-pages/commit/6597456436f16784400099763033e8de19174a69))
+* **feeds:** add rough support for ESI-based feed generation ([808fd85](https://github.com/adobe/helix-pages/commit/808fd8570b6d004854abb4c4c6f4a5a6852a3bde))
+
+## [2.8.1](https://github.com/adobe/helix-pages/compare/v2.8.0...v2.8.1) (2020-08-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.4 ([6c7232f](https://github.com/adobe/helix-pages/commit/6c7232f00a3bc44251b98a4bb90a7ca3a6c76192))
+
+# [2.8.0](https://github.com/adobe/helix-pages/compare/v2.7.6...v2.8.0) (2020-08-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.1 ([aa4fe76](https://github.com/adobe/helix-pages/commit/aa4fe7614de1b3508066587ba9430ddeddc464b4))
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.2 ([39430ac](https://github.com/adobe/helix-pages/commit/39430ac97ada5b011835f66e42462b94a3112957))
+* **deps:** update dependency @adobe/helix-pipeline to v10.2.3 ([fbc19e0](https://github.com/adobe/helix-pages/commit/fbc19e0c317252dbad816516d42235d73bbc7d85))
+* **deps:** update external fixes ([664b084](https://github.com/adobe/helix-pages/commit/664b084210662260ddbe3dd65a74a80e2b5cd026))
+* **vcl:** ensure test domains are considered, too ([8b55915](https://github.com/adobe/helix-pages/commit/8b5591556536c91f214dc94bd96a4a11cd470e0e)), closes [#402](https://github.com/adobe/helix-pages/issues/402)
+
+
+### Features
+
+* **vcl:** enable caching on sites with an outer CDN ([fade111](https://github.com/adobe/helix-pages/commit/fade1111591e02cb1e3de296161363e25428403a)), closes [#402](https://github.com/adobe/helix-pages/issues/402)
+
 ## [2.7.6](https://github.com/adobe/helix-pages/compare/v2.7.5...v2.7.6) (2020-07-30)
 
 
