@@ -11,7 +11,6 @@
  */
 /* global describe, it */
 const assert = require('assert');
-const { JSDOM } = require('jsdom');
 
 const { pre } = require('../../src/embed_html.pre.js');
 
@@ -24,4 +23,3 @@ describe('Testing pre requirements for main function', () => {
     assert.equal('function', typeof pre);
   });
 });
-
