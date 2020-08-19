@@ -15,10 +15,14 @@ sub hlx_type_pipeline_before {
     # If you have an outer CDN, then it looks like "www.mydomain.com, repo--user.hlx.page"
     # The filter below tests if you have no outer CDN and turns on the development mode
     # caching (i.e. disables caching in helix-dispatch)
-    if(regsuball(regsuball(req.http.x-forwarded-host, "[^,]*(\.hlx(-[0-9]+)?\.page|\.project\-helix\.page|\.fastlydemo\.net)", ""), "[, ]", "") == "") {
-        set req.http.X-Dispatch-NoCache = "true";
-    }
+    # if (regsuball(regsuball(req.http.x-forwarded-host, "[^,]*(\.hlx(-[0-9]+)?\.page|\.project\-helix\.page|\.fastlydemo\.net)", ""), "[, ]", "") == "") {
+    #    set req.http.X-Dispatch-NoCache = "true";
+    #}
+
+    # for now, we disable all caching in dispatch.
+    set req.http.X-Dispatch-NoCache = "true";
 }
+
 sub hlx_type_pipeline_after {}
 
 # try to extract X-Owner, X-Repo, X-Ref from subdomain
@@ -30,7 +34,7 @@ sub hlx_type_pipeline_after {}
 sub hlx_owner_before {}
 sub hlx_owner_after {
     declare local var.o STRING;
-  
+
     # compute a potential owner in the subdomain
     # first, try 2x -- pattern (include branch)
     set var.o = if(req.http.host ~ "(.*)--(.*)--(.*)\..*\..*$", re.group.3, "");
