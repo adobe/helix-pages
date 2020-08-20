@@ -22,6 +22,14 @@ let bases = [];
 let changes = [];
 let base_urls = [];
 
+async function getText(data) {
+  if (!data.ok) {
+    assert.fail(`Unable to load ${data.url} (${data.status})
+${await data.text()}`);
+  }
+  return data.text();
+}
+
 async function getDoms() {
   const json = {
     limit: 20,
@@ -43,8 +51,8 @@ async function getDoms() {
     const changed = [thirdLvl, testDomain].join('.') + pathname;
 
     // fetch page before change and page after change; and construct DOM
-    bases.push(fetch(req_url).then((data) => data.text()));
-    return fetch(changed).then((data) => data.text());
+    bases.push(fetch(req_url).then(getText));
+    return fetch(changed).then(getText);
   });
   bases = await Promise.all(bases);
   changes = await Promise.all(changes);
