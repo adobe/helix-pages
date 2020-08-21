@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/adobe/helix-pages/compare/v3.1.1...v3.1.2) (2020-08-21)
+
+
+### Bug Fixes
+
+* **vcl:** revert caching directive for dispatch ([#433](https://github.com/adobe/helix-pages/issues/433)) ([0d7f974](https://github.com/adobe/helix-pages/commit/0d7f97435bcf81fc88fbfcf4774c23d4f93f5d89)), closes [#424](https://github.com/adobe/helix-pages/issues/424)
+
 ## [3.1.1](https://github.com/adobe/helix-pages/compare/v3.1.0...v3.1.1) (2020-08-20)
 
 
