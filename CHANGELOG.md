@@ -1,3 +1,10 @@
+## [3.1.5](https://github.com/adobe/helix-pages/compare/v3.1.4...v3.1.5) (2020-08-26)
+
+
+### Bug Fixes
+
+* **ci:** trigger release ([71151c0](https://github.com/adobe/helix-pages/commit/71151c0910aa8e9a375c1710a41669bbddd1d5a5))
+
 ## [3.1.4](https://github.com/adobe/helix-pages/compare/v3.1.3...v3.1.4) (2020-08-26)
 
 
