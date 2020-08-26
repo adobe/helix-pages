@@ -1,3 +1,11 @@
+## [3.1.4](https://github.com/adobe/helix-pages/compare/v3.1.3...v3.1.4) (2020-08-26)
+
+
+### Bug Fixes
+
+* **ci:** trigger release ([56a907e](https://github.com/adobe/helix-pages/commit/56a907e43f3e72e451310462a56ac2cf756dea8c))
+* **deps:** update dependency @adobe/helix-pipeline to v10.4.0 ([915a898](https://github.com/adobe/helix-pages/commit/915a898170a9a1049cd7b4eac3d6a0407e942944))
+
 ## [3.1.3](https://github.com/adobe/helix-pages/compare/v3.1.2...v3.1.3) (2020-08-21)
 
 
