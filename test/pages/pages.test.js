@@ -38,6 +38,9 @@ function newURL(obj) {
   return { req_url, changed };
 }
 
+/**
+ * function that turns most-visited pages into doms
+ */
 async function getDoms() {
   const json = {
     limit: 20,
