@@ -70,7 +70,7 @@ jobs:
           command: npx hlx build
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          command: npx hlx deploy --wsk-action-memory 512 --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
@@ -101,7 +101,7 @@ jobs:
             fi
 
 
-      - run: mkdir junit    
+      - run: mkdir junit
 
       - persist_to_workspace:
           root: /home/circleci
@@ -238,7 +238,7 @@ jobs:
 
       - run:
           name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          command: npx hlx deploy --wsk-action-memory 512 --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
 
       - run:
           name: Publish to Fastly
