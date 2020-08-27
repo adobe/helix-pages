@@ -1,3 +1,16 @@
+# [3.2.0](https://github.com/adobe/helix-pages/compare/v3.1.5...v3.2.0) (2020-08-27)
+
+
+### Bug Fixes
+
+* **ci:** increase action memory to 512mb ([#446](https://github.com/adobe/helix-pages/issues/446)) ([6c81619](https://github.com/adobe/helix-pages/commit/6c8161919bbbff8cece81532d286de9f2ddf9542))
+
+
+### Features
+
+* **pages.test.js:** add documentation ([#440](https://github.com/adobe/helix-pages/issues/440)) ([d6ee835](https://github.com/adobe/helix-pages/commit/d6ee835ee308bbb6efe93bc893d2aaf266a383f2))
+* **pages.test.js:** remove theblog-tests ([#441](https://github.com/adobe/helix-pages/issues/441)) ([88603a2](https://github.com/adobe/helix-pages/commit/88603a2d899115a9a77224a316ade76031ae23d9))
+
 ## [3.1.5](https://github.com/adobe/helix-pages/compare/v3.1.4...v3.1.5) (2020-08-26)
 
 
