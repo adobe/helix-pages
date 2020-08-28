@@ -53,7 +53,7 @@ class AzureIndex {
 }
 
 module.exports = {
-  match: (target) => target === 'azure',
+  match: (target) => target.startsWith('azure:'),
   create: (index, params) => {
     const {
       AZURE_SEARCH_API_KEY, AZURE_SEARCH_SERVICE_NAME,
