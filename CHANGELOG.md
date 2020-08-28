@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/adobe/helix-pages/compare/v3.2.0...v3.2.1) (2020-08-28)
+
+
+### Bug Fixes
+
+* **deps:** update [@adobe](https://github.com/adobe) fixes ([#438](https://github.com/adobe/helix-pages/issues/438)) ([8308587](https://github.com/adobe/helix-pages/commit/83085871396338185a9a32db95fe3f227fcf62c0))
+
 # [3.2.0](https://github.com/adobe/helix-pages/compare/v3.1.5...v3.2.0) (2020-08-27)
 
 
