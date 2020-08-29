@@ -36,8 +36,8 @@ $ node --max-old-space-size=256 index.js
     0: ExitFrame [pc: 0x5d165adbe3d]
     1: StubFrame [pc: 0x5d165add1b0]
 Security context: 0x290ab2f1e6c1 <JSObject>
-    2: /* anonymous */ [0x290a5dfe6e79] [/Users/tripod/codez/helix/helix-pages/test/loadtests/html.js:~9121] [pc=0x5d165df649c](this=0x290ac46f5c61 <Object map = 0x290acf4d9f99>,input=0x290acc4f84e9 <String[25]: raw.githubusercontent.com>)
-    3: /* anonymous */ [0x290a5dfe8521] [/Users/tripod/codez/helix/helix-pages/test/...
+    2: /* anonymous */ [0x290a5dfe6e79] [helix-pages/test/loadtests/html.js:~9121] [pc=0x5d165df649c](this=0x290ac46f5c61 <Object map = 0x290acf4d9f99>,input=0x290acc4f84e9 <String[25]: raw.githubusercontent.com>)
+    3: /* anonymous */ [0x290a5dfe8521] [helix-pages/test/...
 
 FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
 ```
