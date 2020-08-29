@@ -12,7 +12,7 @@ Archive:  html.zip
 ```
 2. run the test with 256mb memory: 
 ```console
-$ node --max-old-space-size=256 index.js
+$ NODE_HEAPDUMP_OPTIONS=nosignal node --max-old-space-size=90 --expose-gc index.js
 1 131178496
 2 140517376
 3 140042240

@@ -12,19 +12,22 @@
 /* eslint-disable no-console */
 
 const nock = require('nock');
+const heapdump = require('heapdump');
 const { main } = require('./dist/html.js');
 
-nock('https://raw.githubusercontent.com')
+const scope1 = nock('https://raw.githubusercontent.com')
   .persist()
   .get(/.*/)
   .reply(404);
-nock('https://adobeioruntime.net')
+const scope2 = nock('https://adobeioruntime.net')
   .persist()
-  .get(/.*/)
-  .reply(404);
+  // .get(/.*/)
+  // .reply(404);
+  .get('/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=theblog&path=%2Fen%2Ftopics%2Frobohelp.md&ref=73776e581e4e2f80c2b95ab02ca514ed8b7481f5')
+  .reply(200, '# Welcome');
 
 async function task() {
-  await main({
+  const ret = await main({
     repo: 'theblog',
     owner: 'adobe',
     path: '/en/topics/robohelp.md',
@@ -33,7 +36,9 @@ async function task() {
     package: '6c8161919bbbff8cece81532d286de9f2ddf9542',
     branch: 'master',
     rootPath: '',
+    // LOG_LEVEL: 'debug',
     LOG_LEVEL: 'error',
+    HTTP_TIMEOUT: 10000,
   });
   // console.log(ret);
 }
@@ -42,7 +47,7 @@ let numInvocations = 0;
 
 async function request() {
   // eslint-disable-next-line no-constant-condition
-  while (true) {
+  while (numInvocations < 100) {
     numInvocations += 1;
     console.error(numInvocations, process.memoryUsage().rss);
     // eslint-disable-next-line no-await-in-loop
@@ -56,6 +61,11 @@ async function run() {
     tasks.push(request());
   }
   await Promise.all(tasks);
+  await scope1.done();
+  await scope2.done();
+  global.gc();
+  heapdump.writeSnapshot(`${Date.now()}.heapsnapshot`);
 }
 
 run().catch(console.error);
+// task().catch(console.error);
