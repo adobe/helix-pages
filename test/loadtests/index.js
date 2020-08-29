@@ -12,7 +12,7 @@
 /* eslint-disable no-console */
 
 const nock = require('nock');
-const { main } = require('./html.js');
+const { main } = require('./dist/html.js');
 
 nock('https://raw.githubusercontent.com')
   .persist()
@@ -41,6 +41,7 @@ async function task() {
 let numInvocations = 0;
 
 async function request() {
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     numInvocations += 1;
     console.error(numInvocations, process.memoryUsage().rss);
