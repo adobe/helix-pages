@@ -1,0 +1,10 @@
+{
+  "name": "html",
+  "version": "1.0.0",
+  "description": "Lambda function of html",
+  "main": "html.js",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "nock": "^13.0.4"
+  }
+}

@@ -4,6 +4,7 @@ demos/*
 test/integration
 test/integration-with-cgi-bin
 test/tmp/*
+test/loadtests/dist/html.js
 tmp/*
 coverage/*
 google/*
