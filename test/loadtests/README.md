@@ -10,7 +10,11 @@ Archive:  html.zip
   inflating: package.json
   inflating: html.js
 ```
-2. run the test with 256mb memory: 
+2. start the mock server
+```console
+$ node server.js
+```
+3. run the test with 70mb memory: 
 ```console
 $ NODE_HEAPDUMP_OPTIONS=nosignal node --max-old-space-size=90 --expose-gc index.js
 1 131178496
@@ -41,3 +45,17 @@ Security context: 0x290ab2f1e6c1 <JSObject>
 
 FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
 ```
+
+### Results
+
+- running with nock quickly shows an OOME
+- running without nock and 70mb memory runs OOME after 1217 requests (http localhost, 20 concurrent, 404 for github, 200 for content proxy)
+- enabling epsagon traces uses more memory. using 80mb heap, runs w/o problems for 4000 requests
+- enabling coralogix doesn't change much
+
+### Conclusion:
+
+I don't think there is a memory leak. What affects the memory most is of course concurrency.
+The most likely reason for the process to run out of memory, is then the concurrency is too
+high.
+
