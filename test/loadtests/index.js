@@ -18,6 +18,7 @@ process.env.EPSAGON_SSL = 'FALSE';
 const crypto = require('crypto');
 const heapdump = require('heapdump');
 const cls = require('cls-hooked');
+// eslint-disable-next-line import/no-unresolved
 const { main } = require('./dist/html.js');
 
 const wskVars = cls.createNamespace('activation variables');
