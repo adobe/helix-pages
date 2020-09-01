@@ -1,6 +1,6 @@
 # How to add an Atom Feed to your Helix Pages website
 
-An Atom feed allows visitors to your site to subscrbe to updates and new pages, which increases repat visits and improves customer retention.
+An Atom feed allows visitors to your site to subscribe to updates and new pages, which increases repeat visits and improves customer retention.
 
 ## Prerequisites
 
