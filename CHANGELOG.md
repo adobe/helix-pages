@@ -1,3 +1,20 @@
+# [4.0.0](https://github.com/adobe/helix-pages/compare/v3.2.1...v4.0.0) (2020-09-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.4.2 ([5f07641](https://github.com/adobe/helix-pages/commit/5f07641549d6d03a169115894ca942632131d005))
+
+
+### Features
+
+* **sitemap:** remove sitemap.xml ([30ab8ef](https://github.com/adobe/helix-pages/commit/30ab8ef4c61950fcbcfe209f043a672239fdf5ca))
+
+
+### BREAKING CHANGES
+
+* **sitemap:** projects using this feature need to add their own sitemap.xml in the project repository.
+
 ## [3.2.1](https://github.com/adobe/helix-pages/compare/v3.2.0...v3.2.1) (2020-08-28)
 
 
