@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const fetchAPI = require('@adobe/helix-fetch');
+const escape = require('xml-escape');
 
 function createFetchContext() {
   /* istanbul ignore next */
@@ -36,7 +37,7 @@ const { getOriginalHost } = require('../src/utils');
 function loc(host, hit) {
   return `  <entry>
     <id>${host}/${hit.id}</id>
-    <title>${hit.title}</title>
+    <title>${escape(hit.title)}</title>
     <updated>${hit.updated.toISOString()}</updated>
     <content><![CDATA[
       <esi:include src="/${hit.id.replace(/\.html$/, '.embed.html')}"></esi:include>
