@@ -1,3 +1,10 @@
+## [4.0.3](https://github.com/adobe/helix-pages/compare/v4.0.2...v4.0.3) (2020-09-03)
+
+
+### Bug Fixes
+
+* **sitemap:** anticipate data format change ([#448](https://github.com/adobe/helix-pages/issues/448)) ([cb577c8](https://github.com/adobe/helix-pages/commit/cb577c8501652485cd71407035eda2a8014c0f34)), closes [#400](https://github.com/adobe/helix-pages/issues/400)
+
 ## [4.0.2](https://github.com/adobe/helix-pages/compare/v4.0.1...v4.0.2) (2020-09-03)
 
 
