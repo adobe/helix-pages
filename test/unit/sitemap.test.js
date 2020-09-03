@@ -149,6 +149,29 @@ describe('Sitemap Tests', () => {
     });
   });
 
+  describe('Index and fstab available (new data format)', () => {
+    beforeEach(() => {
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/helix-query.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'helix-query.yaml'));
+      nock('https://raw.githubusercontent.com')
+        .get('/me/repo/master/fstab.yaml')
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
+      nock('https://repo-me.project-helix.page')
+        .get('/en/query-index.json')
+        .query(true)
+        .replyWithFile(200, resolve(__dirname, 'sitemap', 'query-index-v2.json'));
+    });
+
+    it('Sitemap returns URLs without prefixes', async () => {
+      const response = await action.main(createParams());
+      assert.equal(response.statusCode, 200);
+      assert.equal(response.body, await fse.readFile(
+        resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
+      ));
+    });
+  });
+
   describe('Algolia provider test', () => {
     beforeEach(() => {
       nock('https://raw.githubusercontent.com')

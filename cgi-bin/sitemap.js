@@ -52,7 +52,8 @@ function createSearchProvider(index, params) {
         if (res.status !== 200) {
           return {};
         }
-        const hits = JSON.parse(res.body);
+        const json = JSON.parse(res.body);
+        const hits = json.data && Array.isArray(json.data) ? json.data : json;
         return {
           hits: hits.map((hit) => pick(hit, attributesToRetrieve)),
         };
