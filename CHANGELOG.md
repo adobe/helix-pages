@@ -1,3 +1,11 @@
+## [4.0.2](https://github.com/adobe/helix-pages/compare/v4.0.1...v4.0.2) (2020-09-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v10.5.1 ([#453](https://github.com/adobe/helix-pages/issues/453)) ([3ee04b7](https://github.com/adobe/helix-pages/commit/3ee04b7cfb34b7bd787be0bfafa97842d4e49f2b))
+* **feed:** escape xml in titles ([dbc68a7](https://github.com/adobe/helix-pages/commit/dbc68a7105453d7d704cd8f8432a531d5d53d119))
+
 ## [4.0.1](https://github.com/adobe/helix-pages/compare/v4.0.0...v4.0.1) (2020-09-01)
 
 
