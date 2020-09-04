@@ -1,3 +1,10 @@
+## [4.0.4](https://github.com/adobe/helix-pages/compare/v4.0.3...v4.0.4) (2020-09-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.3.0 ([bc58462](https://github.com/adobe/helix-pages/commit/bc5846246386cb25ea789d299db9e20564173b24))
+
 ## [4.0.3](https://github.com/adobe/helix-pages/compare/v4.0.2...v4.0.3) (2020-09-03)
 
 
