@@ -72,3 +72,4 @@ function takeMeThere() {
 ## Do more
 
 - [Add an Atom feed to your site](docs/feed.md)
+- [Add a Sitemap to your site](docs/sitemap.md)
