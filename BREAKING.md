@@ -12,6 +12,8 @@ in order to give a preview of upcoming breaking changes.
 Pipeline that enables the new version-lock feature
 
 - https://github.com/adobe/helix-pipeline/pull/840
+- `https://github.com/adobe/helix-pipeline.git#helix-lock-support`
+
 
 ### helix-dispatch
 
