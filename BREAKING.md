@@ -13,6 +13,14 @@ in order to give a preview of upcoming breaking changes.
 hlx publish --custom-vcl='vcl/extensions.vcl' --dispatchVersion=ci1939
 ```
 
+## Example Request
+
+```
+curl -sD - 'https://master--pages--adobe.99productrules.com/premiere/en/yts-livestream?a=5' \
+  -H 'x-ow-version-lock: content-proxy=content-proxy@ci830&gdocs2md=gdocs2md@ci1485' \
+  -H 'x-strain: breaking-september'
+```
+
 ## Selected Services
 
 ### helix-pipeline
