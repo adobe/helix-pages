@@ -31,7 +31,7 @@
     "jquery": "3.5.1",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
-    "xml-escape": "^1.1.0",
+    "xml-escape": "1.1.0",
     "yaml": "1.10.0"
   },
   "devDependencies": {
