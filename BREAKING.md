@@ -5,6 +5,14 @@ _DRAFT_
 This branch is a test to see how specific versions of helix services can be selected
 in order to give a preview of upcoming breaking changes.
 
+## How to publish
+
+**DON'T PUBLISH TO THE REAL PAGES Service** (yet)
+
+```
+hlx publish --custom-vcl='vcl/extensions.vcl' --dispatchVersion=ci1939
+```
+
 ## Selected Services
 
 ### helix-pipeline

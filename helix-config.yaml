@@ -19,5 +19,4 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-september-test
     content: https://github.com/adobe/helix-pages.git#breaking-september-test
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-september-test
-    package: tripod/8859415a707d98a7bf5872c74a61fc4513269850
     # version-lock: .....
