@@ -22,7 +22,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.1",
-    "@adobe/helix-pipeline": "10.5.1",
+    "@adobe/helix-pipeline": "https://github.com/adobe/helix-pipeline.git#helix-lock-support",
     "@adobe/helix-shared": "7.12.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.3.0",

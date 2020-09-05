@@ -14,3 +14,12 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     package: helix-pages/b316d674a1d0b5be59750f20aa8ab0d6f8f08048
+  # strain for breaking changes
+  - name: breaking-september
+    condition:
+      url.hostname=: breaking-september--pages--adobe.99productrules.com
+    code: https://github.com/adobe/helix-pages.git#breaking-september
+    content: https://github.com/adobe/helix-pages.git#breaking-september
+    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-september
+    package: tripod/f5c2344487e801fe0f72b474ec38e107fe8189c6
+    # version-lock: .....

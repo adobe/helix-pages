@@ -21,6 +21,11 @@ sub hlx_type_pipeline_before {
 
     # for now, we disable all caching in dispatch.
     set req.http.X-Dispatch-NoCache = "true";
+
+    if (req.http.X-Strain == "breaking-september") {
+        set req.http.x-ow-version-lock = "content-proxy=content-proxy@ci830&gdocs2md=gdocs2md@ci1485";
+        set req.http.X-Dispatch-Version = "ci1939";
+    }
 }
 
 sub hlx_type_pipeline_after {}
