@@ -154,12 +154,6 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
 
       // embed wraps everything
       expect($('div.embed-internal-index').length).to.equal(1);
-
-      $('div.embed-internal-index > div').each((i, div) => {
-        // in plain mode, root divs are decorated
-        // eslint-disable-next-line no-unused-expressions
-        expect(div.classList.contains('default')).to.be.true;
-      });
     });
   });
 });

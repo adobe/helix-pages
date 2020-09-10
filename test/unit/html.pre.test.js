@@ -45,9 +45,30 @@ describe('Testing pre.js', () => {
     pre(context);
 
     const div = dom.window.document.querySelector('div');
-    assert.ok('A div must have been added', div);
+    assert.ok(div, 'A div must have been added');
     assert.equal(div.innerHTML, '<h1>Title</h1>');
-    assert.ok(div.classList.contains('default'));
+  });
+
+  it('Mutliline and text node body content is wrapped in a div', () => {
+    const dom = new JSDOM(`<html><head><title>Foo</title></head><body>
+      <h1>Title</h1>
+      This is a text.
+    </body></html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div !== null, 'A div must have been added');
+    assert.equal(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
+    assert.equal(div.innerHTML, `
+      <h1>Title</h1>
+      This is a text.
+    `);
   });
 
   it('Div is wrapped with class name', () => {
@@ -64,7 +85,6 @@ describe('Testing pre.js', () => {
     pre(context);
 
     const div = dom.window.document.querySelector('div');
-    assert.ok(div.classList.contains('default'));
     assert.ok(div.classList.contains('customcssclass'));
   });
 
@@ -82,9 +102,22 @@ describe('Testing pre.js', () => {
     pre(context);
 
     const div = dom.window.document.querySelector('div');
-    assert.ok(div.classList.contains('default'));
     assert.ok(div.classList.contains('customcssclass'));
     assert.ok(div.classList.contains('customcssclass2'));
+  });
+
+  it('Section divs are left alone', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div class="customcssclass"><h1>Title</h1></div></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div.classList.contains('customcssclass'));
   });
 
   it('Meta description is extracted from first <p> with 10 or more words', () => {
