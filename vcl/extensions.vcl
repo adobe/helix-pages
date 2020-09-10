@@ -23,7 +23,7 @@ sub hlx_type_pipeline_before {
     set req.http.X-Dispatch-NoCache = "true";
 
     if (req.http.X-Strain == "breaking-september") {
-        set req.http.x-ow-version-lock = "content-proxy=content-proxy@ci830&gdocs2md=gdocs2md@ci1485&data-embed=data-embed@ci1003";
+        set req.http.x-ow-version-lock = "content-proxy=content-proxy@ci830&gdocs2md=gdocs2md@ci1542&data-embed=data-embed@ci1003";
         set req.http.X-Dispatch-Version = "ci1939";
     }
 }

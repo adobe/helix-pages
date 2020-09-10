@@ -23,7 +23,7 @@
   "dependencies": {
     "@adobe/helix-fetch": "1.9.1",
     "@adobe/helix-pipeline": "https://github.com/adobe/helix-pipeline.git#helix-lock-support",
-    "@adobe/helix-shared": "7.12.0",
+    "@adobe/helix-shared": "7.13.0",
     "@adobe/openwhisk-action-logger": "2.2.0",
     "@adobe/openwhisk-action-utils": "4.3.0",
     "algoliasearch": "4.4.0",
