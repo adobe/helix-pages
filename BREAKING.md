@@ -1,7 +1,5 @@
 # Breaking Changes
 
-_DRAFT_
-
 This branch is a test to see how specific versions of helix services can be selected
 in order to give a preview of upcoming breaking changes.
 
@@ -51,6 +49,14 @@ Google docs converter that has a slight different table handling.
 
 - https://github.com/adobe/helix-gdocs2md/pull/330
 - `/helix/helix-services/gdocs2md@ci1485`
+
+### helix-data-embed
+
+The response body is no longer a JSON array, 
+but an object that contains a limit, offset, total and data property. 
+
+- https://github.com/adobe/helix-data-embed/pull/136
+- `/helix/helix-services/data-embed@ci1003`
 
 # TODO:
 
