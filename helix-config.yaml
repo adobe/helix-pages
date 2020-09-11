@@ -13,7 +13,7 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: helix-pages/b316d674a1d0b5be59750f20aa8ab0d6f8f08048
+    package: helix-pages/21238e133b59c7051d93388dc7c1656a2aface84
   # strain for breaking changes
   - name: breaking-september
     condition:
