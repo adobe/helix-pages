@@ -1,3 +1,13 @@
+## [4.0.5](https://github.com/adobe/helix-pages/compare/v4.0.4...v4.0.5) (2020-09-11)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency xml-escape to 1.1.0 ([fc39f97](https://github.com/adobe/helix-pages/commit/fc39f97caf05a48f3666027d340fed618bdc3685))
+* **deps:** update dependency @adobe/helix-pipeline to v11 ([#457](https://github.com/adobe/helix-pages/issues/457)) ([21238e1](https://github.com/adobe/helix-pages/commit/21238e133b59c7051d93388dc7c1656a2aface84))
+* **deps:** update dependency @adobe/helix-shared to v7.12.0 ([ebe0bbc](https://github.com/adobe/helix-pages/commit/ebe0bbc49f7619c5fd712f4c826138a16507a78f))
+* **deps:** update dependency @adobe/helix-shared to v7.13.0 ([4669f59](https://github.com/adobe/helix-pages/commit/4669f594cacaf8ca575bcdda643f41a24410c3cf))
+
 ## [4.0.4](https://github.com/adobe/helix-pages/compare/v4.0.3...v4.0.4) (2020-09-04)
 
 
