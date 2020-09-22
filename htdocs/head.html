@@ -4,16 +4,31 @@
 <script src="https://d6uhzlpot4xwe.cloudfront.net/runtime/1.21/themes/wiper-fonts.gz.js"></script>
 <script src="/scrani.js"></script>
 <script>
-  function removeHeaderAndFooter () {
-    // workaound until the ESI is fixed
-    const header = document.querySelector("header");
-    const footer = document.querySelector("footer");
-    if (header.innerHTML == "/header.plain.html") header.innerHTML = "";
-    if (footer.innerHTML == "/footer.plain.html") footer.innerHTML = "";
+
+  function decoratePage() {
+    if (document.querySelector('main>div').className=='') {
+      document.querySelectorAll('main>div').forEach(($div, i) => {
+        if (i==0 && $div.querySelector(':scope>*:first-child>img')) {
+          const $h1=$div.querySelector('h1');
+          const $p=$div.querySelector('p:nth-of-type(2)');
+          $div.classList.add('title');
+          $divHeader=document.createElement('div');
+          $divHeader.classList.add('header');
+          $div.appendChild($divHeader);
+          if ($h1) $divHeader.appendChild($h1);
+          if ($p) $divHeader.appendChild($p);
+        } else {
+          $div.classList.add(($div.firstElementChild && $div.firstElementChild.tagName=='IMG')?'image':'default');
+        }
+      });
+    }
   }
 
+  window.addEventListener('DOMContentLoaded', (evt) => {
+    decoratePage();
+  })
+
   window.onload = function() {
-    removeHeaderAndFooter();
     scrani.onload();
   }
 
