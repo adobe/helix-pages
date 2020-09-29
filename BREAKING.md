@@ -45,10 +45,13 @@ Contentproxy that enables the new version-lock feature
 
 ### helix-gdocs2md
 
-Google docs converter that has a slight different table handling.
+https://github.com/adobe/helix-gdocs2md/pull/346
 
-- https://github.com/adobe/helix-gdocs2md/pull/330
-- `/helix/helix-services/gdocs2md@ci1485`
+- Google docs converter that has a slight different table handling.
+- Google docs supports author friendly urls
+
+- `/helix/helix-services/gdocs2md@ci1542`
+
 
 ### helix-data-embed
 
