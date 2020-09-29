@@ -21,5 +21,5 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-september
     content: https://github.com/adobe/helix-pages.git#breaking-september
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-september
-    package: tripod/e7c34a40ccd42458535baccc4b19ae44c65c23a2
+    package: tripod/64cb37cc8b92486697882c61828b287b80f9c608
     # version-lock: .....
