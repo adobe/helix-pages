@@ -1,3 +1,15 @@
+## [4.0.7](https://github.com/adobe/helix-pages/compare/v4.0.6...v4.0.7) (2020-09-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v11.2.3 ([9d347b5](https://github.com/adobe/helix-pages/commit/9d347b57c813290b4587403788e338e2b4b4c7ee))
+* **deps:** update dependency @adobe/helix-pipeline to v11.2.4 ([f6d4a4f](https://github.com/adobe/helix-pages/commit/f6d4a4f84b5625df96786944348e7563aef38f66))
+* **deps:** update dependency @adobe/helix-pipeline to v11.3.0 ([0dfd7a2](https://github.com/adobe/helix-pages/commit/0dfd7a23e7758dc93953ea8b7de69909fa5f0aa7))
+* **deps:** update dependency @adobe/helix-pipeline to v11.3.1 ([#479](https://github.com/adobe/helix-pages/issues/479)) ([67e6112](https://github.com/adobe/helix-pages/commit/67e61126e40e9cce55b8e324e46b3f7c9de6bdba))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.3.1 ([b17b771](https://github.com/adobe/helix-pages/commit/b17b7713c540bd9fb9f3c4fc6a8384aeae1bdb63))
+* **deps:** update external fixes ([db35862](https://github.com/adobe/helix-pages/commit/db35862a4ece4d1249bfdd08225c0a67037d887d))
+
 ## [4.0.6](https://github.com/adobe/helix-pages/compare/v4.0.5...v4.0.6) (2020-09-14)
 
 
