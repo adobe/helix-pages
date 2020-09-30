@@ -1,3 +1,20 @@
+# [4.1.0](https://github.com/adobe/helix-pages/compare/v4.0.7...v4.1.0) (2020-09-30)
+
+
+### Bug Fixes
+
+* **ci:** breaking changes for sempteber ([8b673e2](https://github.com/adobe/helix-pages/commit/8b673e27b0087f9ec24c2b37ccb6dd771246398e))
+* **deps:** update dependency @adobe/helix-pipeline to v11 ([#457](https://github.com/adobe/helix-pages/issues/457)) ([12e0806](https://github.com/adobe/helix-pages/commit/12e08069425cb5125d083997ab4662605079761f))
+* **deps:** update dependency @adobe/helix-pipeline to v11.2.3 ([bedb748](https://github.com/adobe/helix-pages/commit/bedb748c9260b1df9bd1d10c3af499ccecd57ba9))
+* **deps:** update dependency @adobe/helix-shared to v7.13.0 ([8275fbd](https://github.com/adobe/helix-pages/commit/8275fbd3fd1617ac66ae90e2be5ed4d0bef9260d))
+* **deps:** update external fixes ([3afd208](https://github.com/adobe/helix-pages/commit/3afd208eb25cb16cdf09e2f9c93ffedd383f5ce2))
+
+
+### Features
+
+* **deps:** use helix-pipeline v12 ([7f21335](https://github.com/adobe/helix-pages/commit/7f213357780b77da191f36a87b65335839289bd4))
+* **markup:** no default decoration ([#403](https://github.com/adobe/helix-pages/issues/403)) ([829980b](https://github.com/adobe/helix-pages/commit/829980b71e704a24d8e374f0a67e371d71135ddb))
+
 ## [4.0.7](https://github.com/adobe/helix-pages/compare/v4.0.6...v4.0.7) (2020-09-30)
 
 
