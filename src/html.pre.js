@@ -9,8 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const jquery = require('jquery');
-const { getAbsoluteUrl } = require('./utils.js');
+const { getAbsoluteUrl, wrapContent } = require('./utils.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
@@ -20,7 +19,7 @@ const { getAbsoluteUrl } = require('./utils.js');
 function pre(context) {
   const { request, content } = context;
   const { document } = content;
-  const $ = jquery(document.defaultView);
+  const $sections = document.querySelectorAll('body > div');
 
   // Expose the html & body attributes so they can be used in the HTL
   [document.documentElement, document.body].forEach((el) => {
@@ -30,39 +29,16 @@ function pre(context) {
     }, {});
   });
 
-  let $sections = $(document.body).children('div');
-
-  // first section has a starting image: add title class and wrap all subsequent items inside a div
-  $sections
-    .first()
-    .has('p:first-child>img')
-    .addClass('title')
-    .find(':nth-child(1n+2)')
-    .wrapAll('<div class="header"></div>');
-
-  // sections consisting of only one image
-  $sections
-    .filter('[data-hlx-types~="has-only-image"]')
-    .not('.title')
-    .addClass('image');
-
-  // sections without image and title class gets a default class
-  $sections
-    .not('.image')
-    .not('.title')
-    .addClass('default');
-
-  // if there are no sections wrap everything in a default div
+  // if there are no sections wrap everything in a div
   // with appropriate class names from meta
   if ($sections.length === 0) {
-    const div = $('<div>').addClass('default');
+    const div = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
       context.content.meta.class.split(',').forEach((c) => {
-        div.addClass(c.trim());
+        div.classList.add(c.trim());
       });
     }
-    $(document.body).children().wrapAll(div);
-    $sections = $(document.body).children('div');
+    wrapContent(div, document.body);
   }
 
   // ensure content.data is present
@@ -71,23 +47,15 @@ function pre(context) {
   // extract metadata
   const { meta = {} } = content;
   // description: text from paragraphs with 10 or more words
-  let match = false;
-  const desc = $sections
-    .find('p')
-    .map(function exractWords() {
-      if (match) {
-        // already found paragraph for description
-        return null;
+  let desc = [];
+  document.querySelectorAll('div > p').forEach((p) => {
+    if (desc.length === 0) {
+      const words = p.innerHTML.trim().split(/\s+/);
+      if (words.length >= 10) {
+        desc = desc.concat(words);
       }
-      const words = $(this).text().trim().split(/\s+/);
-      if (words.length < 10) {
-        // skip paragraphs with less than 10 words
-        return null;
-      }
-      match = true;
-      return words;
-    })
-    .toArray();
+    }
+  });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
   meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
