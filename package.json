@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -24,8 +24,7 @@
     "@adobe/helix-fetch": "1.9.1",
     "@adobe/helix-pipeline": "https://github.com/adobe/helix-pipeline.git#helix-lock-support",
     "@adobe/helix-shared": "7.13.0",
-    "@adobe/openwhisk-action-logger": "2.2.0",
-    "@adobe/openwhisk-action-utils": "4.3.0",
+    "@adobe/openwhisk-action-utils": "4.3.1",
     "algoliasearch": "4.5.1",
     "ferrum": "1.7.0",
     "lodash.pick": "4.4.0",
@@ -42,7 +41,7 @@
     "chai": "4.2.0",
     "chai-http": "4.3.0",
     "dotenv": "8.2.0",
-    "eslint": "7.9.0",
+    "eslint": "7.10.0",
     "eslint-plugin-header": "3.1.0",
     "eslint-plugin-import": "2.22.0",
     "fs-extra": "9.0.1",
