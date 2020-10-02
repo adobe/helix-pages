@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/adobe/helix-pages/compare/v4.1.0...v4.1.1) (2020-10-02)
+
+
+### Bug Fixes
+
+* **html:** guard against spaces in class names ([9f96dd4](https://github.com/adobe/helix-pages/commit/9f96dd44208ea7bafa7526b063339940fdf3825d)), closes [#482](https://github.com/adobe/helix-pages/issues/482)
+
 # [4.1.0](https://github.com/adobe/helix-pages/compare/v4.0.7...v4.1.0) (2020-09-30)
 
 
