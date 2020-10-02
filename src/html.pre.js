@@ -34,7 +34,7 @@ function pre(context) {
   if ($sections.length === 0) {
     const div = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
-      context.content.meta.class.split(',').forEach((c) => {
+      context.content.meta.class.split(/[ ,]/).forEach((c) => {
         div.classList.add(c.trim());
       });
     }
@@ -59,6 +59,8 @@ function pre(context) {
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
   meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
+
+  console.log(document);
 }
 
 module.exports.pre = pre;
