@@ -106,6 +106,24 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
+  it('Div is wrapped with multiple class names even when space separated', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {
+          class: 'customcssclass customcssclass2',
+        },
+      },
+      request,
+    };
+    pre(context);
+
+    const div = dom.window.document.querySelector('div');
+    assert.ok(div.classList.contains('customcssclass'));
+    assert.ok(div.classList.contains('customcssclass2'));
+  });
+
   it('Section divs are left alone', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><div class="customcssclass"><h1>Title</h1></div></body></html>');
     const context = {

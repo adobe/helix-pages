@@ -34,9 +34,12 @@ function pre(context) {
   if ($sections.length === 0) {
     const div = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
-      context.content.meta.class.split(',').forEach((c) => {
-        div.classList.add(c.trim());
-      });
+      context.content.meta.class.split(/[ ,]/)
+        .map((c) => c.trim())
+        .filter((c) => !!c)
+        .forEach((c) => {
+          div.classList.add(c);
+        });
     }
     wrapContent(div, document.body);
   }
