@@ -12,9 +12,11 @@ parameters:
   smoke_tests_only:
     type: boolean
     default: false
+    description: execute only the smoke tests
   publish_ci_version:
     type: string
     default: ""
+    description: the helix-publish ci version to use
 
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
