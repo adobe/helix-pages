@@ -8,6 +8,13 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
+parameters:
+  smoke_tests_only:
+    type: boolean
+    default: false
+  publish_ci_version:
+    type: string
+
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
 
@@ -96,8 +103,13 @@ jobs:
                 echo "Using CI Publish"
                 npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci | cat
             else
+              if [[ ! -z "<< pipeline.parameters.publish_ci_version >>" ]]; then
+                echo "Using CI Publish provided version: << pipeline.parameters.publish_ci_version >>"
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@<< pipeline.parameters.publish_ci_version >> | cat
+              else
                 echo "Using regular Publish"
                 npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+              fi
             fi
 
 
@@ -297,6 +309,7 @@ jobs:
 workflows:
   version: 2
   build:
+    unless: << pipeline.parameters.smoke_tests_only >>
     jobs:
       - build
       - init_smoketests:
@@ -349,3 +362,50 @@ workflows:
           filters:
             branches:
               only: master
+  tests:
+    when: << pipeline.parameters.smoke_tests_only >>
+    jobs:
+    - build
+    - init_smoketests:
+        requires:
+            - build
+    - run_smoketests:
+        name: adobe/helix-pages
+        owner: adobe
+        repo: helix-pages
+        branch: $CIRCLE_BRANCH
+        requires:
+            - init_smoketests
+    - run_smoketests:
+        name: adobe/helix-example-basic#test-code
+        owner: adobe
+        repo: helix-example-basic
+        branch: test-code
+        script: test:smoke
+        requires:
+            - init_smoketests
+    - run_smoketests:
+        name: adobe/theblog-tests
+        owner: adobe
+        repo: theblog-tests
+        branch: master
+        script: test:smoke
+        requires:
+            - init_smoketests
+    - run_generic_smoketests:
+        name: adobe/ferrumjsorg
+        owner: adobe
+        repo: ferrumjsorg
+        requires:
+            - init_smoketests
+    - run_diff_tests:
+        requires:
+            - init_smoketests
+    - finalize_smoketests:
+        requires:
+            - adobe/helix-pages
+            - adobe/helix-example-basic#test-code
+            - adobe/ferrumjsorg
+            - adobe/theblog-tests
+            - run_diff_tests
+
