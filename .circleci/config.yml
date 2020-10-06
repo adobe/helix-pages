@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
-              modulo=$(expr $CIRCLE_BUILD_NUM % 3 + 1)
+              modulo=$(expr $CIRCLE_BUILD_NUM % 7 + 1)
               name="TEST_DOMAIN_$modulo"
               TEST_DOMAIN=${!name}
               name="TEST_SERVICE_$modulo"
