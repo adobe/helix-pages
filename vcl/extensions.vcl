@@ -90,8 +90,6 @@ sub hlx_ref_after {
     # try -- pattern (only case that includes branch)
     set var.ref = if(req.http.host ~ "(.*)--(.*)--(.*)\..*\..*$", re.group.1, "");
 
-    if (var.ref != "") {
-        # override X-Ref
-        set req.http.X-Ref= var.ref;
-    }
+    # always override X-Ref
+    set req.http.X-Ref= var.ref;
 }
