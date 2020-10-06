@@ -96,7 +96,7 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
-              echo "A TEST_DOMAIN has been computed - hlx-$modulo.page"
+              echo "A TEST_DOMAIN has been computed - hlx-$modulo"
       - run:
           name: Publish to Fastly
           command: |
