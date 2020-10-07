@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           command: |
-              modulo=$(expr $CIRCLE_BUILD_NUM % 3 + 1)
+              modulo=$(expr $CIRCLE_BUILD_NUM % 7 + 1)
               name="TEST_DOMAIN_$modulo"
               TEST_DOMAIN=${!name}
               name="TEST_SERVICE_$modulo"
@@ -96,9 +96,7 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
-              echo "Test Service Nr $modulo"
-              echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
-              echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
+              echo "A TEST_DOMAIN has been computed - hlx-$modulo"
       - run:
           name: Publish to Fastly
           command: |
