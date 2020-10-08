@@ -1,0 +1,156 @@
+:root {
+    --link-color: 234,65,19;
+    --background-color: 255,255,255;
+    --text-color: 0,0,0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --link-color: 21,190,236;
+        --background-color: 0,0,0;
+        --text-color: 255,255,255;
+    }
+}
+
+body {
+    font-family: Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    margin: 0;
+    color: rgb(var(--text-color));
+    background-color: rgb(var(--background-color));
+}
+
+main {
+    font-size: 1.6rem;
+    line-height: 1.6;
+}
+
+main h1 {
+    font-size: 2.8rem;
+}
+
+main h2 {
+    font-size: 2.6rem;
+}
+
+main h3 {
+    font-size: 2.4rem;
+}
+
+main h4 {
+    font-size: 2.2rem;
+}
+
+main h5 {
+    font-size: 2rem;
+}
+
+main h6 {
+    font-size: 1.8rem;
+}
+
+main a:any-link {
+    color: rgb(var(--link-color));
+    text-decoration: none;
+}
+
+main input, main button {
+    font-size: 1.8rem;
+    width: 100%;
+    max-width: 50rem;
+    display: block;
+    margin: 0.3rem 0;
+    box-sizing: border-box;
+    border: 1px solid rgba(var(--text-color),0.2);
+    padding: 0.3rem 0.6rem;
+    color: rgb(var(--text-color));
+    background-color: rgba(var(--text-color), 0.1);
+    border-radius: 0.2rem;
+}
+
+main button {
+    background-color: rgba(var(--text-color), 0.2);
+}
+
+
+
+
+main>.section-wrapper {
+    padding: 0 2rem; 
+}
+
+main>.section-wrapper.hero {
+    padding: 2rem;
+    color: white;
+    background-size: cover;
+    background-position: center center;
+    height: 60vh;
+    text-shadow: 0 0 5px black;
+}
+
+main blockquote {
+    margin: 3.5rem;
+    font-size: 1.4rem;
+    line-height: 1.8;
+}
+
+main blockquote p::before {
+    content: "“ ";
+}
+
+main blockquote p::after {
+    content: " ”";
+}
+
+main img {
+    max-width: 100%;
+}
+
+main .table-wrapper { 
+    overflow-x: scroll;
+}
+
+
+main table td, main table th {
+    padding: 1rem 1rem;
+    border: 1px solid rgb(var(--text-color),0.2);
+}
+
+main table tr:nth-child(2n), main table th {
+    background-color: rgb(var(--text-color),0.1);;
+}
+
+main table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 0.8em; 
+}
+main pre {
+    background-color: rgb(var(--text-color),0.1);;
+    padding: 1em;
+    border-radius: .25em;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+
+html {
+    font-size: 62.5%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 600px) {
+    html {
+        font-size: 85%;
+    }
+}
+@media (min-width: 900px) {
+    html {
+        font-size: 100%;
+    }
+    main>.section-wrapper>div {
+        max-width: 900px;
+        margin: auto;
+    }    
+}
