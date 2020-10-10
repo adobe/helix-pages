@@ -1,5 +1,6 @@
 :root {
-    --link-color: 234,65,19;
+    --alert-color: 234,65,19;
+    --link-color: 3,95,230;
     --background-color: 255,255,255;
     --text-color: 0,0,0;
 }
@@ -12,68 +13,94 @@
     }
 }
 
+* {
+    box-sizing: border-box;
+  }
+  
+
 body {
-    font-family: Helvetica,Arial,sans-serif;
-    font-weight: 400;
+    font-family: -apple-system, BlinkMacSystemFont,
+    'avenir next', avenir,
+    'helvetica neue', helvetica,
+    ubuntu,
+    roboto, noto,
+    'segoe ui', arial,
+    sans-serif;
+    line-height: 1.6;
     margin: 0;
-    color: rgb(var(--text-color));
-    background-color: rgb(var(--background-color));
+    color: rgba(var(--text-color),.9);
+    background-color: rgba(var(--background-color),.92);
 }
 
 main {
     font-size: 1.6rem;
-    line-height: 1.6;
 }
 
-main h1 {
-    font-size: 2.8rem;
+h1, h2, h3,
+h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1em;
+  margin-bottom: .5em;
 }
 
-main h2 {
-    font-size: 2.6rem;
-}
+h1 { font-size: 3rem; }
+h2 { font-size: 2.25rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: .875rem; }
 
-main h3 {
-    font-size: 2.4rem;
-}
-
-main h4 {
-    font-size: 2.2rem;
-}
-
-main h5 {
-    font-size: 2rem;
-}
-
-main h6 {
-    font-size: 1.8rem;
-}
-
-main a:any-link {
+p, dl, ol, ul, pre, blockquote {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+    
+a:any-link {
     color: rgb(var(--link-color));
     text-decoration: none;
 }
+a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    color: rgb(var(--alert-color));
+    font-size: 1rem;
+    margin-bottom: 1em;
+    display: block;
+}
 
 main input, main button {
-    font-size: 1.8rem;
+    font-size: 1.25rem;
     width: 100%;
     max-width: 50rem;
     display: block;
-    margin: 0.3rem 0;
+    margin-bottom: 1rem;
     box-sizing: border-box;
-    border: 1px solid rgba(var(--text-color),0.2);
-    padding: 0.3rem 0.6rem;
-    color: rgb(var(--text-color));
-    background-color: rgba(var(--text-color), 0.1);
-    border-radius: 0.2rem;
+    padding: 0.75rem 0.6rem;    
+    border-radius: 0.25rem;
 }
 
 main button {
-    background-color: rgba(var(--text-color), 0.2);
+    color: rgb(var(--background-color));
+    border: none;
+    background-color: rgba(var(--link-color), 0.9);
 }
 
+main button:hover {
+    background-color: rgba(var(--link-color), 1);
+    cursor: pointer;
+}
 
-
+main input {
+    border: 1px solid rgba(var(--text-color),0.5);
+    color: rgb(var(--text-color));
+    background-color: rgba(var(--background-color), 0.5);
+}
+main input:hover {
+    border: 1px solid rgba(var(--text-color),0.9);
+}
 
 main>.section-wrapper {
     padding: 0 2rem; 
@@ -88,22 +115,63 @@ main>.section-wrapper.hero {
     text-shadow: 0 0 5px black;
 }
 
+main pre {
+    background-color: rgb(var(--text-color),0.05);;
+    padding: 1em;
+    border-radius: .25em;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+code,
+pre,
+samp {
+  font-family:
+    'Roboto Mono',
+    'Source Code Pro',
+    Menlo,
+    Consolas,
+    'Liberation Mono',
+    monospace;
+}
+
+code, samp {
+  font-size: 87.5%;
+  padding: .125em;
+}
+
+pre {
+  font-size: 75%;
+  overflow: scroll;
+}
+
 main blockquote {
-    margin: 3.5rem;
-    font-size: 1.4rem;
-    line-height: 1.8;
+    font-style: italic;
+    margin: 3rem;
+    text-indent: -1rem;
+    hanging-punctuation: first;
 }
 
-main blockquote p::before {
-    content: "“ ";
+main blockquote::before {
+    content: "“";
+    line-height: 0;
 }
 
-main blockquote p::after {
-    content: " ”";
+main blockquote::after {
+    content: "”";
+    line-height: 0;
+}
+
+hr {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border: 0;
+    border-bottom: 1px solid rgba(var(--text-color),0.2);
 }
 
 main img {
     max-width: 100%;
+    height: auto;
 }
 
 main .table-wrapper { 
@@ -125,13 +193,6 @@ main table {
     border-collapse: collapse;
     font-size: 0.8em; 
 }
-main pre {
-    background-color: rgb(var(--text-color),0.1);;
-    padding: 1em;
-    border-radius: .25em;
-    overflow-x: auto;
-    white-space: pre;
-}
 
 
 html {
@@ -150,7 +211,7 @@ html {
         font-size: 100%;
     }
     main>.section-wrapper>div {
-        max-width: 900px;
+        max-width: 30em;
         margin: auto;
     }    
 }
