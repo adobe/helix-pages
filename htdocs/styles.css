@@ -151,12 +151,12 @@ main blockquote {
     hanging-punctuation: first;
 }
 
-main blockquote::before {
+main blockquote p::before {
     content: "“";
     line-height: 0;
 }
 
-main blockquote::after {
+main blockquote p::after {
     content: "”";
     line-height: 0;
 }
