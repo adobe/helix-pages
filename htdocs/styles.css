@@ -77,7 +77,6 @@ main input, main button {
     max-width: 50rem;
     display: block;
     margin-bottom: 1rem;
-    box-sizing: border-box;
     padding: 0.75rem 0.6rem;    
     border-radius: 0.25rem;
 }
