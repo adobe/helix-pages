@@ -16,7 +16,8 @@ const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
-const testDomain = process.env.TEST_DOMAIN;
+// const testDomain = process.env.TEST_DOMAIN;
+const testDomain = 'hlx-4.page';
 
 let bases = [];
 let changes = [];
@@ -66,11 +67,14 @@ async function getDoms() {
   changes = await Promise.all(changes);
 }
 
-function documentTests() {
-  describe('document equivalence', () => {
+describe('document equivalence', async () => {
+  try {
+    await getDoms();
+
     bases.forEach((base, idx) => {
       const orig_dom = new JSDOM(base).window.document;
       const new_dom = new JSDOM(changes[idx]).window.document;
+      // const { req_url, changed } = newURL(base_urls[idx]);
       const { req_url } = base_urls[idx];
 
       describe(`Comparing ${req_url} against ${newURL(req_url)}`, () => {
@@ -85,8 +89,9 @@ function documentTests() {
         }).timeout(20000);
       });
     });
-  });
+  } catch (error) {
+    // catch any error
+    assert(false, error);
+  }
   run();
-}
-
-getDoms().then(documentTests);
+});
