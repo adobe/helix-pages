@@ -65,9 +65,9 @@ function takeMeThere() {
     window.location = url;
 }
 </script>
-<input onkeyup="change()" type="text" id="giturl">
-<button id="takemethere" onclick="takeMeThere()">Take Me There</button>
+<input onkeyup="change()" type="text" id="giturl" aria-label="Github URL" placeholder="GitHub URL"></input>
 <span id="alert" class="alert" style="display:none"></span>
+<button id="takemethere" onclick="takeMeThere()">Take Me There</button>
 
 ## Do more
 
