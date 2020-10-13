@@ -33,6 +33,10 @@ function getTestURLs(mostVisitedObj) {
   return { original, test };
 }
 
+function fixDomainInTestContent(text) {
+  return text.replace(new RegExp(testDomain.replace('.', '\\.'), 'g'), 'hlx.page');
+}
+
 /**
  * Returns the list of most-visited pages
  */
@@ -83,9 +87,12 @@ describe('document equivalence', async () => {
     const setup = await getTestSetup();
 
     setup.originalDoms.forEach((base, idx) => {
-      const orig_dom = new JSDOM(base).window.document;
-      const test_dom = new JSDOM(setup.testDoms[idx]).window.document;
       const { original: originalURL, test: testURL } = getTestURLs(setup.mostVisitedUrls[idx]);
+
+      const orig_dom = new JSDOM(base).window.document;
+
+      const test_text = fixDomainInTestContent(setup.testDoms[idx]);
+      const test_dom = new JSDOM(test_text).window.document;
 
       describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
