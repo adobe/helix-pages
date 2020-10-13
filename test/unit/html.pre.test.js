@@ -210,7 +210,7 @@ describe('Testing pre.js', () => {
     };
     pre(context);
 
-    assert.strictEqual(context.content.meta.description, dom.window.document.querySelector('p').textContent); // 25 words + ...
+    assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.'); // 25 words + ...
   });
 
   it('Meta url uses hlx-forwarded-host header if available', () => {
