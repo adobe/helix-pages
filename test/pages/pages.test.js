@@ -12,78 +12,90 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 const { fetch } = require('@adobe/helix-fetch');
-const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
-const testDomain = process.env.TEST_DOMAIN;
-
-let bases = [];
-let changes = [];
-let base_urls = [];
+// const testDomain = process.env.TEST_DOMAIN;
+const testDomain = 'hlx-4.page';
 
 async function getText(data) {
   if (!data.ok) {
-    assert.fail(`Unable to load ${data.url} (${data.status})
-${await data.text()}`);
+    throw new Error(`Unable to load ${data.url} (${data.status}): ${await data.text()}`);
   }
   return data.text();
 }
 
-function newURL(obj) {
-  const req_url = obj.req_url.replace('.project-helix.page', '.hlx.page');
-  const { pathname } = new URL(req_url);
-  const thirdLvl = req_url.split('.')[0];
-  const changed = [thirdLvl, testDomain].join('.') + pathname;
-  return { req_url, changed };
+function getTestURLs(mostVisitedObj) {
+  const original = mostVisitedObj.req_url.replace('.project-helix.page', '.hlx.page');
+  const { pathname } = new URL(original);
+  const thirdLvl = original.split('.')[0];
+  const test = [thirdLvl, testDomain].join('.') + pathname;
+  return { original, test };
+}
+
+/**
+ * Returns the list of most-visited pages
+ */
+async function getMostVisited() {
+  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', {
+    method: 'POST',
+    json: {
+      limit: 20,
+      threshold: 100,
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Setup failed to gather most visited urls: ${text}`);
+  }
+  const json = await res.json();
+  return json.results;
 }
 
 /**
  * function that turns most-visited pages into doms
  */
-async function getDoms() {
-  const json = {
-    limit: 20,
-    threshold: 100,
-  };
-  const method = 'post';
-  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
-  if (!res.ok) {
-    await res.text();
-    assert.fail('test setup failed to gather test urls');
-  }
-  base_urls = (await res.json()).results;
+async function getTestSetup() {
+  const mostVisitedUrls = await getMostVisited();
+  let originalDoms = [];
   // construct array of promises from fetch
-  changes = base_urls.map((obj) => {
+  let testDoms = mostVisitedUrls.map((mostVisitedObj) => {
     // eslint-disable-next-line camelcase
-    const { req_url, changed } = newURL(obj);
+    const { original: originalURL, test: testURL } = getTestURLs(mostVisitedObj);
 
     // fetch page before change and page after change; and construct DOM
-    bases.push(fetch(req_url).then(getText));
-    return fetch(changed).then(getText);
+    originalDoms.push(fetch(originalURL).then(getText));
+    return fetch(testURL).then(getText);
   });
-  bases = await Promise.all(bases);
-  changes = await Promise.all(changes);
+  originalDoms = await Promise.all(originalDoms);
+  testDoms = await Promise.all(testDoms);
+
+  return {
+    originalDoms,
+    testDoms,
+    mostVisitedUrls,
+  };
 }
 
 describe('document equivalence', async () => {
   try {
-    await getDoms();
+    const setup = await getTestSetup();
 
-    bases.forEach((base, idx) => {
+    setup.originalDoms.forEach((base, idx) => {
       const orig_dom = new JSDOM(base).window.document;
-      const new_dom = new JSDOM(changes[idx]).window.document;
-      const { req_url, changed } = newURL(base_urls[idx]);
+      const test_dom = new JSDOM(setup.testDoms[idx]).window.document;
+      const { original: originalURL, test: testURL } = getTestURLs(setup.mostVisitedUrls[idx]);
 
-      describe(`Comparing ${req_url} against ${changed}`, () => {
+      describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
-          dumpDOM(orig_dom.body, new_dom.body);
-          assertEquivalentNode(orig_dom.body, new_dom.body);
+          dumpDOM(orig_dom.body, test_dom.body);
+          assertEquivalentNode(orig_dom.body, test_dom.body);
         }).timeout(50000);
 
-        it.skip('testing head node', () => {
-          dumpDOM(orig_dom.head, new_dom.head);
-          assertEquivalentNode(orig_dom.head, new_dom.head);
+        it('testing head node', () => {
+          dumpDOM(orig_dom.head, test_dom.head);
+          assertEquivalentNode(orig_dom.head, test_dom.head);
         }).timeout(20000);
       });
     });
