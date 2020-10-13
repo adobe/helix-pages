@@ -16,8 +16,7 @@ const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
-// const testDomain = process.env.TEST_DOMAIN;
-const testDomain = 'hlx-4.page';
+const testDomain = process.env.TEST_DOMAIN;
 
 let bases = [];
 let changes = [];
