@@ -91,6 +91,7 @@ describe('document equivalence', async () => {
     // catch any error
     // eslint-disable-next-line no-console
     console.error(`Cannot construct the tests: ${error.message}`, error);
+    // radical exit to make the failure visible in the ci
     process.exit(1);
   }
   run();
