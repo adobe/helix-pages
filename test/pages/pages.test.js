@@ -15,8 +15,7 @@ const { fetch } = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
-// const testDomain = process.env.TEST_DOMAIN;
-const testDomain = 'hlx-4.page';
+const testDomain = process.env.TEST_DOMAIN;
 
 async function getText(data) {
   if (!data.ok) {
