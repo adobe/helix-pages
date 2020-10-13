@@ -190,6 +190,29 @@ describe('Testing pre.js', () => {
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
+  it('Meta description does not contain markup', () => {
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><p>Lorem ipsum <b>dolor</b> sit <a href="https://www.hlx.page/">amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh.</p></div>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context);
+
+    assert.strictEqual(context.content.meta.description, dom.window.document.querySelector('p').textContent); // 25 words + ...
+  });
+
   it('Meta url uses hlx-forwarded-host header if available', () => {
     const dom = new JSDOM('<html></html>');
     const context = {
