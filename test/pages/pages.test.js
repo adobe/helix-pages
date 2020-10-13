@@ -92,10 +92,8 @@ describe('document equivalence', async () => {
   } catch (error) {
     // catch any error
     // eslint-disable-next-line no-console
-    console.error(`Error while constructing the tests: ${error.message}`, error);
-    run(() => {
-      process.exitCode = 1;
-    });
+    console.error(`Cannot construct the tests: ${error.message}`, error);
+    process.exit(1);
   }
   run();
 });
