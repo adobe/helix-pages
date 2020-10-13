@@ -91,7 +91,9 @@ describe('document equivalence', async () => {
     });
   } catch (error) {
     // catch any error
-    mocha.run(() => {
+    // eslint-disable-next-line no-console
+    console.error(`Error while constructing the tests: ${error.message}`, error);
+    run(() => {
       process.exitCode = 1;
     });
   }
