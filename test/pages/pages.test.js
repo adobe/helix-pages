@@ -91,7 +91,9 @@ describe('document equivalence', async () => {
     });
   } catch (error) {
     // catch any error
-    assert(false, error);
+    mocha.run(() => {
+      process.exitCode = 1;
+    });
   }
   run();
 });
