@@ -74,10 +74,9 @@ describe('document equivalence', async () => {
     bases.forEach((base, idx) => {
       const orig_dom = new JSDOM(base).window.document;
       const new_dom = new JSDOM(changes[idx]).window.document;
-      // const { req_url, changed } = newURL(base_urls[idx]);
-      const { req_url } = base_urls[idx];
+      const { req_url, changed } = newURL(base_urls[idx]);
 
-      describe(`Comparing ${req_url} against ${newURL(req_url)}`, () => {
+      describe(`Comparing ${req_url} against ${changed}`, () => {
         it('testing body node', () => {
           dumpDOM(orig_dom.body, new_dom.body);
           assertEquivalentNode(orig_dom.body, new_dom.body);
