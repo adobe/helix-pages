@@ -82,6 +82,14 @@ jobs:
           name: Deploy to Adobe I/O Runtime
           command: npx hlx deploy --wsk-action-memory 512 --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
+          name: Setup branch in helix-config.yaml
+          command: |
+            echo "Prior to modifications"
+            cat helix-config.yaml
+            sed -i -e 's/#master/#$CIRCLE_BRANCH/' helix-config.yaml
+            echo "Post modifications"
+            cat helix-config.yaml
+      - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           
           # How to calculate the test domain
