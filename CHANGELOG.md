@@ -1,3 +1,15 @@
+# [4.2.0](https://github.com/adobe/helix-pages/compare/v4.1.3...v4.2.0) (2020-10-14)
+
+
+### Bug Fixes
+
+* **seo:** avoid markup in meta description ([#501](https://github.com/adobe/helix-pages/issues/501)) ([658a3fc](https://github.com/adobe/helix-pages/commit/658a3fccd44372bb2064ee08952c993e77e3d1ed))
+
+
+### Features
+
+* **style:** new default styling ([#502](https://github.com/adobe/helix-pages/issues/502)) ([364e8d3](https://github.com/adobe/helix-pages/commit/364e8d319dc6680812f9aaf6fcabedbeaeae236b)), closes [#493](https://github.com/adobe/helix-pages/issues/493)
+
 ## [4.1.3](https://github.com/adobe/helix-pages/compare/v4.1.2...v4.1.3) (2020-10-06)
 
 
