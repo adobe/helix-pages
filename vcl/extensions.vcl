@@ -93,5 +93,7 @@ sub hlx_ref_after {
     if (var.ref != "") {
         # override X-Ref
         set req.http.X-Ref= var.ref;
+    } else {
+        set req.http.X-Ref = "master";
     }
 }
