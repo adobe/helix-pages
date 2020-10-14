@@ -86,7 +86,7 @@ jobs:
           command: |
             echo "Prior to modifications"
             cat helix-config.yaml
-            sed -i -e 's/#master/#$CIRCLE_BRANCH/' helix-config.yaml
+            sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml 
             echo "Post modifications"
             cat helix-config.yaml
       - run:
