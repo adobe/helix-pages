@@ -66,14 +66,16 @@ async function getDoms() {
   changes = await Promise.all(changes);
 }
 
-function documentTests() {
-  describe('document equivalence', () => {
+describe('document equivalence', async () => {
+  try {
+    await getDoms();
+
     bases.forEach((base, idx) => {
       const orig_dom = new JSDOM(base).window.document;
       const new_dom = new JSDOM(changes[idx]).window.document;
-      const { req_url } = base_urls[idx];
+      const { req_url, changed } = newURL(base_urls[idx]);
 
-      describe(`Comparing ${req_url} against ${newURL(req_url)}`, () => {
+      describe(`Comparing ${req_url} against ${changed}`, () => {
         it('testing body node', () => {
           dumpDOM(orig_dom.body, new_dom.body);
           assertEquivalentNode(orig_dom.body, new_dom.body);
@@ -85,8 +87,12 @@ function documentTests() {
         }).timeout(20000);
       });
     });
-  });
+  } catch (error) {
+    // catch any error
+    // eslint-disable-next-line no-console
+    console.error(`Cannot construct the tests: ${error.message}`, error);
+    // radical exit to make the failure visible in the ci
+    process.exit(1);
+  }
   run();
-}
-
-getDoms().then(documentTests);
+});
