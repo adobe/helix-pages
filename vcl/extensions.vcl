@@ -80,6 +80,8 @@ sub hlx_repo_after {
     if (var.r != "") {
         # override X-Repo
         set req.http.X-Repo = var.r;
+        # default branch to master
+        set req.http.X-Ref = "master";
     }
 }
 
