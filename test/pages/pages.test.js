@@ -81,6 +81,14 @@ async function getTestSetup() {
   };
 }
 
+// remove known attributes that may be different
+function filterDOM(document) {
+  const sourceHash = document.querySelector('meta[name="x-source-hash"]');
+  if (sourceHash) {
+    sourceHash.remove();
+  }
+}
+
 describe('document equivalence', async () => {
   try {
     const setup = await getTestSetup();
@@ -89,9 +97,11 @@ describe('document equivalence', async () => {
       const { original: originalURL, test: testURL } = getTestURLs(setup.mostVisitedUrls[idx]);
 
       const orig_dom = new JSDOM(base).window.document;
+      filterDOM(orig_dom);
 
       const test_text = fixDomainInTestContent(setup.testDoms[idx]);
       const test_dom = new JSDOM(test_text).window.document;
+      filterDOM(test_dom);
 
       describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
