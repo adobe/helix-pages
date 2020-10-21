@@ -18,20 +18,25 @@ const { getAbsoluteUrl, wrapContent } = require('./utils.js');
  * @param action The action
  * @return The path to the default meta image
  */
-async function getDefaultMetaImage({ request, downloader }) {
-  const {
-    owner, repo, ref,
-  } = request.params || {};
-  const jpg = '/default-meta-image.jpg';
-  const png = '/default-meta-image.png';
-  const res = await downloader.fetchGithub({
-    owner,
-    repo,
-    ref,
-    path: jpg,
-    errorOn404: false,
-  });
-  return res.status === 200 ? jpg : png;
+async function getDefaultMetaImage(action) {
+  if (action) {
+    const { request, downloader } = action;
+    const {
+      owner, repo, ref,
+    } = request.params || {};
+    const path = '/default-meta-image.jpg';
+    const res = await downloader.fetchGithub({
+      owner,
+      repo,
+      ref,
+      path,
+      errorOn404: false,
+    });
+    if (res.status === 200) {
+      return path;
+    }
+  }
+  return '/default-meta-image.png';
 }
 
 /**
