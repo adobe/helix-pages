@@ -12,11 +12,34 @@
 const { getAbsoluteUrl, wrapContent } = require('./utils.js');
 
 /**
+ * Looks for a default meta image (JPG) in the GitHub repository
+ * and defaults to PNG version.
+ * @param context The current context of processing pipeline
+ * @param action The action
+ * @return The path to the default meta image
+ */
+async function getDefaultMetaImage({ request, downloader }) {
+  const {
+    owner, repo, ref,
+  } = request.params || {};
+  const jpg = '/default-meta-image.jpg';
+  const png = '/default-meta-image.png';
+  const res = await downloader.fetchGithub({
+    owner,
+    repo,
+    ref,
+    path: jpg,
+    errorOn404: false,
+  });
+  return res.status === 200 ? jpg : png;
+}
+
+/**
  * The 'pre' function that is executed before the HTML is rendered
  * @param context The current context of processing pipeline
  * @param context.content The content
  */
-function pre(context) {
+async function pre(context, action) {
   const { request, content } = context;
   const { document } = content;
   const $sections = document.querySelectorAll('body > div');
@@ -61,7 +84,8 @@ function pre(context) {
   });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
+  meta.imageUrl = getAbsoluteUrl(request.headers,
+    content.image || await getDefaultMetaImage(action));
 }
 
 module.exports.pre = pre;
