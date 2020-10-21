@@ -84,13 +84,8 @@ jobs:
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE
           
-          # How to calculate the test domain
-          # echo $CIRCLE_WORKFLOW_ID      – use the workflow id because it's stable and available through the API to the triggering job
-          # sed -e "s/[a-f-]//g"          – keep only the decimal digits
-          # sed -e "s/................//" – drop a couple of digits, so that we don't exceed expr's max int limit
-          # expr $(…) % 7 + 1             – calculate the modulo
           command: |
-              modulo=$(expr $(echo $CIRCLE_WORKFLOW_ID | sed -e "s/[a-f-]//g" | sed -e "s/................//") % 7 + 1)
+              modulo=$(expr << pipeline.number >> % 7 + 1)
               name="TEST_DOMAIN_$modulo"
               TEST_DOMAIN=${!name}
               name="TEST_SERVICE_$modulo"
