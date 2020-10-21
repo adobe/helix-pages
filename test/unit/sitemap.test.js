@@ -193,7 +193,7 @@ describe('Sitemap Tests', () => {
     });
   });
 
-  describe('Azure provider test', () => {
+  describe.skip('Azure provider test', () => {
     before(() => {
       nock('https://raw.githubusercontent.com')
         .get('/me/repo/master/helix-query.yaml')
