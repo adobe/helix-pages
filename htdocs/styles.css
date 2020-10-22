@@ -25,11 +25,6 @@
     }
 }
 
-@keyframes appear {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-}
-  
 * {
     box-sizing: border-box;
   }
@@ -51,12 +46,6 @@ body {
 
 main {
     font-size: 1.6rem;
-    opacity: 0;
-}
-
-main.ready {
-    opacity: 1;
-    animation: appear 200ms;
 }
 
 h1, h2, h3,
