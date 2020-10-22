@@ -46,6 +46,11 @@ body {
 
 main {
     font-size: 1.6rem;
+    opacity: 0;
+}
+
+main.ready {
+    opacity: 1;
 }
 
 h1, h2, h3,
