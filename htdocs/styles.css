@@ -123,8 +123,20 @@ main>.section-wrapper.hero {
     background-size: cover;
     background-position: center center;
     height: 60vh;
-    text-shadow: 0 0 5px black;
+    text-shadow: 0 0 16px rgba(0,0,0,.6);
 }
+
+main>.section-wrapper.hero h1 {
+    font-size: 6rem; 
+    line-height: 1;
+}
+
+main>.section-wrapper.hero p {
+    font-weight: bold; 
+    font-size: 2rem;
+    line-height: 1;
+}
+
 
 main pre {
     background-color: rgb(var(--text-color),0.05);;
