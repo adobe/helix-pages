@@ -53,6 +53,7 @@ function decoratePage() {
   wrap('main table', 'table-wrapper');
   wrap('main>div', 'section-wrapper');
   createHeroSection();
+  document.querySelector('main').classList.add('ready');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
