@@ -9,11 +9,12 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-undef */
-/* eslint-disable camelcase */
+/* eslint-disable no-undef, camelcase, no-console */
+
 const { fetch } = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { Base } = require('mocha').reporters;
 
 const testDomain = process.env.TEST_DOMAIN;
 
@@ -96,12 +97,26 @@ describe('document equivalence', async () => {
       describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
           dumpDOM(orig_dom.body, test_dom.body);
-          assertEquivalentNode(orig_dom.body, test_dom.body);
+          try {
+            assertEquivalentNode(orig_dom.body, test_dom.body);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
         }).timeout(50000);
 
         it('testing head node', () => {
           dumpDOM(orig_dom.head, test_dom.head);
-          assertEquivalentNode(orig_dom.head, test_dom.head);
+          try {
+            assertEquivalentNode(orig_dom.head, test_dom.head);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
         }).timeout(20000);
       });
     });
