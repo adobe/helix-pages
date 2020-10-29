@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/adobe/helix-pages/compare/v4.3.0...v4.4.0) (2020-10-29)
+
+
+### Features
+
+* **src/util.js:** force release ([#528](https://github.com/adobe/helix-pages/issues/528)) ([81261fb](https://github.com/adobe/helix-pages/commit/81261fb0b12f20fdfd5c714a8a2fac18deb21432))
+
 # [4.3.0](https://github.com/adobe/helix-pages/compare/v4.2.0...v4.3.0) (2020-10-23)
 
 
