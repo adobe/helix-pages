@@ -52,7 +52,6 @@ sub hlx_owner_after {
     if (var.o != "") {
         // override X-Owner
         set req.http.X-Owner = var.o;
-        set req.http.X-URL-Override = true;
     }
 }
 
