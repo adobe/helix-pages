@@ -22,6 +22,16 @@ const request = {
   },
   url: '/baz.html',
 };
+const action = {
+  request: {
+    owner: 'test',
+    repo: 'test',
+    ref: 'main',
+  },
+  downloader: {
+    fetchGithub: async () => ({ status: 200 }),
+  },
+};
 
 describe('Testing pre requirements for main function', () => {
   it('Exports pre', () => {
@@ -29,7 +39,7 @@ describe('Testing pre requirements for main function', () => {
   });
 
   it('pre is a function', () => {
-    assert.equal('function', typeof pre);
+    assert.strictEqual('function', typeof pre);
   });
 });
 
@@ -42,14 +52,14 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div, 'A div must have been added');
-    assert.equal(div.innerHTML, '<h1>Title</h1>');
+    assert.strictEqual(div.innerHTML, '<h1>Title</h1>');
   });
 
-  it('Mutliline and text node body content is wrapped in a div', () => {
+  it('Multiline and text node body content is wrapped in a div', () => {
     const dom = new JSDOM(`<html><head><title>Foo</title></head><body>
       <h1>Title</h1>
       This is a text.
@@ -60,12 +70,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div !== null, 'A div must have been added');
-    assert.equal(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
-    assert.equal(div.innerHTML, `
+    assert.strictEqual(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
+    assert.strictEqual(div.innerHTML, `
       <h1>Title</h1>
       This is a text.
     `);
@@ -82,7 +92,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
@@ -99,7 +109,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
@@ -117,7 +127,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
@@ -132,7 +142,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
@@ -159,10 +169,10 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
     assert.ok(context.content.meta.description);
-    assert.equal(context.content.meta.description, gt10Words);
+    assert.strictEqual(context.content.meta.description, gt10Words);
   });
 
   it('Meta description is truncated after 25 words', () => {
@@ -184,10 +194,33 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.equal(context.content.meta.description.split(' ').length, 26); // 25 words + ...
+    assert.strictEqual(context.content.meta.description.split(' ').length, 26); // 25 words + ...
     assert.ok(context.content.meta.description.endsWith('...'));
+  });
+
+  it('Meta description does not contain markup', () => {
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><p>Lorem ipsum <b>dolor</b> sit <a href="https://www.hlx.page/">amet</a>, consectetuer adipiscing elit, sed diam nonummy nibh.</p></div>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.'); // 25 words + ...
   });
 
   it('Meta url uses hlx-forwarded-host header if available', () => {
@@ -199,9 +232,9 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.equal(context.content.meta.url, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url}`);
+    assert.strictEqual(context.content.meta.url, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url}`);
   });
 
   it('Meta url uses host header if no hlx-forwarded-host available', () => {
@@ -220,9 +253,9 @@ describe('Testing pre.js', () => {
       },
       request: req,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.equal(context.content.meta.url, `https://${req.headers.host}${req.url}`);
+    assert.strictEqual(context.content.meta.url, `https://${req.headers.host}${req.url}`);
   });
 
   it('Meta imageUrl uses content.image', () => {
@@ -235,9 +268,9 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.equal(context.content.meta.imageUrl, context.content.image);
+    assert.strictEqual(context.content.meta.imageUrl, context.content.image);
   });
 
   it('Meta imageUrl uses content.image as absolute URL', () => {
@@ -250,12 +283,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}`);
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}`);
   });
 
-  it('Meta imageUrl uses default meta image if no content.image available', () => {
+  it('Meta imageUrl uses JPG from repo if no content.image available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -264,9 +297,28 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    await pre(context, action);
 
-    assert.equal(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg`);
+  });
+
+  it('Meta imageUrl uses default meta image if neither content.image nor JPG from repo available', async () => {
+    const dom = new JSDOM('<html></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    await pre(context, {
+      ...action,
+      downloader: {
+        fetchGithub: async () => ({ status: 404 }),
+      },
+    });
+
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {
@@ -286,14 +338,14 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context);
+    pre(context, action);
 
-    assert.deepEqual(dom.window.document.documentElement.attributesMap, {
+    assert.deepStrictEqual(dom.window.document.documentElement.attributesMap, {
       class: 'foo',
       bar: 'baz',
       'data-qux': 'corge',
     });
-    assert.deepEqual(dom.window.document.body.attributesMap, {
+    assert.deepStrictEqual(dom.window.document.body.attributesMap, {
       class: 'grault',
       garply: 'waldo',
       'data-fred': 'plugh',

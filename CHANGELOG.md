@@ -1,3 +1,31 @@
+# [4.4.0](https://github.com/adobe/helix-pages/compare/v4.3.0...v4.4.0) (2020-10-29)
+
+
+### Features
+
+* **src/util.js:** force release ([#528](https://github.com/adobe/helix-pages/issues/528)) ([81261fb](https://github.com/adobe/helix-pages/commit/81261fb0b12f20fdfd5c714a8a2fac18deb21432))
+
+# [4.3.0](https://github.com/adobe/helix-pages/compare/v4.2.0...v4.3.0) (2020-10-23)
+
+
+### Features
+
+* **css:** suppress layout shift ([#512](https://github.com/adobe/helix-pages/issues/512)) ([a33c1b3](https://github.com/adobe/helix-pages/commit/a33c1b321a551ac4816172263beca541d21d12ec))
+* **css:** suppress layout shift ([#512](https://github.com/adobe/helix-pages/issues/512)) ([0fedd71](https://github.com/adobe/helix-pages/commit/0fedd71f3b6055ade3ee8d0e8bab915cc301b760))
+* **seo:** support jpg as default meta image ([#411](https://github.com/adobe/helix-pages/issues/411)) ([5cab436](https://github.com/adobe/helix-pages/commit/5cab43620c6022bbe600cdc811295eca3ab80678))
+
+# [4.2.0](https://github.com/adobe/helix-pages/compare/v4.1.3...v4.2.0) (2020-10-14)
+
+
+### Bug Fixes
+
+* **seo:** avoid markup in meta description ([#501](https://github.com/adobe/helix-pages/issues/501)) ([658a3fc](https://github.com/adobe/helix-pages/commit/658a3fccd44372bb2064ee08952c993e77e3d1ed))
+
+
+### Features
+
+* **style:** new default styling ([#502](https://github.com/adobe/helix-pages/issues/502)) ([364e8d3](https://github.com/adobe/helix-pages/commit/364e8d319dc6680812f9aaf6fcabedbeaeae236b)), closes [#493](https://github.com/adobe/helix-pages/issues/493)
+
 ## [4.1.3](https://github.com/adobe/helix-pages/compare/v4.1.2...v4.1.3) (2020-10-06)
 
 

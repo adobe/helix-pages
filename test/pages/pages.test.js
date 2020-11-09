@@ -9,84 +9,133 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-undef */
-/* eslint-disable camelcase */
+/* eslint-disable no-undef, camelcase, no-console */
+
 const { fetch } = require('@adobe/helix-fetch');
-const assert = require('assert');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { Base } = require('mocha').reporters;
 
 const testDomain = process.env.TEST_DOMAIN;
 
-let bases = [];
-let changes = [];
-let base_urls = [];
-
 async function getText(data) {
   if (!data.ok) {
-    assert.fail(`Unable to load ${data.url} (${data.status})
-${await data.text()}`);
+    throw new Error(`Unable to load ${data.url} (${data.status}): ${await data.text()}`);
   }
   return data.text();
 }
 
-function newURL(obj) {
-  const req_url = obj.req_url.replace('.project-helix.page', '.hlx.page');
-  const { pathname } = new URL(req_url);
-  const thirdLvl = req_url.split('.')[0];
-  const changed = [thirdLvl, testDomain].join('.') + pathname;
-  return { req_url, changed };
+function getTestURLs(mostVisitedObj) {
+  const original = mostVisitedObj.req_url.replace('.project-helix.page', '.hlx.page');
+  const { pathname } = new URL(original);
+  const thirdLvl = original.split('.')[0];
+  const test = [thirdLvl, testDomain].join('.') + pathname;
+  return { original, test };
+}
+
+function fixDomainInTestContent(text) {
+  return text.replace(new RegExp(testDomain.replace('.', '\\.'), 'g'), 'hlx.page');
+}
+
+/**
+ * Returns the list of most-visited pages
+ */
+async function getMostVisited() {
+  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', {
+    method: 'POST',
+    json: {
+      limit: 20,
+      threshold: 100,
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Setup failed to gather most visited urls: ${text}`);
+  }
+  const json = await res.json();
+  return json.results;
 }
 
 /**
  * function that turns most-visited pages into doms
  */
-async function getDoms() {
-  const json = {
-    limit: 20,
-    threshold: 100,
-  };
-  const method = 'post';
-  const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', { method, json });
-  if (!res.ok) {
-    await res.text();
-    assert.fail('test setup failed to gather test urls');
-  }
-  base_urls = (await res.json()).results;
+async function getTestSetup() {
+  const mostVisitedUrls = await getMostVisited();
+  let originalDoms = [];
   // construct array of promises from fetch
-  changes = base_urls.map((obj) => {
+  let testDoms = mostVisitedUrls.map((mostVisitedObj) => {
     // eslint-disable-next-line camelcase
-    const { req_url, changed } = newURL(obj);
+    const { original: originalURL, test: testURL } = getTestURLs(mostVisitedObj);
 
     // fetch page before change and page after change; and construct DOM
-    bases.push(fetch(req_url).then(getText));
-    return fetch(changed).then(getText);
+    originalDoms.push(fetch(originalURL).then(getText));
+    return fetch(testURL).then(getText);
   });
-  bases = await Promise.all(bases);
-  changes = await Promise.all(changes);
+  originalDoms = await Promise.all(originalDoms);
+  testDoms = await Promise.all(testDoms);
+
+  return {
+    originalDoms,
+    testDoms,
+    mostVisitedUrls,
+  };
 }
 
-function documentTests() {
-  describe('document equivalence', () => {
-    bases.forEach((base, idx) => {
-      const orig_dom = new JSDOM(base).window.document;
-      const new_dom = new JSDOM(changes[idx]).window.document;
-      const { req_url } = base_urls[idx];
+// remove known attributes that may be different
+function filterDOM(document) {
+  const sourceHash = document.querySelector('meta[name="x-source-hash"]');
+  if (sourceHash) {
+    sourceHash.remove();
+  }
+}
 
-      describe(`Comparing ${req_url} against ${newURL(req_url)}`, () => {
+describe('document equivalence', async () => {
+  try {
+    const setup = await getTestSetup();
+
+    setup.originalDoms.forEach((base, idx) => {
+      const { original: originalURL, test: testURL } = getTestURLs(setup.mostVisitedUrls[idx]);
+
+      const orig_dom = new JSDOM(base).window.document;
+      filterDOM(orig_dom);
+
+      const test_text = fixDomainInTestContent(setup.testDoms[idx]);
+      const test_dom = new JSDOM(test_text).window.document;
+      filterDOM(test_dom);
+
+      describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
-          dumpDOM(orig_dom.body, new_dom.body);
-          assertEquivalentNode(orig_dom.body, new_dom.body);
+          dumpDOM(orig_dom.body, test_dom.body);
+          try {
+            assertEquivalentNode(orig_dom.body, test_dom.body);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
         }).timeout(50000);
 
-        it.skip('testing head node', () => {
-          dumpDOM(orig_dom.head, new_dom.head);
-          assertEquivalentNode(orig_dom.head, new_dom.head);
+        it('testing head node', () => {
+          dumpDOM(orig_dom.head, test_dom.head);
+          try {
+            assertEquivalentNode(orig_dom.head, test_dom.head);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
         }).timeout(20000);
       });
     });
-  });
+  } catch (error) {
+    // catch any error
+    // eslint-disable-next-line no-console
+    console.error(`Cannot construct the tests: ${error.message}`, error);
+    // radical exit to make the failure visible in the ci
+    process.exit(1);
+  }
   run();
-}
-
-getDoms().then(documentTests);
+});

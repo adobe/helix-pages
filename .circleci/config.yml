@@ -82,9 +82,16 @@ jobs:
           name: Deploy to Adobe I/O Runtime
           command: npx hlx deploy --wsk-action-memory 512 --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
       - run:
-          name: Compute TEST_DOMAIN and TEST_SERVICE
+          name: Setup branch in helix-config.yaml
+
+          # replace "master" by the branch name in helix-config
           command: |
-              modulo=$(expr $CIRCLE_BUILD_NUM % 3 + 1)
+            sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml 
+      - run:
+          name: Compute TEST_DOMAIN and TEST_SERVICE
+          
+          command: |
+              modulo=$(expr << pipeline.number >> % 7 + 1)
               name="TEST_DOMAIN_$modulo"
               TEST_DOMAIN=${!name}
               name="TEST_SERVICE_$modulo"
@@ -96,9 +103,7 @@ jobs:
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
               # debug logs
-              echo "Test Service Nr $modulo"
-              echo "A TEST_DOMAIN has been computed - $TEST_DOMAIN"
-              echo "A TEST_SERVICE has been computed - $TEST_SERVICE"
+              echo "A TEST_DOMAIN has been computed - hlx-$modulo"
       - run:
           name: Publish to Fastly
           command: |
@@ -280,8 +285,6 @@ jobs:
   run_diff_tests:
     executor: node10
     steps:
-      - setup
-
       - attach_workspace:
           at: /home/circleci
 

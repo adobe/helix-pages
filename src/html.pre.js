@@ -12,11 +12,39 @@
 const { getAbsoluteUrl, wrapContent } = require('./utils.js');
 
 /**
+ * Looks for a default meta image (JPG) in the GitHub repository
+ * and defaults to PNG version.
+ * @param context The current context of processing pipeline
+ * @param action The action
+ * @return The path to the default meta image
+ */
+async function getDefaultMetaImage(action) {
+  if (action) {
+    const { request, downloader } = action;
+    const {
+      owner, repo, ref,
+    } = request.params || {};
+    const path = '/default-meta-image.jpg';
+    const res = await downloader.fetchGithub({
+      owner,
+      repo,
+      ref,
+      path,
+      errorOn404: false,
+    });
+    if (res.status === 200) {
+      return path;
+    }
+  }
+  return '/default-meta-image.png';
+}
+
+/**
  * The 'pre' function that is executed before the HTML is rendered
  * @param context The current context of processing pipeline
  * @param context.content The content
  */
-function pre(context) {
+async function pre(context, action) {
   const { request, content } = context;
   const { document } = content;
   const $sections = document.querySelectorAll('body > div');
@@ -53,7 +81,7 @@ function pre(context) {
   let desc = [];
   document.querySelectorAll('div > p').forEach((p) => {
     if (desc.length === 0) {
-      const words = p.innerHTML.trim().split(/\s+/);
+      const words = p.textContent.trim().split(/\s+/);
       if (words.length >= 10) {
         desc = desc.concat(words);
       }
@@ -61,7 +89,8 @@ function pre(context) {
   });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = getAbsoluteUrl(request.headers, content.image || '/default-meta-image.png');
+  meta.imageUrl = getAbsoluteUrl(request.headers,
+    content.image || await getDefaultMetaImage(action));
 }
 
 module.exports.pre = pre;

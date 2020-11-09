@@ -52,6 +52,7 @@ sub hlx_owner_after {
     if (var.o != "") {
         // override X-Owner
         set req.http.X-Owner = var.o;
+        set req.http.X-URL-Override = true;
     }
 }
 
@@ -90,6 +91,5 @@ sub hlx_ref_after {
     # try -- pattern (only case that includes branch)
     set var.ref = if(req.http.host ~ "(.*)--(.*)--(.*)\..*\..*$", re.group.1, "");
 
-    # always override X-Ref
-    set req.http.X-Ref= var.ref;
+    set req.http.X-Ref = var.ref;
 }
