@@ -17,6 +17,10 @@ parameters:
     type: string
     default: ""
     description: the helix-publish ci version to use
+  version_lock:
+    type: string
+    default: ""
+    description: the version lock string
 
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
@@ -34,7 +38,7 @@ commands:
           keys:
             - v4-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
-          name: install npm 
+          name: install npm
           command: sudo npm -g install npm
       - run:
           name: Installing Dependencies
@@ -86,10 +90,10 @@ jobs:
 
           # replace "master" by the branch name in helix-config
           command: |
-            sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml 
+            sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml
       - run:
-          name: Compute TEST_DOMAIN and TEST_SERVICE
-          
+          name: Compute TEST_DOMAIN and TEST_SERVICE and TEST_VERSION_LOCK
+
           command: |
               modulo=$(expr << pipeline.number >> % 7 + 1)
               name="TEST_DOMAIN_$modulo"
@@ -100,10 +104,14 @@ jobs:
               # "pass" the variable to the next steps...
               echo "export TEST_DOMAIN=$TEST_DOMAIN" >> env/TEST_DOMAIN
               echo "export TEST_SERVICE=$TEST_SERVICE" >> env/TEST_SERVICE
+              echo "export TEST_VERSION_LOCK=<< pipeline.parameters.version_lock >>" >> env/TEST_VERSION_LOCK
+
               cat env/TEST_DOMAIN >> $BASH_ENV
               cat env/TEST_SERVICE >> $BASH_ENV
+              cat env/TEST_VERSION_LOCK >> $BASH_ENV
               # debug logs
               echo "A TEST_DOMAIN has been computed - hlx-$modulo"
+              echo "Using version lock: << pipeline.parameters.version_lock >>"
       - run:
           name: Publish to Fastly
           command: |
@@ -155,6 +163,7 @@ jobs:
           command: |
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
+            cat env/TEST_VERSION_LOCK >> $BASH_ENV
 
       - run:
           name: Cloning << parameters.owner >>/<< parameters.repo >>
@@ -210,6 +219,7 @@ jobs:
           command: |
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
+            cat env/TEST_VERSION_LOCK >> $BASH_ENV
 
       - run:
           name: Run the smoke tests for << parameters.owner >>/<< parameters.repo >>
@@ -293,6 +303,7 @@ jobs:
           command: |
             cat env/TEST_DOMAIN >> $BASH_ENV
             cat env/TEST_SERVICE >> $BASH_ENV
+            cat env/TEST_VERSION_LOCK >> $BASH_ENV
 
       - run:
           name: Run Helix Page Diff tests
