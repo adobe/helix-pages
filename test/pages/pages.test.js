@@ -9,20 +9,62 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* eslint-disable no-undef, camelcase, no-console */
-
+/* eslint-disable no-undef,no-console,camelcase */
+const assert = require('assert');
 const { fetch } = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 const { Base } = require('mocha').reporters;
 
 const testDomain = process.env.TEST_DOMAIN;
+const testVersionLock = process.env.TEST_VERSION_LOCK;
 
-async function getText(data) {
-  if (!data.ok) {
-    throw new Error(`Unable to load ${data.url} (${data.status}): ${await data.text()}`);
+const origOpts = {
+  cache: 'no-cache',
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+};
+
+const testOpts = {
+  cache: 'no-cache',
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+};
+
+if (testVersionLock) {
+  testOpts.headers['x-ow-version-lock'] = testVersionLock;
+}
+
+/**
+ * Processes the given queue concurrently. The handler functions can add more items to the queue
+ * if needed.
+ *
+ * @param {Array<*>} queue A list of tasks
+ * @param {function} fn A handler function `fn(task:any, queue:array, results:array)`
+ * @param {number} [maxConcurrent = 8] Concurrency level
+ * @returns the results
+ */
+async function processQueue(queue, fn, maxConcurrent = 8) {
+  const running = [];
+  const results = [];
+  while (queue.length || running.length) {
+    if (running.length < maxConcurrent && queue.length) {
+      const task = fn(queue.shift(), queue, results);
+      running.push(task);
+      task.finally(() => {
+        const idx = running.indexOf(task);
+        if (idx >= 0) {
+          running.splice(idx, 1);
+        }
+      });
+    } else {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.race(running);
+    }
   }
-  return data.text();
+  return results;
 }
 
 function getTestURLs(mostVisitedObj) {
@@ -58,28 +100,38 @@ async function getMostVisited() {
 }
 
 /**
- * function that turns most-visited pages into doms
+ * function that turns fetches the content of the most-visited pages
  */
 async function getTestSetup() {
   const mostVisitedUrls = await getMostVisited();
-  let originalDoms = [];
-  // construct array of promises from fetch
-  let testDoms = mostVisitedUrls.map((mostVisitedObj) => {
-    // eslint-disable-next-line camelcase
-    const { original: originalURL, test: testURL } = getTestURLs(mostVisitedObj);
 
-    // fetch page before change and page after change; and construct DOM
-    originalDoms.push(fetch(originalURL).then(getText));
-    return fetch(testURL).then(getText);
+  mostVisitedUrls.push({
+    req_url: 'https://theblog--adobe.hlx.page/en/publish/2019/11/22/asia-pacific-insiders-share-their-inspiration-from-max-2019.html',
   });
-  originalDoms = await Promise.all(originalDoms);
-  testDoms = await Promise.all(testDoms);
 
-  return {
-    originalDoms,
-    testDoms,
-    mostVisitedUrls,
-  };
+  // construct array of promises from fetch
+  return processQueue(mostVisitedUrls, async (mostVisitedObj, _, results) => {
+    const { original: originalURL, test: testURL } = getTestURLs(mostVisitedObj);
+    const ret = {
+      originalURL,
+      testURL,
+    };
+
+    {
+      console.log('fetching original', originalURL);
+      const res = await fetch(originalURL, origOpts);
+      ret.originalStatus = res.status;
+      ret.originalContent = await res.text();
+    }
+    {
+      console.log('fetching test', testURL);
+      const res = await fetch(testURL, testOpts);
+      ret.testStatus = res.status;
+      ret.testContent = await res.text();
+    }
+
+    results.push(ret);
+  }, 4);
 }
 
 // remove known attributes that may be different
@@ -94,18 +146,23 @@ describe('document equivalence', async () => {
   try {
     const setup = await getTestSetup();
 
-    setup.originalDoms.forEach((base, idx) => {
-      const { original: originalURL, test: testURL } = getTestURLs(setup.mostVisitedUrls[idx]);
+    setup.forEach((info) => {
+      const {
+        originalURL, originalContent, testURL, testContent,
+      } = info;
 
-      const orig_dom = new JSDOM(base).window.document;
+      const orig_dom = new JSDOM(originalContent).window.document;
       filterDOM(orig_dom);
 
-      const test_text = fixDomainInTestContent(setup.testDoms[idx]);
+      const test_text = fixDomainInTestContent(testContent);
       const test_dom = new JSDOM(test_text).window.document;
       filterDOM(test_dom);
 
       describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
+          if (info.testStatus !== 200) {
+            assert.fail(`${testURL} failed with ${info.testStatus}`);
+          }
           dumpDOM(orig_dom.body, test_dom.body);
           try {
             assertEquivalentNode(orig_dom.body, test_dom.body);
@@ -118,6 +175,9 @@ describe('document equivalence', async () => {
         }).timeout(50000);
 
         it('testing head node', () => {
+          if (info.testStatus !== 200) {
+            assert.fail(`${testURL} failed with ${info.testStatus}`);
+          }
           dumpDOM(orig_dom.head, test_dom.head);
           try {
             assertEquivalentNode(orig_dom.head, test_dom.head);
@@ -132,7 +192,6 @@ describe('document equivalence', async () => {
     });
   } catch (error) {
     // catch any error
-    // eslint-disable-next-line no-console
     console.error(`Cannot construct the tests: ${error.message}`, error);
     // radical exit to make the failure visible in the ci
     process.exit(1);
