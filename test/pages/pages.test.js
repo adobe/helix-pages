@@ -33,9 +33,7 @@ const testOpts = {
   },
 };
 
-console.log('Using test domain:', testDomain);
 if (testVersionLock) {
-  console.log('Using version lock:', testVersionLock);
   testOpts.headers['x-ow-version-lock'] = testVersionLock;
 }
 
