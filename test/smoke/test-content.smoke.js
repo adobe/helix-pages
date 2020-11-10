@@ -34,7 +34,7 @@ const argv = require('yargs') // eslint-disable-line
   })
   .demandOption(['domain']).argv;
 
-describe.only('test-content smoke tests - test content and expected results', () => {
+describe('test-content smoke tests - test content and expected results', () => {
   async function testPageContains(host, path, text) {
     const res = await chai.request(host)
       .get(path)
