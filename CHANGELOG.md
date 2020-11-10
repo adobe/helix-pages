@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/adobe/helix-pages/compare/v4.4.0...v4.5.0) (2020-11-10)
+
+
+### Features
+
+* **test:** add support for version lock in diff tests ([#518](https://github.com/adobe/helix-pages/issues/518)) ([5976d74](https://github.com/adobe/helix-pages/commit/5976d749b9707a77234d78d7bca677d3c0116599))
+
 # [4.4.0](https://github.com/adobe/helix-pages/compare/v4.3.0...v4.4.0) (2020-10-29)
 
 
