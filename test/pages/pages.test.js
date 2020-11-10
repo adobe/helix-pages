@@ -14,6 +14,7 @@ const assert = require('assert');
 const { fetch } = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { Base } = require('mocha').reporters;
 
 const testDomain = process.env.TEST_DOMAIN;
 const testVersionLock = process.env.TEST_VERSION_LOCK;
@@ -135,6 +136,14 @@ async function getTestSetup() {
   }, 4);
 }
 
+// remove known attributes that may be different
+function filterDOM(document) {
+  const sourceHash = document.querySelector('meta[name="x-source-hash"]');
+  if (sourceHash) {
+    sourceHash.remove();
+  }
+}
+
 describe('document equivalence', async () => {
   try {
     const setup = await getTestSetup();
@@ -145,9 +154,11 @@ describe('document equivalence', async () => {
       } = info;
 
       const orig_dom = new JSDOM(originalContent).window.document;
+      filterDOM(orig_dom);
 
       const test_text = fixDomainInTestContent(testContent);
       const test_dom = new JSDOM(test_text).window.document;
+      filterDOM(test_dom);
 
       describe(`Comparing ${originalURL} against ${testURL}`, () => {
         it('testing body node', () => {
@@ -155,15 +166,29 @@ describe('document equivalence', async () => {
             assert.fail(`${testURL} failed with ${info.testStatus}`);
           }
           dumpDOM(orig_dom.body, test_dom.body);
-          assertEquivalentNode(orig_dom.body, test_dom.body);
-        }).timeout(20000);
+          try {
+            assertEquivalentNode(orig_dom.body, test_dom.body);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
+        }).timeout(50000);
 
         it('testing head node', () => {
           if (info.testStatus !== 200) {
             assert.fail(`${testURL} failed with ${info.testStatus}`);
           }
           dumpDOM(orig_dom.head, test_dom.head);
-          assertEquivalentNode(orig_dom.head, test_dom.head);
+          try {
+            assertEquivalentNode(orig_dom.head, test_dom.head);
+          } catch (error) {
+            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+            console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
+              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+            throw error;
+          }
         }).timeout(20000);
       });
     });

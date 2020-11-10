@@ -52,6 +52,7 @@ sub hlx_owner_after {
     if (var.o != "") {
         // override X-Owner
         set req.http.X-Owner = var.o;
+        set req.http.X-URL-Override = true;
     }
 }
 
@@ -93,5 +94,11 @@ sub hlx_ref_after {
     if (var.ref != "") {
         # override X-Ref
         set req.http.X-Ref= var.ref;
+    } else {
+        if (req.http.X-URL-Override) {
+            # default branch to master if there is a url override but no branch provided
+            set req.http.X-Ref = "master";
+        }
     }
+    unset req.http.X-URL-Override;
 }

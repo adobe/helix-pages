@@ -23,7 +23,7 @@ function getOriginalHost(headers) {
 }
 
 /**
- * Turns arelative into an absolute URL.
+ * Turns a relative into an absolute URL.
  * @param {object} headers The request headers
  * @param {string} url The relative or absolute URL
  * @returns {string} The absolute URL or <code>null</code>
