@@ -111,7 +111,7 @@ describe('test-content smoke tests - test content and expected results', () => {
     path: '/sponly.html',
     text: [
       'github-master-/head.html',
-      'sharepoint-/master/sponly.md',
+      'sharepoint-/main/sponly.md',
     ],
   }, {
     title: 'docx only in Sharepoint contains the head',
@@ -119,7 +119,7 @@ describe('test-content smoke tests - test content and expected results', () => {
     path: '/spdoconly.html',
     text: [
       'github-master-/head.html',
-      'sharepoint-/master/spdoconly.docx',
+      'sharepoint-/main/spdoconly.docx',
     ],
   }, {
     title: 'docx in Sharepoint has priority over MD in GitHub',
@@ -127,7 +127,7 @@ describe('test-content smoke tests - test content and expected results', () => {
     path: '/test.html',
     text: [
       'github-master-/head.html',
-      'sharepoint-/master/test.docx',
+      'sharepoint-/main/test.docx',
     ],
   }, {
     title: 'docx only in Sharepoint contains the head - main branch',
@@ -166,7 +166,7 @@ describe('test-content smoke tests - test content and expected results', () => {
     // TODO: swap main and master test once helix-pages is able to find default branch
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/spreadsheet.json',
-    text: 'sharepoint-/master/spreadsheet.xlsx',
+    text: 'sharepoint-/main/spreadsheet.xlsx',
   }, {
     title: 'json request finds spreadsheet in main branch',
     // TODO: swap main and master test once helix-pages is able to find default branch
