@@ -41,29 +41,19 @@ describe('test-content smoke tests - test content and expected results', () => {
       .set('X-Debug', argv.serviceid || false);
 
     expect(res).to.have.status(200);
-    expect(res.text).to.contain(text);
+    if (typeof text === 'string') {
+      expect(res.text).to.contain(text);
+    } else {
+      text.forEach((t) => {
+        expect(res.text).to.contain(t);
+      });
+    }
   }
 
   const OWNER = 'kptdobe';
   const REPO = 'helix-pages-test-content';
 
   [{
-    title: 'master is the default branch',
-    // TODO: swap main and master test once helix-pages is able to find default branch
-    host: `https://${REPO}--${OWNER}.${argv.domain}`,
-    path: '/',
-    text: 'github-master-/index.html',
-  }, {
-    title: 'HTML has priority on MD',
-    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
-    path: '/',
-    text: 'github-main-/index.html',
-  }, {
-    title: 'a branch can be retrieved',
-    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
-    path: '/',
-    text: 'github-abranch-/index.html',
-  }, {
     title: 'static head is overriden in master branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/head.html',
@@ -78,6 +68,22 @@ describe('test-content smoke tests - test content and expected results', () => {
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/head.html',
     text: 'github-abranch-/head.html',
+  }, {
+    title: 'master is the default branch',
+    // TODO: swap main and master test once helix-pages is able to find default branch
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/',
+    text: 'github-master-/index.html',
+  }, {
+    title: 'static HTML has priority on MD and Sharepoint files (and no head.html include)',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/',
+    text: 'github-main-/index.html',
+  }, {
+    title: 'a branch can be retrieved',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/',
+    text: 'github-abranch-/index.html',
   }, {
     title: 'only default branch has a styles.css override',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
@@ -95,6 +101,63 @@ describe('test-content smoke tests - test content and expected results', () => {
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/styles.css',
     text: 'body {',
+  }, {
+    // TODO: swap (docx should have prio) when https://github.com/adobe/helix-word2md/issues/463 is fixed
+    title: 'in Sharepoint md has priority on docx',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/sponly.html',
+    text: [
+      'github-master-/head.html',
+      'sharepoint-/master/sponly.md',
+    ],
+  }, {
+    title: 'docx only in Sharepoint contains the head',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spdoconly.html',
+    text: [
+      'github-master-/head.html',
+      'sharepoint-/master/spdoconly.docx',
+    ],
+  }, {
+    title: 'docx in Sharepoint has priority over MD in GitHub',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/test.html',
+    text: [
+      'github-master-/head.html',
+      'sharepoint-/master/test.docx',
+    ],
+  }, {
+    title: 'docx only in Sharepoint contains the head - main branch',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spdoconly.html',
+    text: [
+      'github-main-/head.html',
+      'sharepoint-/main/spdoconly.docx',
+    ],
+  }, {
+    title: 'docx in Sharepoint has priority over MD in GitHub - main branch',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/test.html',
+    text: [
+      'github-main-/head.html',
+      'sharepoint-/main/test.docx',
+    ],
+  }, {
+    title: 'docx only in Sharepoint contains the head - a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spdoconly.html',
+    text: [
+      'github-abranch-/head.html',
+      'sharepoint-/abranch/spdoconly.docx',
+    ],
+  }, {
+    title: 'docx in Sharepoint has priority over MD in GitHub - a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/test.html',
+    text: [
+      'github-abranch-/head.html',
+      'sharepoint-/abranch/test.docx',
+    ],
   }].forEach((test) => {
     it(`${test.title}: ${test.host}${test.path}`, async () => {
       await testPageContains(test.host, test.path, test.text);
