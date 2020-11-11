@@ -36,6 +36,9 @@ const argv = require('yargs') // eslint-disable-line
 
 describe('test-content smoke tests - test content and expected results', () => {
   async function testPageContains(host, path, text) {
+    // purge first
+    await chai.request(host).purge(path);
+
     const res = await chai.request(host)
       .get(path)
       .set('X-Debug', argv.serviceid || false);
