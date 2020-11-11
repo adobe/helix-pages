@@ -161,6 +161,23 @@ describe('test-content smoke tests - test content and expected results', () => {
       'github-abranch-/head.html',
       'sharepoint-/abranch/test.docx',
     ],
+  }, {
+    title: 'json request finds default spreadsheet',
+    // TODO: swap main and master test once helix-pages is able to find default branch
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spreadsheet.json',
+    text: 'sharepoint-/master/spreadsheet.xlsx',
+  }, {
+    title: 'json request finds spreadsheet in main branch',
+    // TODO: swap main and master test once helix-pages is able to find default branch
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spreadsheet.json',
+    text: 'sharepoint-/main/spreadsheet.xlsx',
+  }, {
+    title: 'json request finds spreadsheet in a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/spreadsheet.json',
+    text: 'sharepoint-/abranch/spreadsheet.xlsx',
   }].forEach((test) => {
     it(`${test.title}: ${test.host}${test.path}`, async () => {
       await testPageContains(test.host, test.path, test.text);
