@@ -361,16 +361,16 @@ workflows:
           repo: ferrumjsorg
           requires:
             - init_smoketests
-#      - run_diff_tests:
-#          requires:
-#            - init_smoketests
+      - run_diff_tests:
+          requires:
+            - init_smoketests
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
-#            - run_diff_tests
+            - run_diff_tests
       - publish:
           context: Project Helix
           requires:
