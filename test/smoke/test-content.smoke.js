@@ -105,13 +105,12 @@ describe('test-content smoke tests - test content and expected results', () => {
     path: '/styles.css',
     text: 'body {',
   }, {
-    // TODO: swap (docx should have prio) when https://github.com/adobe/helix-word2md/issues/463 is fixed
     title: 'in Sharepoint md has priority on docx',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/sponly.html',
     text: [
       'github-master-/head.html',
-      'sharepoint-/main/sponly.md',
+      'sharepoint-/main/sponly.docx',
     ],
   }, {
     title: 'docx only in Sharepoint contains the head',
