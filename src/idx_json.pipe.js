@@ -31,7 +31,6 @@ const dump = require('@adobe/helix-pipeline/src/utils/dump-context');
 const validate = require('@adobe/helix-pipeline/src/utils/validate');
 const { cache, uncached } = require('@adobe/helix-pipeline/src/html/shared-cache');
 const embeds = require('@adobe/helix-pipeline/src/html/find-embeds');
-const parseFrontmatter = require('@adobe/helix-pipeline/src/html/parse-frontmatter');
 const unwrapSoleImages = require('@adobe/helix-pipeline/src/html/unwrap-sole-images');
 const timing = require('@adobe/helix-pipeline/src/utils/timing');
 const sanitize = require('@adobe/helix-pipeline/src/html/sanitize');
@@ -55,7 +54,6 @@ const jsonpipe = (cont, context, action) => {
     .every(timer.update)
     .use(fetch).expose('fetch').when(hascontent)
     .use(parse).expose('parse')
-    .use(parseFrontmatter)
     .use(embeds)
     .use(smartypants)
     .use(sections)

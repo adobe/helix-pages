@@ -11,10 +11,13 @@
  */
 /* eslint-disable no-undef,no-console,camelcase */
 const assert = require('assert');
-const { fetch } = require('@adobe/helix-fetch');
+const fetchAPI = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 const { Base } = require('mocha').reporters;
+
+const fetchContext = fetchAPI.context({ httpProtocol: 'http1', httpsProtocols: ['http1'] });
+const { fetch } = fetchContext;
 
 const testDomain = process.env.TEST_DOMAIN;
 const testVersionLock = process.env.TEST_VERSION_LOCK;
@@ -142,59 +145,64 @@ function filterDOM(document) {
   }
 }
 
-describe('document equivalence', async () => {
-  try {
-    const setup = await getTestSetup();
+describe('document equivalence', function suite() {
+  this.timeout(5 * 60000);
+  before(async () => {
+    try {
+      const setup = await getTestSetup();
+      setup.forEach((info) => {
+        const {
+          originalURL, originalContent, testURL, testContent,
+        } = info;
 
-    setup.forEach((info) => {
-      const {
-        originalURL, originalContent, testURL, testContent,
-      } = info;
+        const orig_dom = new JSDOM(originalContent).window.document;
+        filterDOM(orig_dom);
 
-      const orig_dom = new JSDOM(originalContent).window.document;
-      filterDOM(orig_dom);
+        const test_text = fixDomainInTestContent(testContent);
+        const test_dom = new JSDOM(test_text).window.document;
+        filterDOM(test_dom);
 
-      const test_text = fixDomainInTestContent(testContent);
-      const test_dom = new JSDOM(test_text).window.document;
-      filterDOM(test_dom);
-
-      describe(`Comparing ${originalURL} against ${testURL}`, () => {
-        it('testing body node', () => {
-          if (info.testStatus !== 200) {
-            assert.fail(`${testURL} failed with ${info.testStatus}`);
-          }
-          dumpDOM(orig_dom.body, test_dom.body);
-          try {
-            assertEquivalentNode(orig_dom.body, test_dom.body);
-          } catch (error) {
-            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
-            console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
+        describe(`Comparing ${originalURL} against ${testURL}`, () => {
+          it('testing body node', () => {
+            if (info.testStatus !== 200) {
+              assert.fail(`${testURL} failed with ${info.testStatus}`);
+            }
+            dumpDOM(orig_dom.body, test_dom.body);
+            try {
+              assertEquivalentNode(orig_dom.body, test_dom.body);
+            } catch (error) {
+              // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+              console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
               Diff: ${Base.generateDiff(error.actual, error.expected)}`);
-            throw error;
-          }
-        }).timeout(50000);
+              throw error;
+            }
+          }).timeout(20000);
 
-        it('testing head node', () => {
-          if (info.testStatus !== 200) {
-            assert.fail(`${testURL} failed with ${info.testStatus}`);
-          }
-          dumpDOM(orig_dom.head, test_dom.head);
-          try {
-            assertEquivalentNode(orig_dom.head, test_dom.head);
-          } catch (error) {
-            // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
-            console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
+          it('testing head node', () => {
+            if (info.testStatus !== 200) {
+              assert.fail(`${testURL} failed with ${info.testStatus}`);
+            }
+            dumpDOM(orig_dom.head, test_dom.head);
+            try {
+              assertEquivalentNode(orig_dom.head, test_dom.head);
+            } catch (error) {
+              // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
+              console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
               Diff: ${Base.generateDiff(error.actual, error.expected)}`);
-            throw error;
-          }
-        }).timeout(20000);
+              throw error;
+            }
+          }).timeout(20000);
+        });
       });
-    });
-  } catch (error) {
-    // catch any error
-    console.error(`Cannot construct the tests: ${error.message}`, error);
-    // radical exit to make the failure visible in the ci
-    process.exit(1);
-  }
-  run();
+    } catch (error) {
+      // catch any error
+      console.error(`Cannot construct the tests: ${error.message}`, error);
+      // radical exit to make the failure visible in the ci
+      process.exit(1);
+    }
+  });
+
+  // This is a required placeholder to allow before() to work
+  it('init', () => {
+  });
 });
