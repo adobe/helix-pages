@@ -20,7 +20,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const TEST_CONTENT_OWNER = 'kptdobe';
+const TEST_CONTENT_OWNER = 'adobe';
 const TEST_CONTENT_REPO = 'helix-pages-test-content';
 
 const coerce = (v) => (v.trim() ? v.trim() : undefined);
