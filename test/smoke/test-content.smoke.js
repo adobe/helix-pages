@@ -57,55 +57,60 @@ describe('test-content smoke tests - test content and expected results', () => {
   const REPO = 'helix-pages-test-content';
 
   [{
-    title: 'static head is overriden in master branch',
+    title: 'static head is overriden - GitHub - default branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/head.html',
     text: 'github-master-/head.html',
   }, {
-    title: 'static head is overriden in main branch',
+    title: 'static head is overriden - GitHub - main branch',
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/head.html',
     text: 'github-main-/head.html',
   }, {
-    title: 'static head is overriden in a branch',
+    title: 'static head is overriden - GitHub - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/head.html',
     text: 'github-abranch-/head.html',
   }, {
-    title: 'master is the default branch',
+    title: 'master is the default - GitHub - default branch',
     // TODO: swap main and master test once helix-pages is able to find default branch
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/',
     text: 'github-master-/index.html',
   }, {
-    title: 'static HTML has priority on MD and Sharepoint files (and no head.html include)',
+    title: 'GH static HTML has priority on MD and Sharepoint files (and no head.html include) - GitHub / Sharepoint- main branch',
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/',
     text: 'github-main-/index.html',
   }, {
-    title: 'a branch can be retrieved',
+    title: 'GH static HTML has priority on MD and Google Drive files (and no head.html include) - GitHub / Google Drive - main branch',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/',
+    text: 'github-main-/g/index.html',
+  }, {
+    title: 'index can be retrieved - GitHub - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/',
     text: 'github-abranch-/index.html',
   }, {
-    title: 'only default branch has a styles.css override',
+    title: 'styles.css override - GitHub - default branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/styles.css',
     // TODO: swap main and master test once helix-pages is able to find default branch
     text: 'github-master-/styles.css',
   }, {
-    title: 'main branch does not have a styles.css override',
+    title: 'no styles.css override - GitHub - main branch',
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/styles.css',
     // TODO: swap main and master test once helix-pages is able to find default branch
     text: 'body {',
   }, {
-    title: 'a branch branch does not have a styles.css override',
+    title: 'no styles.css override - GitHub - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/styles.css',
     text: 'body {',
   }, {
-    title: 'in Sharepoint md has priority on docx',
+    title: 'docx has priority on md - Sharepoint - default branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/sponly.html',
     text: [
@@ -113,7 +118,31 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/main/sponly.docx',
     ],
   }, {
-    title: 'docx only in Sharepoint contains the head',
+    title: 'gdoc has priority on md - Google Drive - default branch',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/gonly.html',
+    text: [
+      'github-master-/head.html',
+      'gdrive-/main/gonly.gdoc',
+    ],
+  }, {
+    title: 'md files can be rendered - Sharepoint - default branch',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/mdonly.html',
+    text: [
+      'github-master-/head.html',
+      'sharepoint-/main/mdonly.md',
+    ],
+  }, {
+    title: 'md files can be rendered - Google Drive - default branch',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/mdonly.html',
+    text: [
+      'github-master-/head.html',
+      'gdrive-/main/mdonly.md',
+    ],
+  }, {
+    title: 'docx only contains the head - Sharepoint - default branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/spdoconly.html',
     text: [
@@ -121,7 +150,15 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/main/spdoconly.docx',
     ],
   }, {
-    title: 'docx in Sharepoint has priority over MD in GitHub',
+    title: 'gdoc only contains the head - Google Drive - default branch',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/gdoconly.html',
+    text: [
+      'github-master-/head.html',
+      'gdrive-/main/gdoconly.gdoc',
+    ],
+  }, {
+    title: 'docx has priority over MD in GitHub - Sharepoint - default branch',
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/test.html',
     text: [
@@ -129,7 +166,15 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/main/test.docx',
     ],
   }, {
-    title: 'docx only in Sharepoint contains the head - main branch',
+    title: 'gdoc has priority over MD in GitHub - Google Drive - default branch',
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/test.html',
+    text: [
+      'github-master-/head.html',
+      'gdrive-/main/test.gdoc',
+    ],
+  }, {
+    title: '"docx only" contains the head - Sharepoint - main branch',
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/spdoconly.html',
     text: [
@@ -137,7 +182,15 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/main/spdoconly.docx',
     ],
   }, {
-    title: 'docx in Sharepoint has priority over MD in GitHub - main branch',
+    title: '"gdoc only" contains the head - Google Drive - main branch',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/gdoconly.html',
+    text: [
+      'github-main-/head.html',
+      'gdrive-/main/gdoconly.gdoc',
+    ],
+  }, {
+    title: 'docx has priority over MD in GitHub - Sharepoint - main branch',
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/test.html',
     text: [
@@ -145,7 +198,15 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/main/test.docx',
     ],
   }, {
-    title: 'docx only in Sharepoint contains the head - a branch',
+    title: 'gdoc has priority over MD in GitHub - Google Drive - main branch',
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/test.html',
+    text: [
+      'github-main-/head.html',
+      'gdrive-/main/test.gdoc',
+    ],
+  }, {
+    title: '"docx only" contains the head - Sharepoint - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/spdoconly.html',
     text: [
@@ -153,7 +214,15 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/abranch/spdoconly.docx',
     ],
   }, {
-    title: 'docx in Sharepoint has priority over MD in GitHub - a branch',
+    title: '"gdoc only" contains the head - Google Drive - a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/gdoconly.html',
+    text: [
+      'github-abranch-/head.html',
+      'gdrive-/abranch/gdoconly.gdoc',
+    ],
+  }, {
+    title: 'docx has priority over MD in GitHub - Sharepoint - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/test.html',
     text: [
@@ -161,22 +230,47 @@ describe('test-content smoke tests - test content and expected results', () => {
       'sharepoint-/abranch/test.docx',
     ],
   }, {
-    title: 'json request finds default spreadsheet',
+    title: 'gdoc has priority over MD in GitHub - Google Drive - a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/test.html',
+    text: [
+      'github-abranch-/head.html',
+      'gdrive-/abranch/test.gdoc',
+    ],
+  }, {
+    title: 'json request finds spreadsheet - Sharepoint - default branch',
     // TODO: swap main and master test once helix-pages is able to find default branch
     host: `https://${REPO}--${OWNER}.${argv.domain}`,
     path: '/spreadsheet.json',
     text: 'sharepoint-/main/spreadsheet.xlsx',
   }, {
-    title: 'json request finds spreadsheet in main branch',
+    title: 'json request finds spreadsheet - Sharepoint - main branch',
     // TODO: swap main and master test once helix-pages is able to find default branch
     host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
     path: '/spreadsheet.json',
     text: 'sharepoint-/main/spreadsheet.xlsx',
   }, {
-    title: 'json request finds spreadsheet in a branch',
+    title: 'json request finds spreadsheet - Sharepoint - a branch',
     host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
     path: '/spreadsheet.json',
     text: 'sharepoint-/abranch/spreadsheet.xlsx',
+  }, {
+    title: 'json request finds spreadsheet - Google Drive - default branch',
+    // TODO: swap main and master test once helix-pages is able to find default branch
+    host: `https://${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/spreadsheet.json',
+    text: 'gdrive-/main/spreadsheet.gsheet',
+  }, {
+    title: 'json request finds spreadsheet - Google Drive - main branch',
+    // TODO: swap main and master test once helix-pages is able to find default branch
+    host: `https://main--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/spreadsheet.json',
+    text: 'gdrive-/main/spreadsheet.gsheet',
+  }, {
+    title: 'json request finds spreadsheet - Google Drive - a branch',
+    host: `https://abranch--${REPO}--${OWNER}.${argv.domain}`,
+    path: '/g/spreadsheet.json',
+    text: 'gdrive-/abranch/spreadsheet.gsheet',
   }].forEach((test) => {
     it(`${test.title}: ${test.host}${test.path}`, async () => {
       await testPageContains(test.host, test.path, test.text);
