@@ -1,4 +1,8 @@
-# Helix Sidekick Bookmarklet
+# Sidekick Bookmarklet
+
+A [bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) (or favlet) is a bookmark stored in your browser. It uses JavaScript to add additional features to it.
+
+The Sidekick bookmarklet helps authors with a toolbar containing context-aware actions like Preview or Publish.
 
 ---
 id: form
@@ -10,7 +14,6 @@ id: form
 <input id="host">
 <label for="project">Project Name (optional): </label>
 <input id="project">
-<!-- <input type="hidden" id="title"> -->
 <br>
 <button onclick="run()">Generate Bookmarklet</button>
 
@@ -21,26 +24,29 @@ style: display:none
 
 Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually.
 
-<a id="bookmark" title="Sidekick" href="">Sidekick</a>
+<a id="bookmark" title="Sidekick" href="">
+  <img src="./helix.svg" alt="Helix Logo">
+</a>
 
 <style>
-#copy {
-  width: unset;
-  display: inline;
-}
+
 #bookmark {
   color: transparent;
   margin: 40px auto;
   display: block;
   width: 100px;
   height: 100px;
-  background-image: url("/default-meta-image.png");
-  background-repeat: no-repeat;
-  background-color: var(--background-color);
-  background-size: auto 180px;
-  background-position: -14px;
+  padding: 20px;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
   border-radius: 50px;
 }
+
+@media (prefers-color-scheme: dark) {
+  #bookmark {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.2);
+  }
+}
+
 </style>
 
 <script>

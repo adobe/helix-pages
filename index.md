@@ -69,7 +69,11 @@ function takeMeThere() {
 <span id="alert" class="alert" style="display:none"></span>
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
 
-## Do more
+## For developers
 
 - [Add an Atom feed to your site](docs/feed.md)
 - [Add a Sitemap to your site](docs/sitemap.md)
+
+## For authors
+
+- [Add the Sidekick to your bookmark bar](tools/sidekick/)
