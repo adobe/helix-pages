@@ -1,8 +1,6 @@
 # Sidekick Bookmarklet
 
-A [bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) (or favlet) is a bookmark stored in your browser. It uses JavaScript to add additional features to it.
-
-The Sidekick bookmarklet helps authors with a toolbar containing context-aware actions like Preview or Publish.
+A [bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) (or favlet) is a bookmark stored in your browser. It uses JavaScript to add additional features. The Sidekick bookmarklet gives authors a toolbar with context-aware actions like Preview or Publish.
 
 ---
 id: form
@@ -89,7 +87,7 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
       '})();',
     ].join('');
     if (project) {
-      bm.setAttribute('title', `${project} ${bm.getAttribute('title')}`);
+      bm.setAttribute('title', `${project} Sidekick`);
     }
     document.getElementById('book').style.display = 'block';
   }
