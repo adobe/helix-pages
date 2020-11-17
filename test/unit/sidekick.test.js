@@ -161,13 +161,12 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
     const innerHost = 'https://pages--adobe.hlx.page';
-    const pluginPath = '/tools/sidekick/plugins.js';
     const actionHost = 'https://adobeioruntime.net';
     const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
-      .get(pluginPath)
+      .get(/.*/)
       .reply(404, '');
     nock(actionHost)
       .get(/.*/)
@@ -187,7 +186,7 @@ describe('Test sidekick bookmarklet', () => {
         evt.initEvent('click', true, false);
         el.dispatchEvent(evt);
       };
-      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+      click(window.document.querySelector('.hlx-sk .preview button'));
     });
     // check result
     return new Promise((resolve, reject) => {
@@ -206,15 +205,14 @@ describe('Test sidekick bookmarklet', () => {
     });
   }).timeout(10000);
 
-  it('Preview opens a new tab with staging lookup URL from onedrive URL', async () => {
+  it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
-    const pluginPath = '/tools/sidekick/plugins.js';
     const actionHost = 'https://adobeioruntime.net';
     const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
-      .get(pluginPath)
+      .get(/.*/)
       .reply(404, '');
     nock(actionHost)
       .get(actionPath)
@@ -234,7 +232,7 @@ describe('Test sidekick bookmarklet', () => {
         evt.initEvent('click', true, false);
         el.dispatchEvent(evt);
       };
-      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+      click(window.document.querySelector('.hlx-sk .preview button'));
     });
     // check result
     return new Promise((resolve, reject) => {
@@ -249,19 +247,18 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 3000);
     });
   }).timeout(10000);
 
-  it('Preview switches from staging to production URL', async () => {
+  it('Preview plugin switches from staging to production URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
-    const pluginPath = '/tools/sidekick/plugins.js';
     const actionHost = 'https://adobeioruntime.net';
     const targetUrl = 'https://blog.adobe.com/en/topics/news.html';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
-      .get(pluginPath)
+      .get(/.*/)
       .reply(404, '');
     nock(actionHost)
       .get(/.*/)
@@ -280,7 +277,7 @@ describe('Test sidekick bookmarklet', () => {
         evt.initEvent('click', true, false);
         el.dispatchEvent(evt);
       };
-      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+      click(window.document.querySelector('.hlx-sk .preview button'));
     });
     // check result
     return new Promise((resolve, reject) => {
@@ -295,15 +292,14 @@ describe('Test sidekick bookmarklet', () => {
     });
   }).timeout(10000);
 
-  it('Preview switches from production to staging URL', async () => {
+  it('Preview plugin switches from production to staging URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
-    const pluginPath = '/tools/sidekick/plugins.js';
     const actionHost = 'https://adobeioruntime.net';
     const targetUrl = 'https://theblog--adobe.hlx.page/en/topics/news.html';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
-      .get(pluginPath)
+      .get(/.*/)
       .reply(404, '');
     nock(actionHost)
       .get(/.*/)
@@ -322,7 +318,7 @@ describe('Test sidekick bookmarklet', () => {
         evt.initEvent('click', true, false);
         el.dispatchEvent(evt);
       };
-      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+      click(window.document.querySelector('.hlx-sk .preview button'));
     });
     // check result
     return new Promise((resolve, reject) => {
@@ -336,4 +332,52 @@ describe('Test sidekick bookmarklet', () => {
       }, 2000);
     });
   }).timeout(10000);
+
+  it('Publish plugin sends purge request from staging URL', async () => {
+    const innerHost = 'https://theblog--adobe.hlx.page';
+    const outerHost = 'https://blog.adobe.com';
+    const actionHost = 'https://adobeioruntime.net';
+    const purgePath = '/en/topics/bla.html';
+    // mock browser requests
+    useNock(page, [innerHost, actionHost]);
+    nock(innerHost)
+      .get(/.*/)
+      .reply(404, '');
+    nock(outerHost)
+      .get(/.*/)
+      .reply(200, '');
+    nock(actionHost)
+      .post(/.*/)
+      .reply(200, '');
+    // watch for purge request
+    let purged = false;
+    page.on('request', async (req) => {
+      if (req.url().startsWith(actionHost)) {
+        const params = new URL(req.url()).searchParams;
+        purged = params.get('path') === purgePath
+          && params.get('xfh').split(',').length === 2;
+      }
+    });
+    // open test page and click preview button
+    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = window.document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(window.document.querySelector('.hlx-sk .publish button'));
+    });
+    // check result
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          assert.strictEqual(purged, true, 'Purge request not sent');
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }, 2000);
+    });
+  }).timeout(20000);
 });
