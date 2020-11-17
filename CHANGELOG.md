@@ -1,3 +1,20 @@
+# [4.6.0](https://github.com/adobe/helix-pages/compare/v4.5.3...v4.6.0) (2020-11-17)
+
+
+### Bug Fixes
+
+* **sidekick:** bookmarklet name is "helix logo" ([8967a46](https://github.com/adobe/helix-pages/commit/8967a46e892b05daf883307e4590619c8d47c5f0))
+* **sidekick:** js error ([3803bc8](https://github.com/adobe/helix-pages/commit/3803bc8882791ef824a780e8600a9ee84a22fc31))
+* **sidekick:** process override before condition ([874155f](https://github.com/adobe/helix-pages/commit/874155f3bc96c926c095f11ae340bcd6f74001ab))
+
+
+### Features
+
+* **sidekick:** app and configurator ([#543](https://github.com/adobe/helix-pages/issues/543)) ([5dbb6ca](https://github.com/adobe/helix-pages/commit/5dbb6ca674c1cb98515d4bd034fb60dca8ee04d5))
+* **sidekick:** configurator ([fafc9ae](https://github.com/adobe/helix-pages/commit/fafc9aec58ca72b81c1e6108b7c23ed2f5add53d))
+* **sidekick:** move app and tests here ([90f6ad8](https://github.com/adobe/helix-pages/commit/90f6ad8a40f86eedf8a5623481956a90215a87f1))
+* **sidekick:** prefer loading custom plugins from current site ([fa906a2](https://github.com/adobe/helix-pages/commit/fa906a2dcdacfa1b6382c14d22ef375ea873020e))
+
 ## [4.5.3](https://github.com/adobe/helix-pages/compare/v4.5.2...v4.5.3) (2020-11-13)
 
 
