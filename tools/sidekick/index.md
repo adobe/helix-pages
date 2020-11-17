@@ -80,10 +80,10 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     bm.href = [
       'javascript:',
       '/* ** Helix Sidekick Bookmarklet ** */',
-      '(() => {if(!window.sidekick){',
-        `window.sidekickConfig=${JSON.stringify(config)};`,
-        'document.head.appendChild(document.createElement("script")).src="https://www.project-helix.io/bookmarklets/sidekick.js";',
-      '}else{window.sidekick.toggle();}',
+      '(() => {if(!window.hlxSidekick){',
+        `window.hlxSidekickConfig=${JSON.stringify(config)};`,
+        'document.head.appendChild(document.createElement("script")).src="https://www.hlx.page/tools/sidekick/app.js";',
+      '}else{window.hlxSidekick.toggle();}',
       '})();',
     ].join('');
     if (project) {

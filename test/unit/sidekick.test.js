@@ -1,0 +1,339 @@
+/*
+ * Copyright 2020 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+/* eslint-env mocha */
+/* global window */
+
+'use strict';
+
+const assert = require('assert');
+const puppeteer = require('puppeteer');
+const nock = require('nock');
+const useNock = require('nock-puppeteer');
+
+describe('Test sidekick bookmarklet', () => {
+  const fixturesPrefix = `file://${__dirname}/sidekick`;
+  const getSidekickText = async (p) => p.evaluate(
+    () => window.document.querySelector('.hlx-sk').textContent,
+  );
+
+  let browser;
+  let page;
+
+  beforeEach(async () => {
+    browser = await puppeteer.launch({
+      args: [
+        '--disable-popup-blocking',
+        '--disable-web-security',
+        '–no-sandbox',
+        '–disable-setuid-sandbox',
+      ],
+    });
+    page = await browser.newPage();
+  });
+
+  afterEach(async () => {
+    await browser.close();
+    browser = null;
+    page = null;
+    nock.restore();
+    nock.cleanAll();
+    nock.activate();
+  });
+
+  it('Renders default plugins', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    const skHandle = await page.$('div.hlx-sk');
+    assert.ok(skHandle, 'Did not render without config');
+    assert.strictEqual(
+      await getSidekickText(page),
+      'PreviewPublish',
+      'Did not remove plugin',
+    );
+    const zIndex = await page.evaluate(
+      (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
+      skHandle,
+    );
+    assert.strictEqual(zIndex, '1000', 'Did not apply default CSS');
+  }).timeout(10000);
+
+  it('Adds plugin from config', async () => {
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    assert.ok(
+      (await getSidekickText(page)).includes('Foo'),
+      'Did not add plugin from config',
+    );
+  }).timeout(10000);
+
+  it('Adds plugins via API', async () => {
+    await page.goto(`${fixturesPrefix}/add-plugins.html`, { waitUntil: 'load' });
+    assert.ok(
+      (await getSidekickText(page)).includes('FooBarZapfDing'),
+      'Did not add plugins via API',
+    );
+
+    await (await page.$('div.hlx-sk .ding button')).click();
+    assert.ok(
+      (await getSidekickText(page)).includes('FooBarZapfDingBaz'),
+      'Did not execute plugin action',
+    );
+  }).timeout(10000);
+
+  it('Replaces plugin', async () => {
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      window.hlxSidekick.add({
+        id: 'foo',
+        override: true,
+        button: {
+          text: 'CustomFoo',
+        },
+      });
+    });
+    assert.ok(
+      (await getSidekickText(page)).includes('CustomFoo'),
+      'Did not replace plugin',
+    );
+  }).timeout(10000);
+
+  it('Removes plugin', async () => {
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    await page.evaluate(() => window.hlxSidekick.remove('foo'));
+    assert.strictEqual(
+      await getSidekickText(page),
+      'PreviewPublish',
+      'Did not remove plugin',
+    );
+  }).timeout(10000);
+
+  it('Adds HTML element in plugin', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await page.evaluate(() => window.hlxSidekick.add({
+      id: 'foo',
+      elements: [
+        {
+          tag: 'span',
+          text: 'Lorem ipsum',
+        },
+      ],
+    }));
+    assert.ok(
+      (await getSidekickText(page)).includes('Lorem ipsum'),
+      'Did not add HTML element in plugin',
+    );
+  }).timeout(10000);
+
+  it('Loads custom CSS', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      window.hlxSidekick.loadCSS('custom.css');
+    });
+    const bgColor = await page.$eval('div.hlx-sk',
+      (elem) => window.getComputedStyle(elem).getPropertyValue('background-color'));
+    assert.strictEqual(bgColor, 'rgb(255, 255, 0)', 'Did not load custom CSS');
+  }).timeout(10000);
+
+  it('Shows and hides notifications', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    assert.strictEqual(await page.evaluate(() => {
+      window.hlxSidekick.notify('Lorem ipsum');
+      return window.document.querySelector('.hlx-sk-overlay .modal').textContent;
+    }), 'Lorem ipsum', 'Did show notification');
+
+    assert.strictEqual(await page.evaluate(() => {
+      window.hlxSidekick.showModal('Sticky', true);
+      return window.document.querySelector('.hlx-sk-overlay .modal.wait').textContent;
+    }), 'Sticky', 'Did show sticky modal');
+
+    assert.strictEqual(await page.evaluate(() => {
+      window.hlxSidekick.hideModal();
+      return window.document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
+    }), true, 'Did not hide sticky modal');
+  }).timeout(10000);
+
+  it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
+    const innerHost = 'https://pages--adobe.hlx.page';
+    const pluginPath = '/tools/sidekick/plugins.js';
+    const actionHost = 'https://adobeioruntime.net';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
+    // mock browser requests
+    useNock(page, [innerHost, actionHost]);
+    nock(innerHost)
+      .get(pluginPath)
+      .reply(404, '');
+    nock(actionHost)
+      .get(/.*/)
+      .reply(200, '');
+    // watch for new browser window
+    let lookupUrl;
+    browser.on('targetcreated', async (target) => {
+      lookupUrl = target.url();
+      // abort further requests
+      await (await target.page()).setRequestInterception(true);
+    });
+    // open test page and click preview button
+    await page.goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = window.document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+    });
+    // check result
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          assert.strictEqual(
+            lookupUrl,
+            `${actionHost}${actionPath}`,
+            'Staging lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }, 2000);
+    });
+  }).timeout(10000);
+
+  it('Preview opens a new tab with staging lookup URL from onedrive URL', async () => {
+    const innerHost = 'https://theblog--adobe.hlx.page';
+    const pluginPath = '/tools/sidekick/plugins.js';
+    const actionHost = 'https://adobeioruntime.net';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
+    // mock browser requests
+    useNock(page, [innerHost, actionHost]);
+    nock(innerHost)
+      .get(pluginPath)
+      .reply(404, '');
+    nock(actionHost)
+      .get(actionPath)
+      .reply(301, '');
+    // watch for new browser window
+    let lookupUrl;
+    browser.on('targetcreated', async (target) => {
+      lookupUrl = target.url();
+      // abort further requests
+      await (await target.page()).setRequestInterception(true);
+    });
+    // open test page and click preview button
+    await page.goto(`${fixturesPrefix}/preview-onedrive.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = window.document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+    });
+    // check result
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          assert.strictEqual(
+            lookupUrl,
+            `${actionHost}${actionPath}`,
+            'Staging lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }, 2000);
+    });
+  }).timeout(10000);
+
+  it('Preview switches from staging to production URL', async () => {
+    const innerHost = 'https://theblog--adobe.hlx.page';
+    const pluginPath = '/tools/sidekick/plugins.js';
+    const actionHost = 'https://adobeioruntime.net';
+    const targetUrl = 'https://blog.adobe.com/en/topics/news.html';
+    // mock browser requests
+    useNock(page, [innerHost, actionHost]);
+    nock(innerHost)
+      .get(pluginPath)
+      .reply(404, '');
+    nock(actionHost)
+      .get(/.*/)
+      .reply(301, '', { Location: targetUrl });
+    // watch for location change
+    let switched = false;
+    browser.on('targetchanged', async (target) => {
+      switched = target.url() === targetUrl;
+      await (await target.page()).setRequestInterception(true);
+    });
+    // open test page and click preview button
+    await page.goto(`${fixturesPrefix}/preview-staging.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = window.document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+    });
+    // check result
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          assert.strictEqual(switched, true, 'Production URL not opened');
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }, 2000);
+    });
+  }).timeout(10000);
+
+  it('Preview switches from production to staging URL', async () => {
+    const innerHost = 'https://theblog--adobe.hlx.page';
+    const pluginPath = '/tools/sidekick/plugins.js';
+    const actionHost = 'https://adobeioruntime.net';
+    const targetUrl = 'https://theblog--adobe.hlx.page/en/topics/news.html';
+    // mock browser requests
+    useNock(page, [innerHost, actionHost]);
+    nock(innerHost)
+      .get(pluginPath)
+      .reply(404, '');
+    nock(actionHost)
+      .get(/.*/)
+      .reply(301, '', { Location: targetUrl });
+    // watch for location change
+    let switched = false;
+    browser.on('targetchanged', async (target) => {
+      switched = target.url() === targetUrl;
+      await (await target.page()).setRequestInterception(true);
+    });
+    // open test page and click preview button
+    await page.goto(`${fixturesPrefix}/preview-production.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = window.document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(window.document.querySelector('.hlx-sk button:first-of-type'));
+    });
+    // check result
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          assert.strictEqual(switched, true, 'Staging URL not opened');
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      }, 2000);
+    });
+  }).timeout(10000);
+});
