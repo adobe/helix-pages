@@ -60,6 +60,7 @@ jobs:
           name: Lint
           command: npm run lint
       - run: mkdir junit
+      - puppeteer/install
       - run:
           name: Unit tests
           command: npx mocha --exit --reporter mocha-junit-reporter test/unit/*.test.js
