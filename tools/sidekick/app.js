@@ -67,10 +67,11 @@
       if (!(this.isHelix() || this.isEditor()) || !this.config.innerHost) {
         return;
       }
+      const prefix = this.isEditor() ? `https://${this.config.innerHost}` : '';
       Sidekick.appendTag(document.head, {
         tag: 'script',
         attrs: {
-          src: `https://${this.config.innerHost}/tools/sidekick/plugins.js`,
+          src: `${prefix}/tools/sidekick/plugins.js`,
         },
       });
     }
