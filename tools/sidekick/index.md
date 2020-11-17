@@ -23,7 +23,7 @@ style: display:none
 Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually.
 
 <a id="bookmark" title="Sidekick" href="">
-  <img src="./helix.svg" alt="Helix Logo">
+  <img src="./helix.svg" alt="Sidekick">
 </a>
 
 <style>
@@ -87,7 +87,9 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
       '})();',
     ].join('');
     if (project) {
-      bm.setAttribute('title', `${project} Sidekick`);
+      const title = `${project} Sidekick`;
+      bm.setAttribute('title', title);
+      bm.firstElementChild.setAttribute('alt', title);
     }
     document.getElementById('book').style.display = 'block';
   }

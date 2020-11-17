@@ -67,10 +67,11 @@
       if (!(this.isHelix() || this.isEditor()) || !this.config.innerHost) {
         return;
       }
+      const prefix = this.isEditor() ? `https://${this.config.innerHost}` : '';
       Sidekick.appendTag(document.head, {
         tag: 'script',
         attrs: {
-          src: `https://${this.config.innerHost}/tools/sidekick/plugins.js`,
+          src: `${prefix}/tools/sidekick/plugins.js`,
         },
       });
     }
@@ -312,11 +313,11 @@
       } else if (typeof plugin === 'function') {
         return this.add(plugin(this));
       } else if (typeof plugin === 'object') {
-        if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
-          return this;
-        }
         if (plugin.override) {
           this.remove(plugin.id);
+        }
+        if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
+          return this;
         }
         const $plugin = Sidekick.appendTag(this.root, {
           tag: 'div',
