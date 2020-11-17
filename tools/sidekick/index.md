@@ -89,7 +89,7 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     if (project) {
       const title = `${project} Sidekick`;
       bm.setAttribute('title', title);
-      bm.firstChild.setAttribute('alt', title);
+      bm.firstElementChild.setAttribute('alt', title);
     }
     document.getElementById('book').style.display = 'block';
   }
