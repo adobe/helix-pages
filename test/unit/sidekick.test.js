@@ -87,6 +87,34 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(10000);
 
+  it('Adds plugins from project', async () => {
+    await page.setRequestInterception(true);
+    page.on('request', async (req) => {
+      if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+        await req.respond({
+          status: 200,
+          contentType: 'text/javascript',
+          body: `
+            window.hlxSidekick.add({
+              id: 'bar',
+              button: {
+                text: 'Bar',
+              },
+            });
+          `,
+        });
+      } else {
+        await req.continue();
+      }
+    });
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    assert.strictEqual(
+      await getSidekickText(page),
+      'PreviewPublishFooBar',
+      'Did not add plugins from project',
+    );
+  }).timeout(10000);
+
   it('Replaces plugin', async () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
