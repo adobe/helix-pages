@@ -70,7 +70,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: 10px 10px 10px 42px;
+  padding: 0 10px 10px 42px;
   font-family: var(--hlx-sk-font-family);
   font-size: var(--hlx-sk-font-size);
   box-shadow: var(--hlx-sk-shadow);
@@ -99,11 +99,7 @@
   padding: var(--hlx-sk-button-padding);
   cursor: pointer;
   outline: none;
-  margin-left: 8px;
-}
-
-.hlx-sk div:first-of-type button {
-  margin-left: 0;
+  margin: 10px 8px 0 0;
 }
 
 .hlx-sk button:hover,
