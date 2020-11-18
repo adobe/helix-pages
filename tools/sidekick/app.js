@@ -49,7 +49,7 @@
      */
     _initConfig(cfg = {}) {
       const prefix = (cfg && cfg.owner && cfg.repo)
-        ? `${cfg.ref ? `${cfg.ref}--` : ''}${cfg.repo}--${cfg.owner}`
+        ? `${cfg.ref && cfg.ref !== 'master' ? `${cfg.ref}--` : ''}${cfg.repo}--${cfg.owner}`
         : null;
       this.config = {
         ...cfg,
