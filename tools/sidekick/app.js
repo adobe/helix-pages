@@ -163,17 +163,13 @@
         });
         const json = await resp.json();
         console.log(JSON.stringify(json));
-        const ok = json.every((e) => e.status === 'ok');
-        if (!resp.ok || !ok) {
-          this.notify(
-            `<p>Failed to purge ${path} from the cache. Please try again later.</p>
-            <pre>Status: ${resp.status}</pre>
-            <pre>${JSON.stringify(json)}</pre>`,
-            0,
-          );
-        }
-        return json;
         /* eslint-enable no-console */
+        return {
+          ok: resp.ok && json.every((e) => e.status === 'ok'),
+          status: resp.status,
+          json,
+          path,
+        };
       }
 
       this.add({
@@ -189,12 +185,23 @@
             }
             this.showModal('Publishing...', true);
             const path = location.pathname;
-            await sendPurge(config, path);
-            const outerURL = `https://${config.host}${path}`;
-            await fetch(outerURL, { cache: 'reload', mode: 'no-cors' });
-            // eslint-disable-next-line no-console
-            console.log(`redirecting ${outerURL}`);
-            window.location.href = outerURL;
+            const resp = await sendPurge(config, path);
+            if (resp.ok) {
+              // fetch and redirect to production
+              const prodURL = `https://${config.host}${path}`;
+              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+              // eslint-disable-next-line no-console
+              console.log(`redirecting to ${prodURL}`);
+              window.location.href = prodURL;
+            } else {
+              this.showModal(
+                `<p>Failed to purge ${resp.path} from the cache. Please reload this page and try again later.</p>
+                <p>Status: ${resp.status}</p>
+                <p>${JSON.stringify(resp.json)}</p>`,
+                true,
+                0,
+              );
+            }
           },
         },
       });
