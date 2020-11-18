@@ -403,7 +403,7 @@
 
     /**
      * Displays a non-sticky notification.
-     * @param {string} msg The message to display
+     * @param {string|array} msg The message(s) to display
      * @param {number} level error (0), warning (1), of info (2) (default)
      */
     notify(msg, level = 2) {
@@ -412,7 +412,7 @@
 
     /**
      * Displays a modal notification.
-     * @param {string} msg The message to display
+     * @param {string|array} msg The message(s) to display
      * @param {boolean} sticky True if message should be sticky, else false (default)
      * @param {number} level error (0), warning (1), of info (2) (default)
      * @returns {object} The sidekick
@@ -430,7 +430,9 @@
         this._modal.parentNode.classList.remove('hlx-sk-hidden');
       }
       if (msg) {
-        this._modal.innerHTML = msg;
+        this._modal.innerHTML = Array.isArray(msg)
+          ? `<p>${msg.join('</p><p>')}</p>`
+          : msg;
         this._modal.className = `modal${level < 2 ? ` level-${level}` : ''}`;
       }
       if (!sticky) {

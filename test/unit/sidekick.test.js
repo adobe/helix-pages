@@ -157,6 +157,11 @@ describe('Test sidekick bookmarklet', () => {
       window.hlxSidekick.hideModal();
       return window.document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
     }), true, 'Did not hide sticky modal');
+
+    assert.strictEqual(await page.evaluate(() => {
+      window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
+      return window.document.querySelector('.hlx-sk-overlay .modal').innerHTML;
+    }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did show multi-line notification');
   }).timeout(10000);
 
   it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
