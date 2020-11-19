@@ -15,6 +15,227 @@
 
 (() => {
   /**
+   * Returns the initialized configuration.
+   * @private
+   * @param {object} cfg The configuration options
+   */
+  function initConfig(cfg = {}) {
+    const outerPrefix = (cfg && cfg.owner && cfg.repo)
+      ? `${cfg.repo}--${cfg.owner}`
+      : null;
+    const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
+      ? `${cfg.ref}--${outerPrefix}`
+      : outerPrefix;
+    return {
+      ...cfg,
+      innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
+      outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
+      project: cfg.project || 'your Helix Pages project',
+    };
+  }
+
+  /**
+   * Returns the location of the current document.
+   * @private
+   * @returns {Location} The location object
+   */
+  function getLocation() {
+    // first check if there is a test location
+    const $test = document.getElementById('sidekick_test_location');
+    if ($test) {
+      try {
+        return new URL($test.value);
+      } catch (e) {
+        return null;
+      }
+    }
+    // fall back to window location
+    return window.location;
+  }
+
+  /**
+   * Creates a tag.
+   * @private
+   * @param {object} elem The tag configuration object
+   *   with the following properties:
+   *   - {string} tag    The tag name (mandatory)
+   *   - {string} text   The text content (optional)
+   *   - {object} attrs  The attributes (optional)
+   *   - {object} lstnrs The event listeners (optional)
+   * @returns {HTMLElement} The new tag
+   */
+  function createTag(elem) {
+    if (typeof elem.tag !== 'string') {
+      return null;
+    }
+    const el = document.createElement(elem.tag);
+    if (typeof elem.attrs === 'object') {
+      for (const [key, value] of Object.entries(elem.attrs)) {
+        el.setAttribute(key, value);
+      }
+    }
+    if (typeof elem.lstnrs === 'object') {
+      for (const [name, fn] of Object.entries(elem.lstnrs)) {
+        if (typeof fn === 'function') {
+          el.addEventListener(name, fn);
+        }
+      }
+    }
+    if (typeof elem.text === 'string') {
+      el.textContent = elem.text;
+    }
+    return el;
+  }
+
+  /**
+   * Creates a tag with the given name, attributes and listeners,
+   * and appends it to the parent element.
+   * @private
+   * @param {HTMLElement} parent The parent element
+   * @param {object}      elem   The tag configuration object
+   *   with the following properties:
+   *   - {string} tag    The tag name (mandatory)
+   *   - {string} text   The text content (optional)
+   *   - {object} attrs  The attributes (optional)
+   *   - {object} lstnrs The event listeners (optional)
+   * @returns {HTMLElement} The new tag
+   */
+  function appendTag(parent, elem) {
+    return parent.appendChild(createTag(elem));
+  }
+
+  /**
+   * Adds the preview plugin to the sidekick.
+   * @private
+   * @param {object} sk The sidekick
+   */
+  function addPreviewPlugin(sk) {
+    sk.add({
+      id: 'preview',
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
+      button: {
+        text: 'Preview',
+        action: () => {
+          const { config, location } = sk;
+          if (!config.innerHost) {
+            sk.notify(`Preview is not configured for ${config.project}`, 0);
+            return;
+          }
+          // check if host is a URL
+          if (config.host && config.host.startsWith('http')) {
+            config.host = new URL(config.host).host;
+          }
+          const currentHost = location.host;
+          const currentPath = location.pathname;
+          if (sk.isEditor()) {
+            // source document, open window with staging url
+            const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
+            u.search = new URLSearchParams([
+              ['owner', config.owner],
+              ['repo', config.repo],
+              ['ref', config.ref || 'master'],
+              ['path', '/'],
+              ['lookup', location.href],
+            ]).toString();
+            window.open(u, `hlx-sk-${config.ref}--${config.repo}--${config.owner}`);
+          } else {
+            sk.showModal('Please wait...', true);
+            switch (currentHost) {
+              case config.innerHost:
+              case config.outerHost:
+                // staging, switch to production
+                if (!config.host) {
+                  sk.notify(`Production host for ${config.project} is unknown`, 1);
+                  return;
+                }
+                window.location.href = `https://${config.host}${currentPath}`;
+                break;
+              case config.host:
+                // production, switch to staging
+                window.location.href = `https://${config.innerHost}${currentPath}`;
+                break;
+              default:
+                sk.notify(
+                  `Preview can be used for ${config.project} here:`,
+                  'Related online documents',
+                  `Articles on https://${config.innerHost}/${config.host ? ` or https://${config.host}/` : ''}`,
+                );
+            }
+          }
+        },
+      },
+    });
+  }
+
+  /**
+   * Adds the publish plugin to the sidekick.
+   * @private
+   * @param {object} sk The sidekick
+   */
+  function addPublishPlugin(sk) {
+    async function sendPurge(cfg, path) {
+      /* eslint-disable no-console */
+      console.log(`purging ${path}`);
+      const xfh = [
+        cfg.host,
+        cfg.outerHost,
+      ];
+      const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
+      u.search = new URLSearchParams([
+        ['host', cfg.innerHost],
+        ['xfh', xfh.join(',')],
+        ['path', path],
+      ]).toString();
+      const resp = await fetch(u, {
+        method: 'POST',
+      });
+      const json = await resp.json();
+      console.log(JSON.stringify(json));
+      /* eslint-enable no-console */
+      return {
+        ok: resp.ok && json.every((e) => e.status === 'ok'),
+        status: resp.status,
+        json,
+        path,
+      };
+    }
+
+    sk.add({
+      id: 'publish',
+      condition: (sidekick) => sidekick.isHelix(),
+      button: {
+        text: 'Publish',
+        action: async () => {
+          const { config, location } = sk;
+          if (!config.innerHost || !config.host) {
+            sk.notify(`Publish is not configured for ${config.project}`, 0);
+            return;
+          }
+          sk.showModal('Publishing...', true);
+          const path = location.pathname;
+          const resp = await sendPurge(config, path);
+          if (resp.ok) {
+            // fetch and redirect to production
+            const prodURL = `https://${config.host}${path}`;
+            await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+            // eslint-disable-next-line no-console
+            console.log(`redirecting to ${prodURL}`);
+            window.location.href = prodURL;
+          } else {
+            sk.showModal(
+              `<p>Failed to purge ${resp.path} from the cache. Please reload this page and try again later.</p>
+              <p>Status: ${resp.status}</p>
+              <p>${JSON.stringify(resp.json)}</p>`,
+              true,
+              0,
+            );
+          }
+        },
+      },
+    });
+  }
+
+  /**
    * A sidekick with helper tools for authors.
    */
   class Sidekick {
@@ -23,264 +244,31 @@
      * @param {object} cfg The configuration options
      */
     constructor(cfg) {
-      this._initConfig(cfg);
-      this.root = Sidekick.appendTag(document.body, {
+      this.config = initConfig(cfg);
+      this.root = appendTag(document.body, {
         tag: 'div',
         attrs: {
           class: 'hlx-sk hlx-sk-hidden',
         },
       });
-      this.location = Sidekick.getLocation();
+      this.location = getLocation();
       this.loadCSS();
       // default plugins
-      this.addPreviewPlugin();
-      this.addPublishPlugin();
+      addPreviewPlugin(this);
+      addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
         this.config.plugins.forEach((plugin) => this.add(plugin));
       }
-      this._loadCustomPlugins();
-    }
-
-    /**
-     * Initializes the configuration.
-     * @private
-     * @param {object} cfg The configuration options
-     */
-    _initConfig(cfg = {}) {
-      const outerPrefix = (cfg && cfg.owner && cfg.repo)
-        ? `${cfg.repo}--${cfg.owner}`
-        : null;
-      const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
-        ? `${cfg.ref}--${outerPrefix}`
-        : outerPrefix;
-      this.config = {
-        ...cfg,
-        innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
-        outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
-        project: cfg.project || 'your Helix Pages project',
-      };
-    }
-
-    /**
-     * Loads custom plugins from the current Helix site.
-     * @private
-     */
-    _loadCustomPlugins() {
-      if (!(this.isHelix() || this.isEditor()) || !this.config.innerHost) {
-        return;
-      }
-      const prefix = this.isEditor() ? `https://${this.config.innerHost}` : '';
-      Sidekick.appendTag(document.head, {
-        tag: 'script',
-        attrs: {
-          src: `${prefix}/tools/sidekick/plugins.js`,
-        },
-      });
-    }
-
-    /**
-     * Adds the preview plugin.
-     * @private
-     */
-    addPreviewPlugin() {
-      this.add({
-        id: 'preview',
-        condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
-        button: {
-          text: 'Preview',
-          action: () => {
-            const { config, location } = this;
-            if (!config.innerHost) {
-              this.notify(`Preview is not configured for ${config.project}`, 0);
-              return;
-            }
-            // check if host is a URL
-            if (config.host && config.host.startsWith('http')) {
-              config.host = new URL(config.host).host;
-            }
-            const currentHost = location.host;
-            const currentPath = location.pathname;
-            if (this.isEditor()) {
-              // source document, open window with staging url
-              const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-              u.search = new URLSearchParams([
-                ['owner', config.owner],
-                ['repo', config.repo],
-                ['ref', config.ref || 'master'],
-                ['path', '/'],
-                ['lookup', location.href],
-              ]).toString();
-              window.open(u, `hlx-sk-${config.ref}--${config.repo}--${config.owner}`);
-            } else {
-              this.showModal('Please wait...', true);
-              switch (currentHost) {
-                case config.innerHost:
-                case config.outerHost:
-                  // staging, switch to production
-                  if (!config.host) {
-                    this.notify(`Production host for ${config.project} is unknown`, 1);
-                    return;
-                  }
-                  window.location.href = `https://${config.host}${currentPath}`;
-                  break;
-                case config.host:
-                  // production, switch to staging
-                  window.location.href = `https://${config.innerHost}${currentPath}`;
-                  break;
-                default:
-                  this.notify(
-                    `<p>Preview can be used on source documents or any page on:</p>
-                    <p><ul>
-                      <li>https://${config.innerHost}/
-                      ${config.host ? `<li>https://${config.host}/` : ''}
-                    </ul><p>`,
-                  );
-              }
-            }
+      if ((this.isHelix() || this.isEditor()) && this.config.innerHost) {
+        const prefix = this.isEditor() ? `https://${this.config.innerHost}` : '';
+        appendTag(document.head, {
+          tag: 'script',
+          attrs: {
+            src: `${prefix}/tools/sidekick/plugins.js`,
           },
-        },
-      });
-    }
-
-    /**
-     * Adds the publish plugin.
-     * @private
-     */
-    addPublishPlugin() {
-      async function sendPurge(cfg, path) {
-        /* eslint-disable no-console */
-        console.log(`purging ${path}`);
-        const xfh = [
-          cfg.host,
-          cfg.outerHost,
-        ];
-        const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
-        u.search = new URLSearchParams([
-          ['host', cfg.innerHost],
-          ['xfh', xfh.join(',')],
-          ['path', path],
-        ]).toString();
-        const resp = await fetch(u, {
-          method: 'POST',
         });
-        const json = await resp.json();
-        console.log(JSON.stringify(json));
-        /* eslint-enable no-console */
-        return {
-          ok: resp.ok && json.every((e) => e.status === 'ok'),
-          status: resp.status,
-          json,
-          path,
-        };
       }
-
-      this.add({
-        id: 'publish',
-        condition: (sidekick) => sidekick.isHelix(),
-        button: {
-          text: 'Publish',
-          action: async () => {
-            const { config, location } = this;
-            if (!config.innerHost || !config.host) {
-              this.notify(`Publish is not configured for ${config.project}`, 0);
-              return;
-            }
-            this.showModal('Publishing...', true);
-            const path = location.pathname;
-            const resp = await sendPurge(config, path);
-            if (resp.ok) {
-              // fetch and redirect to production
-              const prodURL = `https://${config.host}${path}`;
-              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
-              // eslint-disable-next-line no-console
-              console.log(`redirecting to ${prodURL}`);
-              window.location.href = prodURL;
-            } else {
-              this.showModal(
-                `<p>Failed to purge ${resp.path} from the cache. Please reload this page and try again later.</p>
-                <p>Status: ${resp.status}</p>
-                <p>${JSON.stringify(resp.json)}</p>`,
-                true,
-                0,
-              );
-            }
-          },
-        },
-      });
-    }
-
-    /**
-     * Creates a tag.
-     * @private
-     * @static
-     * @param {object} elem The tag configuration object
-     *   with the following properties:
-     *   - {string} tag    The tag name (mandatory)
-     *   - {string} text   The text content (optional)
-     *   - {object} attrs  The attributes (optional)
-     *   - {object} lstnrs The event listeners (optional)
-     * @returns {HTMLElement} The new tag
-     */
-    static createTag(elem) {
-      if (typeof elem.tag !== 'string') {
-        return null;
-      }
-      const el = document.createElement(elem.tag);
-      if (typeof elem.attrs === 'object') {
-        for (const [key, value] of Object.entries(elem.attrs)) {
-          el.setAttribute(key, value);
-        }
-      }
-      if (typeof elem.lstnrs === 'object') {
-        for (const [name, fn] of Object.entries(elem.lstnrs)) {
-          if (typeof fn === 'function') {
-            el.addEventListener(name, fn);
-          }
-        }
-      }
-      if (typeof elem.text === 'string') {
-        el.textContent = elem.text;
-      }
-      return el;
-    }
-
-    /**
-     * Creates a tag with the given name, attributes and listeners,
-     * and appends it to the parent element.
-     * @private
-     * @static
-     * @param {HTMLElement} parent The parent element
-     * @param {object}      elem   The tag configuration object
-     *   with the following properties:
-     *   - {string} tag    The tag name (mandatory)
-     *   - {string} text   The text content (optional)
-     *   - {object} attrs  The attributes (optional)
-     *   - {object} lstnrs The event listeners (optional)
-     * @returns {HTMLElement} The new tag
-     */
-    static appendTag(parent, elem) {
-      return parent.appendChild(Sidekick.createTag(elem));
-    }
-
-    /**
-     * Returns the location of the current document.
-     * @private
-     * @static
-     * @returns {Location} The location object
-     */
-    static getLocation() {
-      // first check if there is a test location
-      const $test = document.getElementById('sidekick_test_location');
-      if ($test) {
-        try {
-          return new URL($test.value);
-        } catch (e) {
-          return null;
-        }
-      }
-      // fall back to window location
-      return window.location;
     }
 
     /**
@@ -329,17 +317,17 @@
         if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
           return this;
         }
-        const $plugin = Sidekick.appendTag(this.root, {
+        const $plugin = appendTag(this.root, {
           tag: 'div',
           attrs: {
             class: plugin.id,
           },
         });
         if (Array.isArray(plugin.elements)) {
-          plugin.elements.forEach((elem) => Sidekick.appendTag($plugin, elem));
+          plugin.elements.forEach((elem) => appendTag($plugin, elem));
         }
         if (plugin.button) {
-          Sidekick.appendTag($plugin, {
+          appendTag($plugin, {
             tag: 'button',
             text: plugin.button.text,
             lstnrs: {
@@ -385,10 +373,6 @@
         || this.location.host === 'docs.google.com';
     }
 
-    isTest() {
-      return this.config;
-    }
-
     /**
      * Checks if the current location is a configured Helix URL.
      * @returns {boolean} true if Helix URL, else false
@@ -422,20 +406,25 @@
      */
     showModal(msg, sticky, level = 2) {
       if (!this._modal) {
-        const $spinnerWrap = Sidekick.appendTag(document.body, {
+        const $spinnerWrap = appendTag(document.body, {
           tag: 'div',
           attrs: {
             class: 'hlx-sk-overlay',
           },
         });
-        this._modal = Sidekick.appendTag($spinnerWrap, { tag: 'div' });
+        this._modal = appendTag($spinnerWrap, { tag: 'div' });
       } else {
         this._modal.parentNode.classList.remove('hlx-sk-hidden');
       }
       if (msg) {
-        this._modal.innerHTML = Array.isArray(msg)
-          ? `<p>${msg.join('</p><p>')}</p>`
-          : msg;
+        if (Array.isArray(msg)) {
+          msg.forEach((line) => appendTag(this._modal, {
+            tag: 'p',
+            text: line,
+          }));
+        } else {
+          this._modal.textContent = msg;
+        }
         this._modal.className = `modal${level < 2 ? ` level-${level}` : ''}`;
       }
       if (!sticky) {
@@ -481,7 +470,7 @@
           href = `${filePath.substring(filePath.lastIndexOf('/') + 1).split('.')[0]}.css`;
         }
       }
-      Sidekick.appendTag(document.head, {
+      appendTag(document.head, {
         tag: 'link',
         attrs: {
           rel: 'stylesheet',
