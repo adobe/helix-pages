@@ -234,7 +234,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 5000);
+      }, 1000);
     });
   }).timeout(15000);
 
@@ -280,7 +280,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 5000);
+      }, 1000);
     });
   }).timeout(15000);
 
@@ -321,9 +321,9 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 1000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin switches from production to staging URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
@@ -362,9 +362,9 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 1000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Publish plugin sends purge request from staging URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
@@ -410,7 +410,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 1000);
     });
   }).timeout(20000);
 });
