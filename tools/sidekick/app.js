@@ -48,13 +48,16 @@
      * @param {object} cfg The configuration options
      */
     _initConfig(cfg = {}) {
-      const prefix = (cfg && cfg.owner && cfg.repo)
-        ? `${cfg.ref && cfg.ref !== 'master' ? `${cfg.ref}--` : ''}${cfg.repo}--${cfg.owner}`
+      const outerPrefix = (cfg && cfg.owner && cfg.repo)
+        ? `${cfg.repo}--${cfg.owner}`
         : null;
+      const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
+        ? `${cfg.ref}--${outerPrefix}`
+        : outerPrefix;
       this.config = {
         ...cfg,
-        innerHost: prefix ? `${prefix}.hlx.page` : null,
-        outerHost: prefix ? `${prefix}.hlx.live` : null,
+        innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
+        outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
         project: cfg.project || 'your Helix Pages project',
       };
     }

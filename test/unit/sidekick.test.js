@@ -73,6 +73,19 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(10000);
 
+  it.only('Constructs innerHost and outerHost from config', async () => {
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    const config = await page.evaluate(() => window.hlxSidekick.config);
+    assert.strictEqual(
+      config.innerHost,
+      'foo--theblog--adobe.hlx.page',
+    );
+    assert.strictEqual(
+      config.outerHost,
+      'theblog--adobe.hlx.live',
+    );
+  }).timeout(10000);
+
   it('Adds plugins via API', async () => {
     await page.goto(`${fixturesPrefix}/add-plugins.html`, { waitUntil: 'load' });
     assert.ok(
