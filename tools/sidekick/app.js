@@ -48,13 +48,16 @@
      * @param {object} cfg The configuration options
      */
     _initConfig(cfg = {}) {
-      const prefix = (cfg && cfg.owner && cfg.repo)
-        ? `${cfg.ref ? `${cfg.ref}--` : ''}${cfg.repo}--${cfg.owner}`
+      const outerPrefix = (cfg && cfg.owner && cfg.repo)
+        ? `${cfg.repo}--${cfg.owner}`
         : null;
+      const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
+        ? `${cfg.ref}--${outerPrefix}`
+        : outerPrefix;
       this.config = {
         ...cfg,
-        innerHost: prefix ? `${prefix}.hlx.page` : null,
-        outerHost: prefix ? `${prefix}.hlx.live` : null,
+        innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
+        outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
         project: cfg.project || 'your Helix Pages project',
       };
     }
@@ -100,7 +103,7 @@
             const currentPath = location.pathname;
             if (this.isEditor()) {
               // source document, open window with staging url
-              const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v1');
+              const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
               u.search = new URLSearchParams([
                 ['owner', config.owner],
                 ['repo', config.repo],
@@ -163,17 +166,13 @@
         });
         const json = await resp.json();
         console.log(JSON.stringify(json));
-        const ok = json.every((e) => e.status === 'ok');
-        if (!resp.ok || !ok) {
-          this.notify(
-            `<p>Failed to purge ${path} from the cache. Please try again later.</p>
-            <pre>Status: ${resp.status}</pre>
-            <pre>${JSON.stringify(json)}</pre>`,
-            0,
-          );
-        }
-        return json;
         /* eslint-enable no-console */
+        return {
+          ok: resp.ok && json.every((e) => e.status === 'ok'),
+          status: resp.status,
+          json,
+          path,
+        };
       }
 
       this.add({
@@ -189,12 +188,23 @@
             }
             this.showModal('Publishing...', true);
             const path = location.pathname;
-            await sendPurge(config, path);
-            const outerURL = `https://${config.host}${path}`;
-            await fetch(outerURL, { cache: 'reload', mode: 'no-cors' });
-            // eslint-disable-next-line no-console
-            console.log(`redirecting ${outerURL}`);
-            window.location.href = outerURL;
+            const resp = await sendPurge(config, path);
+            if (resp.ok) {
+              // fetch and redirect to production
+              const prodURL = `https://${config.host}${path}`;
+              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+              // eslint-disable-next-line no-console
+              console.log(`redirecting to ${prodURL}`);
+              window.location.href = prodURL;
+            } else {
+              this.showModal(
+                `<p>Failed to purge ${resp.path} from the cache. Please reload this page and try again later.</p>
+                <p>Status: ${resp.status}</p>
+                <p>${JSON.stringify(resp.json)}</p>`,
+                true,
+                0,
+              );
+            }
           },
         },
       });
@@ -396,7 +406,7 @@
 
     /**
      * Displays a non-sticky notification.
-     * @param {string} msg The message to display
+     * @param {string|array} msg The message(s) to display
      * @param {number} level error (0), warning (1), of info (2) (default)
      */
     notify(msg, level = 2) {
@@ -405,7 +415,7 @@
 
     /**
      * Displays a modal notification.
-     * @param {string} msg The message to display
+     * @param {string|array} msg The message(s) to display
      * @param {boolean} sticky True if message should be sticky, else false (default)
      * @param {number} level error (0), warning (1), of info (2) (default)
      * @returns {object} The sidekick
@@ -423,7 +433,9 @@
         this._modal.parentNode.classList.remove('hlx-sk-hidden');
       }
       if (msg) {
-        this._modal.innerHTML = msg;
+        this._modal.innerHTML = Array.isArray(msg)
+          ? `<p>${msg.join('</p><p>')}</p>`
+          : msg;
         this._modal.className = `modal${level < 2 ? ` level-${level}` : ''}`;
       }
       if (!sticky) {

@@ -73,6 +73,19 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(10000);
 
+  it.only('Constructs innerHost and outerHost from config', async () => {
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    const config = await page.evaluate(() => window.hlxSidekick.config);
+    assert.strictEqual(
+      config.innerHost,
+      'foo--theblog--adobe.hlx.page',
+    );
+    assert.strictEqual(
+      config.outerHost,
+      'theblog--adobe.hlx.live',
+    );
+  }).timeout(10000);
+
   it('Adds plugins via API', async () => {
     await page.goto(`${fixturesPrefix}/add-plugins.html`, { waitUntil: 'load' });
     assert.ok(
@@ -84,6 +97,34 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(
       (await getSidekickText(page)).includes('FooBarZapfDingBaz'),
       'Did not execute plugin action',
+    );
+  }).timeout(10000);
+
+  it('Adds plugins from project', async () => {
+    await page.setRequestInterception(true);
+    page.on('request', async (req) => {
+      if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+        await req.respond({
+          status: 200,
+          contentType: 'text/javascript',
+          body: `
+            window.hlxSidekick.add({
+              id: 'bar',
+              button: {
+                text: 'Bar',
+              },
+            });
+          `,
+        });
+      } else {
+        await req.continue();
+      }
+    });
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    assert.strictEqual(
+      await getSidekickText(page),
+      'PreviewPublishFooBar',
+      'Did not add plugins from project',
     );
   }).timeout(10000);
 
@@ -157,12 +198,17 @@ describe('Test sidekick bookmarklet', () => {
       window.hlxSidekick.hideModal();
       return window.document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
     }), true, 'Did not hide sticky modal');
+
+    assert.strictEqual(await page.evaluate(() => {
+      window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
+      return window.document.querySelector('.hlx-sk-overlay .modal').innerHTML;
+    }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did show multi-line notification');
   }).timeout(10000);
 
   it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
     const innerHost = 'https://pages--adobe.hlx.page';
     const actionHost = 'https://adobeioruntime.net';
-    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
@@ -195,7 +241,7 @@ describe('Test sidekick bookmarklet', () => {
           assert.strictEqual(
             lookupUrl,
             `${actionHost}${actionPath}`,
-            'Staging lookup URL not opened',
+            `Staging lookup URL not opened, lookup URL: ${lookupUrl}`,
           );
           resolve();
         } catch (e) {
@@ -203,12 +249,12 @@ describe('Test sidekick bookmarklet', () => {
         }
       }, 2000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
     const actionHost = 'https://adobeioruntime.net';
-    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
@@ -247,9 +293,9 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 2000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin switches from staging to production URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
@@ -290,7 +336,7 @@ describe('Test sidekick bookmarklet', () => {
         }
       }, 2000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin switches from production to staging URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
@@ -331,7 +377,7 @@ describe('Test sidekick bookmarklet', () => {
         }
       }, 2000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Publish plugin sends purge request from staging URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
