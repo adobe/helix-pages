@@ -73,7 +73,7 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(10000);
 
-  it.only('Constructs innerHost and outerHost from config', async () => {
+  it('Constructs innerHost and outerHost from config', async () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     const config = await page.evaluate(() => window.hlxSidekick.config);
     assert.strictEqual(
