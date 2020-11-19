@@ -228,13 +228,13 @@ describe('Test sidekick bookmarklet', () => {
           assert.strictEqual(
             lookupUrl,
             `${actionHost}${actionPath}`,
-            'Staging lookup URL not opened',
+            `Staging lookup URL not opened, lookup URL: ${lookupUrl}`,
           );
           resolve();
         } catch (e) {
           reject(e);
         }
-      }, 1000);
+      }, 2000);
     });
   }).timeout(15000);
 
@@ -280,7 +280,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 1000);
+      }, 2000);
     });
   }).timeout(15000);
 
@@ -321,7 +321,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 1000);
+      }, 2000);
     });
   }).timeout(15000);
 
@@ -362,7 +362,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 1000);
+      }, 2000);
     });
   }).timeout(15000);
 
@@ -410,7 +410,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 1000);
+      }, 2000);
     });
   }).timeout(20000);
 });
