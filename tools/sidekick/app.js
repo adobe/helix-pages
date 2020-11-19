@@ -100,7 +100,7 @@
             const currentPath = location.pathname;
             if (this.isEditor()) {
               // source document, open window with staging url
-              const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v1');
+              const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
               u.search = new URLSearchParams([
                 ['owner', config.owner],
                 ['repo', config.repo],
