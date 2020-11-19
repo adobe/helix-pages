@@ -195,7 +195,7 @@ describe('Test sidekick bookmarklet', () => {
   it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
     const innerHost = 'https://pages--adobe.hlx.page';
     const actionHost = 'https://adobeioruntime.net';
-    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
@@ -234,14 +234,14 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 5000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
     const actionHost = 'https://adobeioruntime.net';
-    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v1?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
+    const actionPath = '/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue';
     // mock browser requests
     useNock(page, [innerHost, actionHost]);
     nock(innerHost)
@@ -280,9 +280,9 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 5000);
     });
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin switches from staging to production URL', async () => {
     const innerHost = 'https://theblog--adobe.hlx.page';
