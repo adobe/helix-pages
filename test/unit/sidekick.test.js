@@ -197,7 +197,7 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
       return window.document.querySelector('.hlx-sk-overlay .modal').innerHTML;
-    }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did show multi-line notification');
+    }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did not show multi-line notification');
   }).timeout(10000);
 
   it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
@@ -229,7 +229,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 5000);
     });
   }).timeout(10000);
 
@@ -262,7 +262,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 5000);
     });
   }).timeout(10000);
 
@@ -292,7 +292,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 5000);
     });
   }).timeout(10000);
 
@@ -321,7 +321,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 3000);
+      }, 5000);
     });
   }).timeout(10000);
 
@@ -356,7 +356,7 @@ describe('Test sidekick bookmarklet', () => {
         } catch (e) {
           reject(e);
         }
-      }, 2000);
+      }, 5000);
     });
   }).timeout(10000);
 });
