@@ -16,8 +16,6 @@
 
 const assert = require('assert');
 const puppeteer = require('puppeteer');
-const nock = require('nock');
-const useNock = require('nock-puppeteer');
 
 describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
@@ -44,9 +42,6 @@ describe('Test sidekick bookmarklet', () => {
     await browser.close();
     browser = null;
     page = null;
-    nock.restore();
-    nock.cleanAll();
-    nock.activate();
   });
 
   it('Renders default plugins', async () => {
