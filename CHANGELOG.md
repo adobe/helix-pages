@@ -1,3 +1,20 @@
+# [4.7.0](https://github.com/adobe/helix-pages/compare/v4.6.2...v4.7.0) (2020-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.5 ([#559](https://github.com/adobe/helix-pages/issues/559)) ([9c1e65f](https://github.com/adobe/helix-pages/commit/9c1e65f7ba16a9de8f5d9684756f7fb620ec4ac6))
+* **sidekick:** add margins for multiple button rows ([#554](https://github.com/adobe/helix-pages/issues/554)) ([39529c8](https://github.com/adobe/helix-pages/commit/39529c869a2def270183a8b78f01049c10f71278))
+* **sidekick:** anticipate main or master branch in config ([e06b375](https://github.com/adobe/helix-pages/commit/e06b3759efee0a29d8c454154f1c4d3dbf399611))
+* **sidekick:** js error in publish action ([#548](https://github.com/adobe/helix-pages/issues/548)) ([50e6ad3](https://github.com/adobe/helix-pages/commit/50e6ad336d7b89821b2dca9812edcff12aba6dca))
+* **sidekick:** omit master branch in url ([#552](https://github.com/adobe/helix-pages/issues/552)) ([f518b3a](https://github.com/adobe/helix-pages/commit/f518b3a524eb78706c042e14cb54301f8bf676d7))
+
+
+### Features
+
+* **sidekick:** multi-line notifications ([#549](https://github.com/adobe/helix-pages/issues/549)) ([a7d836e](https://github.com/adobe/helix-pages/commit/a7d836eb72b6eb8d340a935e27c5176b45b5b822))
+* **sidekick:** use content-proxy@v2 ([2524b8b](https://github.com/adobe/helix-pages/commit/2524b8b5db1c70f6991428c6d9bd37537d5c775f))
+
 ## [4.6.2](https://github.com/adobe/helix-pages/compare/v4.6.1...v4.6.2) (2020-11-19)
 
 
