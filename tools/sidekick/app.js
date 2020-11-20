@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global window, document, HTMLElement, fetch */
+/* global window, document, navigator, HTMLElement, fetch */
 
 'use strict';
 
@@ -51,6 +51,28 @@
     }
     // fall back to window location
     return window.location;
+  }
+
+  /**
+   * Makes the given element accessible by setting a title attribute
+   * based on its :before CSS style or text content, and enabling
+   * keyboard access.
+   * @private
+   * @param {HTMLElement} elem The element
+   */
+  function makeAccessible(elem) {
+    const getBeforeContent = (tag) => {
+      const title = window.getComputedStyle(tag, ':before').getPropertyValue('content');
+      return title !== 'normal' && title !== 'none'
+        ? title.substring(1, title.length - 1)
+        : '';
+    };
+    // wait for computed style to be available
+    setTimeout(() => {
+      elem.setAttribute('title', getBeforeContent(elem) || elem.textContent);
+      elem.setAttribute('tabindex', '0');
+    }, 100);
+    return elem;
   }
 
   /**
@@ -101,7 +123,7 @@
    * @returns {HTMLElement} The new tag
    */
   function appendTag(parent, elem) {
-    return parent.appendChild(createTag(elem));
+    return makeAccessible(parent.appendChild(createTag(elem)));
   }
 
   /**
@@ -114,7 +136,6 @@
       id: 'preview',
       condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
       button: {
-        text: 'Preview',
         action: () => {
           const { config, location } = sk;
           if (!config.innerHost) {
@@ -204,7 +225,6 @@
       id: 'publish',
       condition: (sidekick) => sidekick.isHelix(),
       button: {
-        text: 'Publish',
         action: async () => {
           const { config, location } = sk;
           if (!config.innerHost || !config.host) {
@@ -269,6 +289,17 @@
           },
         });
       }
+      // close button
+      appendTag(this.root, {
+        tag: 'button',
+        text: '✕',
+        attrs: {
+          class: 'close',
+        },
+        lstnrs: {
+          click: () => this.toggle(),
+        },
+      });
     }
 
     /**
@@ -477,6 +508,18 @@
           href,
         },
       });
+      // i18n
+      if (!navigator.language.startsWith('en')) {
+        // look for language file in same directory
+        const langHref = `${href.substring(0, href.lastIndexOf('/'))}/${navigator.language}.css`;
+        appendTag(document.head, {
+          tag: 'link',
+          attrs: {
+            rel: 'stylesheet',
+            href: langHref,
+          },
+        });
+      }
       return this;
     }
   }
