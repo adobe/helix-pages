@@ -107,3 +107,8 @@ Type your new website URL into a browser:
 ```
   https://{repo}-{username}.hlx.page/g/index.html
 ```
+
+If you wish to view a different branch, you can use the following convention:
+```
+  https://{branch}--{repo}--{username}.hlx.page/g/index.html
+```
