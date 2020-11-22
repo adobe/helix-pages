@@ -26,6 +26,10 @@
     const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
       ? `${cfg.ref}--${outerPrefix}`
       : outerPrefix;
+    // check if host is a URL
+    if (cfg.host && cfg.host.startsWith('http')) {
+      cfg.host = new URL(cfg.host).host;
+    }
     return {
       ...cfg,
       innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
@@ -134,54 +138,52 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
+      condition: (sidekick) => sidekick.isEditor() && sidekick.config.innerHost,
       button: {
         action: () => {
           const { config, location } = sk;
-          if (!config.innerHost) {
-            sk.notify(`Preview is not configured for ${config.project}`, 0);
-            return;
-          }
-          // check if host is a URL
-          if (config.host && config.host.startsWith('http')) {
-            config.host = new URL(config.host).host;
-          }
-          const currentHost = location.host;
-          const currentPath = location.pathname;
-          if (sk.isEditor()) {
-            // source document, open window with staging url
-            const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-            u.search = new URLSearchParams([
-              ['owner', config.owner],
-              ['repo', config.repo],
-              ['ref', config.ref || 'master'],
-              ['path', '/'],
-              ['lookup', location.href],
-            ]).toString();
-            window.open(u, `hlx-sk-${config.ref}--${config.repo}--${config.owner}`);
+          const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
+          u.search = new URLSearchParams([
+            ['owner', config.owner],
+            ['repo', config.repo],
+            ['ref', config.ref || 'main'],
+            ['path', '/'],
+            ['lookup', location.href],
+          ]).toString();
+          window.open(u, `hlx-sk-preview-${config.repo}--${config.owner}`);
+        },
+      },
+    });
+  }
+
+  /**
+   * Adds the edit plugin to the sidekick.
+   * @private
+   * @param {object} sk The sidekick
+   */
+  function addEditPlugin(sk) {
+    sk.add({
+      id: 'edit',
+      condition: (sidekick) => sidekick.isHelix(),
+      button: {
+        action: () => {
+          const { config, location } = sk;
+          const editor = window.opener;
+          const url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
+          url.search = new URLSearchParams([
+            ['owner', config.owner],
+            ['repo', config.repo],
+            ['ref', config.ref || 'main'],
+            ['path', '/'],
+            ['edit', location.href],
+          ]).toString();
+          console.log('edit lookup', url);
+          if (editor) {
+            // reuse window
+            editor.location.href = url;
+            editor.focus();
           } else {
-            sk.showModal('Please wait...', true);
-            switch (currentHost) {
-              case config.innerHost:
-              case config.outerHost:
-                // staging, switch to production
-                if (!config.host) {
-                  sk.notify(`Production host for ${config.project} is unknown`, 1);
-                  return;
-                }
-                window.location.href = `https://${config.host}${currentPath}`;
-                break;
-              case config.host:
-                // production, switch to staging
-                window.location.href = `https://${config.innerHost}${currentPath}`;
-                break;
-              default:
-                sk.notify(
-                  `Preview can be used for ${config.project} here:`,
-                  'Related online documents',
-                  `Articles on https://${config.innerHost}/${config.host ? ` or https://${config.host}/` : ''}`,
-                );
-            }
+            window.open(url, `hlx-sk-edit-${config.repo}--${config.owner}`);
           }
         },
       },
@@ -275,6 +277,7 @@
       this.loadCSS();
       // default plugins
       addPreviewPlugin(this);
+      addEditPlugin(this);
       addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {

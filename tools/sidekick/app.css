@@ -218,6 +218,10 @@
   content: "Preview";
 }
 
+.hlx-sk .edit button::before {
+  content: "Edit";
+}
+
 .hlx-sk .publish button::before {
   content: "Publish";
 }
