@@ -177,7 +177,6 @@
             ['path', '/'],
             ['edit', location.href],
           ]).toString();
-          console.log('edit lookup', url);
           if (editor) {
             // reuse window
             editor.location.href = url;
