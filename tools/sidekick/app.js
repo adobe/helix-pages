@@ -176,7 +176,6 @@
       button: {
         action: () => {
           const { config, location } = sk;
-          const editor = window.opener;
           const url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
           url.search = new URLSearchParams([
             ['owner', config.owner],
@@ -185,13 +184,7 @@
             ['path', '/'],
             ['edit', location.href],
           ]).toString();
-          if (editor) {
-            // reuse window
-            editor.location.href = url;
-            editor.focus();
-          } else {
-            window.open(url, `hlx-sk-edit-${config.repo}--${config.owner}`);
-          }
+          window.open(url, `hlx-sk-edit-${config.repo}--${config.owner}`);
         },
       },
     });
