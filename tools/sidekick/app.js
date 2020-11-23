@@ -243,13 +243,11 @@
             console.log(`redirecting to ${prodURL}`);
             window.location.href = prodURL;
           } else {
-            sk.showModal(
-              `<p>Failed to purge ${resp.path} from the cache. Please reload this page and try again later.</p>
-              <p>Status: ${resp.status}</p>
-              <p>${JSON.stringify(resp.json)}</p>`,
-              true,
-              0,
-            );
+            sk.showModal([
+              `Failed to purge ${resp.path} from the cache. Please reload this page and try again later.`,
+              `Status: ${resp.status}`,
+              JSON.stringify(resp.json),
+            ], true, 0);
           }
         },
       },
