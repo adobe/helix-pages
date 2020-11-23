@@ -19,9 +19,40 @@ const puppeteer = require('puppeteer');
 
 describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
-  const getSidekickText = async (p) => p.evaluate(
-    () => window.document.querySelector('.hlx-sk').textContent,
+
+  const getPlugins = async (p) => p.evaluate(
+    () => Array.from(window.document.querySelectorAll('.hlx-sk > div'))
+      .map((plugin) => plugin.className),
   );
+
+  const execPlugin = async (p, id) => p.evaluate((pluginId) => {
+    const click = (el) => {
+      const evt = window.document.createEvent('Events');
+      evt.initEvent('click', true, false);
+      el.dispatchEvent(evt);
+    };
+    click(window.document.querySelector(`.hlx-sk .${pluginId} button`));
+  }, id);
+
+  const mockCustomPlugins = async (p, js) => {
+    await p.setRequestInterception(true);
+    p.on('request', async (req) => {
+      if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+        await req.respond({
+          status: 200,
+          body: js || '',
+        });
+      } else {
+        await req.continue();
+      }
+    });
+  };
+
+  const assertLater = async (delay = 2000) => new Promise((resolve) => {
+    setTimeout(async () => {
+      resolve(assert);
+    }, delay);
+  });
 
   let browser;
   let page;
@@ -48,11 +79,8 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     const skHandle = await page.$('div.hlx-sk');
     assert.ok(skHandle, 'Did not render without config');
-    assert.strictEqual(
-      await getSidekickText(page),
-      'PreviewPublish',
-      'Did not remove plugin',
-    );
+    const plugins = await getPlugins(page);
+    assert.strictEqual(plugins.length, 2, 'Did not render default plugins');
     const zIndex = await page.evaluate(
       (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
       skHandle,
@@ -61,14 +89,14 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(10000);
 
   it('Adds plugin from config', async () => {
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
-    assert.ok(
-      (await getSidekickText(page)).includes('Foo'),
-      'Did not add plugin from config',
-    );
+    const plugins = await getPlugins(page);
+    assert.ok(plugins.includes('foo'), 'Did not add plugin from config');
   }).timeout(10000);
 
-  it('Constructs innerHost and outerHost from config', async () => {
+  it('Detects innerHost and outerHost from config', async () => {
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     const config = await page.evaluate(() => window.hlxSidekick.config);
     assert.strictEqual(
@@ -83,47 +111,30 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Adds plugins via API', async () => {
     await page.goto(`${fixturesPrefix}/add-plugins.html`, { waitUntil: 'load' });
-    assert.ok(
-      (await getSidekickText(page)).includes('FooBarZapfDing'),
-      'Did not add plugins via API',
-    );
+    let plugins = await getPlugins(page);
+    assert.ok(plugins.length, 6, 'Did not add plugins via API');
 
     await (await page.$('div.hlx-sk .ding button')).click();
-    assert.ok(
-      (await getSidekickText(page)).includes('FooBarZapfDingBaz'),
-      'Did not execute plugin action',
-    );
+    plugins = await getPlugins(page);
+    assert.ok(plugins.length, 7, 'Did not execute plugin action');
   }).timeout(10000);
 
   it('Adds plugins from project', async () => {
-    await page.setRequestInterception(true);
-    page.on('request', async (req) => {
-      if (req.url().endsWith('/tools/sidekick/plugins.js')) {
-        await req.respond({
-          status: 200,
-          contentType: 'text/javascript',
-          body: `
-            window.hlxSidekick.add({
-              id: 'bar',
-              button: {
-                text: 'Bar',
-              },
-            });
-          `,
-        });
-      } else {
-        await req.continue();
-      }
-    });
+    await mockCustomPlugins(page, `
+      window.hlxSidekick.add({
+        id: 'bar',
+        button: {
+          text: 'Bar',
+        },
+      });
+    `);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
-    assert.strictEqual(
-      await getSidekickText(page),
-      'PreviewPublishFooBar',
-      'Did not add plugins from project',
-    );
+    const plugins = await getPlugins(page);
+    assert.ok(plugins.includes('foo'), 'Did not add plugins from project');
   }).timeout(10000);
 
   it('Replaces plugin', async () => {
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       window.hlxSidekick.add({
@@ -134,37 +145,33 @@ describe('Test sidekick bookmarklet', () => {
         },
       });
     });
-    assert.ok(
-      (await getSidekickText(page)).includes('CustomFoo'),
-      'Did not replace plugin',
-    );
+    const plugins = await getPlugins(page);
+    assert.strictEqual(plugins.filter((p) => p === 'foo').length, 1, 'Did not replace plugin');
   }).timeout(10000);
 
   it('Removes plugin', async () => {
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.hlxSidekick.remove('foo'));
-    assert.strictEqual(
-      await getSidekickText(page),
-      'PreviewPublish',
-      'Did not remove plugin',
-    );
+    const plugins = await getPlugins(page);
+    assert.ok(!plugins.includes('foo'), 'Did not remove plugin');
   }).timeout(10000);
 
   it('Adds HTML element in plugin', async () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
-    await page.evaluate(() => window.hlxSidekick.add({
-      id: 'foo',
-      elements: [
-        {
-          tag: 'span',
-          text: 'Lorem ipsum',
-        },
-      ],
-    }));
-    assert.ok(
-      (await getSidekickText(page)).includes('Lorem ipsum'),
-      'Did not add HTML element in plugin',
-    );
+    const text = await page.evaluate(() => {
+      window.hlxSidekick.add({
+        id: 'foo',
+        elements: [
+          {
+            tag: 'span',
+            text: 'Lorem ipsum',
+          },
+        ],
+      });
+      return window.document.querySelector('.hlx-sk .foo').textContent;
+    });
+    assert.strictEqual(text, 'Lorem ipsum', 'Did not add HTML element in plugin');
   }).timeout(10000);
 
   it('Loads custom CSS', async () => {
@@ -200,37 +207,22 @@ describe('Test sidekick bookmarklet', () => {
     }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did not show multi-line notification');
   }).timeout(10000);
 
-  it('Preview opens a new tab with staging lookup URL from gdrive URL', async () => {
+  it('Preview plugin opens a new tab with staging lookup URL from gdrive URL', async () => {
     // watch for new browser window
     let lookupUrl;
     browser.on('targetcreated', async (target) => {
       lookupUrl = target.url();
     });
     // open test page and click preview button
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = window.document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(window.document.querySelector('.hlx-sk .preview button'));
-    });
+    await execPlugin(page, 'preview');
     // check result
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          assert.strictEqual(
-            lookupUrl,
-            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=master&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit',
-            `Staging lookup URL not opened, lookup URL: ${lookupUrl}`,
-          );
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, 5000);
-    });
+    (await assertLater()).strictEqual(
+      lookupUrl,
+      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=main&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit',
+      'Staging lookup URL not opened',
+    );
   }).timeout(10000);
 
   it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
@@ -240,89 +232,51 @@ describe('Test sidekick bookmarklet', () => {
       lookupUrl = target.url();
     });
     // open test page and click preview button
+    await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/preview-onedrive.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = window.document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(window.document.querySelector('.hlx-sk .preview button'));
-    });
+    await execPlugin(page, 'preview');
     // check result
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          assert.strictEqual(
-            lookupUrl,
-            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue',
-            `Staging lookup URL not opened, lookup URL: ${lookupUrl}`,
-          );
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, 5000);
-    });
+    (await assertLater()).strictEqual(
+      lookupUrl,
+      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=main&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue',
+      'Staging lookup URL not opened',
+    );
   }).timeout(10000);
 
-  it('Preview plugin switches from staging to production URL', async () => {
-    const targetUrl = 'https://blog.adobe.com/en/topics/news.html';
-    // watch for location change
-    let newUrl = '';
-    browser.on('targetchanged', async (target) => {
-      newUrl = target.url();
+  it('Edit plugin opens a new tab with editor lookup URL from staging URL', async () => {
+    // watch for new browser window
+    let editUrl;
+    page.on('popup', async (popup) => {
+      editUrl = popup.url();
     });
     // open test page and click preview button
-    await page.goto(`${fixturesPrefix}/preview-staging.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = window.document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(window.document.querySelector('.hlx-sk .preview button'));
-    });
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'edit');
     // check result
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          assert.strictEqual(newUrl, targetUrl, `Production URL not opened, new URL: ${newUrl}`);
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, 5000);
-    });
+    (await assertLater()).strictEqual(
+      editUrl,
+      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Ftheblog--adobe.hlx.page%2Fen%2Ftopics%2Fbla.html',
+      'Editor lookup URL not opened',
+    );
   }).timeout(10000);
 
-  it('Preview plugin switches from production to staging URL', async () => {
-    const targetUrl = 'https://theblog--adobe.hlx.page/en/topics/news.html';
-    let newUrl = '';
-    browser.on('targetchanged', async (target) => {
-      newUrl = target.url();
+  it('Edit plugin opens a new tab with editor lookup URL from production URL', async () => {
+    // watch for new browser window
+    let editUrl;
+    page.on('popup', async (popup) => {
+      editUrl = popup.url();
     });
     // open test page and click preview button
-    await page.goto(`${fixturesPrefix}/preview-production.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = window.document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(window.document.querySelector('.hlx-sk .preview button'));
-    });
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'edit');
     // check result
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          assert.strictEqual(newUrl, targetUrl, `Staging URL not opened, new URL: ${newUrl}`);
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, 5000);
-    });
+    (await assertLater()).strictEqual(
+      editUrl,
+      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
+      'Editor lookup URL not opened',
+    );
   }).timeout(10000);
 
   it('Publish plugin sends purge request from staging URL', async () => {
@@ -337,7 +291,7 @@ describe('Test sidekick bookmarklet', () => {
           && params.get('xfh').split(',').length === 2;
       }
     });
-    // open test page and click preview button
+    // open test page and click publish button
     await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       const click = (el) => {
@@ -348,15 +302,6 @@ describe('Test sidekick bookmarklet', () => {
       click(window.document.querySelector('.hlx-sk .publish button'));
     });
     // check result
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          assert.strictEqual(purged, true, 'Purge request not sent');
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }, 5000);
-    });
+    (await assertLater()).ok(purged, 'Purge request not sent');
   }).timeout(10000);
 });

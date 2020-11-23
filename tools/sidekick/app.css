@@ -11,14 +11,14 @@
  */
 
 :root {
-  --hlx-sk-bg: #dedede;
+  --hlx-sk-bg: #e0e0e0;
   --hlx-sk-logo: url("helix.svg");
   --hlx-sk-color: #505050;
   --hlx-sk-border: none;
   --hlx-sk-border-radius: 10px;
   --hlx-sk-font-family: arial, helvetica, sans-serif;
   --hlx-sk-font-size: 1rem;
-  --hlx-sk-line-height: 1rem;
+  --hlx-sk-line-height: 1;
   --hlx-sk-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 10px 20px 0 rgba(0, 0, 0, 0.3);
   --hlx-sk-button-color: #707070;
   --hlx-sk-button-bg: transparent;
@@ -70,19 +70,27 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: 0 10px 10px 42px;
+  box-sizing: border-box;
+  padding: 0 36px 10px 42px;
   font-family: var(--hlx-sk-font-family);
   font-size: var(--hlx-sk-font-size);
   box-shadow: var(--hlx-sk-shadow);
 }
 
 .hlx-sk:empty::before {
-  content: "No actions found";
+  margin-top: 10px;
   line-height: 2;
 }
 
-.hlx-sk .loading::before {
-  content: 'Loading...';
+.hlx-sk .close {
+  position: absolute;
+  margin-top: 10px;
+  border-color: transparent;
+  right: 0;
+}
+
+.hlx-sk .close::before {
+  display: none;
 }
 
 .hlx-sk button {
@@ -103,6 +111,7 @@
 }
 
 .hlx-sk button:hover,
+.hlx-sk button:focus,
 .hlx-sk button.pressed {
   background-color: var(--hlx-sk-button-hover-bg);
   border-color: var(--hlx-sk-button-hover-border);
@@ -159,10 +168,6 @@
   animation: var(--wait-animation);
 }
 
-.hlx-sk-overlay div.modal:empty::before {
-  content: "Please wait..."
-}
-
 .hlx-sk-hidden {
   display: none !important;
 }
@@ -189,4 +194,34 @@
             transform: scale(1);
             animation-timing-function: ease-out;
   }
+}
+
+/* i18n */
+
+.hlx-sk:empty::before {
+  content: "No actions found";
+ }
+
+.hlx-sk .loading::before {
+  content: 'Loading...';
+}
+
+.hlx-sk .close::before {
+  content: "Close";
+}
+
+.hlx-sk-overlay div.modal.wait:empty::before {
+  content: "Please wait..."
+}
+
+.hlx-sk .preview button::before {
+  content: "Preview";
+}
+
+.hlx-sk .edit button::before {
+  content: "Edit";
+}
+
+.hlx-sk .publish button::before {
+  content: "Publish";
 }
