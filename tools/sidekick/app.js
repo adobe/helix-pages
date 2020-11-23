@@ -65,17 +65,25 @@
    * @param {HTMLElement} elem The element
    */
   function makeAccessible(elem) {
-    const getBeforeContent = (tag) => {
-      const title = window.getComputedStyle(tag, ':before').getPropertyValue('content');
-      return title !== 'normal' && title !== 'none'
-        ? title.substring(1, title.length - 1)
-        : '';
-    };
-    // wait for computed style to be available
-    setTimeout(() => {
-      elem.setAttribute('title', getBeforeContent(elem) || elem.textContent);
+    if (elem.tagName === 'A' || elem.tagName === 'BUTTON') {
+      const ensureTitle = (tag) => {
+        if (!tag.title) {
+          // wait for computed style to be available
+          setTimeout(() => {
+            let title = window.getComputedStyle(tag, ':before').getPropertyValue('content');
+            title = title !== 'normal' && title !== 'none'
+              ? title.substring(1, title.length - 1)
+              : '';
+            if (!title) {
+              title = tag.textContent;
+            }
+            tag.setAttribute('title', title);
+          }, 100);
+        }
+      };
+      ensureTitle(elem);
       elem.setAttribute('tabindex', '0');
-    }, 100);
+    }
     return elem;
   }
 
