@@ -41,7 +41,7 @@
   --wait-animation: hlx-sk-heartbeat 2s ease-in-out infinite both;
 }
 
-@media (prefers-color-scheme: drk) {
+@media (prefers-color-scheme: dark) {
   :root {
     --hlx-sk-bg: #303030;
     --hlx-sk-color: #dedede;
