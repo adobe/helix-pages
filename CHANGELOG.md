@@ -1,3 +1,18 @@
+# [4.8.0](https://github.com/adobe/helix-pages/compare/v4.7.0...v4.8.0) (2020-11-23)
+
+
+### Bug Fixes
+
+* **sidekick:** do not try to reuse opener ([#565](https://github.com/adobe/helix-pages/issues/565)) ([56519bf](https://github.com/adobe/helix-pages/commit/56519bf3651a9712dc9ec0bcd8307db51ff5ff47))
+* **sidekick:** limit accessibility to certain tags ([5f9352b](https://github.com/adobe/helix-pages/commit/5f9352b7a49893a64dab9a84a3182f53177e60c7))
+
+
+### Features
+
+* **sidekick:** close button, accessibility and i18n ([ba9c472](https://github.com/adobe/helix-pages/commit/ba9c472e38d0d743b2305a5df66efd3890ab9f70))
+* **sidekick:** preview/edit roundtrip ([#550](https://github.com/adobe/helix-pages/issues/550)) ([8a2abf3](https://github.com/adobe/helix-pages/commit/8a2abf3053ae58d5045e074370a289c73dfa2f3c))
+* **sidekick:** switch configurator default branch to main ([5e04e24](https://github.com/adobe/helix-pages/commit/5e04e24864ae0387b931fbfc0b6b1917471dbcf8))
+
 # [4.7.0](https://github.com/adobe/helix-pages/compare/v4.6.2...v4.7.0) (2020-11-19)
 
 
