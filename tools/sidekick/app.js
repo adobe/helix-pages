@@ -151,7 +151,6 @@
         return config.innerHost
           && (sk.isEditor() || [config.outerHost, config.host].includes(location.host));
       },
-      override: true,
       button: {
         action: () => {
           const { config, location } = sk;
