@@ -48,7 +48,7 @@ describe('Test sidekick bookmarklet', () => {
     });
   };
 
-  const assertLater = async (delay = 2000) => new Promise((resolve) => {
+  const assertLater = async (delay = 3000) => new Promise((resolve) => {
     setTimeout(async () => {
       resolve(assert);
     }, delay);
@@ -276,6 +276,24 @@ describe('Test sidekick bookmarklet', () => {
       editUrl,
       'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
       'Editor lookup URL not opened',
+    );
+  }).timeout(10000);
+
+  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
+    // watch for new browser window
+    let stagingUrl;
+    page.on('popup', async (popup) => {
+      stagingUrl = popup.url();
+    });
+    // open test page and click preview button
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'preview');
+    // check result
+    (await assertLater(5000)).strictEqual(
+      stagingUrl,
+      'https://theblog--adobe.hlx.page/en/topics/bla.html',
+      'Staging URL not opened',
     );
   }).timeout(10000);
 

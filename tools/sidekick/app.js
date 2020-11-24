@@ -149,7 +149,7 @@
       condition: (sidekick) => {
         const { location, config } = sidekick;
         return config.innerHost
-          && (sk.isEditor() || location.host === config.host);
+          && (sk.isEditor() || [config.outerHost, config.host].includes(location.host));
       },
       override: true,
       button: {
@@ -284,8 +284,8 @@
       this.location = getLocation();
       this.loadCSS();
       // default plugins
-      addPreviewPlugin(this);
       addEditPlugin(this);
+      addPreviewPlugin(this);
       addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
