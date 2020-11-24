@@ -89,8 +89,8 @@ async function pre(context, action) {
   });
   meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = getAbsoluteUrl(request.headers,
-    content.image || await getDefaultMetaImage(action));
+  meta.imageUrl = `${content.image || await getDefaultMetaImage(action)}?auto=webp&format=pjpg&optimize=medium&width=1200`;
+  meta.imageUrl = getAbsoluteUrl(request.headers, meta.imageUrl);
 }
 
 module.exports.pre = pre;

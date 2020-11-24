@@ -270,7 +270,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, context.content.image);
+    assert.strictEqual(context.content.meta.imageUrl, `${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Meta imageUrl uses content.image as absolute URL', () => {
@@ -285,7 +285,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}`);
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Meta imageUrl uses JPG from repo if no content.image available', async () => {
@@ -299,7 +299,7 @@ describe('Testing pre.js', () => {
     };
     await pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg`);
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Meta imageUrl uses default meta image if neither content.image nor JPG from repo available', async () => {
@@ -318,7 +318,7 @@ describe('Testing pre.js', () => {
       },
     });
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png`);
+    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {
