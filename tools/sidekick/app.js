@@ -146,19 +146,29 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() && sidekick.config.innerHost,
+      condition: (sidekick) => {
+        const { location, config } = sidekick;
+        return config.innerHost
+          && (sk.isEditor() || location.host === config.host);
+      },
+      override: true,
       button: {
         action: () => {
           const { config, location } = sk;
-          const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-          u.search = new URLSearchParams([
-            ['owner', config.owner],
-            ['repo', config.repo],
-            ['ref', config.ref || 'main'],
-            ['path', '/'],
-            ['lookup', location.href],
-          ]).toString();
-          window.open(u, `hlx-sk-preview-${config.repo}--${config.owner}`);
+          let url;
+          if (sk.isEditor()) {
+            url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
+            url.search = new URLSearchParams([
+              ['owner', config.owner],
+              ['repo', config.repo],
+              ['ref', config.ref || 'main'],
+              ['path', '/'],
+              ['lookup', location.href],
+            ]).toString();
+          } else {
+            url = new URL(`https://${config.innerHost}${location.pathname}`);
+          }
+          window.open(url.toString(), `hlx-sk-preview-${config.repo}--${config.owner}`);
         },
       },
     });
