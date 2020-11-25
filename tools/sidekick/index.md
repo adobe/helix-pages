@@ -8,7 +8,7 @@ id: form
 
 <label for="giturl">Repository URL:</label>
 <input id="giturl" placeholder="https://github.com/....">
-<label for="host">Production Hostname (optional): </label>
+<label for="host">Hostname: </label>
 <input id="host">
 <label for="project">Project Name (optional): </label>
 <input id="project">
