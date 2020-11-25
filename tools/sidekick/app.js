@@ -30,9 +30,22 @@
     if (cfg.host && cfg.host.startsWith('http')) {
       cfg.host = new URL(cfg.host).host;
     }
+    // get hlx domain from script src
+    let innerDomain;
+    const script = Array.from(document.querySelectorAll('script[src]'))
+      .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
+    if (script) {
+      const scriptHost = new URL(script.src).host;
+      if (scriptHost) {
+        innerDomain = scriptHost.replace('www.', '');
+      }
+    }
+    if (!innerDomain) {
+      innerDomain = 'hlx.page';
+    }
     return {
       ...cfg,
-      innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
+      innerHost: innerPrefix ? `${innerPrefix}.${innerDomain}` : null,
       outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
       project: cfg.project || 'your Helix Pages project',
     };
