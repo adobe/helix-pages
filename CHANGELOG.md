@@ -1,3 +1,74 @@
+# [4.8.0](https://github.com/adobe/helix-pages/compare/v4.7.0...v4.8.0) (2020-11-23)
+
+
+### Bug Fixes
+
+* **sidekick:** do not try to reuse opener ([#565](https://github.com/adobe/helix-pages/issues/565)) ([56519bf](https://github.com/adobe/helix-pages/commit/56519bf3651a9712dc9ec0bcd8307db51ff5ff47))
+* **sidekick:** limit accessibility to certain tags ([5f9352b](https://github.com/adobe/helix-pages/commit/5f9352b7a49893a64dab9a84a3182f53177e60c7))
+
+
+### Features
+
+* **sidekick:** close button, accessibility and i18n ([ba9c472](https://github.com/adobe/helix-pages/commit/ba9c472e38d0d743b2305a5df66efd3890ab9f70))
+* **sidekick:** preview/edit roundtrip ([#550](https://github.com/adobe/helix-pages/issues/550)) ([8a2abf3](https://github.com/adobe/helix-pages/commit/8a2abf3053ae58d5045e074370a289c73dfa2f3c))
+* **sidekick:** switch configurator default branch to main ([5e04e24](https://github.com/adobe/helix-pages/commit/5e04e24864ae0387b931fbfc0b6b1917471dbcf8))
+
+# [4.7.0](https://github.com/adobe/helix-pages/compare/v4.6.2...v4.7.0) (2020-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.5 ([#559](https://github.com/adobe/helix-pages/issues/559)) ([9c1e65f](https://github.com/adobe/helix-pages/commit/9c1e65f7ba16a9de8f5d9684756f7fb620ec4ac6))
+* **sidekick:** add margins for multiple button rows ([#554](https://github.com/adobe/helix-pages/issues/554)) ([39529c8](https://github.com/adobe/helix-pages/commit/39529c869a2def270183a8b78f01049c10f71278))
+* **sidekick:** anticipate main or master branch in config ([e06b375](https://github.com/adobe/helix-pages/commit/e06b3759efee0a29d8c454154f1c4d3dbf399611))
+* **sidekick:** js error in publish action ([#548](https://github.com/adobe/helix-pages/issues/548)) ([50e6ad3](https://github.com/adobe/helix-pages/commit/50e6ad336d7b89821b2dca9812edcff12aba6dca))
+* **sidekick:** omit master branch in url ([#552](https://github.com/adobe/helix-pages/issues/552)) ([f518b3a](https://github.com/adobe/helix-pages/commit/f518b3a524eb78706c042e14cb54301f8bf676d7))
+
+
+### Features
+
+* **sidekick:** multi-line notifications ([#549](https://github.com/adobe/helix-pages/issues/549)) ([a7d836e](https://github.com/adobe/helix-pages/commit/a7d836eb72b6eb8d340a935e27c5176b45b5b822))
+* **sidekick:** use content-proxy@v2 ([2524b8b](https://github.com/adobe/helix-pages/commit/2524b8b5db1c70f6991428c6d9bd37537d5c775f))
+
+## [4.6.2](https://github.com/adobe/helix-pages/compare/v4.6.1...v4.6.2) (2020-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([446b3d1](https://github.com/adobe/helix-pages/commit/446b3d106dcae183e0b8e3851225ef1528c97b9a))
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.4 ([80114d5](https://github.com/adobe/helix-pages/commit/80114d5809fe79e3f19cd0a1b1de110d0570ddd7))
+
+## [4.6.1](https://github.com/adobe/helix-pages/compare/v4.6.0...v4.6.1) (2020-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.3 ([3700ad5](https://github.com/adobe/helix-pages/commit/3700ad51ea0206897694a9619f8c433a3a4c0748))
+
+# [4.6.0](https://github.com/adobe/helix-pages/compare/v4.5.3...v4.6.0) (2020-11-17)
+
+
+### Bug Fixes
+
+* **sidekick:** bookmarklet name is "helix logo" ([8967a46](https://github.com/adobe/helix-pages/commit/8967a46e892b05daf883307e4590619c8d47c5f0))
+* **sidekick:** js error ([3803bc8](https://github.com/adobe/helix-pages/commit/3803bc8882791ef824a780e8600a9ee84a22fc31))
+* **sidekick:** process override before condition ([874155f](https://github.com/adobe/helix-pages/commit/874155f3bc96c926c095f11ae340bcd6f74001ab))
+
+
+### Features
+
+* **sidekick:** app and configurator ([#543](https://github.com/adobe/helix-pages/issues/543)) ([5dbb6ca](https://github.com/adobe/helix-pages/commit/5dbb6ca674c1cb98515d4bd034fb60dca8ee04d5))
+* **sidekick:** configurator ([fafc9ae](https://github.com/adobe/helix-pages/commit/fafc9aec58ca72b81c1e6108b7c23ed2f5add53d))
+* **sidekick:** move app and tests here ([90f6ad8](https://github.com/adobe/helix-pages/commit/90f6ad8a40f86eedf8a5623481956a90215a87f1))
+* **sidekick:** prefer loading custom plugins from current site ([fa906a2](https://github.com/adobe/helix-pages/commit/fa906a2dcdacfa1b6382c14d22ef375ea873020e))
+
+## [4.5.3](https://github.com/adobe/helix-pages/compare/v4.5.2...v4.5.3) (2020-11-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.1 ([#542](https://github.com/adobe/helix-pages/issues/542)) ([a9ac182](https://github.com/adobe/helix-pages/commit/a9ac18279b00d8a53e0bfe772028de8f20de96c4))
+
 ## [4.5.2](https://github.com/adobe/helix-pages/compare/v4.5.1...v4.5.2) (2020-11-12)
 
 
