@@ -22,7 +22,10 @@ describe('Test sidekick bookmarklet', () => {
 
   const getPlugins = async (p) => p.evaluate(
     () => Array.from(window.document.querySelectorAll('.hlx-sk > div'))
-      .map((plugin) => plugin.className),
+      .map((plugin) => ({
+        id: plugin.className,
+        text: plugin.textContent,
+      })),
   );
 
   const execPlugin = async (p, id) => p.evaluate((pluginId) => {
@@ -48,7 +51,7 @@ describe('Test sidekick bookmarklet', () => {
     });
   };
 
-  const assertLater = async (delay = 2000) => new Promise((resolve) => {
+  const assertLater = async (delay = 5000) => new Promise((resolve) => {
     setTimeout(async () => {
       resolve(assert);
     }, delay);
@@ -92,7 +95,7 @@ describe('Test sidekick bookmarklet', () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.includes('foo'), 'Did not add plugin from config');
+    assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from config');
   }).timeout(10000);
 
   it('Detects innerHost and outerHost from config', async () => {
@@ -130,7 +133,7 @@ describe('Test sidekick bookmarklet', () => {
     `);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.includes('foo'), 'Did not add plugins from project');
+    assert.ok(plugins.find((p) => p.id === 'bar'), 'Did not add plugins from project');
   }).timeout(10000);
 
   it('Replaces plugin', async () => {
@@ -141,12 +144,27 @@ describe('Test sidekick bookmarklet', () => {
         id: 'foo',
         override: true,
         button: {
-          text: 'CustomFoo',
+          text: 'ReplaceFoo',
         },
       });
     });
     const plugins = await getPlugins(page);
-    assert.strictEqual(plugins.filter((p) => p === 'foo').length, 1, 'Did not replace plugin');
+    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ReplaceFoo'), 'Did not replace plugin');
+  }).timeout(10000);
+
+  it('Extends plugin', async () => {
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      window.hlxSidekick.add({
+        id: 'foo',
+        button: {
+          text: 'ExtendFoo',
+        },
+      });
+    });
+    const plugins = await getPlugins(page);
+    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ExtendFoo'), 'Did not extend plugin');
   }).timeout(10000);
 
   it('Removes plugin', async () => {
@@ -154,7 +172,7 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.hlxSidekick.remove('foo'));
     const plugins = await getPlugins(page);
-    assert.ok(!plugins.includes('foo'), 'Did not remove plugin');
+    assert.ok(!plugins.find((p) => p.id === 'foo'), 'Did not remove plugin');
   }).timeout(10000);
 
   it('Adds HTML element in plugin', async () => {
@@ -276,6 +294,24 @@ describe('Test sidekick bookmarklet', () => {
       editUrl,
       'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
       'Editor lookup URL not opened',
+    );
+  }).timeout(10000);
+
+  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
+    // watch for new browser window
+    let stagingUrl;
+    page.on('popup', async (popup) => {
+      stagingUrl = popup.url();
+    });
+    // open test page and click preview button
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'preview');
+    // check result
+    (await assertLater(5000)).strictEqual(
+      stagingUrl,
+      'https://theblog--adobe.hlx.page/en/topics/bla.html',
+      'Staging URL not opened',
     );
   }).timeout(10000);
 

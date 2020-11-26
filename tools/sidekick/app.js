@@ -30,9 +30,22 @@
     if (cfg.host && cfg.host.startsWith('http')) {
       cfg.host = new URL(cfg.host).host;
     }
+    // get hlx domain from script src
+    let innerDomain;
+    const script = Array.from(document.querySelectorAll('script[src]'))
+      .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
+    if (script) {
+      const scriptHost = new URL(script.src).host;
+      if (scriptHost) {
+        innerDomain = scriptHost.replace('www.', '');
+      }
+    }
+    if (!innerDomain) {
+      innerDomain = 'hlx.page';
+    }
     return {
       ...cfg,
-      innerHost: innerPrefix ? `${innerPrefix}.hlx.page` : null,
+      innerHost: innerPrefix ? `${innerPrefix}.${innerDomain}` : null,
       outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
       project: cfg.project || 'your Helix Pages project',
     };
@@ -88,9 +101,40 @@
   }
 
   /**
+   * Extends a tag.
+   * @private
+   * @param {HTMLElement} tag The tag to extend
+   * @param {object}      config The tag configuration object
+   *   with the following properties:
+   *   - {string} tag    The tag name (mandatory)
+   *   - {string} text   The text content (optional)
+   *   - {object} attrs  The attributes (optional)
+   *   - {object} lstnrs The event listeners (optional)
+   * @returns {HTMLElement} The extended tag
+   */
+  function extendTag(tag, config) {
+    if (typeof config.attrs === 'object') {
+      for (const [key, value] of Object.entries(config.attrs)) {
+        tag.setAttribute(key, value);
+      }
+    }
+    if (typeof config.lstnrs === 'object') {
+      for (const [name, fn] of Object.entries(config.lstnrs)) {
+        if (typeof fn === 'function') {
+          tag.addEventListener(name, fn);
+        }
+      }
+    }
+    if (typeof config.text === 'string') {
+      tag.textContent = config.text;
+    }
+    return tag;
+  }
+
+  /**
    * Creates a tag.
    * @private
-   * @param {object} elem The tag configuration object
+   * @param {object} config The tag configuration object
    *   with the following properties:
    *   - {string} tag    The tag name (mandatory)
    *   - {string} text   The text content (optional)
@@ -98,27 +142,12 @@
    *   - {object} lstnrs The event listeners (optional)
    * @returns {HTMLElement} The new tag
    */
-  function createTag(elem) {
-    if (typeof elem.tag !== 'string') {
+  function createTag(config) {
+    if (typeof config.tag !== 'string') {
       return null;
     }
-    const el = document.createElement(elem.tag);
-    if (typeof elem.attrs === 'object') {
-      for (const [key, value] of Object.entries(elem.attrs)) {
-        el.setAttribute(key, value);
-      }
-    }
-    if (typeof elem.lstnrs === 'object') {
-      for (const [name, fn] of Object.entries(elem.lstnrs)) {
-        if (typeof fn === 'function') {
-          el.addEventListener(name, fn);
-        }
-      }
-    }
-    if (typeof elem.text === 'string') {
-      el.textContent = elem.text;
-    }
-    return el;
+    const el = document.createElement(config.tag);
+    return extendTag(el, config);
   }
 
   /**
@@ -126,7 +155,7 @@
    * and appends it to the parent element.
    * @private
    * @param {HTMLElement} parent The parent element
-   * @param {object}      elem   The tag configuration object
+   * @param {object}      config The tag configuration object
    *   with the following properties:
    *   - {string} tag    The tag name (mandatory)
    *   - {string} text   The text content (optional)
@@ -134,8 +163,8 @@
    *   - {object} lstnrs The event listeners (optional)
    * @returns {HTMLElement} The new tag
    */
-  function appendTag(parent, elem) {
-    return makeAccessible(parent.appendChild(createTag(elem)));
+  function appendTag(parent, config) {
+    return makeAccessible(parent.appendChild(createTag(config)));
   }
 
   /**
@@ -146,19 +175,28 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() && sidekick.config.innerHost,
+      condition: (sidekick) => {
+        const { location, config } = sidekick;
+        return config.innerHost
+          && (sk.isEditor() || [config.outerHost, config.host].includes(location.host));
+      },
       button: {
         action: () => {
           const { config, location } = sk;
-          const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-          u.search = new URLSearchParams([
-            ['owner', config.owner],
-            ['repo', config.repo],
-            ['ref', config.ref || 'main'],
-            ['path', '/'],
-            ['lookup', location.href],
-          ]).toString();
-          window.open(u, `hlx-sk-preview-${config.repo}--${config.owner}`);
+          let url;
+          if (sk.isEditor()) {
+            url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
+            url.search = new URLSearchParams([
+              ['owner', config.owner],
+              ['repo', config.repo],
+              ['ref', config.ref || 'main'],
+              ['path', '/'],
+              ['lookup', location.href],
+            ]).toString();
+          } else {
+            url = new URL(`https://${config.innerHost}${location.pathname}`);
+          }
+          window.open(url.toString(), `hlx-sk-preview-${config.repo}--${config.owner}`);
         },
       },
     });
@@ -274,8 +312,8 @@
       this.location = getLocation();
       this.loadCSS();
       // default plugins
-      addPreviewPlugin(this);
       addEditPlugin(this);
+      addPreviewPlugin(this);
       addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
@@ -346,26 +384,36 @@
         if (plugin.override) {
           this.remove(plugin.id);
         }
+        let $plugin = this.get(plugin.id);
         if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
+          if ($plugin) $plugin.remove();
           return this;
         }
-        const $plugin = appendTag(this.root, {
-          tag: 'div',
-          attrs: {
-            class: plugin.id,
-          },
-        });
+        if (!$plugin) {
+          $plugin = appendTag(this.root, {
+            tag: 'div',
+            attrs: {
+              class: plugin.id,
+            },
+          });
+        }
         if (Array.isArray(plugin.elements)) {
           plugin.elements.forEach((elem) => appendTag($plugin, elem));
         }
         if (plugin.button) {
-          appendTag($plugin, {
+          const cfg = {
             tag: 'button',
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
             },
-          });
+          };
+          const $button = $plugin.querySelector(cfg.tag);
+          if ($button) {
+            extendTag($button, cfg);
+          } else {
+            appendTag($plugin, cfg);
+          }
         }
         if (typeof plugin.callback === 'function') {
           plugin.callback(this, $plugin);
