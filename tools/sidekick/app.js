@@ -384,10 +384,11 @@
         if (plugin.override) {
           this.remove(plugin.id);
         }
+        let $plugin = this.get(plugin.id);
         if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
+          if ($plugin) $plugin.remove();
           return this;
         }
-        let $plugin = this.get(plugin.id);
         if (!$plugin) {
           $plugin = appendTag(this.root, {
             tag: 'div',
