@@ -101,9 +101,40 @@
   }
 
   /**
+   * Extends a tag.
+   * @private
+   * @param {HTMLElement} tag The tag to extend
+   * @param {object}      config The tag configuration object
+   *   with the following properties:
+   *   - {string} tag    The tag name (mandatory)
+   *   - {string} text   The text content (optional)
+   *   - {object} attrs  The attributes (optional)
+   *   - {object} lstnrs The event listeners (optional)
+   * @returns {HTMLElement} The extended tag
+   */
+  function extendTag(tag, config) {
+    if (typeof config.attrs === 'object') {
+      for (const [key, value] of Object.entries(config.attrs)) {
+        tag.setAttribute(key, value);
+      }
+    }
+    if (typeof config.lstnrs === 'object') {
+      for (const [name, fn] of Object.entries(config.lstnrs)) {
+        if (typeof fn === 'function') {
+          tag.addEventListener(name, fn);
+        }
+      }
+    }
+    if (typeof config.text === 'string') {
+      tag.textContent = config.text;
+    }
+    return tag;
+  }
+
+  /**
    * Creates a tag.
    * @private
-   * @param {object} elem The tag configuration object
+   * @param {object} config The tag configuration object
    *   with the following properties:
    *   - {string} tag    The tag name (mandatory)
    *   - {string} text   The text content (optional)
@@ -111,27 +142,12 @@
    *   - {object} lstnrs The event listeners (optional)
    * @returns {HTMLElement} The new tag
    */
-  function createTag(elem) {
-    if (typeof elem.tag !== 'string') {
+  function createTag(config) {
+    if (typeof config.tag !== 'string') {
       return null;
     }
-    const el = document.createElement(elem.tag);
-    if (typeof elem.attrs === 'object') {
-      for (const [key, value] of Object.entries(elem.attrs)) {
-        el.setAttribute(key, value);
-      }
-    }
-    if (typeof elem.lstnrs === 'object') {
-      for (const [name, fn] of Object.entries(elem.lstnrs)) {
-        if (typeof fn === 'function') {
-          el.addEventListener(name, fn);
-        }
-      }
-    }
-    if (typeof elem.text === 'string') {
-      el.textContent = elem.text;
-    }
-    return el;
+    const el = document.createElement(config.tag);
+    return extendTag(el, config);
   }
 
   /**
@@ -139,7 +155,7 @@
    * and appends it to the parent element.
    * @private
    * @param {HTMLElement} parent The parent element
-   * @param {object}      elem   The tag configuration object
+   * @param {object}      config The tag configuration object
    *   with the following properties:
    *   - {string} tag    The tag name (mandatory)
    *   - {string} text   The text content (optional)
@@ -147,8 +163,8 @@
    *   - {object} lstnrs The event listeners (optional)
    * @returns {HTMLElement} The new tag
    */
-  function appendTag(parent, elem) {
-    return makeAccessible(parent.appendChild(createTag(elem)));
+  function appendTag(parent, config) {
+    return makeAccessible(parent.appendChild(createTag(config)));
   }
 
   /**
@@ -371,23 +387,32 @@
         if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
           return this;
         }
-        const $plugin = appendTag(this.root, {
-          tag: 'div',
-          attrs: {
-            class: plugin.id,
-          },
-        });
+        let $plugin = this.get(plugin.id);
+        if (!$plugin) {
+          $plugin = appendTag(this.root, {
+            tag: 'div',
+            attrs: {
+              class: plugin.id,
+            },
+          });
+        }
         if (Array.isArray(plugin.elements)) {
           plugin.elements.forEach((elem) => appendTag($plugin, elem));
         }
         if (plugin.button) {
-          appendTag($plugin, {
+          const cfg = {
             tag: 'button',
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
             },
-          });
+          };
+          const $button = $plugin.querySelector(cfg.tag);
+          if ($button) {
+            extendTag($button, cfg);
+          } else {
+            appendTag($plugin, cfg);
+          }
         }
         if (typeof plugin.callback === 'function') {
           plugin.callback(this, $plugin);
