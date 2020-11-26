@@ -175,11 +175,8 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => {
-        const { location, config } = sidekick;
-        return config.innerHost
-          && (sk.isEditor() || [config.outerHost, config.host].includes(location.host));
-      },
+      condition: (sidekick) => sidekick.config.innerHost
+          && (sk.isEditor() || sk.isHelix()),
       button: {
         action: () => {
           const { config, location } = sk;
@@ -194,7 +191,8 @@
               ['lookup', location.href],
             ]).toString();
           } else {
-            url = new URL(`https://${config.innerHost}${location.pathname}`);
+            const host = location.host === config.innerHost ? config.host : config.innerHost;
+            url = new URL(`https://${host}${location.pathname}`);
           }
           window.open(url.toString(), `hlx-sk-preview-${config.repo}--${config.owner}`);
         },
