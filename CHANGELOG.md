@@ -1,3 +1,19 @@
+# [4.9.0](https://github.com/adobe/helix-pages/compare/v4.8.0...v4.9.0) (2020-11-26)
+
+
+### Bug Fixes
+
+* **sidekick:** allow dynamic hlx.page domain for smoke tests ([6996bd0](https://github.com/adobe/helix-pages/commit/6996bd0d9a575b6ad1b2afe6dfcdda305011762d))
+
+
+### Features
+
+* **seo:** add fastly io params to meta image url ([964eef0](https://github.com/adobe/helix-pages/commit/964eef073e6af21c91e274b243364404a1690089))
+* **sidekick:** allow extension of existing plugin ([a6043d0](https://github.com/adobe/helix-pages/commit/a6043d00294992de45730793466851581646d64a))
+* **sidekick:** allow extension of existing plugin ([24a2340](https://github.com/adobe/helix-pages/commit/24a234071d314324293676ef10f0969abb7735f9))
+* **sidekick:** switch from outer to inner cdn ([dcf553d](https://github.com/adobe/helix-pages/commit/dcf553d60bf4b1e103363e1cca077fa9755fade4))
+* **sidekick:** switch from outer to inner cdn ([33abeac](https://github.com/adobe/helix-pages/commit/33abeacf9a0c71dfd328d46ec6ec1742d78c9652))
+
 # [4.8.0](https://github.com/adobe/helix-pages/compare/v4.7.0...v4.8.0) (2020-11-23)
 
 
