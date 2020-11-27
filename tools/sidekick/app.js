@@ -91,7 +91,7 @@
               title = tag.textContent;
             }
             tag.setAttribute('title', title);
-          }, 100);
+          }, 200);
         }
       };
       ensureTitle(elem);
@@ -183,7 +183,7 @@
     if (navigator.share) {
       navigator.share({
         title: `Sidekick for ${config.project}`,
-        text: 'Check out this helper bookmarklet for Helix projects',
+        text: `Check out this helper bookmarklet for ${config.project}`,
         url: shareUrl.toString(),
       });
     } else {
