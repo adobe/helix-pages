@@ -183,7 +183,7 @@
     if (navigator.share) {
       navigator.share({
         title: `Sidekick for ${config.project}`,
-        text: 'Helper bookmarklet for Helix projects',
+        text: 'Check out this helper bookmarklet for Helix projects',
         url: shareUrl.toString(),
       });
     } else {
