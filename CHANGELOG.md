@@ -1,3 +1,17 @@
+# [4.10.0](https://github.com/adobe/helix-pages/compare/v4.9.0...v4.10.0) (2020-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.16.2 ([e3121b2](https://github.com/adobe/helix-pages/commit/e3121b27c3c4f781c7eadd562f45aeabfaee145f))
+* **deps:** update external fixes ([04f236f](https://github.com/adobe/helix-pages/commit/04f236fe5dc2860d4d08f8e8e92c72517abb86c5))
+
+
+### Features
+
+* **sidekick:** preview to cycle inner and outer cdn ([d1051dc](https://github.com/adobe/helix-pages/commit/d1051dc0251807ac9ea395112475f839d456932a))
+* **sidekick:** share button ([0b9a21a](https://github.com/adobe/helix-pages/commit/0b9a21a622417abbf6289393d76bf360ce2f3caf))
+
 # [4.9.0](https://github.com/adobe/helix-pages/compare/v4.8.0...v4.9.0) (2020-11-26)
 
 
