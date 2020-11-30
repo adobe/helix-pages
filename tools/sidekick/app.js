@@ -531,6 +531,9 @@
           attrs: {
             class: 'hlx-sk-overlay',
           },
+          lstnrs: {
+            click: () => this.hideModal(),
+          },
         });
         this._modal = appendTag($spinnerWrap, { tag: 'div' });
       } else {

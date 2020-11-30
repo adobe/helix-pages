@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env mocha */
-/* global window */
+/* global window document */
 
 'use strict';
 
@@ -21,7 +21,7 @@ describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
-    () => Array.from(window.document.querySelectorAll('.hlx-sk > div'))
+    () => Array.from(document.querySelectorAll('.hlx-sk > div'))
       .map((plugin) => ({
         id: plugin.className,
         text: plugin.textContent,
@@ -30,11 +30,11 @@ describe('Test sidekick bookmarklet', () => {
 
   const execPlugin = async (p, id) => p.evaluate((pluginId) => {
     const click = (el) => {
-      const evt = window.document.createEvent('Events');
+      const evt = document.createEvent('Events');
       evt.initEvent('click', true, false);
       el.dispatchEvent(evt);
     };
-    click(window.document.querySelector(`.hlx-sk .${pluginId} button`));
+    click(document.querySelector(`.hlx-sk .${pluginId} button`));
   }, id);
 
   const clickButton = async (p, id) => p.evaluate((buttonId) => {
@@ -200,7 +200,7 @@ describe('Test sidekick bookmarklet', () => {
           },
         ],
       });
-      return window.document.querySelector('.hlx-sk .foo').textContent;
+      return document.querySelector('.hlx-sk .foo').textContent;
     });
     assert.strictEqual(text, 'Lorem ipsum', 'Did not add HTML element in plugin');
   }).timeout(10000);
@@ -217,25 +217,43 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Shows and hides notifications', async () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+
+    // shows notification
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.notify('Lorem ipsum');
-      return window.document.querySelector('.hlx-sk-overlay .modal').textContent;
-    }), 'Lorem ipsum', 'Did not show notification');
+      return document.querySelector('.hlx-sk-overlay .modal').textContent;
+    }), 'Lorem ipsum', 'Did show notification');
 
+    // shows sticky modal
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.showModal('Sticky', true);
-      return window.document.querySelector('.hlx-sk-overlay .modal.wait').textContent;
-    }), 'Sticky', 'Did not show sticky modal');
+      return document.querySelector('.hlx-sk-overlay .modal.wait').textContent;
+    }), 'Sticky', 'Did show sticky modal');
 
+    // hides sticky modal
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.hideModal();
-      return window.document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
+      return document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
     }), true, 'Did not hide sticky modal');
 
+    // shows multi-line notification
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
-      return window.document.querySelector('.hlx-sk-overlay .modal').innerHTML;
+      return document.querySelector('.hlx-sk-overlay .modal').innerHTML;
     }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did not show multi-line notification');
+
+    // hides sticky modal on overlay click
+    assert.ok(await page.evaluate(() => {
+      window.hlxSidekick.showModal('Sticky');
+      const overlay = document.querySelector('.hlx-sk-overlay');
+      const click = (el) => {
+        const evt = document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(overlay);
+      return overlay.classList.contains('hlx-sk-hidden');
+    }), 'Did not hide sticky modal on overlay click');
   }).timeout(10000);
 
   it('Close button hides sidekick', async () => {
@@ -363,11 +381,11 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       const click = (el) => {
-        const evt = window.document.createEvent('Events');
+        const evt = document.createEvent('Events');
         evt.initEvent('click', true, false);
         el.dispatchEvent(evt);
       };
-      click(window.document.querySelector('.hlx-sk .publish button'));
+      click(document.querySelector('.hlx-sk .publish button'));
     });
     // check result
     (await assertLater()).ok(purged, 'Purge request not sent');
