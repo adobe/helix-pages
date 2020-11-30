@@ -37,6 +37,15 @@ describe('Test sidekick bookmarklet', () => {
     click(window.document.querySelector(`.hlx-sk .${pluginId} button`));
   }, id);
 
+  const clickButton = async (p, id) => p.evaluate((buttonId) => {
+    const click = (el) => {
+      const evt = window.document.createEvent('Events');
+      evt.initEvent('click', true, false);
+      el.dispatchEvent(evt);
+    };
+    click(window.document.querySelector(`.hlx-sk button.${buttonId}`));
+  }, id);
+
   const mockCustomPlugins = async (p, js) => {
     await p.setRequestInterception(true);
     p.on('request', async (req) => {
@@ -70,6 +79,10 @@ describe('Test sidekick bookmarklet', () => {
       ],
     });
     page = await browser.newPage();
+    /* eslint-disable no-console */
+    page.on('error', (msg) => console.log('browser error:', msg));
+    page.on('console', (msg) => console.log('browser log:', msg));
+    /* eslint-enable no-console */
   });
 
   afterEach(async () => {
@@ -207,12 +220,12 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.notify('Lorem ipsum');
       return window.document.querySelector('.hlx-sk-overlay .modal').textContent;
-    }), 'Lorem ipsum', 'Did show notification');
+    }), 'Lorem ipsum', 'Did not show notification');
 
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.showModal('Sticky', true);
       return window.document.querySelector('.hlx-sk-overlay .modal.wait').textContent;
-    }), 'Sticky', 'Did show sticky modal');
+    }), 'Sticky', 'Did not show sticky modal');
 
     assert.strictEqual(await page.evaluate(() => {
       window.hlxSidekick.hideModal();
@@ -223,6 +236,25 @@ describe('Test sidekick bookmarklet', () => {
       window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
       return window.document.querySelector('.hlx-sk-overlay .modal').innerHTML;
     }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did not show multi-line notification');
+  }).timeout(10000);
+
+  it('Close button hides sidekick', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await clickButton(page, 'close');
+    assert.ok(
+      await page.evaluate(() => window.document.querySelector('.hlx-sk').classList.contains('hlx-sk-hidden')),
+      'Did not hide sidekick',
+    );
+  }).timeout(10000);
+
+  it('Share button copies sharing URL to clipboard', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await clickButton(page, 'share');
+    assert.strictEqual(
+      await page.evaluate(() => window.document.querySelector('.hlx-sk-overlay .modal').textContent),
+      'Sharing URL copied to clipboard',
+      'Did not copy sharing URL to clipboard',
+    );
   }).timeout(10000);
 
   it('Preview plugin opens a new tab with staging lookup URL from gdrive URL', async () => {

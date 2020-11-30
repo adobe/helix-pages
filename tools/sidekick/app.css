@@ -71,7 +71,7 @@
   left: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 36px 10px 42px;
+  padding: 0 72px 10px 42px;
   font-family: var(--hlx-sk-font-family);
   font-size: var(--hlx-sk-font-size);
   box-shadow: var(--hlx-sk-shadow);
@@ -80,6 +80,34 @@
 .hlx-sk:empty::before {
   margin-top: 10px;
   line-height: 2;
+}
+
+.hlx-sk > .share {
+  position: absolute;
+  font-family: "Courier New";
+  margin-top: 10px;
+  border-color: transparent;
+  top: 1px;
+  right: 40px;
+}
+
+.hlx-sk > .share::before {
+  display: none;
+}
+.hlx-sk > .share .dots::before {
+  content: "·";
+  font-size: 3rem;
+  position: absolute;
+  top: -8px;
+  left: -11px;
+}
+
+.hlx-sk > .share .dots::after {
+  content: ":";
+  font-size: 2rem;
+  position: absolute;
+  top: -5px;
+  right: -2px;
 }
 
 .hlx-sk .close {
@@ -204,6 +232,10 @@
 
 .hlx-sk .loading::before {
   content: 'Loading...';
+}
+
+.hlx-sk > .share::before {
+  content: "Share your Sidekick";
 }
 
 .hlx-sk .close::before {
