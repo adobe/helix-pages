@@ -37,6 +37,15 @@ describe('Test sidekick bookmarklet', () => {
     click(document.querySelector(`.hlx-sk .${pluginId} button`));
   }, id);
 
+  const clickButton = async (p, id) => p.evaluate((buttonId) => {
+    const click = (el) => {
+      const evt = window.document.createEvent('Events');
+      evt.initEvent('click', true, false);
+      el.dispatchEvent(evt);
+    };
+    click(window.document.querySelector(`.hlx-sk button.${buttonId}`));
+  }, id);
+
   const mockCustomPlugins = async (p, js) => {
     await p.setRequestInterception(true);
     p.on('request', async (req) => {
@@ -70,6 +79,10 @@ describe('Test sidekick bookmarklet', () => {
       ],
     });
     page = await browser.newPage();
+    /* eslint-disable no-console */
+    page.on('error', (msg) => console.log('browser error:', msg));
+    page.on('console', (msg) => console.log('browser log:', msg));
+    /* eslint-enable no-console */
   });
 
   afterEach(async () => {
@@ -241,6 +254,25 @@ describe('Test sidekick bookmarklet', () => {
       click(overlay);
       return overlay.classList.contains('hlx-sk-hidden');
     }), 'Did not hide sticky modal on overlay click');
+  }).timeout(10000);
+
+  it('Close button hides sidekick', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await clickButton(page, 'close');
+    assert.ok(
+      await page.evaluate(() => window.document.querySelector('.hlx-sk').classList.contains('hlx-sk-hidden')),
+      'Did not hide sidekick',
+    );
+  }).timeout(10000);
+
+  it('Share button copies sharing URL to clipboard', async () => {
+    await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
+    await clickButton(page, 'share');
+    assert.strictEqual(
+      await page.evaluate(() => window.document.querySelector('.hlx-sk-overlay .modal').textContent),
+      'Sharing URL copied to clipboard',
+      'Did not copy sharing URL to clipboard',
+    );
   }).timeout(10000);
 
   it('Preview plugin opens a new tab with staging lookup URL from gdrive URL', async () => {

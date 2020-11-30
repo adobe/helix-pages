@@ -91,7 +91,7 @@
               title = tag.textContent;
             }
             tag.setAttribute('title', title);
-          }, 100);
+          }, 200);
         }
       };
       ensureTitle(elem);
@@ -165,6 +165,31 @@
    */
   function appendTag(parent, config) {
     return makeAccessible(parent.appendChild(createTag(config)));
+  }
+
+  /**
+   * Creates a share URL for this sidekick and either invokes the
+   * Web Share API or copies it to the clipboard.
+   * @param {object} sk The sidekick
+   */
+  function shareSidekick(sk) {
+    const { config } = sk;
+    const shareUrl = new URL('https://www.hlx.page/tools/sidekick/');
+    shareUrl.search = new URLSearchParams([
+      ['project', config.project || ''],
+      ['host', config.host || ''],
+      ['giturl', `https://github.com/${config.owner}/${config.repo}${config.ref ? `/tree/${config.ref}` : ''}`],
+    ]).toString();
+    if (navigator.share) {
+      navigator.share({
+        title: `Sidekick for ${config.project}`,
+        text: `Check out this helper bookmarklet for ${config.project}`,
+        url: shareUrl.toString(),
+      });
+    } else {
+      navigator.clipboard.writeText(shareUrl.toString());
+      sk.notify('Sharing URL copied to clipboard');
+    }
   }
 
   /**
@@ -309,6 +334,34 @@
       });
       this.location = getLocation();
       this.loadCSS();
+      // share button
+      const share = appendTag(this.root, {
+        tag: 'button',
+        text: '<',
+        attrs: {
+          class: 'share',
+        },
+        lstnrs: {
+          click: () => shareSidekick(this),
+        },
+      });
+      appendTag(share, {
+        tag: 'span',
+        attrs: {
+          class: 'dots',
+        },
+      });
+      // close button
+      appendTag(this.root, {
+        tag: 'button',
+        text: '✕',
+        attrs: {
+          class: 'close',
+        },
+        lstnrs: {
+          click: () => this.toggle(),
+        },
+      });
       // default plugins
       addEditPlugin(this);
       addPreviewPlugin(this);
@@ -326,17 +379,6 @@
           },
         });
       }
-      // close button
-      appendTag(this.root, {
-        tag: 'button',
-        text: '✕',
-        attrs: {
-          class: 'close',
-        },
-        lstnrs: {
-          click: () => this.toggle(),
-        },
-      });
     }
 
     /**
