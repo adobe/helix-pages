@@ -46,10 +46,11 @@ describe('Test sidekick bookmarklet', () => {
     click(window.document.querySelector(`.hlx-sk button.${buttonId}`));
   }, id);
 
-  const mockCustomPlugins = async (p, js) => {
+  const mockCustomPlugins = async (p, js, check = () => true) => {
     await p.setRequestInterception(true);
     p.on('request', async (req) => {
-      if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+      if (req.url().endsWith('/tools/sidekick/plugins.js')
+        && check(req)) {
         await req.respond({
           status: 200,
           body: js || '',
@@ -147,6 +148,22 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     const plugins = await getPlugins(page);
     assert.ok(plugins.find((p) => p.id === 'bar'), 'Did not add plugins from project');
+  }).timeout(10000);
+
+  it('Adds plugins from fixed host', async () => {
+    await mockCustomPlugins(
+      page,
+      `window.hlxSidekick.add({
+        id: 'bar',
+        button: {
+          text: 'Bar',
+        },
+      });`,
+      (req) => req.url().startsWith('https://plugins.foo.bar'),
+    );
+    await page.goto(`${fixturesPrefix}/config-plugin-host.html`, { waitUntil: 'load' });
+    const plugins = await getPlugins(page);
+    assert.ok(plugins.find((p) => p.id === 'bar'), 'Did not add plugins from fixed host');
   }).timeout(10000);
 
   it('Replaces plugin', async () => {
