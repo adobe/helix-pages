@@ -1,3 +1,17 @@
+# [4.11.0](https://github.com/adobe/helix-pages/compare/v4.10.0...v4.11.0) (2020-12-01)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([88db02e](https://github.com/adobe/helix-pages/commit/88db02ed61373e59f4dfb9c6f3334db50ad0cd7d))
+* **sidekick:** actually load plugins from fixed host ([92d0744](https://github.com/adobe/helix-pages/commit/92d0744d20353b1d7d38f856969a88fd1a56b4fe))
+
+
+### Features
+
+* **sidekick:** allow hiding modal thru click on overlay ([5cdec72](https://github.com/adobe/helix-pages/commit/5cdec7241411de6f1b82fe2147e6fd70a880295c))
+* **sidekick:** allow loading plugins from a fixed host ([f730ce1](https://github.com/adobe/helix-pages/commit/f730ce1685b28308025f866ed7910743c08b42c7))
+
 # [4.10.0](https://github.com/adobe/helix-pages/compare/v4.9.0...v4.10.0) (2020-11-30)
 
 
