@@ -1,3 +1,10 @@
+## [4.11.1](https://github.com/adobe/helix-pages/compare/v4.11.0...v4.11.1) (2020-12-01)
+
+
+### Bug Fixes
+
+* code/fixed font dark mode issue ([5933151](https://github.com/adobe/helix-pages/commit/5933151ff3ebcd8ae5b09471fbd5ed1fd1c54f26))
+
 # [4.11.0](https://github.com/adobe/helix-pages/compare/v4.10.0...v4.11.0) (2020-12-01)
 
 
