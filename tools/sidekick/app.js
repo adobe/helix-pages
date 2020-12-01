@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global window, document, navigator, HTMLElement, fetch */
+/* global window, document, navigator, HTMLElement, fetch, btoa */
 
 'use strict';
 
@@ -219,7 +219,7 @@
             const host = location.host === config.innerHost ? config.host : config.innerHost;
             url = new URL(`https://${host}${location.pathname}`);
           }
-          window.open(url.toString(), `hlx-sk-preview-${config.repo}--${config.owner}`);
+          window.open(url.toString(), `hlx-sk-preview-${btoa(location.href)}`);
         },
       },
     });
@@ -245,7 +245,7 @@
             ['path', '/'],
             ['edit', location.href],
           ]).toString();
-          window.open(url, `hlx-sk-edit-${config.repo}--${config.owner}`);
+          window.open(url, `hlx-sk-edit-${btoa(location.href)}`);
         },
       },
     });
