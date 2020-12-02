@@ -145,11 +145,11 @@ pre,
 samp {
   font-family:
     'Roboto Mono',
-    'Source Code Pro',
     Menlo,
     Consolas,
     'Liberation Mono',
     monospace;
+
 }
 
 code, samp {
