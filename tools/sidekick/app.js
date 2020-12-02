@@ -228,7 +228,7 @@
           window.location.href = url.toString();
         } else {
           // keep legacy property for old bookmarklet
-          window.hlx.sidekick = window.hlxSidekick;
+          window.hlxSidekick = window.hlx.sidekick;
         }
       }
     }, 500);
