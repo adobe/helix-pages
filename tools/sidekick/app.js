@@ -411,8 +411,9 @@
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
         this.config.plugins.forEach((plugin) => this.add(plugin));
       }
-      if ((this.isHelix() || this.isEditor()) && this.config.innerHost) {
-        const prefix = this.isEditor() ? `https://${this.config.innerHost}` : '';
+      if ((this.isHelix() || this.isEditor())
+        && (this.config.pluginHost || this.config.innerHost)) {
+        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.innerHost}` : '');
         appendTag(document.head, {
           tag: 'script',
           attrs: {
