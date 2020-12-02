@@ -5,18 +5,10 @@
   <body>
     <script>
       (window.hlx = window.hlx || {}).sidekickConfig = {
-          owner: 'adobe',
+        owner: 'adobe',
         repo: 'theblog',
         ref: 'foo',
-        plugins: [
-          {
-            id: 'foo',
-            button: {
-              text: 'Foo',
-              action: () => {},
-            }
-          }
-        ],
+        pluginHost: 'https://plugins.foo.bar',
       };
     </script>
     <script src="../../../tools/sidekick/app.js"></script>

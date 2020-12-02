@@ -79,10 +79,6 @@ describe('Test sidekick bookmarklet', () => {
       ],
     });
     page = await browser.newPage();
-    /* eslint-disable no-console */
-    page.on('error', (msg) => console.log('browser error:', msg));
-    page.on('console', (msg) => console.log('browser log:', msg));
-    /* eslint-enable no-console */
   });
 
   afterEach(async () => {
@@ -111,10 +107,22 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from config');
   }).timeout(10000);
 
+  it('Adds plugin from legacy config', async () => {
+    let dialogMsg = '';
+    await mockCustomPlugins(page);
+    page.on('dialog', (dialog) => {
+      dialogMsg = dialog.message();
+    });
+    await page.goto(`${fixturesPrefix}/config-legacy.html`, { waitUntil: 'load' });
+    const plugins = await getPlugins(page);
+    assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from legacy config');
+    (await assertLater()).ok(dialogMsg.startsWith('Good news!'), 'Did not show update dialog');
+  }).timeout(10000);
+
   it('Detects innerHost and outerHost from config', async () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
-    const config = await page.evaluate(() => window.hlxSidekick.config);
+    const config = await page.evaluate(() => window.hlx.sidekick.config);
     assert.strictEqual(
       config.innerHost,
       'foo--theblog--adobe.hlx.page',
@@ -137,7 +145,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Adds plugins from project', async () => {
     await mockCustomPlugins(page, `
-      window.hlxSidekick.add({
+      window.hlx.sidekick.add({
         id: 'bar',
         button: {
           text: 'Bar',
@@ -153,7 +161,7 @@ describe('Test sidekick bookmarklet', () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
-      window.hlxSidekick.add({
+      window.hlx.sidekick.add({
         id: 'foo',
         override: true,
         button: {
@@ -169,7 +177,7 @@ describe('Test sidekick bookmarklet', () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
-      window.hlxSidekick.add({
+      window.hlx.sidekick.add({
         id: 'foo',
         button: {
           text: 'ExtendFoo',
@@ -183,7 +191,7 @@ describe('Test sidekick bookmarklet', () => {
   it('Removes plugin', async () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
-    await page.evaluate(() => window.hlxSidekick.remove('foo'));
+    await page.evaluate(() => window.hlx.sidekick.remove('foo'));
     const plugins = await getPlugins(page);
     assert.ok(!plugins.find((p) => p.id === 'foo'), 'Did not remove plugin');
   }).timeout(10000);
@@ -191,7 +199,7 @@ describe('Test sidekick bookmarklet', () => {
   it('Adds HTML element in plugin', async () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     const text = await page.evaluate(() => {
-      window.hlxSidekick.add({
+      window.hlx.sidekick.add({
         id: 'foo',
         elements: [
           {
@@ -208,7 +216,7 @@ describe('Test sidekick bookmarklet', () => {
   it('Loads custom CSS', async () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
-      window.hlxSidekick.loadCSS('custom.css');
+      window.hlx.sidekick.loadCSS('custom.css');
     });
     const bgColor = await page.$eval('div.hlx-sk',
       (elem) => window.getComputedStyle(elem).getPropertyValue('background-color'));
@@ -220,31 +228,31 @@ describe('Test sidekick bookmarklet', () => {
 
     // shows notification
     assert.strictEqual(await page.evaluate(() => {
-      window.hlxSidekick.notify('Lorem ipsum');
+      window.hlx.sidekick.notify('Lorem ipsum');
       return document.querySelector('.hlx-sk-overlay .modal').textContent;
     }), 'Lorem ipsum', 'Did show notification');
 
     // shows sticky modal
     assert.strictEqual(await page.evaluate(() => {
-      window.hlxSidekick.showModal('Sticky', true);
+      window.hlx.sidekick.showModal('Sticky', true);
       return document.querySelector('.hlx-sk-overlay .modal.wait').textContent;
     }), 'Sticky', 'Did show sticky modal');
 
     // hides sticky modal
     assert.strictEqual(await page.evaluate(() => {
-      window.hlxSidekick.hideModal();
+      window.hlx.sidekick.hideModal();
       return document.querySelector('.hlx-sk-overlay').classList.contains('hlx-sk-hidden');
     }), true, 'Did not hide sticky modal');
 
     // shows multi-line notification
     assert.strictEqual(await page.evaluate(() => {
-      window.hlxSidekick.notify(['Lorem ipsum', 'sit amet']);
+      window.hlx.sidekick.notify(['Lorem ipsum', 'sit amet']);
       return document.querySelector('.hlx-sk-overlay .modal').innerHTML;
     }), '<p>Lorem ipsum</p><p>sit amet</p>', 'Did not show multi-line notification');
 
     // hides sticky modal on overlay click
     assert.ok(await page.evaluate(() => {
-      window.hlxSidekick.showModal('Sticky');
+      window.hlx.sidekick.showModal('Sticky');
       const overlay = document.querySelector('.hlx-sk-overlay');
       const click = (el) => {
         const evt = document.createEvent('Events');
