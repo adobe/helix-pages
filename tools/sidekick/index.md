@@ -39,6 +39,20 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
   border-radius: 50px;
 }
 
+.back {
+  margin-top: 80px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.back a::before {
+  content: "< Back to ";
+  padding-right: 8px;
+  display: inline-block;
+}
+
 @media (prefers-color-scheme: dark) {
   #bookmark {
     box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.2);
@@ -80,10 +94,10 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     bm.href = [
       'javascript:',
       '/* ** Helix Sidekick Bookmarklet ** */',
-      '(() => {if(!window.hlxSidekick){',
-        `window.hlxSidekickConfig=${JSON.stringify(config)};`,
+      '(() => {if(!window.hlx.sidekick){',
+        `window.hlx.sidekickConfig=${JSON.stringify(config)};`,
         'document.head.appendChild(document.createElement("script")).src="https://www.hlx.page/tools/sidekick/app.js";',
-      '}else{window.hlxSidekick.toggle();}',
+      '}else{window.hlx.sidekick.toggle();}',
       '})();',
     ].join('');
     if (project) {
@@ -96,12 +110,23 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
 
   function init() {
     let autorun = false;
-    new URLSearchParams(window.location.search).forEach((v,k) => {
+    const params = new URLSearchParams(window.location.search);
+    params.forEach((v,k) => {
       const field = document.getElementById(k);
       if (!field) return;
       field.value = v;
       autorun = true;
     });
+    if (params.has('from')) {
+      const from = params.get('from');
+      const backLink = document.createElement('a');
+      backLink.href = from;
+      backLink.textContent = from;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'back';
+      wrapper.appendChild(backLink);
+      document.getElementById('book').appendChild(wrapper);
+    }
     if (autorun) {
       document.getElementById('form').style.display = 'none';
       run();
