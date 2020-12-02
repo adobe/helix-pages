@@ -69,7 +69,8 @@
   color: var(--hlx-sk-color);
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
+  min-height: 49px;
   box-sizing: border-box;
   padding: 0 72px 10px 42px;
   font-family: var(--hlx-sk-font-family);
@@ -77,7 +78,7 @@
   box-shadow: var(--hlx-sk-shadow);
 }
 
-.hlx-sk:empty::before {
+.hlx-sk.hlx-sk-empty::before {
   margin-top: 10px;
   line-height: 2;
 }
@@ -94,6 +95,7 @@
 .hlx-sk > .share::before {
   display: none;
 }
+
 .hlx-sk > .share .dots::before {
   content: "·";
   font-size: 3rem;
@@ -226,8 +228,8 @@
 
 /* i18n */
 
-.hlx-sk:empty::before {
-  content: "No actions found";
+.hlx-sk.hlx-sk-empty::before {
+  content: "No actions found for this page";
  }
 
 .hlx-sk .loading::before {
