@@ -26,3 +26,12 @@ strains:
       word2md: 2.1.11-testing
       dispatch: 4.3.6-testing
       content-proxy: 2.2.6-testing
+
+  - name: breaking-january
+    condition:
+      url.hostname: breaking-january
+    code: https://github.com/tripodsan/helix-pages.git#breaking-january
+    content: https://github.com/tripodsan/helix-pages.git#breaking-january
+    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-january
+    version-lock:
+      word2md: 2.1.11-testing-january
