@@ -14,3 +14,11 @@ strains:
     content: https://github.com/tripodsan/helix-pages.git#master
     static: https://github.com/tripodsan/helix-pages.git/htdocs#master
     package: tripod/3e0670464bc07f36395ed2eb812fe20e4629f54d
+
+  - name: breaking-december
+    condition:
+      url.hostname: breaking-december
+    code: https://github.com/tripodsan/helix-pages.git#breaking-december
+    content: https://github.com/tripodsan/helix-pages.git#breaking-december
+    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-december
+    package: tripod/github-com--tripodsan--helix-pages--breaking-december-dirty
