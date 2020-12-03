@@ -39,7 +39,12 @@
     if (script) {
       const scriptHost = new URL(script.src).host;
       if (scriptHost) {
-        innerHost = scriptHost.replace('www.', '');
+        // keep only 1st and 2nd level domain
+        innerHost = scriptHost.split('.')
+          .reverse()
+          .splice(0, 2)
+          .reverse()
+          .join('.');
       }
     }
     if (!innerHost || innerHost.startsWith('localhost')) {
