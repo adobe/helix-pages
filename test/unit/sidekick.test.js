@@ -72,6 +72,7 @@ describe('Test sidekick bookmarklet', () => {
 
   beforeEach(async () => {
     browser = await puppeteer.launch({
+      headless: true,
       args: [
         '--disable-popup-blocking',
         '--disable-web-security',
@@ -154,14 +155,13 @@ describe('Test sidekick bookmarklet', () => {
       });
     `);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
-    const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'bar'), 'Did not add plugins from project');
+    assert.ok((await getPlugins(page)).find((p) => p.id === 'bar'), 'Did not add plugins from project');
   }).timeout(10000);
 
   it('Adds plugins from fixed host', async () => {
     await mockCustomPlugins(
       page,
-      `window.hlxSidekick.add({
+      `window.hlx.sidekick.add({
         id: 'bar',
         button: {
           text: 'Bar',
@@ -170,8 +170,7 @@ describe('Test sidekick bookmarklet', () => {
       (req) => req.url().startsWith('https://plugins.foo.bar'),
     );
     await page.goto(`${fixturesPrefix}/config-plugin-host.html`, { waitUntil: 'load' });
-    const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'bar'), 'Did not add plugins from fixed host');
+    assert.ok((await getPlugins(page)).find((p) => p.id === 'bar'), 'Did not add plugins from fixed host');
   }).timeout(10000);
 
   it('Replaces plugin', async () => {
@@ -365,12 +364,12 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
     await execPlugin(page, 'edit');
     // check result
-    (await assertLater()).strictEqual(
+    (await assertLater(10000)).strictEqual(
       editUrl,
       'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
       'Editor lookup URL not opened',
     );
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Preview plugin opens a new tab with staging URL from production URL', async () => {
     // watch for new browser window
@@ -383,12 +382,12 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
     await execPlugin(page, 'preview');
     // check result
-    (await assertLater(5000)).strictEqual(
+    (await assertLater(10000)).strictEqual(
       stagingUrl,
       'https://theblog--adobe.hlx.page/en/topics/bla.html',
       'Staging URL not opened',
     );
-  }).timeout(10000);
+  }).timeout(15000);
 
   it('Publish plugin sends purge request from staging URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
@@ -404,6 +403,35 @@ describe('Test sidekick bookmarklet', () => {
     });
     // open test page and click publish button
     await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(document.querySelector('.hlx-sk .publish button'));
+    });
+    // check result
+    (await assertLater()).ok(purged, 'Purge request not sent');
+  }).timeout(10000);
+
+  it('Publish plugin purges dependencies', async () => {
+    const actionHost = 'https://adobeioruntime.net';
+    const purgePath = '/en/topics/foo.html';
+    // watch for purge request
+    let purged = false;
+    page.on('request', async (req) => {
+      if (req.url().startsWith(actionHost)) {
+        const params = new URL(req.url()).searchParams;
+        purged = params.get('path') === purgePath;
+      }
+    });
+    // open test page and click publish button
+    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    // add dependencies
+    await page.evaluate((dPath) => {
+      window.hlx.dependencies = [dPath];
+    }, purgePath);
     await page.evaluate(() => {
       const click = (el) => {
         const evt = document.createEvent('Events');
