@@ -225,7 +225,7 @@
       if (typeof window.hlxSidekickConfig === 'object') {
         // eslint-disable-next-line no-alert
         if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute ...')) {
-          sk.showModal('', true);
+          sk.showModal('Please wait...', true);
           const url = new URL(getShareUrl(sk.config));
           const params = new URLSearchParams(url.search);
           params.set('from', sk.location.href);
@@ -341,19 +341,36 @@
             sk.notify(`Publish is not configured for ${config.project}`, 0);
             return;
           }
-          sk.showModal('Publishing...', true);
           const path = location.pathname;
+          sk.showModal(`Publishing ${path}`, true);
           const resp = await sendPurge(config, path);
           if (resp.ok) {
-            // fetch and redirect to production
-            const prodURL = `https://${config.host}${path}`;
-            await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
-            // eslint-disable-next-line no-console
-            console.log(`redirecting to ${prodURL}`);
-            window.location.href = prodURL;
+            let okToRedirect = true;
+            // purge dependencies
+            if (Array.isArray(window.hlx.dependencies)) {
+              const deps = window.hlx.dependencies.filter(async (dPath) => {
+                sk.showModal(`Publishing dependency ${dPath}`, true);
+                return !(await sendPurge(config, dPath)).ok;
+              });
+              if (deps.length > 0) {
+                okToRedirect = false;
+                sk.showModal([
+                  'Failed to publish these dependendies. Please try again later.',
+                  ...deps,
+                ], true, 1);
+              }
+            }
+            if (okToRedirect) {
+              // fetch and redirect to production
+              const prodURL = `https://${config.host}${path}`;
+              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+              // eslint-disable-next-line no-console
+              console.log(`redirecting to ${prodURL}`);
+              window.location.href = prodURL;
+            }
           } else {
             sk.showModal([
-              `Failed to purge ${resp.path} from the cache. Please reload this page and try again later.`,
+              `Failed to publish ${resp.path}. Please try again later.`,
               `Status: ${resp.status}`,
               JSON.stringify(resp.json),
             ], true, 0);
@@ -581,6 +598,7 @@
       }
       if (msg) {
         if (Array.isArray(msg)) {
+          this._modal.textContent = '';
           msg.forEach((line) => appendTag(this._modal, {
             tag: 'p',
             text: line,
