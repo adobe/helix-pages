@@ -236,7 +236,7 @@
           window.hlxSidekick = window.hlx.sidekick;
         }
       }
-    }, 500);
+    }, 1000);
   }
 
   /**
