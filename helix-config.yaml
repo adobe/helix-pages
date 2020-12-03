@@ -6,11 +6,11 @@ version: 1
 definitions:
   defaults:
     # default repository. set to git remote repository before deployment
-    - &defaultRepo https://github.com/adobe/helix-pages.git#master
+    - &defaultRepo https://github.com/tripodsan/helix-pages.git#master
 
 strains:
   - name: default
     code: *defaultRepo
-    content: https://github.com/adobe/helix-pages.git#master
-    static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: helix-pages/17b64e30311872d2ba6024af38c2b1f487be1438
+    content: https://github.com/tripodsan/helix-pages.git#master
+    static: https://github.com/tripodsan/helix-pages.git/htdocs#master
+    package: tripod/github-com--tripodsan--helix-pages--master-dirty

@@ -29,5 +29,6 @@
   <main>${content.document.body}</main>
   <!--  footer -->
   <footer><esi:include src="/footer.plain.html"  onerror="continue"/></footer>
+  <div>tripod - testing - master</div>
 </body>
 </html>
