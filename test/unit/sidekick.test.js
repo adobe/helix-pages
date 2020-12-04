@@ -382,12 +382,12 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
     await execPlugin(page, 'preview');
     // check result
-    (await assertLater(10000)).strictEqual(
+    (await assertLater(15000)).strictEqual(
       stagingUrl,
       'https://theblog--adobe.hlx.page/en/topics/bla.html',
       'Staging URL not opened',
     );
-  }).timeout(15000);
+  }).timeout(20000);
 
   it('Publish plugin sends purge request from staging URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
