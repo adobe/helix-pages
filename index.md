@@ -61,7 +61,7 @@ function takeMeThere() {
         separator = '--';
     }
     const branchprefix = (c.branch === 'master' ? '' : c.branch + separator);
-    const url = `https://${branchprefix}${c.repo}${separator}${c.user}.project-helix.page${pathstub}.html`;
+    const url = `https://${branchprefix}${c.repo}${separator}${c.user}.hlx.page${pathstub}.html`;
     window.location = url;
 }
 </script>
