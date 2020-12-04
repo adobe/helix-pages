@@ -307,10 +307,9 @@
     async function sendPurge(cfg, path) {
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
-      const xfh = [
-        cfg.host,
-        cfg.outerHost,
-      ];
+      const xfh = [cfg.innerHost];
+      if (cfg.outerHost) xfh.push(cfg.outerHost);
+      if (cfg.host) xfh.push(cfg.host);
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
         ['host', cfg.innerHost],
@@ -337,7 +336,7 @@
       button: {
         action: async () => {
           const { config, location } = sk;
-          if (!config.innerHost || !config.host) {
+          if (!config.innerHost) {
             sk.notify(`Publish is not configured for ${config.project}`, 0);
             return;
           }
@@ -355,18 +354,20 @@
               if (deps.length > 0) {
                 okToRedirect = false;
                 sk.showModal([
-                  'Failed to publish these dependendies. Please try again later.',
+                  'Failed to publish the following dependendies. Please try again later.',
                   ...deps,
                 ], true, 1);
               }
             }
-            if (okToRedirect) {
+            if (okToRedirect && config.host) {
               // fetch and redirect to production
               const prodURL = `https://${config.host}${path}`;
               await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
               // eslint-disable-next-line no-console
               console.log(`redirecting to ${prodURL}`);
               window.location.href = prodURL;
+            } else {
+              sk.notify('Successfully published');
             }
           } else {
             sk.showModal([

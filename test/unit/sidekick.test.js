@@ -398,11 +398,37 @@ describe('Test sidekick bookmarklet', () => {
       if (req.url().startsWith(actionHost)) {
         const params = new URL(req.url()).searchParams;
         purged = params.get('path') === purgePath
-          && params.get('xfh').split(',').length === 2;
+          && params.get('xfh').split(',').length === 3;
       }
     });
     // open test page and click publish button
     await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(document.querySelector('.hlx-sk .publish button'));
+    });
+    // check result
+    (await assertLater()).ok(purged, 'Purge request not sent');
+  }).timeout(10000);
+
+  it.only('Publish plugin works with inner CDN only', async () => {
+    const actionHost = 'https://adobeioruntime.net';
+    const purgePath = '/en/topics/bla.html';
+    // watch for purge request
+    let purged = false;
+    page.on('request', async (req) => {
+      if (req.url().startsWith(actionHost)) {
+        const params = new URL(req.url()).searchParams;
+        purged = params.get('path') === purgePath
+          && params.get('xfh').split(',').length === 2;
+      }
+    });
+    // open test page and click publish button
+    await page.goto(`${fixturesPrefix}/publish-no-host.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       const click = (el) => {
         const evt = document.createEvent('Events');
