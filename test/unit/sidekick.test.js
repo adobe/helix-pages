@@ -415,7 +415,7 @@ describe('Test sidekick bookmarklet', () => {
     (await assertLater()).ok(purged, 'Purge request not sent');
   }).timeout(10000);
 
-  it.only('Publish plugin works with inner CDN only', async () => {
+  it('Publish plugin works with inner CDN only', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
     // watch for purge request
