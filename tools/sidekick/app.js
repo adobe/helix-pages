@@ -72,14 +72,18 @@
     } = window.location;
 
     // replace single - with 2
-    const makeHelixURLCompliant = (str) => str.replace(/\/\/([^-]+)-([^-]+)\./gm, '//$1--$2.');
+    const makeHostHelixCompliant = (ahost) => ahost
+      .replace(/([^-]+)-([^-]+)-([^-]+)\./gm, '$1--$2--$3.')
+      .replace(/([^-]+)-([^-]+)\./gm, '$1--$2.');
+
+    const newHost = makeHostHelixCompliant(hostname);
 
     return {
       hash,
-      host: makeHelixURLCompliant(host),
-      hostname: makeHelixURLCompliant(hostname),
-      href: makeHelixURLCompliant(href),
-      origin: makeHelixURLCompliant(origin),
+      host: host.replace(hostname, newHost),
+      hostname: newHost,
+      href: href.replace(hostname, newHost),
+      origin: origin.replace(hostname, newHost),
       pathname,
       port,
       protocol,
