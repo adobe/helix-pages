@@ -73,8 +73,8 @@
 
     // replace single - with 2
     const makeHostHelixCompliant = (ahost) => ahost
-      .replace(/([^-]+)-([^-]+)-([^-]+)\./gm, '$1--$2--$3.')
-      .replace(/([^-]+)-([^-]+)\./gm, '$1--$2.');
+      .replace(/^([^-]+)-([^-]+)-([^-]+)\./gm, '$1--$2--$3.')
+      .replace(/^([^-]+)-([^-]+)\./gm, '$1--$2.');
 
     const newHost = makeHostHelixCompliant(hostname);
 
