@@ -94,7 +94,7 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     bm.href = [
       'javascript:',
       '/* ** Helix Sidekick Bookmarklet ** */',
-      '(() => {if(!window.hlx.sidekick){',
+      '(() => {window.hlx=window.hlx||{};if(!window.hlx.sidekick){',
         `window.hlx.sidekickConfig=${JSON.stringify(config)};`,
         'document.head.appendChild(document.createElement("script")).src="https://www.hlx.page/tools/sidekick/app.js";',
       '}else{window.hlx.sidekick.toggle();}',
