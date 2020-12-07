@@ -67,7 +67,24 @@
       }
     }
     // fall back to window location
-    return window.location;
+    const {
+      hash, host, hostname, href, origin, pathname, port, protocol, search,
+    } = window.location;
+
+    // replace single - with 2
+    const makeHelixURLCompliant = (str) => str.replace(/\/\/([^-]+)-([^-]+)\./gm, '//$1--$2.');
+
+    return {
+      hash,
+      host: makeHelixURLCompliant(host),
+      hostname: makeHelixURLCompliant(hostname),
+      href: makeHelixURLCompliant(href),
+      origin: makeHelixURLCompliant(origin),
+      pathname,
+      port,
+      protocol,
+      search,
+    };
   }
 
   /**
