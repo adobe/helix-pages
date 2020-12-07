@@ -9,45 +9,116 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global window, document, navigator, HTMLElement, fetch */
+/* global window, document, navigator, fetch, btoa */
 
 'use strict';
 
 (() => {
   /**
-   * Returns the initialized configuration.
-   * @private
-   * @param {object} cfg The configuration options
+   * @typedef {Object.<string, string>} elemAttr
+   * @description The name and value of the attribute to set on an element.
    */
-  function initConfig(cfg = {}) {
-    const outerPrefix = (cfg && cfg.owner && cfg.repo)
-      ? `${cfg.repo}--${cfg.owner}`
+
+  /**
+   * @typedef {Object.<string, Function>} elemLstnr
+   * @description The event name and listener to register on an element.
+   */
+
+  /**
+   * @typedef {Object} elemConfig
+   * @description The configuration of an element to add.
+   * @prop {string}      tag    The tag name (mandatory)
+   * @prop {string}      text   The text content (optional)
+   * @prop {elemAttr[]}  attrs  The attributes (optional)
+   * @prop {elemLstnr[]} lstnrs The event listeners (optional)
+   */
+
+  /**
+   * @typedef {Object} pluginButton
+   * @description The configuration for a plugin button. This can be used as
+   * a shorthand for {@link elemConfig}.
+   * @prop {string}   text   The button text
+   * @prop {Function} action The click listener
+   */
+
+  /**
+   * @typedef {Object} plugin
+   * @description The plugin configuration.
+   * @prop {string}       id        The plugin ID (mandatory)
+   * @prop {pluginButton} button    A button configuration object (optional)
+   * @prop {boolean}      override=false  True to replace an existing plugin (optional)
+   * @prop {elemConfig[]} elements  An array of elements to add (optional)
+   * @prop {Function}     condition Determines whether to show this plugin (optional).
+   * This function is expected to return a boolean when called with the sidekick as argument.
+   * @prop {Function}     callback  A function called after adding the plugin (optional).
+   * This function is called with the sidekick and the newly added plugin as arguments.
+   */
+
+  /**
+   * @external
+   * @name "window.hlx.sidekickConfig"
+   * @type {Object}
+   * @description The sidekick configuration needs to be defined in this global variable
+   * before creating the {@link Sidekick}.
+   * @prop {string} owner   The GitHub owner or organization (mandatory)
+   * @prop {string} repo    The GitHub owner or organization (mandatory)
+   * @prop {string} ref=main The Git reference or branch (optional)
+   * @prop {string} host    The production host name (optional)
+   * @prop {string} project The name of the Helix project (optional)
+   */
+
+  /**
+   * @external
+   * @name "window.hlx.sidekick"
+   * @type {Sidekick}
+   * @description The global variable referencing the {@link Sidekick} singleton.
+   */
+
+  /**
+   * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
+   * @private
+   * @returns {Object} The sidekick configuration
+   */
+  function initConfig() {
+    const cfg = (window.hlx && window.hlx.sidekickConfig
+      ? window.hlx.sidekickConfig
+      : window.hlxSidekickConfig) || {};
+    const {
+      owner, repo, ref, host, project,
+    } = cfg;
+    const outerPrefix = owner && repo
+      ? `${repo}--${owner}`
       : null;
-    const innerPrefix = cfg.ref && !['master', 'main'].includes(cfg.ref)
-      ? `${cfg.ref}--${outerPrefix}`
+    const innerPrefix = ref && !['master', 'main'].includes(ref)
+      ? `${ref}--${outerPrefix}`
       : outerPrefix;
-    // check if host is a URL
-    if (cfg.host && cfg.host.startsWith('http')) {
-      cfg.host = new URL(cfg.host).host;
-    }
+    const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
-    let innerDomain;
+    let innerHost;
     const script = Array.from(document.querySelectorAll('script[src]'))
       .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
     if (script) {
       const scriptHost = new URL(script.src).host;
       if (scriptHost) {
-        innerDomain = scriptHost.replace('www.', '');
+        // keep only 1st and 2nd level domain
+        innerHost = scriptHost.split('.')
+          .reverse()
+          .splice(0, 2)
+          .reverse()
+          .join('.');
       }
     }
-    if (!innerDomain) {
-      innerDomain = 'hlx.page';
+    if (!innerHost || innerHost.startsWith('localhost')) {
+      innerHost = 'hlx.page';
     }
+    innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
+    const outerHost = outerPrefix ? `${outerPrefix}.hlx.live` : null;
     return {
       ...cfg,
-      innerHost: innerPrefix ? `${innerPrefix}.${innerDomain}` : null,
-      outerHost: outerPrefix ? `${outerPrefix}.hlx.live` : null,
-      project: cfg.project || 'your Helix Pages project',
+      innerHost,
+      outerHost,
+      host: publicHost,
+      project: project || 'your Helix Pages project',
     };
   }
 
@@ -76,6 +147,7 @@
    * keyboard access.
    * @private
    * @param {HTMLElement} elem The element
+   * @returns {HTMLElement} The element
    */
   function makeAccessible(elem) {
     if (elem.tagName === 'A' || elem.tagName === 'BUTTON') {
@@ -104,12 +176,7 @@
    * Extends a tag.
    * @private
    * @param {HTMLElement} tag The tag to extend
-   * @param {object}      config The tag configuration object
-   *   with the following properties:
-   *   - {string} tag    The tag name (mandatory)
-   *   - {string} text   The text content (optional)
-   *   - {object} attrs  The attributes (optional)
-   *   - {object} lstnrs The event listeners (optional)
+   * @param {elemConfig}  config The tag configuration object
    * @returns {HTMLElement} The extended tag
    */
   function extendTag(tag, config) {
@@ -134,12 +201,7 @@
   /**
    * Creates a tag.
    * @private
-   * @param {object} config The tag configuration object
-   *   with the following properties:
-   *   - {string} tag    The tag name (mandatory)
-   *   - {string} text   The text content (optional)
-   *   - {object} attrs  The attributes (optional)
-   *   - {object} lstnrs The event listeners (optional)
+   * @param {elemConfig} config The tag configuration
    * @returns {HTMLElement} The new tag
    */
   function createTag(config) {
@@ -155,12 +217,7 @@
    * and appends it to the parent element.
    * @private
    * @param {HTMLElement} parent The parent element
-   * @param {object}      config The tag configuration object
-   *   with the following properties:
-   *   - {string} tag    The tag name (mandatory)
-   *   - {string} text   The text content (optional)
-   *   - {object} attrs  The attributes (optional)
-   *   - {object} lstnrs The event listeners (optional)
+   * @param {elemConfig}  config The tag configuration
    * @returns {HTMLElement} The new tag
    */
   function appendTag(parent, config) {
@@ -168,34 +225,68 @@
   }
 
   /**
-   * Creates a share URL for this sidekick and either invokes the
-   * Web Share API or copies it to the clipboard.
-   * @param {object} sk The sidekick
+   * Returns the share URL for the sidekick bookmarklet.
+   * @private
+   * @param {Object} config The sidekick configuration
+   * @returns {string} The share URL
    */
-  function shareSidekick(sk) {
-    const { config } = sk;
+  function getShareUrl(config) {
     const shareUrl = new URL('https://www.hlx.page/tools/sidekick/');
     shareUrl.search = new URLSearchParams([
       ['project', config.project || ''],
       ['host', config.host || ''],
       ['giturl', `https://github.com/${config.owner}/${config.repo}${config.ref ? `/tree/${config.ref}` : ''}`],
     ]).toString();
+    return shareUrl.toString();
+  }
+
+  /**
+   * Creates a share URL for this sidekick and either invokes the
+   * Web Share API or copies it to the clipboard.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function shareSidekick(sk) {
+    const { config } = sk;
+    const shareUrl = getShareUrl(config);
     if (navigator.share) {
       navigator.share({
         title: `Sidekick for ${config.project}`,
         text: `Check out this helper bookmarklet for ${config.project}`,
-        url: shareUrl.toString(),
+        url: shareUrl,
       });
     } else {
-      navigator.clipboard.writeText(shareUrl.toString());
+      navigator.clipboard.writeText(shareUrl);
       sk.notify('Sharing URL copied to clipboard');
     }
   }
 
   /**
+   * Checks for updates and informs the user.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function checkForUpdates(sk) {
+    window.setTimeout(() => {
+      // check for legacy config property
+      if (typeof window.hlxSidekickConfig === 'object') {
+        // eslint-disable-next-line no-alert
+        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute ...')) {
+          sk.showModal('Please wait...', true);
+          const url = new URL(getShareUrl(sk.config));
+          const params = new URLSearchParams(url.search);
+          params.set('from', sk.location.href);
+          url.search = params.toString();
+          window.location.href = url.toString();
+        }
+      }
+    }, 1000);
+  }
+
+  /**
    * Adds the preview plugin to the sidekick.
    * @private
-   * @param {object} sk The sidekick
+   * @param {Sidekick} sk The sidekick
    */
   function addPreviewPlugin(sk) {
     sk.add({
@@ -219,7 +310,7 @@
             const host = location.host === config.innerHost ? config.host : config.innerHost;
             url = new URL(`https://${host}${location.pathname}`);
           }
-          window.open(url.toString(), `hlx-sk-preview-${config.repo}--${config.owner}`);
+          window.open(url.toString(), `hlx-sk-preview-${btoa(location.href)}`);
         },
       },
     });
@@ -228,7 +319,7 @@
   /**
    * Adds the edit plugin to the sidekick.
    * @private
-   * @param {object} sk The sidekick
+   * @param {Sidekick} sk The sidekick
    */
   function addEditPlugin(sk) {
     sk.add({
@@ -245,7 +336,7 @@
             ['path', '/'],
             ['edit', location.href],
           ]).toString();
-          window.open(url, `hlx-sk-edit-${config.repo}--${config.owner}`);
+          window.open(url, `hlx-sk-edit-${btoa(location.href)}`);
         },
       },
     });
@@ -254,16 +345,15 @@
   /**
    * Adds the publish plugin to the sidekick.
    * @private
-   * @param {object} sk The sidekick
+   * @param {Sidekick} sk The sidekick
    */
   function addPublishPlugin(sk) {
     async function sendPurge(cfg, path) {
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
-      const xfh = [
-        cfg.host,
-        cfg.outerHost,
-      ];
+      const xfh = [cfg.innerHost];
+      if (cfg.outerHost) xfh.push(cfg.outerHost);
+      if (cfg.host) xfh.push(cfg.host);
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
         ['host', cfg.innerHost],
@@ -290,23 +380,42 @@
       button: {
         action: async () => {
           const { config, location } = sk;
-          if (!config.innerHost || !config.host) {
+          if (!config.innerHost) {
             sk.notify(`Publish is not configured for ${config.project}`, 0);
             return;
           }
-          sk.showModal('Publishing...', true);
           const path = location.pathname;
+          sk.showModal(`Publishing ${path}`, true);
           const resp = await sendPurge(config, path);
           if (resp.ok) {
-            // fetch and redirect to production
-            const prodURL = `https://${config.host}${path}`;
-            await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
-            // eslint-disable-next-line no-console
-            console.log(`redirecting to ${prodURL}`);
-            window.location.href = prodURL;
+            let okToRedirect = true;
+            // purge dependencies
+            if (Array.isArray(window.hlx.dependencies)) {
+              const deps = window.hlx.dependencies.filter(async (dPath) => {
+                sk.showModal(`Publishing dependency ${dPath}`, true);
+                return !(await sendPurge(config, dPath)).ok;
+              });
+              if (deps.length > 0) {
+                okToRedirect = false;
+                sk.showModal([
+                  'Failed to publish the following dependendies. Please try again later.',
+                  ...deps,
+                ], true, 1);
+              }
+            }
+            if (okToRedirect && config.host) {
+              // fetch and redirect to production
+              const prodURL = `https://${config.host}${path}`;
+              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+              // eslint-disable-next-line no-console
+              console.log(`redirecting to ${prodURL}`);
+              window.location.href = prodURL;
+            } else {
+              sk.notify('Successfully published');
+            }
           } else {
             sk.showModal([
-              `Failed to purge ${resp.path} from the cache. Please reload this page and try again later.`,
+              `Failed to publish ${resp.path}. Please try again later.`,
               `Status: ${resp.status}`,
               JSON.stringify(resp.json),
             ], true, 0);
@@ -317,19 +426,19 @@
   }
 
   /**
-   * A sidekick with helper tools for authors.
+   * The sidekick provides helper tools for authors.
    */
   class Sidekick {
     /**
-     * Creates a new sidekick.
-     * @param {object} cfg The configuration options
+     * Creates a new sidekick based on a configuration object in
+     * {@link window.hlx.sidekickConfig}.
      */
-    constructor(cfg) {
-      this.config = initConfig(cfg);
+    constructor() {
+      this.config = initConfig();
       this.root = appendTag(document.body, {
         tag: 'div',
         attrs: {
-          class: 'hlx-sk hlx-sk-hidden',
+          class: 'hlx-sk hlx-sk-hidden hlx-sk-empty',
         },
       });
       this.location = getLocation();
@@ -380,11 +489,12 @@
           },
         });
       }
+      checkForUpdates(this);
     }
 
     /**
      * Shows/hides the sidekick.
-     * @returns {object} The sidekick
+     * @returns {Sidekick} The sidekick
      */
     toggle() {
       this.root.classList.toggle('hlx-sk-hidden');
@@ -393,35 +503,11 @@
 
     /**
      * Adds a plugin to the sidekick.
-     * @param {object|string|function|HTMLElement} plugin The plugin, e.g.:
-     *   - A {string} or {HTMLElement}
-     *   - A {function} that returns a plugin object when called with the sidekick as argument
-     *   - An {object} with the following properties:
-     *     - {string} id          The plugin ID (mandatory)
-     *     - {object} button      A button configuration object (optional)
-     *       - {string}   text    The button text
-     *       - {function} action  The click listener
-     *     - {boolean} override   True to replace an existing plugin (optional)
-     *     - {array} elements An array of tag configuration objects (optional)
-     *       A tag configuration object can have the following properties:
-     *       - {string} tag    The tag name (mandatory)
-     *       - {string} text   The text content (optional)
-     *       - {object} attrs  The attributes (optional)
-     *       - {object} lstnrs The event listeners (optional)
-     *     - {function} condition A function determining whether to show this plugin (optional)
-     *       This function is expected to return a boolean when called with the sidekick as argument
-     *     - {function} callback  A function called after adding the plugin (optional)
-     *       This function is called with the sidekick and the newly added plugin as arguments
-     * @returns {object} The sidekick
+     * @param {plugin} plugin The plugin configuration.
+     * @returns {HTMLElement} The plugin
      */
     add(plugin) {
-      if (plugin instanceof HTMLElement) {
-        this.root.appendChild(plugin);
-      } else if (typeof plugin === 'string') {
-        this.root.innerHTML += plugin;
-      } else if (typeof plugin === 'function') {
-        return this.add(plugin(this));
-      } else if (typeof plugin === 'object') {
+      if (typeof plugin === 'object') {
         if (plugin.override) {
           this.remove(plugin.id);
         }
@@ -437,6 +523,7 @@
               class: plugin.id,
             },
           });
+          this.root.classList.remove('hlx-sk-empty');
         }
         if (Array.isArray(plugin.elements)) {
           plugin.elements.forEach((elem) => appendTag($plugin, elem));
@@ -459,8 +546,9 @@
         if (typeof plugin.callback === 'function') {
           plugin.callback(this, $plugin);
         }
+        return $plugin;
       }
-      return this;
+      return null;
     }
 
     /**
@@ -475,7 +563,7 @@
     /**
      * Removes the plugin with the specified ID from the sidekick.
      * @param {string} id The plugin ID
-     * @returns {object} The sidekick
+     * @returns {Sidekick} The sidekick
      */
     remove(id) {
       const $plugin = this.get(id);
@@ -487,7 +575,7 @@
 
     /**
      * Checks if the current location is an editor URL (SharePoint or Google Docs).
-     * @returns {boolean} true if editor URL, else false
+     * @returns {boolean} <code>true</code> if editor URL, else <code>false</code>
      */
     isEditor() {
       return /.*\.sharepoint\.com/.test(this.location.host)
@@ -496,7 +584,7 @@
 
     /**
      * Checks if the current location is a configured Helix URL.
-     * @returns {boolean} true if Helix URL, else false
+     * @returns {boolean} <code>true</code> if Helix URL, else <code>false</code>
      */
     isHelix() {
       const { config, location } = this;
@@ -511,8 +599,8 @@
 
     /**
      * Displays a non-sticky notification.
-     * @param {string|array} msg The message(s) to display
-     * @param {number} level error (0), warning (1), of info (2) (default)
+     * @param {string|string[]} msg The message (lines) to display
+     * @param {number}          level error (0), warning (1), of info (2)
      */
     notify(msg, level = 2) {
       this.showModal(msg, false, level);
@@ -520,12 +608,12 @@
 
     /**
      * Displays a modal notification.
-     * @param {string|array} msg The message(s) to display
-     * @param {boolean} sticky True if message should be sticky, else false (default)
-     * @param {number} level error (0), warning (1), of info (2) (default)
-     * @returns {object} The sidekick
+     * @param {string|string[]} msg The message (lines) to display
+     * @param {boolean}         sticky <code>true</code> if message should be sticky (optional)
+     * @param {number}          level error (0), warning (1), of info (2)
+     * @returns {Sidekick} The sidekick
      */
-    showModal(msg, sticky, level = 2) {
+    showModal(msg, sticky = false, level = 2) {
       if (!this._modal) {
         const $spinnerWrap = appendTag(document.body, {
           tag: 'div',
@@ -542,6 +630,7 @@
       }
       if (msg) {
         if (Array.isArray(msg)) {
+          this._modal.textContent = '';
           msg.forEach((line) => appendTag(this._modal, {
             tag: 'p',
             text: line,
@@ -564,7 +653,7 @@
 
     /**
      * Hides the modal if shown.
-     * @returns {object} The sidekick
+     * @returns {Sidekick} The sidekick
      */
     hideModal() {
       if (this._modal) {
@@ -580,7 +669,7 @@
      * current JS or HTML file. E.g. when called without argument from
      * /foo/bar.js, it will attempt to load /foo/bar.css.
      * @param {string} path The path to the CSS file (optional)
-     * @returns {object} The sidekick
+     * @returns {Sidekick} The sidekick
      */
     loadCSS(path) {
       let href = path;
@@ -617,8 +706,9 @@
     }
   }
 
+  window.hlx = window.hlx || {};
   // launch sidekick
-  if (!window.hlxSidekick) {
-    window.hlxSidekick = new Sidekick(window.hlxSidekickConfig).toggle();
+  if (!window.hlx.sidekick) {
+    window.hlx.sidekick = new Sidekick().toggle();
   }
 })();
