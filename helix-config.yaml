@@ -8,6 +8,8 @@ definitions:
     # default repository. set to git remote repository before deployment
     - &defaultRepo https://github.com/tripodsan/helix-pages.git#master
 
+preflight: https://adobeioruntime.net/api/v1/web/helix/helix-services/version-picker@0.0.1
+
 strains:
   - name: default
     code: *defaultRepo
@@ -17,12 +19,10 @@ strains:
 
   - name: breaking-december
     condition:
-      url.hostname: breaking-december
+      preflight.x-pages-version=: breaking-december
     code: https://github.com/tripodsan/helix-pages.git#breaking-december
     content: https://github.com/tripodsan/helix-pages.git#breaking-december
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-december
     package: tripod/238dca652557e8200f0268d6e2f33c7bb937251a
     version-lock:
       word2md: 2.1.11-testing
-      dispatch: 4.3.6-testing
-      content-proxy: 2.2.6-testing

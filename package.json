@@ -12,7 +12,7 @@
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "deploy": "hlx deploy --wsk-action-memory 512",
     "deploy:dirty": "hlx deploy --wsk-action-memory 512 --dirty",
-    "publish": "hlx publish --custom-vcl='vcl/extensions.vcl' --api-publish=https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@7.5.1-testing"
+    "publish": "hlx publish --custom-vcl='vcl/extensions.vcl' --api-publish=https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@8.0.3-test"
   },
   "repository": {
     "type": "git",
