@@ -1,3 +1,25 @@
+# [4.12.0](https://github.com/adobe/helix-pages/compare/v4.11.1...v4.12.0) (2020-12-07)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#586](https://github.com/adobe/helix-pages/issues/586)) ([7ab71dc](https://github.com/adobe/helix-pages/commit/7ab71dc191897c2dd9f91940c14c9386af17f9fd))
+* **deps:** update adobe fixes ([#595](https://github.com/adobe/helix-pages/issues/595)) ([dd5d40e](https://github.com/adobe/helix-pages/commit/dd5d40e1feb03bec5f265636dad212901ab68aac))
+* **deps:** update dependency @adobe/helix-pipeline to v13.0.8 ([#588](https://github.com/adobe/helix-pages/issues/588)) ([cc8062d](https://github.com/adobe/helix-pages/commit/cc8062d7ba2276a3e3b08760db70c206ce95a140))
+* **deps:** update dependency @adobe/openwhisk-action-utils to v4.3.3 ([2b99f87](https://github.com/adobe/helix-pages/commit/2b99f87f34928a25bb68a51680a7a92da440f5b6))
+* **sidekick:** check for namespace existence in bookmarklet ([ef57a80](https://github.com/adobe/helix-pages/commit/ef57a809e100fcae09b8111e8c75633282a05c0c))
+* **sidekick:** ignore 3rd level domain ([ebc85e7](https://github.com/adobe/helix-pages/commit/ebc85e7e38e3bff4c2b4db0932487a83131b0bda))
+
+
+### Features
+
+* **seidekick:** backward compatibility ([dd9f83c](https://github.com/adobe/helix-pages/commit/dd9f83cdf3f85cb43b51e4df1843259c9208bfca))
+* **sidekick:** also publish on inner cdn only ([118abc8](https://github.com/adobe/helix-pages/commit/118abc84265d964a09ac8cf2e7ad10d9089aa898))
+* **sidekick:** hlx namespace, better empty display, update check, simpler add() ([82547db](https://github.com/adobe/helix-pages/commit/82547db4d567942704e979084133820943e6c421))
+* **sidekick:** loosen window recyling ([#581](https://github.com/adobe/helix-pages/issues/581)) ([2c74c5a](https://github.com/adobe/helix-pages/commit/2c74c5ad94c6568224bbace32dbc04678dc51dfa))
+* **sidekick:** purge dependencies ([#579](https://github.com/adobe/helix-pages/issues/579)), enhanced modal handling ([bb51a97](https://github.com/adobe/helix-pages/commit/bb51a97588dc3f910ca7862b1b3242b1bb8a1d28))
+* **sidekick:** support back link ([9aaafa1](https://github.com/adobe/helix-pages/commit/9aaafa1d2848b522e423d817ab08d31917ca7df4))
+
 ## [4.11.1](https://github.com/adobe/helix-pages/compare/v4.11.0...v4.11.1) (2020-12-01)
 
 
