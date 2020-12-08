@@ -23,6 +23,6 @@ strains:
     code: https://github.com/tripodsan/helix-pages.git#breaking-december
     content: https://github.com/tripodsan/helix-pages.git#breaking-december
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-december
-    package: tripod/238dca652557e8200f0268d6e2f33c7bb937251a
+    package: tripod/1c5f16acf2f00c30a156f97e76ae45747fb9b5d9
     version-lock:
       word2md: 2.1.11-testing
