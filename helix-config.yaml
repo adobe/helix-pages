@@ -24,6 +24,7 @@ strains:
     content: https://github.com/tripodsan/helix-pages.git#breaking-december
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-december
     package: tripod/1c5f16acf2f00c30a156f97e76ae45747fb9b5d9
+    sticky: false
     version-lock:
       word2md: 2.1.11-testing
 
@@ -34,5 +35,6 @@ strains:
     content: https://github.com/tripodsan/helix-pages.git#breaking-january
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-january
     package: tripod/8dddaf5f4657c9a6843ee1d39cbc2b4e942b5d57
+    sticky: false
     version-lock:
       word2md: 2.1.11-testing-january
