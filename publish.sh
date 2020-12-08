@@ -24,3 +24,4 @@ fi
 # merge changes back to master
 git checkout master
 git merge --ff-only $BRANCH
+git push master $BRANCH
