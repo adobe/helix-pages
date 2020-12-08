@@ -1,3 +1,10 @@
+# [4.13.0](https://github.com/adobe/helix-pages/compare/v4.12.0...v4.13.0) (2020-12-08)
+
+
+### Features
+
+* **sidekick:** make Sidekick compliant with Helix URL scheme ([13449e8](https://github.com/adobe/helix-pages/commit/13449e845ab557db0ab4b88718c77b70c7544270))
+
 # [4.12.0](https://github.com/adobe/helix-pages/compare/v4.11.1...v4.12.0) (2020-12-07)
 
 
