@@ -26,14 +26,3 @@ strains:
     package: tripod/3e2713a2bc98fce2abf560ef56b6d0b172e94cc9
     version-lock:
       word2md: 2.1.11-testing
-
-  - name: breaking-january
-    condition:
-      preflight.x-pages-version=: breaking-january
-    code: https://github.com/tripodsan/helix-pages.git#breaking-january
-    content: https://github.com/tripodsan/helix-pages.git#breaking-january
-    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-january
-    package: tripod/8dddaf5f4657c9a6843ee1d39cbc2b4e942b5d57
-    sticky: false
-    version-lock:
-      word2md: 2.1.11-testing-january
