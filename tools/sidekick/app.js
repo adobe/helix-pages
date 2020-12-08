@@ -138,7 +138,28 @@
       }
     }
     // fall back to window location
-    return window.location;
+    const {
+      hash, host, hostname, href, origin, pathname, port, protocol, search,
+    } = window.location;
+
+    // replace single - with 2
+    const makeHostHelixCompliant = (ahost) => ahost
+      .replace(/^([^-.]+)-([^-.]+)-([^-.]+)\./gm, '$1--$2--$3.')
+      .replace(/^([^-.]+)-([^-.]+)\./gm, '$1--$2.');
+
+    const newHost = makeHostHelixCompliant(hostname);
+
+    return {
+      hash,
+      host: host.replace(hostname, newHost),
+      hostname: newHost,
+      href: href.replace(hostname, newHost),
+      origin: origin.replace(hostname, newHost),
+      pathname,
+      port,
+      protocol,
+      search,
+    };
   }
 
   /**
