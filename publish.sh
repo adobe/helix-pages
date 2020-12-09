@@ -21,7 +21,7 @@ fi
 # ensure that helix-config.yaml is update
 if ! git diff --quiet master -- helix-config.yaml; then
   echo "merging changes from master..."
-  git merge master -m"chore: merge changes from master [skip ci]"
+  git merge master -m"chore: merge changes from master into $BRANCH [skip ci]"
 fi
 
 # merge changes back to master

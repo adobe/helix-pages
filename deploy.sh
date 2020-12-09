@@ -20,4 +20,4 @@ hlx deploy --wsk-action-memory 512
 
 echo "saving helix-config.yaml"
 git add helix-config.yaml
-git commit -m"chore: recording new config [skip ci]"
+git commit -m"chore: recording new helix-config from $BRANCH [skip ci]"
