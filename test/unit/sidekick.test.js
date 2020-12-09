@@ -471,7 +471,7 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(10000);
 });
 
-describe.only('makeHostHelixCompliant', () => {
+describe('makeHostHelixCompliant', () => {
   // TODO: move to proper unit test in order to use original funtion
   // this is a copy of function in sidekick/app.js
   const makeHostHelixCompliant = (ahost) => {
