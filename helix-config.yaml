@@ -27,7 +27,7 @@ strains:
     version-lock:
       word2md: 2.1.11-testing
 
-  # note 2
+  # note 3
   - name: breaking-january
     condition:
       preflight.x-pages-version=: breaking-january

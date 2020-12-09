@@ -26,5 +26,7 @@ fi
 
 # merge changes back to master
 git checkout master
-git merge --ff-only $BRANCH -- helix-config.yaml
+git checkout $BRANCH -- helix-config.yaml
+git commit -m"chore: update helix-config.yaml from $BRANCH [skip ci]"
 git push master $BRANCH
+git checkout $BRANCH
