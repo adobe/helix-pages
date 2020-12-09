@@ -26,5 +26,5 @@ fi
 
 # merge changes back to master
 git checkout master
-git merge --ff-only $BRANCH
+git merge --ff-only $BRANCH -- helix-config.yaml
 git push master $BRANCH
