@@ -56,7 +56,7 @@ describe('Test sidekick bookmarklet', () => {
           body: js || '',
         });
       } else {
-        await req.continue();
+        req.continue();
       }
     });
   };
@@ -94,7 +94,7 @@ describe('Test sidekick bookmarklet', () => {
     const skHandle = await page.$('div.hlx-sk');
     assert.ok(skHandle, 'Did not render without config');
     const plugins = await getPlugins(page);
-    assert.strictEqual(plugins.length, 2, 'Did not render default plugins');
+    assert.strictEqual(plugins.length, 1, 'Did not render default plugins');
     const zIndex = await page.evaluate(
       (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
       skHandle,
@@ -392,13 +392,24 @@ describe('Test sidekick bookmarklet', () => {
   it('Publish plugin sends purge request from staging URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
-    // watch for purge request
     let purged = false;
     page.on('request', async (req) => {
       if (req.url().startsWith(actionHost)) {
+        // intercept purge request
         const params = new URL(req.url()).searchParams;
         purged = params.get('path') === purgePath
           && params.get('xfh').split(',').length === 3;
+        req.respond({
+          status: 200,
+          body: '',
+        });
+      } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
+        // intercept outer CDN validation request
+        req.respond({
+          status: 200,
+        });
+      } else {
+        req.continue();
       }
     });
     // open test page and click publish button
@@ -415,41 +426,26 @@ describe('Test sidekick bookmarklet', () => {
     (await assertLater()).ok(purged, 'Purge request not sent');
   }).timeout(10000);
 
-  it('Publish plugin works with inner CDN only', async () => {
-    const actionHost = 'https://adobeioruntime.net';
-    const purgePath = '/en/topics/bla.html';
-    // watch for purge request
-    let purged = false;
-    page.on('request', async (req) => {
-      if (req.url().startsWith(actionHost)) {
-        const params = new URL(req.url()).searchParams;
-        purged = params.get('path') === purgePath
-          && params.get('xfh').split(',').length === 2;
-      }
-    });
-    // open test page and click publish button
-    await page.goto(`${fixturesPrefix}/publish-no-host.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(document.querySelector('.hlx-sk .publish button'));
-    });
-    // check result
-    (await assertLater()).ok(purged, 'Purge request not sent');
-  }).timeout(10000);
-
   it('Publish plugin purges dependencies', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/foo.html';
-    // watch for purge request
     let purged = false;
     page.on('request', async (req) => {
+      // intercept purge request
       if (req.url().startsWith(actionHost)) {
         const params = new URL(req.url()).searchParams;
         purged = params.get('path') === purgePath;
+        req.respond({
+          status: 200,
+          body: '',
+        });
+      } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
+        // intercept outer cdn vaidation request
+        req.respond({
+          status: 404,
+        });
+      } else {
+        req.continue();
       }
     });
     // open test page and click publish button
@@ -467,6 +463,6 @@ describe('Test sidekick bookmarklet', () => {
       click(document.querySelector('.hlx-sk .publish button'));
     });
     // check result
-    (await assertLater()).ok(purged, 'Purge request not sent');
-  }).timeout(10000);
+    (await assertLater(10000)).ok(purged, 'Purge request not sent');
+  }).timeout(15000);
 });
