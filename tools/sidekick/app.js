@@ -312,8 +312,7 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.config.innerHost
-          && (sk.isEditor() || sk.isHelix()),
+      condition: (sidekick) => sidekick.isEditor() || (sidekick.isHelix() && sidekick.config.host),
       button: {
         action: () => {
           const { config, location } = sk;
@@ -397,7 +396,7 @@
 
     sk.add({
       id: 'publish',
-      condition: (sidekick) => sidekick.isHelix(),
+      condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
       button: {
         action: async () => {
           const { config, location } = sk;
@@ -407,6 +406,14 @@
           }
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
+          // validate outerHost
+          if (config.outerHost) {
+            try {
+              config.outerHost = (await fetch(`https://${config.outerHost}`, { method: 'HEAD' })).ok ? config.outerHost : undefined;
+            } catch (e) {
+              config.outerHost = undefined;
+            }
+          }
           const resp = await sendPurge(config, path);
           if (resp.ok) {
             let okToRedirect = true;
