@@ -12,6 +12,9 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1
 fi
 
+# ensure latest version
+git fetch
+
 echo "deploying action"
 hlx deploy --wsk-action-memory 512
 

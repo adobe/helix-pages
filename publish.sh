@@ -12,6 +12,9 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1
 fi
 
+# ensure latest version
+git fetch
+
 echo "publish new version for $BRANCH"
 hlx publish --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" --api-publish=https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@8.0.3-test
 
