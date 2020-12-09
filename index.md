@@ -2,10 +2,10 @@
 
 Welcome to Helix Pages!
 
-To use it, change the current URL to `https://<repo>-<owner>.project-helix.page`.
+To use it, change the current URL to `https://<repo>--<owner>.project-helix.page`.
 `<owner>` and `<repo>` must refer to a valid Git repository.
 
-Example: [https://helix-home-adobe.project-helix.page/README.html](https://helix-home-adobe.project-helix.page/README.html)
+Example: [https://helix-home--adobe.project-helix.page/README.html](https://helix-home--adobe.project-helix.page/README.html)
 
 ---
 
@@ -22,7 +22,8 @@ function splitURL() {
     return ({ "user": segments[1][0], "repo": segments[2][0], "branch": segments[4][0], "path": path});
 }
 
-function change() {
+function change(evt) {
+    if (evt.key === 'Enter') return takeMeThere();
     const alertElem = document.getElementById('alert');
     const alert=checkURL();
 
@@ -54,18 +55,14 @@ function takeMeThere() {
       return;
     }
     const c = splitURL();
-    let separator = '-';
-
+    const separator = '--';
     const pathstub = c.path.substr(0, c.path.length - 3);
-    if (c.user.indexOf('-') >= 0 || c.branch !== 'master') {
-        separator = '--';
-    }
     const branchprefix = (c.branch === 'master' ? '' : c.branch + separator);
     const url = `https://${branchprefix}${c.repo}${separator}${c.user}.hlx.page${pathstub}.html`;
     window.location = url;
 }
 </script>
-<input onkeyup="change()" type="text" id="giturl" aria-label="Github URL" placeholder="GitHub URL"></input>
+<input onkeyup="change(event)" type="text" id="giturl" aria-label="Github URL" placeholder="GitHub URL"></input>
 <span id="alert" class="alert" style="display:none"></span>
 <button id="takemethere" onclick="takeMeThere()">Take Me There</button>
 
