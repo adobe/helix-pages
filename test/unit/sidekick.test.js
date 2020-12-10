@@ -389,25 +389,24 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(20000);
 
-  it('Publish plugin sends purge request from staging URL', async () => {
+  it('Publish plugin sends purge request from staging URL and redirects to production URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
     let purged = false;
+    let redirected = false;
     page.on('request', async (req) => {
       if (req.url().startsWith(actionHost)) {
         // intercept purge request
         const params = new URL(req.url()).searchParams;
         purged = params.get('path') === purgePath
           && params.get('xfh').split(',').length === 3;
-        req.respond({
-          status: 200,
-          body: '',
-        });
+        req.respond({ status: 200, body: '' });
+      } else if (req.url().startsWith('https://blog.adobe.com/')) {
+        redirected = true;
+        req.respond({ status: 200, body: '' });
       } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
         // intercept outer CDN validation request
-        req.respond({
-          status: 200,
-        });
+        req.respond({ status: 200, body: '' });
       } else {
         req.continue();
       }
@@ -424,26 +423,26 @@ describe('Test sidekick bookmarklet', () => {
     });
     // check result
     (await assertLater()).ok(purged, 'Purge request not sent');
+    assert.ok(redirected, 'No redirect to production URL');
   }).timeout(10000);
 
-  it('Publish plugin purges dependencies', async () => {
+  it('Publish plugin also purges dependencies', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/foo.html';
     let purged = false;
+    let redirected = false;
     page.on('request', async (req) => {
       // intercept purge request
       if (req.url().startsWith(actionHost)) {
         const params = new URL(req.url()).searchParams;
         purged = params.get('path') === purgePath;
-        req.respond({
-          status: 200,
-          body: '',
-        });
+        req.respond({ status: 200, body: '' });
+      } else if (req.url().startsWith('https://blog.adobe.com/')) {
+        redirected = true;
+        req.respond({ status: 200, body: '' });
       } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
         // intercept outer cdn vaidation request
-        req.respond({
-          status: 404,
-        });
+        req.respond({ status: 404 });
       } else {
         req.continue();
       }
@@ -464,6 +463,7 @@ describe('Test sidekick bookmarklet', () => {
     });
     // check result
     (await assertLater(10000)).ok(purged, 'Purge request not sent');
+    assert.ok(redirected, 'No redirect to production URL');
   }).timeout(15000);
 });
 
