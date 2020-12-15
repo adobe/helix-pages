@@ -373,7 +373,7 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it.only('Preview plugin opens a new tab with staging URL from production URL', async () => {
+  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
     // watch for new browser window
     let stagingUrl;
     page.on('popup', async (popup) => {
