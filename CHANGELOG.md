@@ -1,3 +1,16 @@
+## [4.13.1](https://github.com/adobe/helix-pages/compare/v4.13.0...v4.13.1) (2020-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([f454484](https://github.com/adobe/helix-pages/commit/f454484d86114043fcf12bcd452e0aa07052059a))
+* **deps:** update adobe fixes ([#599](https://github.com/adobe/helix-pages/issues/599)) ([19dba41](https://github.com/adobe/helix-pages/commit/19dba4123f0d4ac64a2a32c26262eefeace76827))
+* **sidekick:** fix inner cdn only use case ([0398b5a](https://github.com/adobe/helix-pages/commit/0398b5a4bdc908ad68a933c314b9f715b89780cc))
+* **sidekick:** fix new location resolution ([1fd7f1a](https://github.com/adobe/helix-pages/commit/1fd7f1ac07bddec70350b6fa2cf4f6743a4bbf8e))
+* **sidekick:** fix outer cdn validation, adjust tests ([6a9037f](https://github.com/adobe/helix-pages/commit/6a9037f06de23d0eb41d6bd3020b3fad29a1675d))
+* **sidekick:** keep master as default branch for now ([47f33a2](https://github.com/adobe/helix-pages/commit/47f33a2fcccb39a39506a5f059b1aa66d80d1e5a))
+* **sidekick:** no more redirect to prod after publish ([cb4d616](https://github.com/adobe/helix-pages/commit/cb4d616f8ded1f8f4f40d51624ccf13c1773dd23))
+
 # [4.13.0](https://github.com/adobe/helix-pages/compare/v4.12.0...v4.13.0) (2020-12-08)
 
 
