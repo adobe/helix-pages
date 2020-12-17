@@ -101,7 +101,7 @@ describe('Test sidekick bookmarklet', () => {
       (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
       skHandle,
     );
-    assert.strictEqual(zIndex, '1000', 'Did not apply default CSS');
+    assert.strictEqual(zIndex, '9999999', 'Did not apply default CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Adds plugin from config', async () => {
