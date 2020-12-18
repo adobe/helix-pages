@@ -1,3 +1,15 @@
+# [4.14.0](https://github.com/adobe/helix-pages/compare/v4.13.1...v4.14.0) (2020-12-18)
+
+
+### Bug Fixes
+
+* **sidekick:** remove outer cdn probe (cors) ([8c6ff95](https://github.com/adobe/helix-pages/commit/8c6ff9576219267f12983d7cc083e43318bacc97))
+
+
+### Features
+
+* **sidekick:** increase z-index ([b0da55e](https://github.com/adobe/helix-pages/commit/b0da55ef4637a277943c2e560fcd65a7f92926ce))
+
 ## [4.13.1](https://github.com/adobe/helix-pages/compare/v4.13.0...v4.13.1) (2020-12-16)
 
 
