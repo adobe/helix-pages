@@ -25,7 +25,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.1",
-    "@adobe/helix-pipeline": "13.0.7",
+    "@adobe/helix-pipeline": "13.2.2",
     "@adobe/helix-shared": "7.16.3",
     "@adobe/openwhisk-action-logger": "2.2.2",
     "@adobe/openwhisk-action-utils": "4.3.3",
@@ -33,6 +33,7 @@
     "ferrum": "1.7.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
+    "node-fetch": "2.6.1",
     "xml-escape": "1.1.0",
     "yaml": "1.10.0"
   },
