@@ -406,9 +406,6 @@ describe('Test sidekick bookmarklet', () => {
       } else if (req.url().startsWith('https://blog.adobe.com/')) {
         redirected = true;
         req.respond({ status: 200, body: '' });
-      } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
-        // intercept outer CDN validation request
-        req.respond({ status: 200, body: '' });
       } else {
         req.continue();
       }
@@ -442,9 +439,6 @@ describe('Test sidekick bookmarklet', () => {
       } else if (req.url().startsWith('https://blog.adobe.com/')) {
         redirected = true;
         req.respond({ status: 200, body: '' });
-      } else if (req.url() === 'https://theblog--adobe.hlx.live/') {
-        // intercept outer cdn vaidation request
-        req.respond({ status: 404 });
       } else {
         req.continue();
       }
@@ -466,6 +460,39 @@ describe('Test sidekick bookmarklet', () => {
     // check result
     (await assertLater()).ok(purged, 'Purge request not sent');
     (await assertLater()).ok(redirected, 'No redirect to production URL');
+  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+
+  it('Publish plugin purges inner host only', async () => {
+    const actionHost = 'https://adobeioruntime.net';
+    const innerHost = 'theblog--adobe.hlx.page';
+    let innerHostOnly = false;
+    page.on('request', async (req) => {
+      // intercept purge request
+      if (req.url().startsWith(actionHost)) {
+        const params = new URL(req.url()).searchParams;
+        innerHostOnly = params.get('xfh') === innerHost;
+        req.respond({ status: 200, body: '' });
+      } else {
+        req.continue();
+      }
+    });
+    // open test page and click publish button
+    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    // add dependencies
+    await page.evaluate(() => {
+      // remove production host from config
+      delete window.hlx.sidekick.config.host;
+    });
+    await page.evaluate(() => {
+      const click = (el) => {
+        const evt = document.createEvent('Events');
+        evt.initEvent('click', true, false);
+        el.dispatchEvent(evt);
+      };
+      click(document.querySelector('.hlx-sk .publish button'));
+    });
+    // check result
+    (await assertLater()).ok(innerHostOnly, 'Did not purge inner host only');
   }).timeout(IT_DEFAULT_TIMEOUT * 2);
 });
 

@@ -377,8 +377,10 @@
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
       const xfh = [cfg.innerHost];
-      if (cfg.outerHost) xfh.push(cfg.outerHost);
-      if (cfg.host) xfh.push(cfg.host);
+      if (cfg.host) {
+        xfh.push(cfg.outerHost);
+        xfh.push(cfg.host);
+      }
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
         ['host', cfg.innerHost],
@@ -411,14 +413,6 @@
           }
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
-          // validate outerHost
-          if (config.outerHost) {
-            try {
-              config.outerHost = (await fetch(`https://${config.outerHost}`, { method: 'HEAD' })).ok ? config.outerHost : undefined;
-            } catch (e) {
-              config.outerHost = undefined;
-            }
-          }
           const resp = await sendPurge(config, path);
           if (resp.ok) {
             // purge dependencies
