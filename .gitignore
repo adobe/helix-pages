@@ -10,3 +10,4 @@ hlx
 helix-config.yaml.old
 .nyc_output
 coverage
+dist

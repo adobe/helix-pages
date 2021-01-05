@@ -9,7 +9,14 @@
     "semantic-release": "semantic-release",
     "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 10000 --domain $TEST_DOMAIN",
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX",
-    "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*"
+    "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
+    "build": "hlx clean && hlx build",
+    "deploy": "hedy -v --deploy --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
+  },
+  "wsk": {
+    "entry-file": "universal/index.js",
+    "name": "helix-pages/pages@${version}",
+    "memory": 512
   },
   "repository": {
     "type": "git",
@@ -22,19 +29,22 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.2",
-    "@adobe/helix-pipeline": "13.2.8",
+    "@adobe/helix-pipeline": "13.3.2",
     "@adobe/helix-shared": "7.18.0",
+    "@adobe/htlengine": "6.2.11",
     "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
     "algoliasearch": "4.8.3",
     "ferrum": "1.7.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
+    "node-fetch": "2.6.1",
     "xml-escape": "1.1.0",
     "yaml": "1.10.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
+    "@adobe/helix-deploy": "1.15.4",
     "@adobe/helix-fetch": "1.9.2",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.0",
