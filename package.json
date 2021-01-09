@@ -22,8 +22,8 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.2",
-    "@adobe/helix-pipeline": "13.2.8",
-    "@adobe/helix-shared": "7.18.0",
+    "@adobe/helix-pipeline": "13.3.2",
+    "@adobe/helix-shared": "7.18.2",
     "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
     "algoliasearch": "4.8.3",
