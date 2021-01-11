@@ -11,6 +11,14 @@
  */
 const { Response } = require('node-fetch');
 
+/*
+
+NOTE:
+  this is currently not used.
+  this serves as an example how to easily create a multi-script action.
+
+*/
+
 /* eslint-disable global-require */
 const scripts = {
   embed_html: require('../.hlx/build/src/embed_html.js'),

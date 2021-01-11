@@ -54,10 +54,10 @@ class AzureIndex {
 
 module.exports = {
   match: (target) => target.startsWith('azure:'),
-  create: (index, params) => {
+  create: (index, params, env) => {
     const {
       AZURE_SEARCH_API_KEY, AZURE_SEARCH_SERVICE_NAME,
-    } = params;
+    } = env;
 
     if (!AZURE_SEARCH_API_KEY) {
       throw new Error('AZURE_SEARCH_API_KEY parameter missing.');

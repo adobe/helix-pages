@@ -16,10 +16,10 @@ const algoliasearch = require('algoliasearch');
 
 module.exports = {
   match: (target) => !target,
-  create: (index, params) => {
+  create: (index, params, env) => {
     const {
       ALGOLIA_API_KEY, ALGOLIA_APP_ID,
-    } = params;
+    } = env;
 
     if (!ALGOLIA_API_KEY) {
       throw new Error('ALGOLIA_API_KEY parameter missing.');

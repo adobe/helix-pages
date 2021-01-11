@@ -16,6 +16,7 @@
 
 process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 
+const querystring = require('querystring');
 const assert = require('assert');
 const fse = require('fs-extra');
 const nock = require('nock');
@@ -29,21 +30,33 @@ const { resolve } = require('path');
  */
 const proxyaction = () => proxyquire('../../cgi-bin/feed.js', {
 });
+/*
+    const resp = await fn({
+      url: `https://content-proxy.com/proxy?${querystring.encode(params)}`,
+      headers: new Map(Object.entries(params.__ow_headers || {})),
+    }, {
+      resolver,
+      env,
+    });
 
-/**
- * Create params object for sitemap action.
  */
-const createParams = () => ({
-  src: '/en/query-index.json?limit=10',
-  id: 'path',
-  title: 'title',
-  updated: 'date',
-  __ow_headers: {
+/**
+ * Create request object for feed action.
+ */
+const createRequest = () => ({
+  url: `https://pages.com/feed?${querystring.encode({
+    src: '/en/query-index.json?limit=10',
+    id: 'path',
+    title: 'title',
+    updated: 'date',
+  })}`,
+  headers: new Map(Object.entries({
     'x-forwarded-proto': 'https',
     'hlx-forwarded-host': 'blog.adobe.com',
     'x-cdn-url': 'https://blog.adobe.com/atom.xml',
-  },
+  })),
 });
+
 describe('Atom Feed Tests', () => {
   it('Atom Feed returns ESIs without prefixes', async () => {
     nock('https://blog.adobe.com')
@@ -106,9 +119,9 @@ describe('Atom Feed Tests', () => {
         },
       ]);
 
-    const response = await proxyaction().main(createParams());
-    assert.equal(response.statusCode, 200);
-    assert.equal(response.body, await fse.readFile(
+    const response = await proxyaction().main(createRequest(), { log: console });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), await fse.readFile(
       resolve(__dirname, 'feed', 'feed-fstab.txt'), 'utf-8',
     ));
   }).timeout(10000);

@@ -41,18 +41,17 @@ const action = proxyquire('../../cgi-bin/sitemap.js', {
   '../src/providers/algolia.js': algolia,
 });
 
-/**
- * Create params object for sitemap action.
- */
-const createParams = (opts) => ({
-  __hlx_owner: 'me',
-  __hlx_repo: 'repo',
-  __hlx_ref: 'master',
-  __ow_headers: {
+const createRequest = (params) => ({
+  url: `https://pages.com/sitemap?${querystring.encode({
+    __hlx_owner: 'me',
+    __hlx_repo: 'repo',
+    __hlx_ref: 'master',
+    ...params,
+  })}`,
+  headers: new Map(Object.entries({
     'x-forwarded-proto': 'https',
     'hlx-forwarded-host': 'myhost.com, myrepo-myorg.hlx.page',
-  },
-  ...opts,
+  })),
 });
 
 describe('Sitemap Tests', () => {
@@ -62,12 +61,12 @@ describe('Sitemap Tests', () => {
       '__hlx_owner', '__hlx_repo', '__hlx_ref',
     ];
     for (let i = 0; i <= requiredParamNames.length - 1; i += 1) {
-      const params = requiredParamNames.slice(0, i).reduce((acc, name) => {
-        acc[`${name}`] = 'bogus';
+      const params = requiredParamNames.reduce((acc, name, idx) => {
+        acc[`${name}`] = i === idx ? '' : 'bogus';
         return acc;
       }, {});
       it(`index function bails if argument ${requiredParamNames[i]} is missing`, async () => {
-        await assert.rejects(() => action.main(params), /\w+ parameter missing/);
+        await assert.rejects(() => action.main(createRequest(params), { log: console }), /\w+ parameter missing/);
       });
     }
   });
@@ -82,9 +81,9 @@ describe('Sitemap Tests', () => {
         .reply(404, 'Not found');
     });
     it('missing index returns 200 and empty body', async () => {
-      const response = await action.main(createParams());
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, '');
+      const response = await action.main(createRequest(), { log: console });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), '');
     });
   });
 
@@ -98,8 +97,8 @@ describe('Sitemap Tests', () => {
         .reply(404, 'Not found');
     });
     it('failing to read index should report error', async () => {
-      const response = await action.main(createParams());
-      assert.equal(response.statusCode, 500);
+      const response = await action.main(createRequest(), { log: console });
+      assert.equal(response.status, 500);
     });
   });
 
@@ -118,9 +117,9 @@ describe('Sitemap Tests', () => {
     });
 
     it('Sitemap returns URLs with prefixes', async () => {
-      const response = await action.main(createParams());
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, await fse.readFile(
+      const response = await action.main(createRequest(), { log: console });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-no-fstab.txt'), 'utf-8',
       ));
     });
@@ -141,9 +140,9 @@ describe('Sitemap Tests', () => {
     });
 
     it('Sitemap returns URLs without prefixes', async () => {
-      const response = await action.main(createParams());
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, await fse.readFile(
+      const response = await action.main(createRequest(), { log: console });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
     });
@@ -164,9 +163,9 @@ describe('Sitemap Tests', () => {
     });
 
     it('Sitemap returns URLs without prefixes', async () => {
-      const response = await action.main(createParams());
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, await fse.readFile(
+      const response = await action.main(createRequest(), { log: console });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
     });
@@ -182,12 +181,15 @@ describe('Sitemap Tests', () => {
         .replyWithFile(200, resolve(__dirname, 'sitemap', 'fstab.yaml'));
     });
     it('Algolia provider returns sitemap', async () => {
-      const response = await action.main(createParams({
-        ALGOLIA_API_KEY: 'foo',
-        ALGOLIA_APP_ID: 'bar',
-      }));
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, await fse.readFile(
+      const response = await action.main(createRequest(), {
+        log: console,
+        env: {
+          ALGOLIA_API_KEY: 'foo',
+          ALGOLIA_APP_ID: 'bar',
+        },
+      });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
     });
@@ -207,12 +209,15 @@ describe('Sitemap Tests', () => {
         .replyWithFile(200, resolve(__dirname, 'sitemap', 'azure', 'searchresult.json'));
     });
     it('Azure provider returns sitemap', async () => {
-      const response = await action.main(createParams({
-        AZURE_SEARCH_API_KEY: 'foo',
-        AZURE_SEARCH_SERVICE_NAME: 'theblog2',
-      }));
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body, await fse.readFile(
+      const response = await action.main(createRequest(), {
+        log: console,
+        env: {
+          ALGOLIA_API_KEY: 'foo',
+          ALGOLIA_APP_ID: 'theblog2',
+        },
+      });
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()), await fse.readFile(
         resolve(__dirname, 'sitemap', 'sitemap-fstab.txt'), 'utf-8',
       ));
     });
@@ -244,45 +249,44 @@ describe('Sitemap Tests', () => {
     });
 
     it('retrieves first page by default', async () => {
-      const response = await action.main(createParams({
-      }));
+      const response = await action.main(createRequest(), { log: console });
       const expected = [];
       for (let i = 1; i <= 100; i += 1) {
         expected.push('  <url>');
         expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
         expected.push('  </url>');
       }
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body.trim(), expected.join('\n').trim());
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()).trim(), expected.join('\n').trim());
     });
 
     it('can set page size', async () => {
-      const response = await action.main(createParams({
+      const response = await action.main(createRequest({
         hitsPerPage: 4,
-      }));
+      }), { log: console });
       const expected = [];
       for (let i = 1; i <= 4; i += 1) {
         expected.push('  <url>');
         expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
         expected.push('  </url>');
       }
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body.trim(), expected.join('\n').trim());
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()).trim(), expected.join('\n').trim());
     });
 
     it('can select different page', async () => {
-      const response = await action.main(createParams({
+      const response = await action.main(createRequest({
         hitsPerPage: 4,
         page: 2,
-      }));
+      }), { log: console });
       const expected = [];
       for (let i = 9; i <= 12; i += 1) {
         expected.push('  <url>');
         expected.push(`    <loc>https://myhost.com//${i}.html</loc>`);
         expected.push('  </url>');
       }
-      assert.equal(response.statusCode, 200);
-      assert.equal(response.body.trim(), expected.join('\n').trim());
+      assert.equal(response.status, 200);
+      assert.equal((await response.text()).trim(), expected.join('\n').trim());
     });
   });
 });
