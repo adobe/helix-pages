@@ -8,7 +8,7 @@ executors:
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
       NODE_ENV: development # Only needed if puppeteer is in `devDependencies`
-      
+
 parameters:
   smoke_tests_only:
     type: boolean
@@ -37,7 +37,7 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v4-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install npm
           command: sudo npm -g install npm
@@ -47,7 +47,7 @@ commands:
       - save_cache:
           paths:
             - node_modules
-          key: v4-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: prepare test git user
           command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
