@@ -11,15 +11,20 @@
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX",
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "build": "hlx clean && hlx build",
-    "xxx___deploy": "hedy -v --deploy --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
+    "deploy": "./release/deploy.sh",
+    "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
   },
   "wsk": {
-    "xxx___entry-file": "universal/index.js",
     "name": "/pages_${version}/${scriptName}",
     "memory": 512,
     "test": "/_status_check/healthcheck.json",
     "format": {
       "aws": "/pages_${version}/${scriptName}"
+    },
+    "package": {
+      "params-file": [
+        ".pages-package.env"
+      ]
     }
   },
   "repository": {
