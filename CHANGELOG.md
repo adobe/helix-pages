@@ -1,3 +1,10 @@
+# [4.15.0](https://github.com/adobe/helix-pages/compare/v4.14.3...v4.15.0) (2021-01-12)
+
+
+### Features
+
+* use helix-deploy ([d05f7ee](https://github.com/adobe/helix-pages/commit/d05f7ee9f7b032d2b0dbe9f141cd9deb26679a06))
+
 ## [4.14.3](https://github.com/adobe/helix-pages/compare/v4.14.2...v4.14.3) (2021-01-11)
 
 
