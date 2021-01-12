@@ -11,7 +11,7 @@
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX",
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "build": "hlx clean && hlx build",
-    "deploy": "./release/deploy.sh",
+    "deploy": "sh -eo pipefail ./release/deploy.sh",
     "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
   },
   "wsk": {
