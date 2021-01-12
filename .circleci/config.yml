@@ -276,6 +276,10 @@ jobs:
             echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
 
       - run:
+          name: Set WSK_AUTH for helix-pages
+          command: export WSK_AUTH=$HLX_WSK_AUTH
+
+      - run:
           name: Deploy
           command: npm run deploy
 
