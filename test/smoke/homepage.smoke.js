@@ -51,9 +51,25 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
   }
 
   async function testHomePage(url) {
-    const res = await chai.request(url)
-      .get('/')
-      .set('X-Debug', argv.serviceid || false);
+    let retries = 3;
+    let res;
+
+    // try three times in case we get an on/off 504 error
+    while (retries > 0) {
+      retries -= 1;
+      // eslint-disable-next-line no-await-in-loop
+      res = await chai.request(url)
+        .get('/')
+        .set('X-Debug', argv.serviceid || false);
+      try {
+        expect(res).to.have.status(200);
+        break;
+      } catch (e) {
+        if (retries <= 0) {
+          throw e;
+        }
+      }
+    }
 
     console.log(res.headers);
     expect(res).to.have.status(200);

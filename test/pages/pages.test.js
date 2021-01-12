@@ -120,18 +120,25 @@ async function getTestSetup() {
       testURL,
     };
 
-    {
+    /* eslint-disable no-await-in-loop */
+    let oRetries = 3;
+    while (ret.originalStatus !== 200 && oRetries > 0) {
+      oRetries -= 1;
       console.log('fetching original', originalURL);
       const res = await fetch(originalURL, origOpts);
       ret.originalStatus = res.status;
       ret.originalContent = await res.text();
     }
-    {
+
+    let tRetries = 3;
+    while (ret.testStatus !== 200 && tRetries > 0) {
+      tRetries -= 1;
       console.log('fetching test', testURL);
       const res = await fetch(testURL, testOpts);
       ret.testStatus = res.status;
       ret.testContent = await res.text();
     }
+    /* eslint-enable no-await-in-loop */
 
     results.push(ret);
   }, 4);
