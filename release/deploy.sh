@@ -12,6 +12,7 @@
 #
 
 set -v
+set -e -o pipefail
 
 hlx clean
 hlx build --universal
