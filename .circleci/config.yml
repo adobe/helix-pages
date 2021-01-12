@@ -1,12 +1,13 @@
 version: 2.1
 
 executors:
-  node10:
+  node12:
     docker:
-      # use latest node 10 on debian
-      - image: circleci/node:10-stretch
+      # use latest node 12 on debian
+      - image: circleci/node:12
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
+      NODE_ENV: development # Only needed if puppeteer is in `devDependencies`
 
 parameters:
   smoke_tests_only:
@@ -27,7 +28,7 @@ orbs:
 
 references:
   run_smoketests: &run_smoketests
-    executor: node10
+    executor: node12
     steps:
 
 commands:
@@ -36,7 +37,7 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v4-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install npm
           command: sudo npm -g install npm
@@ -46,14 +47,14 @@ commands:
       - save_cache:
           paths:
             - node_modules
-          key: v4-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: prepare test git user
           command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
 
 jobs:
   build:
-    executor: node10
+    executor: node12
     steps:
       - setup
       - run:
@@ -74,7 +75,7 @@ jobs:
 
 
   init_smoketests:
-    executor: node10
+    executor: node12
     steps:
       - setup
       - run:
@@ -139,7 +140,7 @@ jobs:
             - .npm
 
   run_smoketests:
-    executor: node10
+    executor: node12
     parameters:
         owner:
             type: string
@@ -195,7 +196,7 @@ jobs:
             - project/junit
 
   run_generic_smoketests:
-    executor: node10
+    executor: node12
     parameters:
         owner:
             type: string
@@ -238,7 +239,7 @@ jobs:
             - project/junit
 
   finalize_smoketests:
-    executor: node10
+    executor: node12
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -251,7 +252,7 @@ jobs:
           path: junit
 
   publish:
-    executor: node10
+    executor: node12
     steps:
       - setup
 
@@ -260,16 +261,23 @@ jobs:
           command: npm install @adobe/helix-cli@">=5" --save=false
 
       - run:
-          name: Build Templates
-          command: npx hlx build
-
-      - run:
           name: Reset Working Copy
           command: git status; git checkout -- . ; git pull
 
       - run:
-          name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --wsk-action-memory 512 --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          name: Prepare packackge secrets
+          command: |
+            echo "ALGOLIA_API_KEY=$ALGOLIA_API_KEY" > .pages-package.env
+            echo "ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> .pages-package.env
+            echo "AZURE_SEARCH_API_KEY=$AZURE_SEARCH_API_KEY" >> .pages-package.env
+            echo "AZURE_SEARCH_SERVICE_NAME=$AZURE_SEARCH_SERVICE_NAME" >> .pages-package.env
+            echo "CORALOGIX_API_KEY=$CORALOGIX_API_KEY" >> .pages-package.env
+            echo "CORALOGIX_LOG_LEVEL=$CORALOGIX_LOG_LEVEL" >> .pages-package.env
+            echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
+
+      - run:
+          name: Deploy
+          command: npm run deploy
 
       - run:
           name: Publish to Fastly
@@ -294,7 +302,7 @@ jobs:
           command: npm run semantic-release
 
   run_diff_tests:
-    executor: node10
+    executor: node12
     steps:
       - attach_workspace:
           at: /home/circleci

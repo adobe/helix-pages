@@ -1,0 +1,44 @@
+{
+  "note": "this is just a draft - currently not used (see deploy.sh)",
+  "description": "Example file that could be the source for batch deployment",
+  "jobs": [
+    {
+      "entry-file": ".hlx/build/src/embed_html.js",
+      "property": {
+        "scriptName": "embed_html"
+      }
+    },
+    {
+      "entry-file": ".hlx/build/src/html.js",
+      "property": {
+        "scriptName": "html"
+      }
+    },
+    {
+      "entry-file": ".hlx/build/src/plain_html.js",
+      "property": {
+        "scriptName": "plain_html"
+      }
+    },
+    {
+      "entry-file": ".hlx/build/src/idx_json.js",
+      "property": {
+        "scriptName": "idx_json"
+      }
+    },
+    {
+      "entry-file": "./cgi-bin/feed.js",
+      "test": "?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com",
+      "property": {
+        "scriptName": "cgi-bin-feed"
+      }
+    },
+    {
+      "entry-file": "./cgi-bin/sitemap.js",
+      "test": "?__hlx_owner=adobe&__hlx_repo=pages&__hlx_ref=master",
+      "property": {
+        "scriptName": "cgi-bin-sitemap"
+      }
+    }
+  ]
+}

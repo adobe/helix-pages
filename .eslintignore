@@ -8,5 +8,6 @@ test/loadtests/*
 tmp/*
 coverage/*
 google/*
-
+dist/*
 htdocs/scrani.js
+universal/*

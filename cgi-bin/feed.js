@@ -9,8 +9,11 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const { Response } = require('node-fetch');
 const fetchAPI = require('@adobe/helix-fetch');
 const escape = require('xml-escape');
+
+process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 
 function createFetchContext() {
   /* istanbul ignore next */
@@ -46,14 +49,19 @@ function loc(host, hit) {
 `;
 }
 
-async function run(params) {
+async function run(req, context) {
+  const { log } = context;
+  const { searchParams } = new URL(req.url);
+  const params = Array.from(searchParams.entries()).reduce((p, [key, value]) => {
+    // eslint-disable-next-line no-param-reassign
+    p[key] = value;
+    return p;
+  }, {});
   const {
     src,
     id,
     title,
     updated,
-    __ow_headers: headers,
-    // __ow_logger: log,
   } = params;
 
   // Runtime currently overwrites the initial contents of the X-Forwarded-Host header,
@@ -61,35 +69,52 @@ async function run(params) {
   // header in the action itself
   let { originalHost } = params;
   if (!originalHost) {
-    originalHost = getOriginalHost(headers);
+    originalHost = getOriginalHost(req.headers);
   }
 
-  const res = await fetch(`https://${originalHost}${src}`);
-  const json = await res.json();
+  try {
+    const url = `https://${originalHost}${src}`;
+    log.info(`requesting: ${url}`);
+    const res = await fetch(url);
+    const json = await res.json();
 
-  const results = Array.isArray(json) ? json : json.data;
-  const hits = results.map((result) => ({
-    id: result[id],
-    title: result[title],
-    updated: Number.isInteger(result[updated])
-      ? new Date(result[updated] * 1000)
-      : new Date(result[updated]),
-  }));
-
-  const mostRecent = new Date(Math.max(...hits.map((hit) => hit.updated)));
-
-  const body = `  <updated>${mostRecent.toISOString()}</updated>
+    const results = Array.isArray(json) ? json : json.data;
+    let mostRecent = new Date(0);
+    const hits = results.map((result) => {
+      let upd = new Date(0);
+      try {
+        upd = Number.isInteger(result[updated])
+          ? new Date(result[updated] * 1000)
+          : new Date(result[updated]);
+      } catch {
+        // ignore errors
+      }
+      if (upd.getTime() > mostRecent.getTime()) {
+        mostRecent = upd;
+      }
+      return {
+        id: result[id],
+        title: result[title],
+        updated: upd,
+      };
+    });
+    const body = `  <updated>${mostRecent.toISOString()}</updated>
 ${hits.map(
     (hit) => loc(`https://${originalHost}`, hit),
   ).join('\n')}`;
 
-  return {
-    statusCode: 200,
-    body,
-    headers: {
-      'Content-Type': 'application/xml',
-    },
-  };
+    return new Response(body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+    });
+  } catch (e) {
+    log.error(e);
+    return new Response('', {
+      status: 500,
+    });
+  }
 }
 
 module.exports.main = wrap(run)

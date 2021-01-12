@@ -7,6 +7,8 @@ logs
 deploy.sh
 hlx
 .env*
+*.env
 helix-config.yaml.old
 .nyc_output
 coverage
+dist

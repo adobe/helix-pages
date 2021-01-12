@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const { Response } = require('node-fetch');
 const pick = require('lodash.pick');
 const pickBy = require('lodash.pickby');
 const { logger } = require('@adobe/openwhisk-action-logger');
@@ -34,7 +35,7 @@ const providers = [
  * @param {object} params parameters relevant for the provider
  * @returns provider instance
  */
-function createSearchProvider(index, params) {
+function createSearchProvider(index, params, env) {
   const { owner, repo, downloader } = params;
 
   const { sitemap, target } = index;
@@ -65,7 +66,7 @@ function createSearchProvider(index, params) {
   if (!candidate) {
     throw new Error(`No search provider match for target: ${target}`);
   }
-  return candidate.create(index, params);
+  return candidate.create(index, params, env);
 }
 
 /**
@@ -88,15 +89,20 @@ function loc(host, hit, roots) {
 `;
 }
 
-async function run(params) {
+async function run(req, context) {
+  const { log, env } = context;
+  const { searchParams } = new URL(req.url);
+  const params = Array.from(searchParams.entries()).reduce((p, [key, value]) => {
+    // eslint-disable-next-line no-param-reassign
+    p[key] = value;
+    return p;
+  }, {});
   const {
     __hlx_owner: owner,
     __hlx_repo: repo,
     __hlx_ref: ref,
     page = 0,
     hitsPerPage = 100,
-    __ow_headers: headers,
-    __ow_logger: log,
   } = params;
 
   if (!owner) {
@@ -113,7 +119,7 @@ async function run(params) {
     request: { params: coords },
     secrets: {
       REPO_RAW_ROOT: 'https://raw.githubusercontent.com/',
-      HTTP_TIMEOUT: 1000,
+      HTTP_TIMEOUT: 10000,
     },
     logger: log,
   };
@@ -130,13 +136,12 @@ async function run(params) {
     ]);
   } catch (e) {
     log.error(e.message);
-    return {
-      statusCode: 500,
-      body: e.message,
+    return new Response(e.message, {
+      status: 500,
       headers: {
         'Content-Type': 'text/plain',
       },
-    };
+    });
   } finally {
     downloader.destroy();
   }
@@ -145,13 +150,12 @@ async function run(params) {
   if (queryYAML.status !== 200) {
     const logout = (queryYAML.status === 404 ? log.info : log.error).bind(log);
     logout(`unable to fetch helix-query.yaml: ${queryYAML.status}`);
-    return {
-      statusCode: 200,
-      body: '',
+    return new Response('', {
+      status: 200,
       headers: {
         'Content-Type': 'application/xml',
       },
-    };
+    });
   }
   const config = (await new IndexConfig()
     .withSource(queryYAML.body)
@@ -180,13 +184,12 @@ async function run(params) {
       ref,
       downloader,
       ...pickBy(params, (value, key) => /^[A-Z_]+$/.test(key)),
-    });
+    }, env);
   } catch (e) {
     log.error('Unable to create search provider', e);
-    return {
-      statusCode: 500,
-      reason: e.message,
-    };
+    return new Response(e.message, {
+      status: 500,
+    });
   }
 
   const result = await provider.search('', {
@@ -195,23 +198,24 @@ async function run(params) {
     attributesToRetrieve: ['path', 'external-path'],
   });
 
-  const scheme = headers['x-forwarded-proto'] || 'http';
+  const scheme = req.headers.get('x-forwarded-proto') || 'http';
   // Runtime currently overwrites the initial contents of the X-Forwarded-Host header,
   // (see https://jira.corp.adobe.com/browse/RUNNER-3006), so we allow specifying a host
   // header in the action itself
   let { originalHost } = params;
   if (!originalHost) {
-    originalHost = getOriginalHost(headers);
+    originalHost = getOriginalHost(req.headers);
   }
-  return {
-    statusCode: 200,
-    body: result.hits.map(
-      (hit) => loc(`${scheme}://${originalHost}`, hit, roots),
-    ).join(''),
+
+  const body = result.hits.map(
+    (hit) => loc(`${scheme}://${originalHost}`, hit, roots),
+  ).join('');
+  return new Response(body, {
+    status: 200,
     headers: {
       'Content-Type': 'application/xml',
     },
-  };
+  });
 }
 
 module.exports.main = wrap(run)
