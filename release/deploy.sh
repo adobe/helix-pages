@@ -15,12 +15,12 @@ set -v
 
 hlx clean
 hlx build --universal
-hedy -v --deploy --entry-file=.hlx/build/src/html.js       --property.scriptName=html
-hedy -v --deploy --entry-file=.hlx/build/src/embed_html.js --property.scriptName=embed_html
-hedy -v --deploy --entry-file=.hlx/build/src/idx_json.js   --property.scriptName=idx_json
-hedy -v --deploy --entry-file=.hlx/build/src/plain_html.js --property.scriptName=plain_html
-hedy -v --deploy --entry-file=./cgi-bin/feed.js            --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com'
-hedy -v --deploy --entry-file=./cgi-bin/sitemap.js         --property.scriptName=cgi-bin-sitemap --test='?__hlx_owner=adobe&__hlx_repo=pages&__hlx_ref=master'
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/html.js       --property.scriptName=html
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/embed_html.js --property.scriptName=embed_html
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/idx_json.js   --property.scriptName=idx_json
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/plain_html.js --property.scriptName=plain_html
+hedy -v --target=wsk,aws --deploy --entry-file=./cgi-bin/feed.js            --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com'
+hedy -v --target=wsk,aws --deploy --entry-file=./cgi-bin/sitemap.js         --property.scriptName=cgi-bin-sitemap --test='?__hlx_owner=adobe&__hlx_repo=pages&__hlx_ref=master'
 
 # update package secrets
 if [[ -f ".pages-package.env" ]]; then
@@ -28,4 +28,4 @@ if [[ -f ".pages-package.env" ]]; then
 fi
 
 # update helix-config.yaml
-node ./update-config.js
+node ./release/update-config.js
