@@ -1,3 +1,12 @@
+## [4.15.1](https://github.com/adobe/helix-pages/compare/v4.15.0...v4.15.1) (2021-01-15)
+
+
+### Bug Fixes
+
+* increase timeout ([#632](https://github.com/adobe/helix-pages/issues/632)) ([502fd0e](https://github.com/adobe/helix-pages/commit/502fd0e3949c326b64f9f57077260ecf22df8393))
+* **deps:** update dependency @adobe/helix-pipeline to v13.4.0 ([06b393c](https://github.com/adobe/helix-pages/commit/06b393c31addc819c1fd7e9577a03822d3e1bc09))
+* **deps:** update dependency @adobe/htlengine to v6.2.15 ([25398bd](https://github.com/adobe/helix-pages/commit/25398bd3682facbae8ccf06fc1c1de99e5164244))
+
 # [4.15.0](https://github.com/adobe/helix-pages/compare/v4.14.3...v4.15.0) (2021-01-12)
 
 
