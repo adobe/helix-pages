@@ -274,6 +274,7 @@ jobs:
             echo "CORALOGIX_API_KEY=$CORALOGIX_API_KEY" >> .pages-package.env
             echo "CORALOGIX_LOG_LEVEL=$CORALOGIX_LOG_LEVEL" >> .pages-package.env
             echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
+            echo "HTTP_TIMEOUT_EXTERNAL=30000" >> .pages-package.env
 
       - run:
           name: Deploy
