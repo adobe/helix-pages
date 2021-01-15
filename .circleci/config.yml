@@ -339,53 +339,53 @@ workflows:
     unless: << pipeline.parameters.smoke_tests_only >>
     jobs:
       - build
-#      - init_smoketests:
-#          requires:
-#            - build
-#      - run_smoketests:
-#          name: adobe/helix-pages
-#          owner: adobe
-#          repo: helix-pages
-#          branch: $CIRCLE_BRANCH
-#          requires:
-#            - init_smoketests
-#      - run_smoketests:
-#          name: adobe/helix-example-basic#test-code
-#          owner: adobe
-#          repo: helix-example-basic
-#          branch: test-code
-#          script: test:smoke
-#          requires:
-#            - init_smoketests
-#      - run_smoketests:
-#          name: adobe/theblog-tests
-#          owner: adobe
-#          repo: theblog-tests
-#          branch: master
-#          script: test:smoke
-#          requires:
-#            - init_smoketests
-#      - run_generic_smoketests:
-#          name: adobe/ferrumjsorg
-#          owner: adobe
-#          repo: ferrumjsorg
-#          requires:
-#            - init_smoketests
-#      - run_diff_tests:
-#          requires:
-#            - init_smoketests
-#      - finalize_smoketests:
-#          requires:
-#            - adobe/helix-pages
-#            - adobe/helix-example-basic#test-code
-#            - adobe/ferrumjsorg
-#            - adobe/theblog-tests
-#            - run_diff_tests
+      - init_smoketests:
+          requires:
+            - build
+      - run_smoketests:
+          name: adobe/helix-pages
+          owner: adobe
+          repo: helix-pages
+          branch: $CIRCLE_BRANCH
+          requires:
+            - init_smoketests
+      - run_smoketests:
+          name: adobe/helix-example-basic#test-code
+          owner: adobe
+          repo: helix-example-basic
+          branch: test-code
+          script: test:smoke
+          requires:
+            - init_smoketests
+      - run_smoketests:
+          name: adobe/theblog-tests
+          owner: adobe
+          repo: theblog-tests
+          branch: master
+          script: test:smoke
+          requires:
+            - init_smoketests
+      - run_generic_smoketests:
+          name: adobe/ferrumjsorg
+          owner: adobe
+          repo: ferrumjsorg
+          requires:
+            - init_smoketests
+      - run_diff_tests:
+          requires:
+            - init_smoketests
+      - finalize_smoketests:
+          requires:
+            - adobe/helix-pages
+            - adobe/helix-example-basic#test-code
+            - adobe/ferrumjsorg
+            - adobe/theblog-tests
+            - run_diff_tests
       - publish:
           context: Project Helix
           requires:
             - build
-#            - finalize_smoketests
+            - finalize_smoketests
           filters:
             branches:
               only: master
