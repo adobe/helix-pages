@@ -81,18 +81,33 @@ jobs:
       - run:
           name: Installing Helix CLI
           command: npm install @adobe/helix-cli@">=5" --save=false
+
       - run:
-          name: Build Templates
-          command: npx hlx build
+          name: Prepare packackge secrets
+          command: |
+            echo "ALGOLIA_API_KEY=$ALGOLIA_API_KEY" > .pages-package.env
+            echo "ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> .pages-package.env
+            echo "AZURE_SEARCH_API_KEY=$AZURE_SEARCH_API_KEY" >> .pages-package.env
+            echo "AZURE_SEARCH_SERVICE_NAME=$AZURE_SEARCH_SERVICE_NAME" >> .pages-package.env
+            echo "CORALOGIX_API_KEY=$CORALOGIX_API_KEY" >> .pages-package.env
+            echo "CORALOGIX_LOG_LEVEL=$CORALOGIX_LOG_LEVEL" >> .pages-package.env
+            echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
+            echo "HTTP_TIMEOUT_EXTERNAL=30000" >> .pages-package.env
+
       - run:
-          name: Deploy to Adobe I/O Runtime
-          command: npx hlx deploy --wsk-action-memory 512 --add default --default ALGOLIA_API_KEY $ALGOLIA_API_KEY ALGOLIA_APP_ID $ALGOLIA_APP_ID AZURE_SEARCH_API_KEY $AZURE_SEARCH_API_KEY AZURE_SEARCH_SERVICE_NAME $AZURE_SEARCH_SERVICE_NAME CORALOGIX_API_KEY $CORALOGIX_API_KEY CORALOGIX_LOG_LEVEL $CORALOGIX_LOG_LEVEL EPSAGON_TOKEN $EPSAGON_TOKEN | cat
+          name: Deploy
+          command: WSK_AUTH=$HLX_WSK_AUTH npm run deploy-ci
+
       - run:
           name: Setup branch in helix-config.yaml
 
           # replace "master" by the branch name in helix-config
           command: |
             sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml
+
+      - store_artifacts:
+          path: helix-config.yaml
+
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE and TEST_VERSION_LOCK
 
@@ -340,6 +355,7 @@ workflows:
     jobs:
       - build
       - init_smoketests:
+          context: Project Helix
           requires:
             - build
       - run_smoketests:

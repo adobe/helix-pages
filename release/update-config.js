@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-/* eslint-disable no-console */
+/* eslint-disable no-console,no-plusplus */
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const fs = require('fs-extra');
@@ -31,6 +31,18 @@ async function saveConfig(cfg) {
 }
 
 async function run() {
+  let { version } = pkgJson;
+  let i = 2;
+  while (i < process.argv.length) {
+    switch (process.argv[i++]) {
+      case '--pkgVersion':
+        version = process.argv[i++];
+        break;
+      default:
+        throw new Error('unknown option: ', process.argv[i - 1]);
+    }
+  }
+
   const cfg = await new HelixConfig()
     .withConfigPath(path.resolve(__dirname, '..', 'helix-config.yaml'))
     .init();
@@ -40,7 +52,7 @@ async function run() {
 
   // update package in affected strains
   console.log('Updating affected strains:');
-  const packageProperty = `${WSK_NAMESPACE}/pages_${pkgJson.version}`;
+  const packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
   affected.forEach((strain) => {
     console.info(`- ${strain.name}`);
     if (strain.package !== packageProperty) {
@@ -52,7 +64,7 @@ async function run() {
 
   if (modified) {
     await saveConfig(cfg);
-    console.log(`\nUpdated 'helix-config.yaml' to version ${pkgJson.version}`);
+    console.log(`\nUpdated 'helix-config.yaml' to version ${version}`);
   }
 }
 

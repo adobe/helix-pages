@@ -12,6 +12,7 @@
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "build": "hlx clean && hlx build",
     "deploy": "./release/deploy.sh",
+    "deploy-ci": "./release/deploy-ci.sh",
     "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
   },
   "wsk": {
