@@ -95,11 +95,19 @@ jobs:
             echo "HTTP_TIMEOUT_EXTERNAL=30000" >> .pages-package.env
 
       - run:
+          name: Deploy
+          command: WSK_AUTH=$HLX_WSK_AUTH npm run deploy-ci
+
+      - run:
           name: Setup branch in helix-config.yaml
 
           # replace "master" by the branch name in helix-config
           command: |
             sed -i -e "s/#master/#$CIRCLE_BRANCH/" helix-config.yaml
+
+      - store_artifacts:
+          path: helix-config.yaml
+
       - run:
           name: Compute TEST_DOMAIN and TEST_SERVICE and TEST_VERSION_LOCK
 
