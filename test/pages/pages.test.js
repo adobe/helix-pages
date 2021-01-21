@@ -174,8 +174,8 @@ describe('document equivalence', function suite() {
             if (info.testStatus !== 200) {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
-            dumpDOM(orig_dom.body, test_dom.body);
             try {
+              dumpDOM(orig_dom.body, test_dom.body);
               assertEquivalentNode(orig_dom.body, test_dom.body);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
@@ -189,8 +189,8 @@ describe('document equivalence', function suite() {
             if (info.testStatus !== 200) {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
-            dumpDOM(orig_dom.head, test_dom.head);
             try {
+              dumpDOM(orig_dom.head, test_dom.head);
               assertEquivalentNode(orig_dom.head, test_dom.head);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
