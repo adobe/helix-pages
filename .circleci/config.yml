@@ -377,7 +377,7 @@ workflows:
           name: adobe/theblog-tests
           owner: adobe
           repo: theblog-tests
-          branch: master
+          branch: main
           script: test:smoke
           requires:
             - init_smoketests
@@ -431,7 +431,7 @@ workflows:
         name: adobe/theblog-tests
         owner: adobe
         repo: theblog-tests
-        branch: master
+        branch: main
         script: test:smoke
         requires:
             - init_smoketests
