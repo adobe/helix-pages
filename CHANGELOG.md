@@ -1,3 +1,10 @@
+## [4.15.2](https://github.com/adobe/helix-pages/compare/v4.15.1...v4.15.2) (2021-01-23)
+
+
+### Bug Fixes
+
+* switch to main branch of theblog-tests ([#642](https://github.com/adobe/helix-pages/issues/642)) ([0513404](https://github.com/adobe/helix-pages/commit/0513404d36634eac24b619b28db9edea4f532761))
+
 ## [4.15.1](https://github.com/adobe/helix-pages/compare/v4.15.0...v4.15.1) (2021-01-15)
 
 
