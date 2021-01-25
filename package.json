@@ -7,7 +7,7 @@
     "test": "mocha test/unit/*.test.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
-    "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 10000 --domain $TEST_DOMAIN",
+    "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 30000 --domain $TEST_DOMAIN",
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX",
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "build": "hlx clean && hlx build",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "1.9.2",
-    "@adobe/htlengine": "6.3.0",
+    "@adobe/htlengine": "6.3.1",
     "@adobe/helix-pipeline": "13.5.1",
     "@adobe/helix-shared": "7.19.2",
     "@adobe/openwhisk-action-logger": "2.3.1",
