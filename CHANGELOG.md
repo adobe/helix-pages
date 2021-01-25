@@ -1,3 +1,11 @@
+## [4.15.3](https://github.com/adobe/helix-pages/compare/v4.15.2...v4.15.3) (2021-01-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.19.2 ([#645](https://github.com/adobe/helix-pages/issues/645)) ([2473b69](https://github.com/adobe/helix-pages/commit/2473b6914e23fc4b5ade38749e1b118ab683c365))
+* **deps:** update dependency @adobe/htlengine to v6.3.1 ([#646](https://github.com/adobe/helix-pages/issues/646)) ([a5a123c](https://github.com/adobe/helix-pages/commit/a5a123cee38fb3fa912a58ede900fc18b0cfbcc4))
+
 ## [4.15.2](https://github.com/adobe/helix-pages/compare/v4.15.1...v4.15.2) (2021-01-23)
 
 
