@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const { Response } = require('node-fetch');
+const { Response } = require('@adobe/helix-fetch');
 const pick = require('lodash.pick');
 const pickBy = require('lodash.pickby');
 const { logger } = require('@adobe/openwhisk-action-logger');
