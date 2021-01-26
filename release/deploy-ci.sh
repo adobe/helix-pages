@@ -14,12 +14,12 @@ set -veo pipefail
 
 hlx clean
 hlx build --universal
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=.hlx/build/src/html.js       --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=html
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=.hlx/build/src/embed_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=embed_html
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=.hlx/build/src/idx_json.js   --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=idx_json
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=.hlx/build/src/plain_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=plain_html
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=./cgi-bin/feed.js            --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com'
-hedy -v --target=wsk,aws --deploy --aws-create-routes --entry-file=./cgi-bin/sitemap.js         --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-sitemap --test='?__hlx_owner=adobe&__hlx_repo=pages&__hlx_ref=master'
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=.hlx/build/src/html.js       --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=html
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=.hlx/build/src/embed_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=embed_html
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=.hlx/build/src/idx_json.js   --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=idx_json
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=.hlx/build/src/plain_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=plain_html
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=./cgi-bin/feed.js            --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com'
+hedy -v --target=wsk --deploy --aws-create-routes --entry-file=./cgi-bin/sitemap.js         --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-sitemap --test='?__hlx_owner=adobe&__hlx_repo=pages&__hlx_ref=master'
 
 # update package secrets
 if [[ -f ".pages-package.env" ]]; then
