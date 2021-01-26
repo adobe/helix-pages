@@ -415,6 +415,14 @@
           sk.showModal(`Publishing ${path}`, true);
           const resp = await sendPurge(config, path);
           if (resp.ok) {
+            if (path.endsWith('/')) {
+              // directory, also purge index(.html)
+              await sendPurge(config, `${path}index`);
+              await sendPurge(config, `${path}index.html`);
+            } else if (path.split('/').pop().startsWith('index')) {
+              // index(.html), also purge directory
+              await sendPurge(config, path.substring(0, path.lastIndexOf('/') + 1));
+            }
             // purge dependencies
             if (Array.isArray(window.hlx.dependencies)) {
               if (!window.hlx.dependencies.every(async (dPath) => {
