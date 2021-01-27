@@ -427,10 +427,10 @@
             urls = urls.concat(window.hlx.dependencies);
           }
 
-          sk.showModal('Please wait...', true);
           const resps = await Promise.all(urls.map((url) => sendPurge(config, url)));
           if (resps.every((r) => r.ok)) {
             if (config.host) {
+              sk.showModal('Please wait...', true);
               // fetch and redirect to production
               const prodURL = `https://${config.host}${path}`;
               await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
