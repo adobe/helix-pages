@@ -394,7 +394,7 @@
       console.log(JSON.stringify(json));
       /* eslint-enable no-console */
       return {
-        ok: resp.ok && json.every((e) => e.status === 'ok'),
+        ok: resp.ok && Array.isArray(json) && json.every((e) => e.status === 'ok'),
         status: resp.status,
         json,
         path,
@@ -413,18 +413,22 @@
           }
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
-          const resp = await sendPurge(config, path);
-          if (resp.ok) {
-            // purge dependencies
-            if (Array.isArray(window.hlx.dependencies)) {
-              if (!window.hlx.dependencies.every(async (dPath) => {
-                sk.showModal(`Publishing dependency ${dPath}`, true);
-                return (await sendPurge(config, dPath)).ok;
-              })) {
-                sk.notify('Failed to publish dependendies. Please try again later.', 1);
-                return;
-              }
-            }
+          let urls = [path];
+          if (path.endsWith('/')) {
+            // directory, also purge index(.html)
+            urls.push(`${path}index`);
+            urls.push(`${path}index.html`);
+          } else if (path.split('/').pop().startsWith('index')) {
+            // index(.html), also purge directory
+            urls.push(path.substring(0, path.lastIndexOf('/') + 1));
+          }
+          // purge dependencies
+          if (Array.isArray(window.hlx.dependencies)) {
+            urls = urls.concat(window.hlx.dependencies);
+          }
+
+          const resps = await Promise.all(urls.map((url) => sendPurge(config, url)));
+          if (resps.every((r) => r.ok)) {
             if (config.host) {
               sk.showModal('Please wait...', true);
               // fetch and redirect to production
@@ -437,11 +441,7 @@
               sk.notify('Successfully published');
             }
           } else {
-            sk.showModal([
-              `Failed to publish ${resp.path}. Please try again later.`,
-              `Status: ${resp.status}`,
-              JSON.stringify(resp.json),
-            ], true, 0);
+            sk.showModal(`Failed to publish ${path}. Please try again later.`, true, 0);
           }
         },
       },

@@ -337,6 +337,24 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
+    // watch for new browser window
+    let stagingUrl;
+    page.on('popup', async (popup) => {
+      stagingUrl = popup.url();
+    });
+    // open test page and click preview button
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'preview');
+    // check result
+    (await assertLater()).strictEqual(
+      stagingUrl,
+      'https://theblog--adobe.hlx.page/en/topics/bla.html',
+      'Staging URL not opened',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Edit plugin opens a new tab with editor lookup URL from staging URL', async () => {
     // watch for new browser window
     let editUrl;
@@ -373,24 +391,6 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
-    // watch for new browser window
-    let stagingUrl;
-    page.on('popup', async (popup) => {
-      stagingUrl = popup.url();
-    });
-    // open test page and click preview button
-    await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'preview');
-    // check result
-    (await assertLater(15000)).strictEqual(
-      stagingUrl,
-      'https://theblog--adobe.hlx.page/en/topics/bla.html',
-      'Staging URL not opened',
-    );
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
-
   it('Publish plugin sends purge request from staging URL and redirects to production URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
@@ -423,6 +423,44 @@ describe('Test sidekick bookmarklet', () => {
     // check result
     (await assertLater()).ok(purged, 'Purge request not sent');
     (await assertLater()).ok(redirected, 'No redirect to production URL');
+  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+
+  it('Publish thoroughly purges directories', async () => {
+    const actionHost = 'https://adobeioruntime.net';
+    const toPurge = ['/de/', '/de/index.html'];
+    const allPurged = [];
+    // open test page and click publish button
+    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    page.on('request', (req) => {
+      if (req.url().startsWith(actionHost)) {
+        // intercept purge requests
+        allPurged.push(new URL(req.url()).searchParams.get('path'));
+        req.respond({ status: 200, body: '' });
+      } else if (req.url().startsWith('https://blog.adobe.com/')) {
+        // intercept redirect
+        req.respond({ status: 200, body: '' });
+      } else {
+        req.continue();
+      }
+    });
+
+    await Promise.all(toPurge.map(async (purgePath) => {
+      // modify path to purge
+      await page.evaluate((path) => {
+        window.hlx.sidekick.location.pathname = path;
+      }, purgePath);
+      // click publish button
+      await page.evaluate(() => {
+        const click = (el) => {
+          const evt = document.createEvent('Events');
+          evt.initEvent('click', true, false);
+          el.dispatchEvent(evt);
+        };
+        click(document.querySelector('.hlx-sk .publish button'));
+      });
+    }));
+    // check result
+    assert.deepStrictEqual(allPurged, toPurge.concat(toPurge).reverse(), 'Purge request not sent');
   }).timeout(IT_DEFAULT_TIMEOUT * 2);
 
   it('Publish plugin also purges dependencies', async () => {
