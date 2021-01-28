@@ -337,6 +337,24 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
+    // watch for new browser window
+    let stagingUrl;
+    page.on('popup', async (popup) => {
+      stagingUrl = popup.url();
+    });
+    // open test page and click preview button
+    await mockCustomPlugins(page);
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'preview');
+    // check result
+    (await assertLater()).strictEqual(
+      stagingUrl,
+      'https://theblog--adobe.hlx.page/en/topics/bla.html',
+      'Staging URL not opened',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Edit plugin opens a new tab with editor lookup URL from staging URL', async () => {
     // watch for new browser window
     let editUrl;
@@ -372,24 +390,6 @@ describe('Test sidekick bookmarklet', () => {
       'Editor lookup URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Preview plugin opens a new tab with staging URL from production URL', async () => {
-    // watch for new browser window
-    let stagingUrl;
-    page.on('popup', async (popup) => {
-      stagingUrl = popup.url();
-    });
-    // open test page and click preview button
-    await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'preview');
-    // check result
-    (await assertLater(15000)).strictEqual(
-      stagingUrl,
-      'https://theblog--adobe.hlx.page/en/topics/bla.html',
-      'Staging URL not opened',
-    );
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
 
   it('Publish plugin sends purge request from staging URL and redirects to production URL', async () => {
     const actionHost = 'https://adobeioruntime.net';
