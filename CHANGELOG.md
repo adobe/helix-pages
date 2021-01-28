@@ -1,3 +1,11 @@
+## [4.15.4](https://github.com/adobe/helix-pages/compare/v4.15.3...v4.15.4) (2021-01-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.5.3 ([#647](https://github.com/adobe/helix-pages/issues/647)) ([5949c11](https://github.com/adobe/helix-pages/commit/5949c119093d78db3dce3a0c548b8820a16c0c59))
+* **sidekick:** purge directory index ([#648](https://github.com/adobe/helix-pages/issues/648)) ([4c83d00](https://github.com/adobe/helix-pages/commit/4c83d007dafebb3c4ed8935e058afddab22cad9d))
+
 ## [4.15.3](https://github.com/adobe/helix-pages/compare/v4.15.2...v4.15.3) (2021-01-25)
 
 
