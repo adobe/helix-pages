@@ -22,6 +22,7 @@
     "format": {
       "aws": "/pages_${version}/${scriptName}"
     },
+    "aws-lambda-format": "pages--${scriptName}",
     "package": {
       "params-file": [
         ".pages-package.env"
@@ -38,9 +39,9 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-fetch": "1.9.2",
+    "@adobe/helix-fetch": "2.1.0",
     "@adobe/htlengine": "6.3.1",
-    "@adobe/helix-pipeline": "13.5.3",
+    "@adobe/helix-pipeline": "13.6.0",
     "@adobe/helix-shared": "7.19.2",
     "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
@@ -48,14 +49,12 @@
     "ferrum": "1.7.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
-    "node-fetch": "2.6.1",
     "xml-escape": "1.1.0",
     "yaml": "1.10.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
-    "@adobe/helix-deploy": "1.18.2",
-    "@adobe/helix-fetch": "1.9.2",
+    "@adobe/helix-deploy": "3.0.5",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.0",
     "@semantic-release/github": "7.2.0",

@@ -16,7 +16,7 @@ const { JSDOM } = require('jsdom');
 const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 const { Base } = require('mocha').reporters;
 
-const fetchContext = fetchAPI.context({ httpProtocol: 'http1', httpsProtocols: ['http1'] });
+const fetchContext = fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] });
 const { fetch } = fetchContext;
 
 const testDomain = process.env.TEST_DOMAIN;
@@ -88,7 +88,7 @@ function fixDomainInTestContent(text) {
 async function getMostVisited() {
   const res = await fetch('https://adobeioruntime.net/api/v1/web/helix/helix-services/run-query@v2/most-visited', {
     method: 'POST',
-    json: {
+    body: {
       limit: 20,
       threshold: 100,
     },
