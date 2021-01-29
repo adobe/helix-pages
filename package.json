@@ -22,6 +22,7 @@
     "format": {
       "aws": "/pages_${version}/${scriptName}"
     },
+    "aws-lambda-format": "pages--${scriptName}",
     "package": {
       "params-file": [
         ".pages-package.env"
