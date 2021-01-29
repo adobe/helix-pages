@@ -14,3 +14,12 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     package: helix-pages/pages_4.15.4
+
+  - name: universal
+    code: *defaultRepo
+    content: https://github.com/adobe/helix-pages.git#master
+    static: https://github.com/adobe/helix-pages.git/htdocs#master
+    # universal runtime, using the helix test deployment subdomain for now.
+    package: https://deploy-test.anywhere.run/pages_4.15.4
+    version-lock:
+      env: amazonwebservices
