@@ -114,7 +114,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Adds plugin from legacy config', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       page.on('dialog', (dialog) => {
         try {
           assert.ok(dialog.message().startsWith('Good news!'), 'Did not show update dialog');
@@ -312,7 +312,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Preview plugin opens a new tab with staging lookup URL from gdrive URL', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // watch for new browser window
       browser.on('targetcreated', async (target) => {
         // check result
@@ -336,7 +336,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // watch for new browser window
       browser.on('targetcreated', async (target) => {
         // check result
@@ -360,7 +360,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Preview plugin opens a new tab with staging URL from production URL', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // watch for new browser window
       browser.on('targetcreated', async (target) => {
         // check result
@@ -384,7 +384,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Edit plugin opens a new tab with editor lookup URL from staging URL', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // watch for new browser window
       browser.on('targetcreated', async (target) => {
         // check result
@@ -408,7 +408,7 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Edit plugin opens a new tab with editor lookup URL from production URL', async () => {
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // watch for new browser window
       browser.on('targetcreated', async (target) => {
         // check result
@@ -543,7 +543,7 @@ describe('Test sidekick bookmarklet', () => {
     const actionHost = 'https://adobeioruntime.net';
     const innerHost = 'theblog--adobe.hlx.page';
     await mockCustomPlugins(page);
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       page.on('request', async (req) => {
         // intercept purge request
         if (req.url().startsWith(actionHost)) {
