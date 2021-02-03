@@ -148,7 +148,7 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it.only('Image tags get transformed to picture tags', () => {
+  it('Image tags get transformed to picture tags', () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="./blob.hlx/dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
     const context = {
       content: {
