@@ -15,11 +15,9 @@
 'use strict';
 
 const assert = require('assert');
-const { exec } = require('child_process');
 const puppeteer = require('puppeteer');
 
 describe('Test sidekick bookmarklet', () => {
-  const ASSERT_DEFAULT_TIMEOUT = 3000;
   const IT_DEFAULT_TIMEOUT = 30000;
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
@@ -63,12 +61,6 @@ describe('Test sidekick bookmarklet', () => {
       }
     });
   };
-
-  const assertLater = async (delay = ASSERT_DEFAULT_TIMEOUT) => new Promise((resolve) => {
-    setTimeout(async () => {
-      resolve(assert);
-    }, delay);
-  });
 
   let browser;
   let page;
