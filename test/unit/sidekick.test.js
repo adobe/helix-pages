@@ -15,11 +15,12 @@
 'use strict';
 
 const assert = require('assert');
+const { exec } = require('child_process');
 const puppeteer = require('puppeteer');
 
 describe('Test sidekick bookmarklet', () => {
   const ASSERT_DEFAULT_TIMEOUT = 3000;
-  const IT_DEFAULT_TIMEOUT = 15000;
+  const IT_DEFAULT_TIMEOUT = 30000;
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
@@ -112,15 +113,23 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Adds plugin from legacy config', async () => {
-    let dialogMsg = '';
     await mockCustomPlugins(page);
-    page.on('dialog', (dialog) => {
-      dialogMsg = dialog.message();
+    return new Promise((resolve, reject) => {
+      page.on('dialog', (dialog) => {
+        try {
+          assert.ok(dialog.message().startsWith('Good news!'), 'Did not show update dialog');
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+      page
+        .goto(`${fixturesPrefix}/config-legacy.html`, { waitUntil: 'load' })
+        .then(async () => {
+          const plugins = await getPlugins(page);
+          assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from legacy config');
+        });
     });
-    await page.goto(`${fixturesPrefix}/config-legacy.html`, { waitUntil: 'load' });
-    const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from legacy config');
-    (await assertLater(1000)).ok(dialogMsg.startsWith('Good news!'), 'Did not show update dialog');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Detects innerHost and outerHost from config', async () => {
@@ -302,94 +311,123 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Preview plugin opens a new tab with staging lookup URL from gdrive URL', async () => {
-    // watch for new browser window
-    let lookupUrl;
-    browser.on('targetcreated', async (target) => {
-      lookupUrl = target.url();
-    });
-    // open test page and click preview button
     await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'preview');
-    // check result
-    (await assertLater()).strictEqual(
-      lookupUrl,
-      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=main&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit',
-      'Staging lookup URL not opened',
-    );
+    return new Promise((resolve, reject) => {
+      // watch for new browser window
+      browser.on('targetcreated', async (target) => {
+        // check result
+        try {
+          assert.strictEqual(
+            target.url(),
+            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=pages&ref=main&path=%2F&lookup=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit',
+            'Staging lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject();
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'preview'));
+    });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Preview plugin opens a new tab with staging lookup URL from onedrive URL', async () => {
-    // watch for new browser window
-    let lookupUrl;
-    browser.on('targetcreated', async (target) => {
-      lookupUrl = target.url();
-    });
-    // open test page and click preview button
     await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/preview-onedrive.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'preview');
-    // check result
-    (await assertLater()).strictEqual(
-      lookupUrl,
-      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=main&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue',
-      'Staging lookup URL not opened',
-    );
+    return new Promise((resolve, reject) => {
+      // watch for new browser window
+      browser.on('targetcreated', async (target) => {
+        // check result
+        try {
+          assert.strictEqual(
+            target.url(),
+            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=main&path=%2F&lookup=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue',
+            'Staging lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/preview-onedrive.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'preview'));
+    });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Preview plugin opens a new tab with staging URL from production URL', async () => {
-    // watch for new browser window
-    let stagingUrl;
-    browser.on('targetcreated', async (target) => {
-      // console.log(target.url());
-      stagingUrl = target.url();
-    });
-    // open test page and click preview button
     await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'preview');
-    // check result
-    (await assertLater(10000)).strictEqual(
-      stagingUrl,
-      'https://theblog--adobe.hlx.page/en/topics/bla.html',
-      'Staging URL not opened',
-    );
+    return new Promise((resolve, reject) => {
+      // watch for new browser window
+      browser.on('targetcreated', async (target) => {
+        // check result
+        try {
+          assert.strictEqual(
+            target.url(),
+            'https://theblog--adobe.hlx.page/en/topics/bla.html',
+            'Staging URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'preview'));
+    });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Edit plugin opens a new tab with editor lookup URL from staging URL', async () => {
-    // watch for new browser window
-    let editUrl;
-    browser.on('targetcreated', async (target) => {
-      editUrl = target.url();
-    });
-    // open test page and click preview button
     await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'edit');
-    // check result
-    (await assertLater(5000)).strictEqual(
-      editUrl,
-      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Ftheblog--adobe.hlx.page%2Fen%2Ftopics%2Fbla.html',
-      'Editor lookup URL not opened',
-    );
+    return new Promise((resolve, reject) => {
+      // watch for new browser window
+      browser.on('targetcreated', async (target) => {
+        // check result
+        try {
+          assert.strictEqual(
+            target.url(),
+            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Ftheblog--adobe.hlx.page%2Fen%2Ftopics%2Fbla.html',
+            'Editor lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'edit'));
+    });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Edit plugin opens a new tab with editor lookup URL from production URL', async () => {
-    // watch for new browser window
-    let editUrl;
-    browser.on('targetcreated', async (target) => {
-      editUrl = target.url();
-    });
-    // open test page and click preview button
     await mockCustomPlugins(page);
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
-    await execPlugin(page, 'edit');
-    // check result
-    (await assertLater(5000)).strictEqual(
-      editUrl,
-      'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
-      'Editor lookup URL not opened',
-    );
+    return new Promise((resolve, reject) => {
+      // watch for new browser window
+      browser.on('targetcreated', async (target) => {
+        // check result
+        try {
+          assert.strictEqual(
+            target.url(),
+            'https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2?owner=adobe&repo=theblog&ref=master&path=%2F&edit=https%3A%2F%2Fblog.adobe.com%2Fen%2Ftopics%2Fbla.html',
+            'Editor lookup URL not opened',
+          );
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'edit'));
+    });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin sends purge request from staging URL and redirects to production URL', async () => {
@@ -397,37 +435,37 @@ describe('Test sidekick bookmarklet', () => {
     const purgePath = '/en/topics/bla.html';
     let purged = false;
     let redirected = false;
-    page.on('request', async (req) => {
-      if (req.url().startsWith(actionHost)) {
-        // intercept purge request
-        const params = new URL(req.url()).searchParams;
-        purged = params.get('path') === purgePath
-          && params.get('xfh').split(',').length === 3;
-        req.respond({
-          status: 200,
-          body: JSON.stringify([{ status: 'ok' }]),
-        });
-      } else if (req.url().startsWith('https://blog.adobe.com/')) {
-        redirected = true;
-        req.respond({ status: 200, body: '' });
-      } else {
-        req.continue();
-      }
-    });
-    // open test page and click publish button
-    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(document.querySelector('.hlx-sk .publish button'));
+    await mockCustomPlugins(page);
+    await new Promise((resolve, reject) => {
+      page.on('request', async (req) => {
+        if (req.url().startsWith(actionHost)) {
+          // intercept purge request
+          const params = new URL(req.url()).searchParams;
+          purged = params.get('path') === purgePath
+            && params.get('xfh').split(',').length === 3;
+          req.respond({
+            status: 200,
+            body: JSON.stringify([{ status: 'ok' }]),
+          });
+        } else if (req.url().startsWith('https://blog.adobe.com/')) {
+          redirected = true;
+          req.respond({ status: 200, body: '' });
+        } else {
+          req.continue();
+        }
+        if (purged && redirected) resolve();
+      });
+      // open test page and click publish button
+      page
+        .goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'publish'));
+      // reject promise before IT time is up
+      setTimeout(() => reject(new Error('timed out')), IT_DEFAULT_TIMEOUT - 2000);
     });
     // check result
-    (await assertLater(5000)).ok(purged, 'Purge request not sent');
-    (await assertLater(5000)).ok(redirected, 'No redirect to production URL');
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+    assert.ok(purged, 'Purge request not sent');
+    assert.ok(redirected, 'Redirect not sent');
+  }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish thoroughly purges directories', async () => {
     const actionHost = 'https://adobeioruntime.net';
@@ -457,91 +495,88 @@ describe('Test sidekick bookmarklet', () => {
         window.hlx.sidekick.location.pathname = path;
       }, purgePath);
       // click publish button
-      await page.evaluate(() => {
-        const click = (el) => {
-          const evt = document.createEvent('Events');
-          evt.initEvent('click', true, false);
-          el.dispatchEvent(evt);
-        };
-        click(document.querySelector('.hlx-sk .publish button'));
-      });
+      await execPlugin(page, 'publish');
     }));
     // check result
     assert.deepStrictEqual(allPurged, toPurge.concat(toPurge).reverse(), 'Purge request not sent');
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+  }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin also purges dependencies', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/foo.html';
     let purged = false;
-    page.on('request', async (req) => {
-      // intercept purge request
-      if (req.url().startsWith(actionHost)) {
-        const params = new URL(req.url()).searchParams;
-        purged = params.get('path') === purgePath;
-        req.respond({
-          status: 200,
-          body: JSON.stringify([{ status: 'ok' }]),
-        });
-      } else if (req.url().startsWith('https://blog.adobe.com/')) {
-        req.respond({ status: 200, body: '' });
-      } else {
-        req.continue();
-      }
+    await new Promise((resolve, reject) => {
+      page.on('request', async (req) => {
+        // intercept purge request
+        if (req.url().startsWith(actionHost)) {
+          const params = new URL(req.url()).searchParams;
+          // check result
+          purged = params.get('path') === purgePath;
+          req.respond({
+            status: 200,
+            body: JSON.stringify([{ status: 'ok' }]),
+          });
+        } else if (req.url().startsWith('https://blog.adobe.com/')) {
+          req.respond({ status: 200, body: '' });
+        } else {
+          req.continue();
+        }
+        if (purged) resolve();
+      });
+      // open test page and click publish button
+      page
+        .goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' })
+        .then(async () => {
+          // add dependency
+          await page.evaluate((dPath) => {
+            window.hlx.dependencies = [dPath];
+          }, purgePath);
+        })
+        .then(() => execPlugin(page, 'publish'));
+      // reject promise before IT time is up
+      setTimeout(() => reject(new Error('timed out')), IT_DEFAULT_TIMEOUT - 2000);
     });
-    // open test page and click publish button
-    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
-    // add dependencies
-    await page.evaluate((dPath) => {
-      window.hlx.dependencies = [dPath];
-    }, purgePath);
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(document.querySelector('.hlx-sk .publish button'));
-    });
-    // check result
-    (await assertLater(5000)).ok(purged, 'Purge request not sent');
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+    assert.ok(purged, 'Purge request not sent');
+  }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin purges inner host only', async () => {
     const actionHost = 'https://adobeioruntime.net';
     const innerHost = 'theblog--adobe.hlx.page';
-    let innerHostOnly = false;
-    page.on('request', async (req) => {
-      // intercept purge request
-      if (req.url().startsWith(actionHost)) {
-        const params = new URL(req.url()).searchParams;
-        innerHostOnly = params.get('xfh') === innerHost;
-        req.respond({
-          status: 200,
-          body: JSON.stringify([{ status: 'ok' }]),
-        });
-      } else {
-        req.continue();
-      }
+    await mockCustomPlugins(page);
+    return new Promise((resolve, reject) => {
+      page.on('request', async (req) => {
+        // intercept purge request
+        if (req.url().startsWith(actionHost)) {
+          const params = new URL(req.url()).searchParams;
+          // check result
+          try {
+            assert.strictEqual(params.get('xfh'), innerHost, 'Did not purge inner host only');
+            resolve();
+          } catch (e) {
+            reject(e);
+          } finally {
+            req.respond({
+              status: 200,
+              body: JSON.stringify([{ status: 'ok' }]),
+            });
+          }
+        } else {
+          req.continue();
+        }
+      });
+      // open test page and click publish button
+      page
+        .goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' })
+        .then(async () => {
+          // add dependencies
+          await page.evaluate(() => {
+            // remove production host from config
+            delete window.hlx.sidekick.config.host;
+          });
+        })
+        .then(() => execPlugin(page, 'publish'));
     });
-    // open test page and click publish button
-    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
-    // add dependencies
-    await page.evaluate(() => {
-      // remove production host from config
-      delete window.hlx.sidekick.config.host;
-    });
-    await page.evaluate(() => {
-      const click = (el) => {
-        const evt = document.createEvent('Events');
-        evt.initEvent('click', true, false);
-        el.dispatchEvent(evt);
-      };
-      click(document.querySelector('.hlx-sk .publish button'));
-    });
-    // check result
-    (await assertLater()).ok(innerHostOnly, 'Did not purge inner host only');
-  }).timeout(IT_DEFAULT_TIMEOUT * 2);
+  }).timeout(IT_DEFAULT_TIMEOUT);
 });
 
 describe('makeHostHelixCompliant', () => {
