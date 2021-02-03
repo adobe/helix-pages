@@ -149,7 +149,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Image tags get transformed to picture tags', () => {
-    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="./blob.hlx/dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
     const context = {
       content: {
         document: dom.window.document,
@@ -161,7 +161,7 @@ describe('Testing pre.js', () => {
     assert.ok(doc.querySelector('picture'), 'Picture tag missing');
     assert.strictEqual(
       doc.querySelector('picture').innerHTML,
-      '<source media="(max-width: 400px)" srcset="./blob.hlx/dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="./blob.hlx/dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
+      '<source media="(max-width: 400px)" srcset="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
       'Image tag not transformed correctly',
     );
   });

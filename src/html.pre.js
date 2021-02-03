@@ -73,7 +73,7 @@ async function pre(context, action) {
   }
 
   // transform <img> to <picture>
-  document.querySelectorAll('img[src^="./blob.hlx/"]').forEach((img, i) => {
+  document.querySelectorAll('img[src^="/hlx_"]').forEach((img, i) => {
     const picture = document.createElement('picture');
     const source = document.createElement('source');
     source.setAttribute('media', '(max-width: 400px)');
