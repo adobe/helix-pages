@@ -18,7 +18,7 @@ const assert = require('assert');
 const puppeteer = require('puppeteer');
 
 describe('Test sidekick bookmarklet', () => {
-  const IT_DEFAULT_TIMEOUT = 30000;
+  const IT_DEFAULT_TIMEOUT = 60000;
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
@@ -76,7 +76,7 @@ describe('Test sidekick bookmarklet', () => {
       ],
     });
     page = await browser.newPage();
-  });
+  }).timeout(10000);
 
   afterEach(async () => {
     await browser.close();
