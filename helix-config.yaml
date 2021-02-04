@@ -8,6 +8,8 @@ definitions:
     # default repository. set to git remote repository before deployment
     - &defaultRepo https://github.com/adobe/helix-pages.git#master
 
+preflight: https://adobeioruntime.net/api/v1/web/helix/helix-services/version-picker@v1
+
 strains:
   - name: default
     code: *defaultRepo
@@ -23,3 +25,11 @@ strains:
     package: https://deploy-test.anywhere.run/pages_4.15.4
     version-lock:
       env: amazonwebservices
+
+  - name: breaking-202103
+    condition:
+      preflight.x-pages-version=: breaking-202103
+    code: https://github.com/tripodsan/helix-pages.git#breaking-202103
+    content: https://github.com/tripodsan/helix-pages.git#breaking-202103
+    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-202103
+    package: tripod/af2e26ca17abe9f926291afc59259a275561262d
