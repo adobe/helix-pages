@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.3",
-    "@adobe/helix-deploy": "3.0.8",
+    "@adobe/helix-deploy": "3.0.9",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.0",
     "@semantic-release/github": "7.2.0",
