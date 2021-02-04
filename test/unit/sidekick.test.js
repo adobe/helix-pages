@@ -65,7 +65,8 @@ describe('Test sidekick bookmarklet', () => {
   let browser;
   let page;
 
-  beforeEach(async () => {
+  beforeEach(async function setup() {
+    this.timeout(10000);
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -76,7 +77,7 @@ describe('Test sidekick bookmarklet', () => {
       ],
     });
     page = await browser.newPage();
-  }).timeout(10000);
+  });
 
   afterEach(async () => {
     await browser.close();
