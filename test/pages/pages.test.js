@@ -94,12 +94,15 @@ async function getMostVisited() {
     },
   });
 
+  const text = await res.text();
   if (!res.ok) {
-    const text = await res.text();
     throw new Error(`Setup failed to gather most visited urls: ${text}`);
   }
-  const json = await res.json();
-  return json.results;
+  const { results } = JSON.parse(text);
+  if (!results) {
+    throw Error(`Setup failed to gather most visited urls. expected a 'results' array in ${text}`);
+  }
+  return results;
 }
 
 /**
