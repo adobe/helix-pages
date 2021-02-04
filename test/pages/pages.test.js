@@ -23,14 +23,14 @@ const testDomain = process.env.TEST_DOMAIN;
 const testVersionLock = process.env.TEST_VERSION_LOCK;
 
 const origOpts = {
-  cache: 'no-cache',
+  cache: 'no-store',
   headers: {
     'Cache-Control': 'no-cache',
   },
 };
 
 const testOpts = {
-  cache: 'no-cache',
+  cache: 'no-store',
   headers: {
     'Cache-Control': 'no-cache',
   },
