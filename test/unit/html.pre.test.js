@@ -148,6 +148,24 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
+  it('Image tags get transformed to picture tags', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context, action);
+    const { documentElement: doc } = context.content.document;
+    assert.ok(doc.querySelector('picture'), 'Picture tag missing');
+    assert.strictEqual(
+      doc.querySelector('picture').innerHTML,
+      '<source media="(max-width: 400px)" srcset="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="/hlx_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
+      'Image tag not transformed correctly',
+    );
+  });
+
   it('Meta description is extracted from first <p> with 10 or more words', () => {
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';

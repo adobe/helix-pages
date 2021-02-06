@@ -72,6 +72,19 @@ async function pre(context, action) {
     wrapContent(div, document.body);
   }
 
+  // transform <img> to <picture>
+  document.querySelectorAll('img[src^="/hlx_"]').forEach((img, i) => {
+    const picture = document.createElement('picture');
+    const source = document.createElement('source');
+    source.setAttribute('media', '(max-width: 400px)');
+    source.setAttribute('srcset', `${img.getAttribute('src')}?width=750&format=webply&optimize=medium`);
+    picture.appendChild(source);
+    img.setAttribute('loading', i > 0 ? 'lazy' : 'eager'); // load all but first image lazy
+    img.setAttribute('src', `${img.getAttribute('src')}?width=2000&format=webply&optimize=medium`);
+    img.parentNode.insertBefore(picture, img);
+    picture.appendChild(img);
+  });
+
   // ensure content.data is present
   content.data = content.data || {};
 
