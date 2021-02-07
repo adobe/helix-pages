@@ -376,19 +376,12 @@
     async function sendPurge(cfg, path) {
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
-      const xfh = [cfg.innerHost];
-      if (cfg.host) {
-        xfh.push(cfg.outerHost);
-        xfh.push(cfg.host);
-      }
-      const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
-      u.search = new URLSearchParams([
-        ['host', cfg.innerHost],
-        ['xfh', xfh.join(',')],
-        ['path', path],
-      ]).toString();
+      const u = `https://${cfg.host}${path}`;
       const resp = await fetch(u, {
         method: 'POST',
+        headers: {
+          'X-Method-Override': 'HLXPURGE',
+        },
       });
       const json = await resp.json();
       console.log(JSON.stringify(json));
