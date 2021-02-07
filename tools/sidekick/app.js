@@ -68,6 +68,15 @@
    */
 
   /**
+   * @typedef {Object} publishResponse
+   * @description The response object for a publish action.
+   * @prop {boolean} ok     True if publish action was successful, else false
+   * @prop {string}  status The status text returned by the publish action
+   * @prop {Object}  json   The JSON object returned by the publish action
+   * @prop {string}  path   The path of the published page
+   */
+
+  /**
    * @external
    * @name "window.hlx.sidekick"
    * @type {Sidekick}
@@ -373,27 +382,6 @@
    * @param {Sidekick} sk The sidekick
    */
   function addPublishPlugin(sk) {
-    async function sendPurge(cfg, path) {
-      /* eslint-disable no-console */
-      console.log(`purging ${path}`);
-      const u = `https://${cfg.host}${path}`;
-      const resp = await fetch(u, {
-        method: 'POST',
-        headers: {
-          'X-Method-Override': 'HLXPURGE',
-        },
-      });
-      const json = await resp.json();
-      console.log(JSON.stringify(json));
-      /* eslint-enable no-console */
-      return {
-        ok: resp.ok && Array.isArray(json) && json.every((e) => e.status === 'ok'),
-        status: resp.status,
-        json,
-        path,
-      };
-    }
-
     sk.add({
       id: 'publish',
       condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
@@ -420,7 +408,7 @@
             urls = urls.concat(window.hlx.dependencies);
           }
 
-          const resps = await Promise.all(urls.map((url) => sendPurge(config, url)));
+          const resps = await Promise.all(urls.map((url) => sk.publish(url)));
           if (resps.every((r) => r.ok)) {
             if (config.host) {
               sk.showModal('Please wait...', true);
@@ -719,6 +707,33 @@
         });
       }
       return this;
+    }
+
+    /**
+     * Publishes the page at the specified path if {@code config.host} is defined.
+     * @param {string} path The path of the page to publish
+     * @return {publishResponse} The response object
+     */
+    async publish(path) {
+      if (!this.config.host) return null;
+      /* eslint-disable no-console */
+      console.log(`purging ${path}`);
+      const u = `https://${this.config.host}${path}`;
+      const resp = await fetch(u, {
+        method: 'POST',
+        headers: {
+          'X-Method-Override': 'HLXPURGE',
+        },
+      });
+      const json = await resp.json();
+      console.log(JSON.stringify(json));
+      /* eslint-enable no-console */
+      return {
+        ok: resp.ok && Array.isArray(json) && json.every((e) => e.status === 'ok'),
+        status: resp.status,
+        json,
+        path,
+      };
     }
   }
 
