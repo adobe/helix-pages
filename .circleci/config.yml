@@ -295,11 +295,11 @@ jobs:
           name: Deploy
           command: WSK_AUTH=$HLX_WSK_AUTH npm run deploy
 
+      - add_ssh_keys
       - run:
           name: Publish to Fastly
-          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' | cat
+          command: npm run publish
 
-      - add_ssh_keys
       - run:
           name: Commit helix config to master
           command: |
@@ -404,7 +404,7 @@ workflows:
             - finalize_smoketests
           filters:
             branches:
-              only: master
+              only: master, /breaking-.*/
   tests:
     when: << pipeline.parameters.smoke_tests_only >>
     jobs:

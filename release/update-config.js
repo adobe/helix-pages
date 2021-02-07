@@ -32,11 +32,15 @@ async function saveConfig(cfg) {
 
 async function run() {
   let { version } = pkgJson;
+  let strain = 'default';
   let i = 2;
   while (i < process.argv.length) {
     switch (process.argv[i++]) {
       case '--pkgVersion':
         version = process.argv[i++];
+        break;
+      case '--strain':
+        strain = process.argv[i++];
         break;
       default:
         throw new Error('unknown option: ', process.argv[i - 1]);
@@ -47,18 +51,18 @@ async function run() {
     .withConfigPath(path.resolve(__dirname, '..', 'helix-config.yaml'))
     .init();
 
-  const affected = [cfg.strains.get('default')];
+  const affected = [cfg.strains.get(strain)];
   let modified = false;
 
   // update package in affected strains
   console.log('Updating affected strains:');
   const packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
-  affected.forEach((strain) => {
-    console.info(`- ${strain.name}`);
-    if (strain.package !== packageProperty) {
+  affected.forEach((s) => {
+    console.info(`- ${s.name}`);
+    if (s.package !== packageProperty) {
       modified = true;
       // eslint-disable-next-line no-param-reassign
-      strain.package = packageProperty;
+      s.package = packageProperty;
     }
   });
 

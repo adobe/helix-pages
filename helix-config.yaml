@@ -17,14 +17,16 @@ strains:
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     package: helix-pages/pages_4.15.4
 
-  - name: universal
-    code: *defaultRepo
-    content: https://github.com/adobe/helix-pages.git#master
-    static: https://github.com/adobe/helix-pages.git/htdocs#master
-    # universal runtime, using the helix test deployment subdomain for now.
-    package: https://deploy-test.anywhere.run/pages_4.15.4
-    version-lock:
-      env: amazonwebservices
+  # disabled for now until test-request works
+  #
+  # - name: universal
+  #   code: *defaultRepo
+  #   content: https://github.com/adobe/helix-pages.git#master
+  #   static: https://github.com/adobe/helix-pages.git/htdocs#master
+  #   # universal runtime, using the helix test deployment subdomain for now.
+  #   package: https://deploy-test.anywhere.run/pages_4.15.4
+  #   version-lock:
+  #     env: amazonwebservices
 
   - name: breaking-202103
     condition:
@@ -32,4 +34,4 @@ strains:
     code: https://github.com/tripodsan/helix-pages.git#breaking-202103
     content: https://github.com/tripodsan/helix-pages.git#breaking-202103
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-202103
-    package: tripod/af2e26ca17abe9f926291afc59259a275561262d
+    package: helix-pages/pages_4.15.4.breaking-202103
