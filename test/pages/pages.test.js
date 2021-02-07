@@ -23,14 +23,14 @@ const testDomain = process.env.TEST_DOMAIN;
 const testVersionLock = process.env.TEST_VERSION_LOCK;
 
 const origOpts = {
-  cache: 'no-cache',
+  cache: 'no-store',
   headers: {
     'Cache-Control': 'no-cache',
   },
 };
 
 const testOpts = {
-  cache: 'no-cache',
+  cache: 'no-store',
   headers: {
     'Cache-Control': 'no-cache',
   },
@@ -38,6 +38,8 @@ const testOpts = {
 
 if (testVersionLock) {
   testOpts.headers['x-ow-version-lock'] = testVersionLock;
+  // intersperse with '*' to avoid redacting by circleci
+  console.log('using version lock header:', testVersionLock.split('').join('*'));
 }
 
 /**
@@ -173,6 +175,14 @@ describe('document equivalence', function suite() {
         filterDOM(test_dom);
 
         describe(`Comparing ${originalURL} against ${testURL}`, () => {
+          // skip test if original and test status are 404
+          before(function before() {
+            if (info.testStatus === 404 && info.originalStatus === 404) {
+              console.log(`${originalURL} and test url have a status of 404. skipping.`);
+              this.skip();
+            }
+          });
+
           it('testing body node', () => {
             if (info.testStatus !== 200) {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
