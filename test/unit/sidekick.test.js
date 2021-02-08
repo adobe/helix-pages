@@ -427,9 +427,13 @@ describe('Test sidekick bookmarklet', () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
     let purged = false;
-    let redirected = false;
     await mockCustomPlugins(page);
-    await new Promise((resolve, reject) => {
+    const redirected = await new Promise((resolve, reject) => {
+      browser.on('targetchanged', (target) => {
+        if (target.url() === `https://blog.adobe.com${purgePath}`) {
+          resolve(purged);
+        }
+      });
       page.on('request', async (req) => {
         if (req.url().startsWith(actionHost)) {
           // intercept purge request
@@ -440,13 +444,9 @@ describe('Test sidekick bookmarklet', () => {
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
           });
-        } else if (req.url().startsWith('https://blog.adobe.com/')) {
-          redirected = true;
-          req.respond({ status: 200, body: '' });
         } else {
           req.continue();
         }
-        if (purged && redirected) resolve();
       });
       // open test page and click publish button
       page
@@ -532,43 +532,38 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(purged, 'Purge request not sent');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Publish plugin purges inner host only', async () => {
+  it('Publish plugin does not purge without production host', async () => {
     const actionHost = 'https://adobeioruntime.net';
-    const innerHost = 'theblog--adobe.hlx.page';
     await mockCustomPlugins(page);
-    await new Promise((resolve, reject) => {
+    const noPurge = await new Promise((resolve) => {
       page.on('request', async (req) => {
         // intercept purge request
         if (req.url().startsWith(actionHost)) {
-          const params = new URL(req.url()).searchParams;
-          // check result
-          try {
-            assert.strictEqual(params.get('xfh'), innerHost, 'Did not purge inner host only');
-            resolve();
-          } catch (e) {
-            reject(e);
-          } finally {
-            req.respond({
-              status: 200,
-              body: JSON.stringify([{ status: 'ok' }]),
-            });
-          }
+          req.respond({
+            status: 200,
+            body: JSON.stringify([{ status: 'ok' }]),
+          });
+          // resolve as false
+          resolve(false);
         } else {
           req.continue();
         }
       });
-      // open test page and click publish button
+      // open test page
       page
         .goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' })
+        // remove production host from config
         .then(async () => {
-          // add dependencies
           await page.evaluate(() => {
-            // remove production host from config
             delete window.hlx.sidekick.config.host;
           });
         })
+        // click publish button
         .then(() => execPlugin(page, 'publish'));
+      // resolve as true after 10 seconds
+      setTimeout(() => resolve(true), 10000);
     });
+    assert.ok(noPurge, 'Did not purge inner host only');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
 
