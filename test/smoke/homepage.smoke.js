@@ -107,7 +107,7 @@ describe('homepage smoke tests - subdomain extraction and some page content', ()
         });
     });
 
-    it.skip('README gets delivered as Raw', async () => {
+    it('README gets delivered as Raw', async () => {
       await chai
         .request(`https://39430ac97ada5b011835f66e42462b94a3112957--helix-pages--adobe.${argv.domain}`)
         .get('/adobe/helix-pages/39430ac97ada5b011835f66e42462b94a3112957/README.md')
