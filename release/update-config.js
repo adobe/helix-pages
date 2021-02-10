@@ -32,22 +32,30 @@ async function saveConfig(cfg) {
 
 async function run() {
   let { version } = pkgJson;
+  const strains = [];
   let i = 2;
   while (i < process.argv.length) {
     switch (process.argv[i++]) {
       case '--pkgVersion':
         version = process.argv[i++];
         break;
+      case '--strain':
+        strains.push(process.argv[i++]);
+        break;
       default:
         throw new Error('unknown option: ', process.argv[i - 1]);
     }
+  }
+
+  if (!strains.length) {
+    strains.push('default');
   }
 
   const cfg = await new HelixConfig()
     .withConfigPath(path.resolve(__dirname, '..', 'helix-config.yaml'))
     .init();
 
-  const affected = [cfg.strains.get('default')];
+  const affected = strains.map((s) => cfg.strains.get(s));
   let modified = false;
 
   // update package in affected strains
