@@ -272,6 +272,10 @@ jobs:
       - setup
 
       - run:
+          name: Semantic Release
+          command: npm run semantic-release
+
+      - run:
           name: Installing Helix CLI
           command: npm install @adobe/helix-cli@">=5" --save=false
 
@@ -312,10 +316,6 @@ jobs:
           command: |
             git tag `date "+known-good-%Y%m%d%H%M%S"`
             git push --tags origin master
-
-      - run:
-          name: Semantic Release
-          command: npm run semantic-release
 
   run_diff_tests:
     executor: node12
