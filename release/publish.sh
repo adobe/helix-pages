@@ -13,7 +13,7 @@
 
 set -veo pipefail
 
-BRANCH="$(git branch --show-current)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "directory not clean."
@@ -25,9 +25,7 @@ git fetch
 
 echo "publish new version for $BRANCH"
 
-# TODO: currently broken in helix-cli. see https://github.com/adobe/helix-cli/issues/1638
-# hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" | cat
-hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' | cat
+hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" | cat
 
 if [ "$BRANCH" == "master" ]; then
   # if on master, we're all done

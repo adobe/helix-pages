@@ -1,3 +1,40 @@
+## [4.16.3](https://github.com/adobe/helix-pages/compare/v4.16.2...v4.16.3) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** use correct package for universal ([0d7a9dc](https://github.com/adobe/helix-pages/commit/0d7a9dc3e737a89b8df0c42489137bea3f46d05d))
+
+## [4.16.2](https://github.com/adobe/helix-pages/compare/v4.16.1...v4.16.2) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** don't use new git features ([8fee099](https://github.com/adobe/helix-pages/commit/8fee0993a23bebefc441e1ca744658c4c562a009))
+
+## [4.16.1](https://github.com/adobe/helix-pages/compare/v4.16.0...v4.16.1) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** release fist, deploy later ([dea54ec](https://github.com/adobe/helix-pages/commit/dea54ec7e12c1a4ac76a72d806a475262f46ad22))
+
+# [4.16.0](https://github.com/adobe/helix-pages/compare/v4.15.4...v4.16.0) (2021-02-10)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#661](https://github.com/adobe/helix-pages/issues/661)) ([9ff03c8](https://github.com/adobe/helix-pages/commit/9ff03c8b8c91c22ab39b9794105e71b626e8089a))
+* **deps:** update adobe fixes ([#677](https://github.com/adobe/helix-pages/issues/677)) ([9f75309](https://github.com/adobe/helix-pages/commit/9f753094c8890c786328bb9f707a127e8e7293fc))
+* **deps:** update dependency @adobe/helix-pipeline to v13.6.6 ([#672](https://github.com/adobe/helix-pages/issues/672)) ([5873fbf](https://github.com/adobe/helix-pages/commit/5873fbf42a8655917d023f0a1b7ff164171b2c47))
+* **deps:** update dependency @adobe/htlengine to v6.3.2 ([#654](https://github.com/adobe/helix-pages/issues/654)) ([dd247e8](https://github.com/adobe/helix-pages/commit/dd247e8173be30927f581782810cd64e2078501e))
+
+
+### Features
+
+* **helix:** try using the universal runtime ([035c3de](https://github.com/adobe/helix-pages/commit/035c3def91687496434348a5154dbdac882b88de))
+* **sidekick:** add publish() member for reuse by custom plugins ([8ff1b84](https://github.com/adobe/helix-pages/commit/8ff1b849957750335efb249ac914d066c69fcf80))
+
 ## [4.15.4](https://github.com/adobe/helix-pages/compare/v4.15.3...v4.15.4) (2021-01-28)
 
 

@@ -271,6 +271,23 @@ jobs:
     steps:
       - setup
 
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Semantic Release
+                command: npm run semantic-release
+
+      # semantic release creates a `.publish_ok` file a new release is ude
+      - run:
+          name: stop workflow if no release
+          command: |
+            if [ ! -f .publish_ok ]; then
+                echo "No release required."
+                circleci-agent step halt
+            fi
+
       - run:
           name: Installing Helix CLI
           command: npm install @adobe/helix-cli@">=5" --save=false
@@ -305,17 +322,13 @@ jobs:
           command: |
             git checkout master
             git pull --tags origin
-            git commit -am "🚢 enshrining config post-deploy [ci skip]"
+            git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
 
       - run:
           name: Tag known good deploy
           command: |
             git tag `date "+known-good-%Y%m%d%H%M%S"`
             git push --tags origin master
-
-      - run:
-          name: Semantic Release
-          command: npm run semantic-release
 
   run_diff_tests:
     executor: node12
@@ -343,10 +356,14 @@ jobs:
       - store_artifacts:
           path: junit
 
+      - store_artifacts:
+          path: htmldumps
+
       - persist_to_workspace:
           root: /home/circleci
           paths:
             - project/junit
+            - project/htmldumps
 
 workflows:
   version: 2
@@ -404,7 +421,9 @@ workflows:
             - finalize_smoketests
           filters:
             branches:
-              only: master, /breaking-.*/
+              only:
+                - master
+                - /breaking-.*/
   tests:
     when: << pipeline.parameters.smoke_tests_only >>
     jobs:
