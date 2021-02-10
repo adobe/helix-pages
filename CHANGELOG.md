@@ -1,3 +1,10 @@
+## [4.16.1](https://github.com/adobe/helix-pages/compare/v4.16.0...v4.16.1) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** release fist, deploy later ([dea54ec](https://github.com/adobe/helix-pages/commit/dea54ec7e12c1a4ac76a72d806a475262f46ad22))
+
 # [4.16.0](https://github.com/adobe/helix-pages/compare/v4.15.4...v4.16.0) (2021-02-10)
 
 
