@@ -204,9 +204,6 @@ describe('document equivalence', function suite() {
             try {
               assertEquivalentDOM(orig_dom.body, test_dom.body);
               assertEquivalentNode(orig_dom.body, test_dom.body);
-              // TODO remove after testing
-              await dumpHTML(originalURL, orig_dom);
-              await dumpHTML(testURL, test_dom);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
               console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
