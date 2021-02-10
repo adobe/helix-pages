@@ -20,7 +20,7 @@ fi
 # ensure latest version
 git fetch
 
-BRANCH="$(git branch --show-current)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PKG_VERSION=""
 ARG_VERSION=""
 ARG_STRAIN="--strain default --strain universal"
