@@ -60,13 +60,19 @@ async function run() {
 
   // update package in affected strains
   console.log('Updating affected strains:');
-  const packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
   affected.forEach((strain) => {
-    console.info(`- ${strain.name}`);
+    let packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
+    if (strain.package.startsWith('https://')) {
+      const url = new URL(strain.package);
+      packageProperty = `https://${url.hostname}/pages_${version}`;
+    }
     if (strain.package !== packageProperty) {
       modified = true;
       // eslint-disable-next-line no-param-reassign
       strain.package = packageProperty;
+      console.info(`- ${strain.name} (${packageProperty})*`);
+    } else {
+      console.info(`- ${strain.name} (${packageProperty})`);
     }
   });
 
