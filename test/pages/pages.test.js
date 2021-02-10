@@ -11,9 +11,12 @@
  */
 /* eslint-disable no-undef,no-console,camelcase */
 const assert = require('assert');
+const path = require('path');
+const fs = require('fs-extra');
+const sanitize = require('sanitize-filename');
 const fetchAPI = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
-const { dumpDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { dumpDOM: assertEquivalentDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
 const { Base } = require('mocha').reporters;
 
 const fetchContext = fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] });
@@ -21,6 +24,8 @@ const { fetch } = fetchContext;
 
 const testDomain = process.env.TEST_DOMAIN;
 const testVersionLock = process.env.TEST_VERSION_LOCK;
+
+const htmlDumpsFolder = path.join(process.env.PWD, process.env.TEST_FAILURE_HTML_DUMP_FOLDER || 'htmldumps');
 
 const origOpts = {
   cache: 'no-store',
@@ -157,6 +162,15 @@ function filterDOM(document) {
   }
 }
 
+async function dumpHTML(url, document) {
+  let fullPath = path.join(htmlDumpsFolder, sanitize(url));
+  if (fullPath.lastIndexOf('.html') !== fullPath.length - 5) {
+    fullPath += '.html';
+  }
+  await fs.ensureDir(htmlDumpsFolder);
+  await fs.writeFile(fullPath, document.documentElement.outerHTML);
+}
+
 describe('document equivalence', function suite() {
   this.timeout(5 * 60000);
   before(async () => {
@@ -183,32 +197,36 @@ describe('document equivalence', function suite() {
             }
           });
 
-          it('testing body node', () => {
+          it('testing body node', async () => {
             if (info.testStatus !== 200) {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
             try {
-              dumpDOM(orig_dom.body, test_dom.body);
+              assertEquivalentDOM(orig_dom.body, test_dom.body);
               assertEquivalentNode(orig_dom.body, test_dom.body);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
               console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
-              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+                Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+              await dumpHTML(originalURL, orig_dom);
+              await dumpHTML(testURL, test_dom);
               throw error;
             }
           }).timeout(20000);
 
-          it('testing head node', () => {
+          it('testing head node', async () => {
             if (info.testStatus !== 200) {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
             try {
-              dumpDOM(orig_dom.head, test_dom.head);
+              assertEquivalentDOM(orig_dom.head, test_dom.head);
               assertEquivalentNode(orig_dom.head, test_dom.head);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
               console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
-              Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+                Diff: ${Base.generateDiff(error.actual, error.expected)}`);
+              await dumpHTML(originalURL, orig_dom);
+              await dumpHTML(testURL, test_dom);
               throw error;
             }
           }).timeout(20000);
