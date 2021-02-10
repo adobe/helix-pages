@@ -62,6 +62,8 @@ describe('Test sidekick bookmarklet', () => {
     });
   };
 
+  const sleep = async (delay = 1000) => new Promise((resolve) => setTimeout(resolve, delay));
+
   let browser;
   let page;
 
@@ -240,6 +242,7 @@ describe('Test sidekick bookmarklet', () => {
     });
     const bgColor = await page.$eval('div.hlx-sk',
       (elem) => window.getComputedStyle(elem).getPropertyValue('background-color'));
+    await sleep(3000);
     assert.strictEqual(bgColor, 'rgb(255, 255, 0)', 'Did not load custom CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
