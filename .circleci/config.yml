@@ -280,7 +280,7 @@ jobs:
                 command: npm run semantic-release
 
       # semantic release creates a `.publish_ok` file a new release is ude
-      - run: 
+      - run:
           name: stop workflow if no release
           command: |
             if [ ! -f .publish_ok ]; then
