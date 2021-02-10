@@ -356,10 +356,14 @@ jobs:
       - store_artifacts:
           path: junit
 
+      - store_artifacts:
+          path: htmldumps
+
       - persist_to_workspace:
           root: /home/circleci
           paths:
             - project/junit
+            - project/htmldumps
 
 workflows:
   version: 2
