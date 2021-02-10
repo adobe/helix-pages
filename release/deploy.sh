@@ -20,10 +20,10 @@ fi
 # ensure latest version
 git fetch
 
-BRANCH="$(git branch --show-current)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PKG_VERSION=""
 ARG_VERSION=""
-ARG_STRAIN=""
+ARG_STRAIN="--strain default --strain universal"
 if [[ "$BRANCH" =~ ^breaking-.* ]]; then
   # use special version for deploying on breaking branch
   PKG_VERSION="$(jq -r .version package.json).$BRANCH"

@@ -1,3 +1,17 @@
+## [4.16.3](https://github.com/adobe/helix-pages/compare/v4.16.2...v4.16.3) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** use correct package for universal ([0d7a9dc](https://github.com/adobe/helix-pages/commit/0d7a9dc3e737a89b8df0c42489137bea3f46d05d))
+
+## [4.16.2](https://github.com/adobe/helix-pages/compare/v4.16.1...v4.16.2) (2021-02-10)
+
+
+### Bug Fixes
+
+* **ci:** don't use new git features ([8fee099](https://github.com/adobe/helix-pages/commit/8fee0993a23bebefc441e1ca744658c4c562a009))
+
 ## [4.16.1](https://github.com/adobe/helix-pages/compare/v4.16.0...v4.16.1) (2021-02-10)
 
 

@@ -32,7 +32,7 @@ async function saveConfig(cfg) {
 
 async function run() {
   let { version } = pkgJson;
-  let strain = 'default';
+  const strains = [];
   let i = 2;
   while (i < process.argv.length) {
     switch (process.argv[i++]) {
@@ -40,29 +40,39 @@ async function run() {
         version = process.argv[i++];
         break;
       case '--strain':
-        strain = process.argv[i++];
+        strains.push(process.argv[i++]);
         break;
       default:
         throw new Error('unknown option: ', process.argv[i - 1]);
     }
   }
 
+  if (!strains.length) {
+    strains.push('default');
+  }
+
   const cfg = await new HelixConfig()
     .withConfigPath(path.resolve(__dirname, '..', 'helix-config.yaml'))
     .init();
 
-  const affected = [cfg.strains.get(strain)];
+  const affected = strains.map((s) => cfg.strains.get(s));
   let modified = false;
 
   // update package in affected strains
   console.log('Updating affected strains:');
-  const packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
-  affected.forEach((s) => {
-    console.info(`- ${s.name}`);
-    if (s.package !== packageProperty) {
+  affected.forEach((strain) => {
+    let packageProperty = `${WSK_NAMESPACE}/pages_${version}`;
+    if (strain.package.startsWith('https://')) {
+      const url = new URL(strain.package);
+      packageProperty = `https://${url.hostname}/pages_${version}`;
+    }
+    if (strain.package !== packageProperty) {
       modified = true;
       // eslint-disable-next-line no-param-reassign
-      s.package = packageProperty;
+      strain.package = packageProperty;
+      console.info(`- ${strain.name} (${packageProperty})*`);
+    } else {
+      console.info(`- ${strain.name} (${packageProperty})`);
     }
   });
 

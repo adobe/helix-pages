@@ -27,4 +27,4 @@ if [[ -f ".pages-package.env" ]]; then
 fi
 
 # update helix-config.yaml
-node ./release/update-config.js --pkgVersion ci$CIRCLE_BUILD_NUM
+node ./release/update-config.js --pkgVersion ci$CIRCLE_BUILD_NUM --strain default --strain universal
