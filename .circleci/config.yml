@@ -271,9 +271,13 @@ jobs:
     steps:
       - setup
 
-      - run:
-          name: Semantic Release
-          command: npm run semantic-release
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Semantic Release
+                command: npm run semantic-release
 
       - run:
           name: Installing Helix CLI
