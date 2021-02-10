@@ -11,3 +11,4 @@ helix-config.yaml.old
 .nyc_output
 coverage
 dist
+.publish_ok

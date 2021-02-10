@@ -279,6 +279,14 @@ jobs:
                 name: Semantic Release
                 command: npm run semantic-release
 
+      # semantic release creates a `.publish_ok` file a new release is ude
+      - run: |
+          ls -al
+          if [ ! -f .publish_ok ]; then
+              echo "No release required."
+              circleci-agent step halt
+          fi
+
       - run:
           name: Installing Helix CLI
           command: npm install @adobe/helix-cli@">=5" --save=false
