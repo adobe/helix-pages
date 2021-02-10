@@ -62,6 +62,12 @@ describe('Test sidekick bookmarklet', () => {
     });
   };
 
+  const assertLater = async (delay = 3000) => new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(assert);
+    }, delay);
+  });
+
   let browser;
   let page;
 
@@ -240,7 +246,7 @@ describe('Test sidekick bookmarklet', () => {
     });
     const bgColor = await page.$eval('div.hlx-sk',
       (elem) => window.getComputedStyle(elem).getPropertyValue('background-color'));
-    assert.strictEqual(bgColor, 'rgb(255, 255, 0)', 'Did not load custom CSS');
+    (await assertLater()).strictEqual(bgColor, 'rgb(255, 255, 0)', 'Did not load custom CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Shows and hides notifications', async () => {
