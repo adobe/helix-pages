@@ -8,14 +8,14 @@ definitions:
     # default repository. set to git remote repository before deployment
     - &defaultRepo https://github.com/adobe/helix-pages.git#master
 
-preflight: https://adobeioruntime.net/api/v1/web/helix/helix-services/version-picker@v1
-
+# preflight requests cause problems with ESI... disabling for now
+# preflight: https://adobeioruntime.net/api/v1/web/helix/helix-services/version-picker@v1
 strains:
   - name: default
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: helix-pages/pages_4.15.4
+    package: helix-pages/pages_4.16.1
 
   # disabled for now until test-request works
   #
@@ -27,7 +27,6 @@ strains:
   #   package: https://deploy-test.anywhere.run/pages_4.15.4
   #   version-lock:
   #     env: amazonwebservices
-
   - name: breaking-202103
     condition:
       preflight.x-pages-version=: breaking-202103
