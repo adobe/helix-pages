@@ -305,7 +305,7 @@ jobs:
           command: |
             git checkout master
             git pull --tags origin
-            git commit -am "🚢 enshrining config post-deploy [ci skip]"
+            git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
 
       - run:
           name: Tag known good deploy
