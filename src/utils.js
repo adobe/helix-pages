@@ -16,20 +16,20 @@
  * @returns {string} The original host
  */
 function getOriginalHost(headers) {
-  if (headers.host) {
-    // backward compatible headers
-    if (headers['hlx-forwarded-host']) {
-      return headers['hlx-forwarded-host'].split(',')[0].trim();
+  if (typeof headers.get === 'function') {
+    // request headers (map)
+    const fwd = headers.get('hlx-forwarded-host');
+    if (fwd) {
+      return fwd.split(',')[0].trim();
     }
-    return headers.host;
+    return headers.get('host');
   }
 
-  // request headers (map)
-  const fwd = headers.get('hlx-forwarded-host');
-  if (fwd) {
-    return fwd.split(',')[0].trim();
+  // backward compatible headers
+  if (headers['hlx-forwarded-host']) {
+    return headers['hlx-forwarded-host'].split(',')[0].trim();
   }
-  return headers.get('host');
+  return headers.host;
 }
 
 /**
