@@ -22,7 +22,7 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix test deployment subdomain for now.
-    package: helix-pages/pages_4.16.2
+    package: https://deploy-test.anywhere.run/pages_4.16.2
     version-lock:
       env: amazonwebservices
 
