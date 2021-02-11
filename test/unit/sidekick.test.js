@@ -49,10 +49,10 @@ describe('Test sidekick bookmarklet', () => {
 
   const mockCustomPlugins = async (p, js, check = () => true) => {
     await p.setRequestInterception(true);
-    p.on('request', async (req) => {
+    p.on('request', (req) => {
       if (req.url().endsWith('/tools/sidekick/plugins.js')
         && check(req)) {
-        await req.respond({
+        req.respond({
           status: 200,
           body: js || '',
         });
@@ -430,15 +430,20 @@ describe('Test sidekick bookmarklet', () => {
     const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
     let purged = false;
-    await mockCustomPlugins(page);
+    await page.setRequestInterception(true);
     const redirected = await new Promise((resolve, reject) => {
       browser.on('targetchanged', (target) => {
         if (target.url() === `https://blog.adobe.com${purgePath}`) {
           resolve(purged);
         }
       });
-      page.on('request', async (req) => {
-        if (req.url().startsWith(actionHost)) {
+      page.on('request', (req) => {
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (req.url().startsWith(actionHost)) {
           // intercept purge request
           const params = new URL(req.url()).searchParams;
           purged = params.get('path') === purgePath
@@ -446,6 +451,11 @@ describe('Test sidekick bookmarklet', () => {
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
+          });
+        } else if (req.url().startsWith('https://blog.adobe.com')) {
+          req.respond({
+            status: 200,
+            body: 'dummy html',
           });
         } else {
           req.continue();
