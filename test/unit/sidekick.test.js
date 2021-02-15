@@ -528,6 +528,8 @@ describe('Test sidekick bookmarklet', () => {
       // click publish button
       await execPlugin(page, 'publish');
     }));
+
+    await sleep(3000);
     // check result
     assert.deepStrictEqual(allPurged, toPurge.concat(toPurge).reverse(), 'Purge request not sent');
   }).timeout(IT_DEFAULT_TIMEOUT);
