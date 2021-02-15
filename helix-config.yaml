@@ -24,7 +24,22 @@ strains:
     # universal runtime, using the helix test deployment subdomain for now.
     package: https://deploy-test.anywhere.run/pages_4.16.5
     version-lock:
+      # pinned to AWS, use the other strains to switch runtimes dynamically
       env: amazonwebservices
+
+  - name: universal-ci
+    code: *defaultRepo
+    content: https://github.com/adobe/helix-pages.git#master
+    static: https://github.com/adobe/helix-pages.git/htdocs#master
+    # universal runtime, using the helix-pages-ci subdomain
+    package: https://helix-pages-ci.anywhere.run/pages_4.16.5
+
+  - name: universal-prod
+    code: *defaultRepo
+    content: https://github.com/adobe/helix-pages.git#master
+    static: https://github.com/adobe/helix-pages.git/htdocs#master
+    # universal runtime, using the helix-pages subdomain
+    package: https://helix-pages.anywhere.run/pages_4.16.5
 
   - name: breaking-202103
     condition:
