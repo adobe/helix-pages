@@ -34,7 +34,9 @@ fi
 
 hlx clean
 hlx build --universal
-hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/html.js       $ARG_VERSION --property.scriptName=html         --fastly-service-id 0trc7KZPj73TyFfFhsUyWu # initialize gateway
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/html.js       --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=html \
+      --fastly-service-id 0trc7KZPj73TyFfFhsUyWu \
+      --checkpath /_status_check/healthcheck.json  # hardcoded health check path
 echo "Gateway Updated."
 hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/embed_html.js $ARG_VERSION --property.scriptName=embed_html
 hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/idx_json.js   $ARG_VERSION --property.scriptName=idx_json
