@@ -21,6 +21,7 @@ const nock = require('nock');
 const { JSDOM } = require('jsdom');
 const { Request } = require('@adobe/helix-fetch');
 const BuildCommand = require('@adobe/helix-cli/src/build.cmd.js');
+const { assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
 async function createTestRoot() {
   const dir = path.resolve(__dirname, '..', 'tmp', crypto.randomBytes(16).toString('hex'));
@@ -100,51 +101,37 @@ describe('Rendering', () => {
     return res.text();
   }
 
-  it('renders document with 1 section correctly', async () => {
-    const html = await render('/one-section.md');
-    // console.log(html);
-    const dom = new JSDOM(html);
-    const $div = dom.window.document.querySelectorAll('main > div');
-    assert.strictEqual($div.length, 1, 'document has 1 sections');
-    assert.strictEqual($div[0].className, 'test', '1st section should have `test` css class');
-    // each section should have a 2nd div
-    $div.forEach(($el) => {
-      assert.strictEqual($el.childElementCount, 1, 'outer section divs should only have 1 child');
-      assert.strictEqual($el.firstChild.nodeName, 'DIV', 'child of outer section div should be a child');
+  async function testRender(spec) {
+    const actHtml = await render(`/${spec}.md`);
+    // console.log(actHtml);
+    const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.html`));
+    const $actMain = new JSDOM(actHtml).window.document.querySelector('main');
+    const $expMain = new JSDOM(expHtml).window.document.querySelector('main');
+    assertEquivalentNode($actMain, $expMain);
+  }
+
+  describe('Section DIVS', () => {
+    it('renders document with 1 section correctly', async () => {
+      await testRender('one-section');
     });
 
-    const paraText = dom.window.document.querySelector('.test p').innerHTML;
-    assert.strictEqual(paraText, 'This is the first section.', 'paragraph text should be correct');
-  });
-
-  it('renders document with 3 sections correctly', async () => {
-    const html = await render('/simple.md');
-    // console.log(html);
-    const dom = new JSDOM(html);
-    const $div = dom.window.document.querySelectorAll('main > div');
-    assert.strictEqual($div.length, 3, 'document has 3 sections');
-    // the 2nd section should have the `test` class
-    assert.strictEqual($div[1].className, 'test', '2nd section should have `test` css class');
-    // each section should have a 2nd div
-    $div.forEach(($el) => {
-      assert.strictEqual($el.childElementCount, 1, 'outer section divs should only have 1 child');
-      assert.strictEqual($el.firstChild.nodeName, 'DIV', 'child of outer section div should be a child');
+    it('renders document with 3 sections correctly', async () => {
+      await testRender('simple');
     });
-
-    const paraText = dom.window.document.querySelector('.test p').innerHTML;
-    assert.strictEqual(paraText, 'Here comes the 2nd section', 'paragraph text should be correct');
   });
 
-  it('renders images.md correctly', async () => {
-    const html = await render('/images.md');
-    const dom = new JSDOM(html);
-    const pics = Array.from(dom.window.document.querySelectorAll('picture'));
-    const imgs = pics.map((pic) => pic.querySelector('img'));
-    assert.strictEqual(pics.length, 3, 'document has 3 pictures');
-    assert.strictEqual(imgs.length, 3, 'document has 3 images');
-    assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&format=webply&optimize=medium')), 'pictures have source sets with correct parameters');
-    assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&format=webply&optimize=medium')), 'images have source with correct parameters');
-    assert.ok(imgs.shift().getAttribute('loading') === 'eager', 'first image has loading set to eager');
-    assert.ok(imgs.every((img) => img.getAttribute('loading') === 'lazy'), 'all other images have loading set to lazy');
+  describe('Images', () => {
+    it('renders images.md correctly', async () => {
+      const html = await render('/images.md');
+      const dom = new JSDOM(html);
+      const pics = Array.from(dom.window.document.querySelectorAll('picture'));
+      const imgs = pics.map((pic) => pic.querySelector('img'));
+      assert.strictEqual(pics.length, 3, 'document has 3 pictures');
+      assert.strictEqual(imgs.length, 3, 'document has 3 images');
+      assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&format=webply&optimize=medium')), 'pictures have source sets with correct parameters');
+      assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&format=webply&optimize=medium')), 'images have source with correct parameters');
+      assert.ok(imgs.shift().getAttribute('loading') === 'eager', 'first image has loading set to eager');
+      assert.ok(imgs.every((img) => img.getAttribute('loading') === 'lazy'), 'all other images have loading set to lazy');
+    });
   });
 });
