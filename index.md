@@ -43,7 +43,7 @@ function checkURL() {
     } catch (e) {
         return ('URL needs be a valid GitHub URL');
     }
-    
+
     if (!c.path.endsWith(`.md`)) return ('URL needs to end in \'.md\'');
     if (c.repo.indexOf('.')>=0) return('Repository name cannot contain a \'.\'');
     if (c.user.indexOf('.')>=0) return('User name cannot contain a \'.\'');
@@ -70,6 +70,7 @@ function takeMeThere() {
 
 - [Add an Atom feed to your site](docs/feed.md)
 - [Add a Sitemap to your site](docs/sitemap.md)
+- [Add an Index to your site](https://github.com/adobe/helix-home/blob/main/docs/setup-indexing.md)
 
 ## For authors
 
