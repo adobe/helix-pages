@@ -42,7 +42,7 @@
     "@adobe/helix-fetch": "2.1.4",
     "@adobe/helix-pipeline": "13.6.13",
     "@adobe/helix-shared": "7.19.7",
-    "@adobe/htlengine": "6.3.6",
+    "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.3.1",
     "@adobe/openwhisk-action-utils": "4.4.0",
     "algoliasearch": "4.8.5",
