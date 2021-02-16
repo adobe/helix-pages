@@ -56,7 +56,7 @@ describe('Testing pre.js', () => {
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div, 'A div must have been added');
-    assert.strictEqual(div.innerHTML, '<h1>Title</h1>');
+    assert.strictEqual(div.innerHTML, '<div><h1>Title</h1></div>');
   });
 
   it('Multiline and text node body content is wrapped in a div', () => {
@@ -75,10 +75,10 @@ describe('Testing pre.js', () => {
     const div = dom.window.document.querySelector('div');
     assert.ok(div !== null, 'A div must have been added');
     assert.strictEqual(dom.window.document.body.childNodes.length, 1, 'Body must have only one child');
-    assert.strictEqual(div.innerHTML, `
+    assert.strictEqual(div.innerHTML, `<div>
       <h1>Title</h1>
       This is a text.
-    `);
+    </div>`);
   });
 
   it('Div is wrapped with class name', () => {

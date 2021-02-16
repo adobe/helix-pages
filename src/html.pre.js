@@ -57,19 +57,28 @@ async function pre(context, action) {
     }, {});
   });
 
-  // if there are no sections wrap everything in a div
-  // with appropriate class names from meta
+  // if there are no sections wrap everything in a div with appropriate class names from meta
   if ($sections.length === 0) {
-    const div = document.createElement('div');
+    const $outerDiv = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
       context.content.meta.class.split(/[ ,]/)
         .map((c) => c.trim())
         .filter((c) => !!c)
         .forEach((c) => {
-          div.classList.add(c);
+          $outerDiv.classList.add(c);
         });
     }
-    wrapContent(div, document.body);
+    // create 2nd div (https://github.com/adobe/helix-pages/issues/640)
+    const $innerDiv = document.createElement('div');
+    $innerDiv.append(...document.body.childNodes);
+    $outerDiv.append($innerDiv);
+    document.body.append($outerDiv);
+  } else {
+    // wrap the divs (https://github.com/adobe/helix-pages/issues/640)
+    $sections.forEach(($outerDiv) => {
+      const $innerDiv = document.createElement('div');
+      wrapContent($innerDiv, $outerDiv);
+    });
   }
 
   // transform <img> to <picture>

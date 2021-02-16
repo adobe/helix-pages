@@ -3,6 +3,8 @@
 This is the first section.
 
 ---
+class: test
+---
 
 ## Foo
 

@@ -100,11 +100,39 @@ describe('Rendering', () => {
     return res.text();
   }
 
-  it('renders simple.md correctly', async () => {
-    const html = await render('/simple.md');
+  it('renders document with 1 section correctly', async () => {
+    const html = await render('/one-section.md');
+    // console.log(html);
     const dom = new JSDOM(html);
-    const div = dom.window.document.querySelectorAll('div');
-    assert.strictEqual(div.length, 3, 'document has 3 sections');
+    const $div = dom.window.document.querySelectorAll('main > div');
+    assert.strictEqual($div.length, 1, 'document has 1 sections');
+    assert.strictEqual($div[0].className, 'test', '1st section should have `test` css class');
+    // each section should have a 2nd div
+    $div.forEach(($el) => {
+      assert.strictEqual($el.childElementCount, 1, 'outer section divs should only have 1 child');
+      assert.strictEqual($el.firstChild.nodeName, 'DIV', 'child of outer section div should be a child');
+    });
+
+    const paraText = dom.window.document.querySelector('.test p').innerHTML;
+    assert.strictEqual(paraText, 'This is the first section.', 'paragraph text should be correct');
+  });
+
+  it('renders document with 3 sections correctly', async () => {
+    const html = await render('/simple.md');
+    // console.log(html);
+    const dom = new JSDOM(html);
+    const $div = dom.window.document.querySelectorAll('main > div');
+    assert.strictEqual($div.length, 3, 'document has 3 sections');
+    // the 2nd section should have the `test` class
+    assert.strictEqual($div[1].className, 'test', '2nd section should have `test` css class');
+    // each section should have a 2nd div
+    $div.forEach(($el) => {
+      assert.strictEqual($el.childElementCount, 1, 'outer section divs should only have 1 child');
+      assert.strictEqual($el.firstChild.nodeName, 'DIV', 'child of outer section div should be a child');
+    });
+
+    const paraText = dom.window.document.querySelector('.test p').innerHTML;
+    assert.strictEqual(paraText, 'Here comes the 2nd section', 'paragraph text should be correct');
   });
 
   it('renders images.md correctly', async () => {

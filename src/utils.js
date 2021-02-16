@@ -49,14 +49,14 @@ function getAbsoluteUrl(headers, url) {
 }
 
 /**
- * Wraps the content of node with a new parent node.
- * @param {node} node The content of the node to wrap
- * @param {node} newparent The new parent node
+ * Wraps the content of $node with a new $parent node and then appends the new parent to the node.
+ *
+ * @param {DOMNode} $node The content of the node to wrap
+ * @param {DOMNode} $parent The new parent node
  */
-function wrapContent(newparent, node) {
-  newparent.innerHTML = node.innerHTML;
-  node.innerHTML = '';
-  node.appendChild(newparent);
+function wrapContent($parent, $node) {
+  $parent.append(...$node.childNodes);
+  $node.append($parent);
 }
 
 module.exports = {
