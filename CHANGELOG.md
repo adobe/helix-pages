@@ -1,3 +1,10 @@
+## [4.16.6](https://github.com/adobe/helix-pages/compare/v4.16.5...v4.16.6) (2021-02-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/htlengine to v6.3.7 ([#696](https://github.com/adobe/helix-pages/issues/696)) ([640baef](https://github.com/adobe/helix-pages/commit/640baeffa3e97b41367c6c89c477150f51c1f095))
+
 ## [4.16.5](https://github.com/adobe/helix-pages/compare/v4.16.4...v4.16.5) (2021-02-15)
 
 
