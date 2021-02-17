@@ -15,14 +15,14 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: helix-pages/pages_4.16.5
+    package: helix-pages/pages_4.16.7
 
   - name: universal
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix test deployment subdomain for now.
-    package: https://deploy-test.anywhere.run/pages_4.16.5
+    package: https://deploy-test.anywhere.run/pages_4.16.7
     version-lock:
       # pinned to AWS, use the other strains to switch runtimes dynamically
       env: amazonwebservices
