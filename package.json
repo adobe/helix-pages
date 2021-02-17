@@ -40,7 +40,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "2.1.5",
-    "@adobe/helix-pipeline": "13.6.16",
+    "@adobe/helix-pipeline": "13.6.17",
     "@adobe/helix-shared": "7.19.8",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.3.1",
