@@ -68,17 +68,7 @@ async function pre(context, action) {
           $outerDiv.classList.add(c);
         });
     }
-    // create 2nd div (https://github.com/adobe/helix-pages/issues/640)
-    const $innerDiv = document.createElement('div');
-    $innerDiv.append(...document.body.childNodes);
-    $outerDiv.append($innerDiv);
-    document.body.append($outerDiv);
-  } else {
-    // wrap the divs (https://github.com/adobe/helix-pages/issues/640)
-    $sections.forEach(($outerDiv) => {
-      const $innerDiv = document.createElement('div');
-      wrapContent($innerDiv, $outerDiv);
-    });
+    wrapContent($outerDiv, document.body);
   }
 
   // transform <img> to <picture>
