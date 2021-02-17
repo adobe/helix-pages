@@ -57,19 +57,18 @@ async function pre(context, action) {
     }, {});
   });
 
-  // if there are no sections wrap everything in a div
-  // with appropriate class names from meta
+  // if there are no sections wrap everything in a div with appropriate class names from meta
   if ($sections.length === 0) {
-    const div = document.createElement('div');
+    const $outerDiv = document.createElement('div');
     if (context.content.meta && context.content.meta.class) {
       context.content.meta.class.split(/[ ,]/)
         .map((c) => c.trim())
         .filter((c) => !!c)
         .forEach((c) => {
-          div.classList.add(c);
+          $outerDiv.classList.add(c);
         });
     }
-    wrapContent(div, document.body);
+    wrapContent($outerDiv, document.body);
   }
 
   // transform <img> to <picture>
