@@ -12,8 +12,6 @@
 const fetchAPI = require('@adobe/helix-fetch');
 const escape = require('xml-escape');
 
-process.env.HELIX_FETCH_FORCE_HTTP1 = true;
-
 function createFetchContext() {
   /* istanbul ignore next */
   if (process.env.HELIX_FETCH_FORCE_HTTP1) {
