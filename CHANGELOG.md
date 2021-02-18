@@ -1,3 +1,10 @@
+## [4.16.9](https://github.com/adobe/helix-pages/compare/v4.16.8...v4.16.9) (2021-02-18)
+
+
+### Bug Fixes
+
+* re-enable http/2 ([4734f4d](https://github.com/adobe/helix-pages/commit/4734f4d2efb85f1978d115034058679d93eb78e9))
+
 ## [4.16.8](https://github.com/adobe/helix-pages/compare/v4.16.7...v4.16.8) (2021-02-18)
 
 
