@@ -104,7 +104,7 @@ describe('Rendering', () => {
   async function testRender(spec) {
     const actHtml = await render(`/${spec}.md`);
     // console.log(actHtml);
-    const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.html`));
+    const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.html`), 'utf-8');
     const $actMain = new JSDOM(actHtml).window.document.querySelector('main');
     const $expMain = new JSDOM(expHtml).window.document.querySelector('main');
     assertEquivalentNode($actMain, $expMain);
@@ -132,6 +132,16 @@ describe('Rendering', () => {
       assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&format=webply&optimize=medium')), 'images have source with correct parameters');
       assert.ok(imgs.shift().getAttribute('loading') === 'eager', 'first image has loading set to eager');
       assert.ok(imgs.every((img) => img.getAttribute('loading') === 'lazy'), 'all other images have loading set to lazy');
+    });
+  });
+
+  describe('Page Tables', () => {
+    it('renders document with singe column page block', async () => {
+      await testRender('page-block-1-col');
+    });
+
+    it('renders document with double column page block', async () => {
+      await testRender('page-block-2-col');
     });
   });
 });
