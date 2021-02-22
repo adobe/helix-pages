@@ -1,3 +1,10 @@
+## [4.16.11](https://github.com/adobe/helix-pages/compare/v4.16.10...v4.16.11) (2021-02-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.19.10 ([#707](https://github.com/adobe/helix-pages/issues/707)) ([b4f8b3d](https://github.com/adobe/helix-pages/commit/b4f8b3d407ffad81f5edbf6dfe3b06d89c94b140))
+
 ## [4.16.10](https://github.com/adobe/helix-pages/compare/v4.16.9...v4.16.10) (2021-02-19)
 
 
