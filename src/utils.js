@@ -59,8 +59,20 @@ function wrapContent($parent, $node) {
   $node.append($parent);
 }
 
+/**
+ * Converts all non-valid-css-classname characters to `-`.
+ * @param {string} text input text
+ * @returns {string} the css class name
+ */
+function toClassName(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^0-9a-z]/gi, '-');
+}
+
 module.exports = {
   getOriginalHost,
   getAbsoluteUrl,
   wrapContent,
+  toClassName,
 };
