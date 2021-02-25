@@ -393,20 +393,41 @@
             return;
           }
           const path = location.pathname;
+          const file = path.split('/').pop();
           sk.showModal(`Publishing ${path}`, true);
           let urls = [path];
           if (path.endsWith('/')) {
             // directory, also purge index(.html)
+            console.log('directory, also purge index(.html)');
             urls.push(`${path}index`);
             urls.push(`${path}index.html`);
-          } else if (path.split('/').pop().startsWith('index')) {
+          } else if (file.match(/index\.?/)) {
             // index(.html), also purge directory
+            console.log('index(.html), also purge directory');
             urls.push(path.substring(0, path.lastIndexOf('/') + 1));
+            if (file === 'index.html') {
+              // index.html, also purge index
+              console.log('index.html, also purge index');
+              urls.push(path.substring(0, path.lastIndexOf('.')));
+            } else if (file === 'index') {
+              // index, also purge index.html
+              console.log('index, also purge index.html');
+              urls.push(`${path}.html`);
+            }
+          } else if (file.endsWith('.html')) {
+            // .html extension, also purge without
+            console.log('.html extension, also purge without');
+            urls.push(path.substring(0, path.length - 5));
+          } else if (!file.match(/\./)) {
+            // no extension, also purge with .html
+            console.log('no extension, also purge with .html');
+            urls.push(`${path}.html`);
           }
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
             urls = urls.concat(window.hlx.dependencies);
           }
+          console.log('TOPURGE', urls);
 
           const resps = await Promise.all(urls.map((url) => sk.publish(url)));
           if (resps.every((r) => r.ok)) {
