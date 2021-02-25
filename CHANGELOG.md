@@ -1,3 +1,10 @@
+## [4.16.14](https://github.com/adobe/helix-pages/compare/v4.16.13...v4.16.14) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deploy:** use release version in deploy script ([5246797](https://github.com/adobe/helix-pages/commit/52467977b02d396191df0f39bc206ebf3d0bbf56)), closes [#716](https://github.com/adobe/helix-pages/issues/716)
+
 ## [4.16.13](https://github.com/adobe/helix-pages/compare/v4.16.12...v4.16.13) (2021-02-25)
 
 
