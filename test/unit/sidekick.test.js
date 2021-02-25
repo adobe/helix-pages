@@ -539,7 +539,7 @@ describe('Test sidekick bookmarklet', () => {
     '/test',
     '/foo.html',
   ].forEach(async (purgePath) => {
-    it.only(`Publish purges ${purgePath} with and without .html extension`, async () => {
+    it(`Publish purges ${purgePath} with and without .html extension`, async () => {
       const actionHost = 'https://adobeioruntime.net';
       const allPurged = [];
       // open test page and click publish button
