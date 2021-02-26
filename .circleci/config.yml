@@ -154,7 +154,7 @@ jobs:
               echo '<?xml version="1.0" encoding="UTF-8" ?>'                                           > junit/publish-as-test.xml
               echo '<testsuites id="publish" name="hlx publish" tests="1" failures="1" time="0.000">' >> junit/publish-as-test.xml
               echo '<testsuite id="publish1" name="hlx publish" tests="1" failures="1" time="0.001">' >> junit/publish-as-test.xml
-              echo '<testcase id="publish2" name="run hlx publish" time="0.001">                      >> junit/publish-as-test.xml
+              echo '<testcase id="publish2" name="run hlx publish" time="0.001">'                     >> junit/publish-as-test.xml
               echo '<failure message="hlx publish failed with error" type="WARNING">'                 >> junit/publish-as-test.xml
               cat publish.out                                                                         >> junit/publish-as-test.xml
               echo '</failure>'                                                                       >> junit/publish-as-test.xml
