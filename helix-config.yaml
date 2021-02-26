@@ -46,4 +46,4 @@ strains:
     code: https://github.com/tripodsan/helix-pages.git#breaking-202103
     content: https://github.com/tripodsan/helix-pages.git#breaking-202103
     static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-202103
-    package: helix-pages/pages_4.15.4.breaking-202103
+    package: helix-pages/pages_4.16.4.breaking-202103
