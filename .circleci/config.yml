@@ -376,9 +376,10 @@ workflows:
           context: Project Helix
           requires:
             - build
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/helix-pages
           owner: adobe
@@ -386,9 +387,10 @@ workflows:
           branch: $CIRCLE_BRANCH
           requires:
             - init_smoketests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/helix-example-basic#test-code
           owner: adobe
@@ -397,9 +399,10 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/theblog-tests
           owner: adobe
@@ -408,24 +411,27 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_generic_smoketests:
           name: adobe/ferrumjsorg
           owner: adobe
           repo: ferrumjsorg
           requires:
             - init_smoketests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_diff_tests:
           requires:
             - init_smoketests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
@@ -433,9 +439,10 @@ workflows:
             - adobe/ferrumjsorg
             - adobe/theblog-tests
             - run_diff_tests
-          branches:
-            ignore:
-              - /breaking-.*/
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - publish:
           context: Project Helix
           requires:
