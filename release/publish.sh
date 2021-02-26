@@ -17,6 +17,7 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "directory not clean."
+  git status
   exit 1
 fi
 
