@@ -293,7 +293,7 @@ jobs:
 
       - run:
           name: Reset Working Copy
-          command: git status; git checkout -- . ; git pull
+          command: git status; git checkout -- . ; git pull origin << pipeline.git.branch >>
 
       - run:
           name: Prepare packackge secrets
