@@ -423,6 +423,14 @@ workflows:
             branches:
               only:
                 - master
+      # the smoke tests always fail for breaking-* so we ignore those
+      - publish:
+          context: Project Helix
+          requires:
+            - build
+          filters:
+            branches:
+              only:
                 - /breaking-.*/
   tests:
     when: << pipeline.parameters.smoke_tests_only >>
