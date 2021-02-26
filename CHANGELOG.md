@@ -1,3 +1,53 @@
+## [4.16.14](https://github.com/adobe/helix-pages/compare/v4.16.13...v4.16.14) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deploy:** use release version in deploy script ([5246797](https://github.com/adobe/helix-pages/commit/52467977b02d396191df0f39bc206ebf3d0bbf56)), closes [#716](https://github.com/adobe/helix-pages/issues/716)
+
+## [4.16.13](https://github.com/adobe/helix-pages/compare/v4.16.12...v4.16.13) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deploy:** use separate universal subdomain ([4547049](https://github.com/adobe/helix-pages/commit/4547049bd39a8f904ec71b2122deca5062d6f4a9))
+
+## [4.16.12](https://github.com/adobe/helix-pages/compare/v4.16.11...v4.16.12) (2021-02-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.6.20 ([77d01e7](https://github.com/adobe/helix-pages/commit/77d01e7bf5cefc8e9fe36351cc6c9728e96bebbc))
+
+## [4.16.11](https://github.com/adobe/helix-pages/compare/v4.16.10...v4.16.11) (2021-02-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.19.10 ([#707](https://github.com/adobe/helix-pages/issues/707)) ([b4f8b3d](https://github.com/adobe/helix-pages/commit/b4f8b3d407ffad81f5edbf6dfe3b06d89c94b140))
+
+## [4.16.10](https://github.com/adobe/helix-pages/compare/v4.16.9...v4.16.10) (2021-02-19)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([86b8cb8](https://github.com/adobe/helix-pages/commit/86b8cb8b2dcf4bfd77bb39d138992e6fa442447a))
+
+## [4.16.9](https://github.com/adobe/helix-pages/compare/v4.16.8...v4.16.9) (2021-02-18)
+
+
+### Bug Fixes
+
+* re-enable http/2 ([4734f4d](https://github.com/adobe/helix-pages/commit/4734f4d2efb85f1978d115034058679d93eb78e9))
+
+## [4.16.8](https://github.com/adobe/helix-pages/compare/v4.16.7...v4.16.8) (2021-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.6.16 ([#699](https://github.com/adobe/helix-pages/issues/699)) ([12a7b7a](https://github.com/adobe/helix-pages/commit/12a7b7a3a17661a5bdc2e207af5149d6e9c79d25))
+* **deps:** update dependency @adobe/helix-pipeline to v13.6.17 ([#700](https://github.com/adobe/helix-pages/issues/700)) ([5564ee7](https://github.com/adobe/helix-pages/commit/5564ee7eba9dc4a34625a41190f755b05a692e4c))
+
 ## [4.16.7](https://github.com/adobe/helix-pages/compare/v4.16.6...v4.16.7) (2021-02-16)
 
 
