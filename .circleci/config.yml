@@ -316,19 +316,6 @@ jobs:
           name: Publish to Fastly
           command: npm run publish
 
-      - run:
-          name: Commit helix config to master
-          command: |
-            git checkout master
-            git pull --tags origin
-            git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
-
-      - run:
-          name: Tag known good deploy
-          command: |
-            git tag `date "+known-good-%Y%m%d%H%M%S"`
-            git push --tags origin master
-
   run_diff_tests:
     executor: node12
     steps:

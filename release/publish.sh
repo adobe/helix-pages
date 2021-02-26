@@ -15,28 +15,34 @@ set -veo pipefail
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-if [ -n "$(git status --porcelain)" ]; then
-  echo "directory not clean."
-  git status
-  exit 1
-fi
-
-# ensure latest version
-git fetch
-
 echo "publish new version for $BRANCH"
 
 hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" | cat
 
 if [ "$BRANCH" == "master" ]; then
+
+  # store last known good
+  git checkout master
+  git pull --tags origin
+  git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
+  git tag `date "+known-good-%Y%m%d%H%M%S"`
+  git push --tags origin master
+
   # if on master, we're all done
   exit 0
+fi
+
+if [[ "$BRANCH" =~ ^breaking-.* ]]; then
+  # also commit changs in breaking branch
+  git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
+  git push origin "$BRANCH"
 fi
 
 # ensure that helix-config.yaml is update
 if ! git diff --quiet master -- helix-config.yaml; then
   echo "merging changes from master..."
   git merge master -m"chore: merge changes from master into $BRANCH [skip ci]"
+  git push origin "$BRANCH"
 fi
 
 # merge changes back to master
