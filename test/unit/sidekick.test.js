@@ -466,7 +466,7 @@ describe('Test sidekick bookmarklet', () => {
             status: 200,
             body: '',
           });
-        } else if (req.url().startsWith(actionHost)) {
+        } else if (!purged && req.url().startsWith(actionHost)) {
           // intercept purge request
           const params = new URL(req.url()).searchParams;
           purged = params.get('path') === purgePath
@@ -539,7 +539,7 @@ describe('Test sidekick bookmarklet', () => {
     '/test',
     '/foo.html',
   ].forEach(async (purgePath) => {
-    it(`Publish purges ${purgePath} with and without .html extension`, async () => {
+    it(`Publish purges ${purgePath} with and without .html extension plus .md`, async () => {
       const actionHost = 'https://adobeioruntime.net';
       const allPurged = [];
       // open test page and click publish button
@@ -571,7 +571,9 @@ describe('Test sidekick bookmarklet', () => {
       await sleep(3000);
 
       // check result
-      assert.strictEqual(allPurged.length, 2, 'Path not purged with and without extension');
+      assert.ok(allPurged.find((path) => !path.split('/').pop().match(/\./)), 'Path not purged without extension');
+      assert.ok(allPurged.find((path) => path.endsWith('.html')), 'Path not purged with .html extension');
+      assert.ok(allPurged.find((path) => path.endsWith('.md')), 'Path not purged with .md extension');
     }).timeout(IT_DEFAULT_TIMEOUT);
   });
 

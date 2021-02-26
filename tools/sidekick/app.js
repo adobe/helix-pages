@@ -413,9 +413,13 @@
           } else if (file.endsWith('.html')) {
             // .html extension, also purge without
             urls.push(path.substring(0, path.length - 5));
+            // doc, also purge .md
+            urls.push(path.replace('.html', '.md'));
           } else if (!file.match(/\./)) {
             // no extension, also purge with .html
             urls.push(`${path}.html`);
+            // doc, also purge .md
+            urls.push(`${path}.md`);
           }
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
