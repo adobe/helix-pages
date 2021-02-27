@@ -393,34 +393,8 @@
             return;
           }
           const path = location.pathname;
-          const file = path.split('/').pop();
           sk.showModal(`Publishing ${path}`, true);
           let urls = [path];
-          if (path.endsWith('/')) {
-            // directory, also purge index(.html)
-            urls.push(`${path}index`);
-            urls.push(`${path}index.html`);
-          } else if (file.match(/index\.?/)) {
-            // index(.html), also purge directory
-            urls.push(path.substring(0, path.lastIndexOf('/') + 1));
-            if (file === 'index.html') {
-              // index.html, also purge index
-              urls.push(path.substring(0, path.lastIndexOf('.')));
-            } else if (file === 'index') {
-              // index, also purge index.html
-              urls.push(`${path}.html`);
-            }
-          } else if (file.endsWith('.html')) {
-            // .html extension, also purge without
-            urls.push(path.substring(0, path.length - 5));
-            // doc, also purge .md
-            urls.push(path.replace('.html', '.md'));
-          } else if (!file.match(/\./)) {
-            // no extension, also purge with .html
-            urls.push(`${path}.html`);
-            // doc, also purge .md
-            urls.push(`${path}.md`);
-          }
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
             urls = urls.concat(window.hlx.dependencies);
