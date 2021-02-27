@@ -19,8 +19,10 @@ echo "publish new version for $BRANCH"
 
 hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" | cat
 
-if [ "$BRANCH" == "master" ]; then
+echo "here's what changed:"
+git diff
 
+if [ "$BRANCH" == "master" ]; then
   # store last known good
   git checkout master
   git pull --tags origin

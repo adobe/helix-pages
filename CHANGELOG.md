@@ -1,3 +1,11 @@
+# [4.17.0](https://github.com/adobe/helix-pages/compare/v4.16.14...v4.17.0) (2021-02-26)
+
+
+### Features
+
+* **sidekick:** also purge .md ([0f5e7b2](https://github.com/adobe/helix-pages/commit/0f5e7b2351396bca72fc341172bea37f4c7b1d73))
+* **sidekick:** purge with and without extension ([a55f452](https://github.com/adobe/helix-pages/commit/a55f452a710f77c6108f57ddb872a4f9f0211f9b))
+
 ## [4.16.14](https://github.com/adobe/helix-pages/compare/v4.16.13...v4.16.14) (2021-02-25)
 
 
