@@ -51,5 +51,5 @@ fi
 git checkout master
 git checkout $BRANCH -- helix-config.yaml
 git commit -m"chore: update helix-config.yaml from $BRANCH [skip ci]"
-git push master origin
+git push origin master
 git checkout $BRANCH
