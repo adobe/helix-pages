@@ -23,7 +23,7 @@ git fetch
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PKG_VERSION=""
 ARG_VERSION=""
-ARG_STRAIN="--strain default --strain universal"
+ARG_STRAIN="--strain default --strain universal --strain universal-ci --strain universal-prod"
 if [[ "$BRANCH" =~ ^breaking-.* ]]; then
   # use special version for deploying on breaking branch
   PKG_VERSION="$(jq -r .version package.json).$BRANCH"
