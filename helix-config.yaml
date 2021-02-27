@@ -43,7 +43,7 @@ strains:
   - name: breaking-202103
     condition:
       preflight.x-pages-version=: breaking-202103
-    code: https://github.com/tripodsan/helix-pages.git#breaking-202103
-    content: https://github.com/tripodsan/helix-pages.git#breaking-202103
-    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-202103
+    code: https://github.com/adobe/helix-pages.git#breaking-202103
+    content: https://github.com/adobe/helix-pages.git#breaking-202103
+    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202103
     package: helix-pages/pages_4.16.14.breaking-202103
