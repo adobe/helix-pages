@@ -46,4 +46,4 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-202103
     content: https://github.com/adobe/helix-pages.git#breaking-202103
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202103
-    package: helix-pages/pages_4.16.14.breaking-202103
+    package: helix-pages/pages_4.17.0.breaking-202103
