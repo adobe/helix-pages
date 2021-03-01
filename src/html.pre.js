@@ -153,7 +153,7 @@ async function pre(context, action) {
   // extract metadata
   const { meta = {} } = content;
 
-  const metaBlock = document.querySelector('main div.metadata');
+  const metaBlock = document.querySelector('body div.metadata');
   if (metaBlock) {
     const metaConfig = readBlockConfig(metaBlock);
     [

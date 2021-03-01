@@ -147,7 +147,7 @@ describe('Rendering', () => {
   });
 
   describe('Metadata Block', () => {
-    it.only('renders meta tags from metadata block', async () => {
+    it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
     });
   });
