@@ -4,13 +4,14 @@
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
-    "test": "mocha test/unit/*.test.js",
+    "test": "mocha test/unit/*.test.js --exit",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
     "test:hlx.pge.smoketest": "mocha test/smoke/*.* -t 30000 --domain $TEST_DOMAIN",
     "test:hlx.pge.generic.smoketester": "mocha test/smoketester/*.* -t 5000 --domain $TEST_DOMAIN --owner $TEST_OWNER --repo $TEST_REPO --branch $TEST_BRANCH --index $TEST_INDEX",
     "test:pages": "env TEST_DOMAIN=$TEST_DOMAIN TEST_VERSION_LOCK=\"$TEST_VERSION_LOCK\" mocha --exit test/pages/*.*",
     "build": "hlx clean && hlx build",
+    "publish": "./release/publish.sh",
     "deploy": "./release/deploy.sh",
     "deploy-ci": "./release/deploy-ci.sh",
     "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
+    "@adobe/helix-cli": "13.2.1",
     "@adobe/helix-deploy": "3.4.1",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",

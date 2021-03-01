@@ -295,15 +295,14 @@ jobs:
             - run:
                 name: Semantic Release
                 command: npm run semantic-release
-
-      # semantic release creates a `.publish_ok` file a new release is ude
-      - run:
-          name: stop workflow if no release
-          command: |
-            if [ ! -f .publish_ok ]; then
-                echo "No release required."
-                circleci-agent step halt
-            fi
+            # semantic release creates a `.publish_ok` file a new release is due
+            - run:
+                name: stop workflow if no release
+                command: |
+                  if [ ! -f .publish_ok ]; then
+                      echo "No release required."
+                      circleci-agent step halt
+                  fi
 
       - run:
           name: Installing Helix CLI
@@ -311,7 +310,7 @@ jobs:
 
       - run:
           name: Reset Working Copy
-          command: git status; git checkout -- . ; git pull
+          command: git status; git checkout -- . ; git pull origin << pipeline.git.branch >>
 
       - run:
           name: Prepare packackge secrets
@@ -329,23 +328,10 @@ jobs:
           name: Deploy
           command: WSK_AUTH=$HLX_WSK_AUTH npm run deploy
 
-      - run:
-          name: Publish to Fastly
-          command: npx hlx publish --custom-vcl='vcl/extensions.vcl' | cat
-
       - add_ssh_keys
       - run:
-          name: Commit helix config to master
-          command: |
-            git checkout master
-            git pull --tags origin
-            git commit -am "🚢 enshrining config post-deploy [ci skip]" --allow-empty
-
-      - run:
-          name: Tag known good deploy
-          command: |
-            git tag `date "+known-good-%Y%m%d%H%M%S"`
-            git push --tags origin master
+          name: Publish to Fastly
+          command: npm run publish
 
   run_diff_tests:
     executor: node12
@@ -388,10 +374,15 @@ workflows:
     unless: << pipeline.parameters.smoke_tests_only >>
     jobs:
       - build
+      # the smoke tests always fail for breaking-* so we ignore those
       - init_smoketests:
           context: Project Helix
           requires:
             - build
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/helix-pages
           owner: adobe
@@ -399,6 +390,10 @@ workflows:
           branch: $CIRCLE_BRANCH
           requires:
             - init_smoketests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/helix-example-basic#test-code
           owner: adobe
@@ -407,6 +402,10 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_smoketests:
           name: adobe/theblog-tests
           owner: adobe
@@ -415,15 +414,27 @@ workflows:
           script: test:smoke
           requires:
             - init_smoketests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_generic_smoketests:
           name: adobe/ferrumjsorg
           owner: adobe
           repo: ferrumjsorg
           requires:
             - init_smoketests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - run_diff_tests:
           requires:
             - init_smoketests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
@@ -431,6 +442,10 @@ workflows:
             - adobe/ferrumjsorg
             - adobe/theblog-tests
             - run_diff_tests
+          filters:
+            branches:
+              ignore:
+                - /breaking-.*/
       - publish:
           context: Project Helix
           requires:
@@ -438,7 +453,17 @@ workflows:
             - finalize_smoketests
           filters:
             branches:
-              only: master
+              only:
+                - master
+      - publish:
+          name: publish-breaking
+          context: Project Helix
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - /breaking-.*/
   tests:
     when: << pipeline.parameters.smoke_tests_only >>
     jobs:

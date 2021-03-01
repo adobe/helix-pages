@@ -16,20 +16,20 @@
  * @returns {string} The original host
  */
 function getOriginalHost(headers) {
-  if (headers.host) {
-    // backward compatible headers
-    if (headers['hlx-forwarded-host']) {
-      return headers['hlx-forwarded-host'].split(',')[0].trim();
+  if (typeof headers.get === 'function') {
+    // request headers (map)
+    const fwd = headers.get('hlx-forwarded-host');
+    if (fwd) {
+      return fwd.split(',')[0].trim();
     }
-    return headers.host;
+    return headers.get('host');
   }
 
-  // request headers (map)
-  const fwd = headers.get('hlx-forwarded-host');
-  if (fwd) {
-    return fwd.split(',')[0].trim();
+  // backward compatible headers
+  if (headers['hlx-forwarded-host']) {
+    return headers['hlx-forwarded-host'].split(',')[0].trim();
   }
-  return headers.get('host');
+  return headers.host;
 }
 
 /**
@@ -49,18 +49,30 @@ function getAbsoluteUrl(headers, url) {
 }
 
 /**
- * Wraps the content of node with a new parent node.
- * @param {node} node The content of the node to wrap
- * @param {node} newparent The new parent node
+ * Wraps the content of $node with a new $parent node and then appends the new parent to the node.
+ *
+ * @param {DOMNode} $node The content of the node to wrap
+ * @param {DOMNode} $parent The new parent node
  */
-function wrapContent(newparent, node) {
-  newparent.innerHTML = node.innerHTML;
-  node.innerHTML = '';
-  node.appendChild(newparent);
+function wrapContent($parent, $node) {
+  $parent.append(...$node.childNodes);
+  $node.append($parent);
+}
+
+/**
+ * Converts all non-valid-css-classname characters to `-`.
+ * @param {string} text input text
+ * @returns {string} the css class name
+ */
+function toClassName(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^0-9a-z]/gi, '-');
 }
 
 module.exports = {
   getOriginalHost,
   getAbsoluteUrl,
   wrapContent,
+  toClassName,
 };
