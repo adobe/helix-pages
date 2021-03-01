@@ -12,7 +12,9 @@
 const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
 
 function readBlockConfig($block) {
-  if (!$block) return {};
+  if (!$block) {
+    return {};
+  }
   const config = {};
   $block.querySelectorAll(':scope>div').forEach(($row) => {
     if ($row.children && $row.children[1]) {
