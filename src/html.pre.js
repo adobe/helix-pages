@@ -11,6 +11,26 @@
  */
 const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
 
+function readBlockConfig($block) {
+  if (!$block) {
+    return {};
+  }
+  const config = {};
+  $block.querySelectorAll(':scope>div').forEach(($row) => {
+    if ($row.children && $row.children[1]) {
+      const name = toClassName($row.children[0].textContent);
+      if (name) {
+        const $a = $row.children[1].querySelector('a');
+        let value = '';
+        if ($a) value = $a.href;
+        else value = $row.children[1].textContent;
+        config[name] = value;
+      }
+    }
+  });
+  return config;
+}
+
 /**
  * Looks for a default meta image (JPG) in the GitHub repository
  * and defaults to PNG version.
@@ -132,17 +152,43 @@ async function pre(context, action) {
 
   // extract metadata
   const { meta = {} } = content;
-  // description: text from paragraphs with 10 or more words
-  let desc = [];
-  document.querySelectorAll('div > p').forEach((p) => {
-    if (desc.length === 0) {
-      const words = p.textContent.trim().split(/\s+/);
-      if (words.length >= 10) {
-        desc = desc.concat(words);
+
+  const metaBlock = document.querySelector('body div.metadata');
+  if (metaBlock) {
+    const metaConfig = readBlockConfig(metaBlock);
+    [
+      // supported metadata properties
+      'title',
+      'description',
+      'keywords',
+    ].forEach((name) => {
+      if (metaConfig[name]) {
+        meta[name] = metaConfig[name];
       }
-    }
-  });
-  meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
+    });
+    metaBlock.remove();
+  }
+
+  if (meta.keywords) {
+    meta.tags = meta.keywords.split(',').map((tag) => tag.trim());
+  }
+
+  if (!meta.title) {
+    meta.title = content.title;
+  }
+  if (!meta.description) {
+    // description: text from paragraphs with 10 or more words
+    let desc = [];
+    document.querySelectorAll('div > p').forEach((p) => {
+      if (desc.length === 0) {
+        const words = p.textContent.trim().split(/\s+/);
+        if (words.length >= 10) {
+          desc = desc.concat(words);
+        }
+      }
+    });
+    meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
+  }
   meta.url = getAbsoluteUrl(request.headers, request.url);
   meta.imageUrl = `${content.image || await getDefaultMetaImage(action)}?auto=webp&format=pjpg&optimize=medium&width=1200`;
   meta.imageUrl = getAbsoluteUrl(request.headers, meta.imageUrl);

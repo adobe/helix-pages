@@ -166,6 +166,41 @@ describe('Testing pre.js', () => {
     );
   });
 
+  it('Meta data is extracted from content', () => {
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <main>
+          <div class="metadata">
+            <div><div>Title</div><div>Foo Bar</div></div>
+            <div><div>Description</div><div>Lorem ipsum dolor sit amet</div></div>
+            <div><div>Keywords</div><div>Foo, Bar, Baz</div></div>
+          </div>
+          <div>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
+          </div>
+        </main>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.title, 'Foo Bar');
+    assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet');
+    assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz');
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
   it('Meta description is extracted from first <p> with 10 or more words', () => {
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';

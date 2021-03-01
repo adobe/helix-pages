@@ -91,6 +91,7 @@ describe('Rendering', () => {
     };
     const req = new Request(`https://helix-pages.com?${querystring.encode(testParams)}`, {
       headers: {
+        host: 'helix-pages.com',
       },
     });
     const res = await action.main(req, {
@@ -101,12 +102,12 @@ describe('Rendering', () => {
     return res.text();
   }
 
-  async function testRender(spec) {
+  async function testRender(spec, selector = 'main') {
     const actHtml = await render(`/${spec}.md`);
     // console.log(actHtml);
     const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.html`), 'utf-8');
-    const $actMain = new JSDOM(actHtml).window.document.querySelector('main');
-    const $expMain = new JSDOM(expHtml).window.document.querySelector('main');
+    const $actMain = new JSDOM(actHtml).window.document.querySelector(selector);
+    const $expMain = new JSDOM(expHtml).window.document.querySelector(selector);
     assertEquivalentNode($actMain, $expMain);
   }
 
@@ -142,6 +143,12 @@ describe('Rendering', () => {
 
     it('renders document with double column page block', async () => {
       await testRender('page-block-2-col');
+    });
+  });
+
+  describe('Metadata Block', () => {
+    it('renders meta tags from metadata block', async () => {
+      await testRender('page-metadata-block', 'head');
     });
   });
 });
