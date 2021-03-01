@@ -306,8 +306,8 @@
       // check for legacy config property
       if (typeof window.hlxSidekickConfig === 'object') {
         // eslint-disable-next-line no-alert
-        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute ...')) {
-          sk.showModal('Please wait...', true);
+        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
+          sk.showModal('Please wait …', true);
           const url = new URL(getShareUrl(sk.config));
           const params = new URLSearchParams(url.search);
           params.set('from', sk.location.href);
@@ -389,7 +389,7 @@
         action: () => {
           const { location } = sk;
           const path = location.pathname;
-          sk.showModal('Please wait...', true);
+          sk.showModal('Please wait …', true);
           sk
             .publish(path, true)
             .then((resp) => {
@@ -456,7 +456,7 @@
           const resps = await Promise.all(urls.map((url) => sk.publish(url)));
           if (resps.every((r) => r.ok)) {
             if (config.host) {
-              sk.showModal('Please wait...', true);
+              sk.showModal('Please wait …', true);
               // fetch and redirect to production
               const prodURL = `https://${config.host}${path}`;
               await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
