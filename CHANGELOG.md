@@ -1,3 +1,18 @@
+## [4.17.1](https://github.com/adobe/helix-pages/compare/v4.17.0...v4.17.1) (2021-03-01)
+
+
+### Bug Fixes
+
+* **config:** fix 404 for static files in breaking branch ([#722](https://github.com/adobe/helix-pages/issues/722)) ([03ce464](https://github.com/adobe/helix-pages/commit/03ce464f1ef920e927cadf42351dfd1da3dd7c73)), closes [#713](https://github.com/adobe/helix-pages/issues/713)
+
+# [4.17.0](https://github.com/adobe/helix-pages/compare/v4.16.14...v4.17.0) (2021-02-26)
+
+
+### Features
+
+* **sidekick:** also purge .md ([0f5e7b2](https://github.com/adobe/helix-pages/commit/0f5e7b2351396bca72fc341172bea37f4c7b1d73))
+* **sidekick:** purge with and without extension ([a55f452](https://github.com/adobe/helix-pages/commit/a55f452a710f77c6108f57ddb872a4f9f0211f9b))
+
 ## [4.16.14](https://github.com/adobe/helix-pages/compare/v4.16.13...v4.16.14) (2021-02-25)
 
 
