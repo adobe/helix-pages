@@ -11,10 +11,6 @@
  */
 const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
 
-function toClassName(name) {
-  return name ? (name.toLowerCase().replace(/[^0-9a-z]/gi, '-')) : '';
-}
-
 function readBlockConfig($block) {
   if (!$block) return {};
   const config = {};
