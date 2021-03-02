@@ -1,3 +1,10 @@
+# [4.18.0](https://github.com/adobe/helix-pages/compare/v4.17.1...v4.18.0) (2021-03-02)
+
+
+### Features
+
+* **sidekick:** reload plugin ([3df43fd](https://github.com/adobe/helix-pages/commit/3df43fd26ea5905058c15c79420bda30683d630c))
+
 ## [4.17.1](https://github.com/adobe/helix-pages/compare/v4.17.0...v4.17.1) (2021-03-01)
 
 
