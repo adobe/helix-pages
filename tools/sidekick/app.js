@@ -306,8 +306,8 @@
       // check for legacy config property
       if (typeof window.hlxSidekickConfig === 'object') {
         // eslint-disable-next-line no-alert
-        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute ...')) {
-          sk.showModal('Please wait...', true);
+        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
+          sk.showModal('Please wait …', true);
           const url = new URL(getShareUrl(sk.config));
           const params = new URLSearchParams(url.search);
           params.set('from', sk.location.href);
@@ -326,7 +326,7 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || (sidekick.isHelix() && sidekick.config.host),
+      condition: (s) => s.isEditor() || s.location.host === s.config.host,
       button: {
         action: () => {
           const { config, location } = sk;
@@ -377,6 +377,37 @@
   }
 
   /**
+   * Adds the reload plugin to the sidekick.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function addReloadPlugin(sk) {
+    sk.add({
+      id: 'reload',
+      condition: (sidekick) => sidekick.location.host === sidekick.config.innerHost,
+      button: {
+        action: () => {
+          const { location } = sk;
+          const path = location.pathname;
+          sk.showModal('Please wait …', true);
+          sk
+            .publish(path, true)
+            .then((resp) => {
+              if (resp.ok) {
+                window.location.reload();
+              } else {
+                sk.showModal([
+                  `Failed to reload ${path}. Please try again later.`,
+                  JSON.stringify(resp),
+                ], true, 0);
+              }
+            });
+        },
+      },
+    });
+  }
+
+  /**
    * Adds the publish plugin to the sidekick.
    * @private
    * @param {Sidekick} sk The sidekick
@@ -388,39 +419,9 @@
       button: {
         action: async () => {
           const { config, location } = sk;
-          if (!config.innerHost) {
-            sk.notify(`Publish is not configured for ${config.project}`, 0);
-            return;
-          }
           const path = location.pathname;
-          const file = path.split('/').pop();
           sk.showModal(`Publishing ${path}`, true);
           let urls = [path];
-          if (path.endsWith('/')) {
-            // directory, also purge index(.html)
-            urls.push(`${path}index`);
-            urls.push(`${path}index.html`);
-          } else if (file.match(/index\.?/)) {
-            // index(.html), also purge directory
-            urls.push(path.substring(0, path.lastIndexOf('/') + 1));
-            if (file === 'index.html') {
-              // index.html, also purge index
-              urls.push(path.substring(0, path.lastIndexOf('.')));
-            } else if (file === 'index') {
-              // index, also purge index.html
-              urls.push(`${path}.html`);
-            }
-          } else if (file.endsWith('.html')) {
-            // .html extension, also purge without
-            urls.push(path.substring(0, path.length - 5));
-            // doc, also purge .md
-            urls.push(path.replace('.html', '.md'));
-          } else if (!file.match(/\./)) {
-            // no extension, also purge with .html
-            urls.push(`${path}.html`);
-            // doc, also purge .md
-            urls.push(`${path}.md`);
-          }
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
             urls = urls.concat(window.hlx.dependencies);
@@ -429,7 +430,7 @@
           const resps = await Promise.all(urls.map((url) => sk.publish(url)));
           if (resps.every((r) => r.ok)) {
             if (config.host) {
-              sk.showModal('Please wait...', true);
+              sk.showModal('Please wait …', true);
               // fetch and redirect to production
               const prodURL = `https://${config.host}${path}`;
               await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
@@ -440,7 +441,10 @@
               sk.notify('Successfully published');
             }
           } else {
-            sk.showModal(`Failed to publish ${path}. Please try again later.`, true, 0);
+            sk.showModal([
+              `Failed to publish ${path}. Please try again later.`,
+              JSON.stringify(resps),
+            ], true, 0);
           }
         },
       },
@@ -496,6 +500,7 @@
       // default plugins
       addEditPlugin(this);
       addPreviewPlugin(this);
+      addReloadPlugin(this);
       addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
@@ -730,13 +735,14 @@
     /**
      * Publishes the page at the specified path if {@code config.host} is defined.
      * @param {string} path The path of the page to publish
+     * @param {boolean} noXfh {@code true} to suppress {@code xfh} parametr, else {@code false}
      * @return {publishResponse} The response object
      */
-    async publish(path) {
+    async publish(path, noXfh = false) {
       if (!this.config.host) return null;
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
-      const xfh = [
+      const xfh = noXfh ? [] : [
         this.config.innerHost,
         this.config.outerHost,
         this.config.host,
