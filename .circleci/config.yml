@@ -411,7 +411,7 @@ workflows:
           name: adobe/theblog-tests
           owner: adobe
           repo: theblog-tests
-          branch: main
+          branch: sk-reload-prep
           script: test:smoke
           requires:
             - init_smoketests
