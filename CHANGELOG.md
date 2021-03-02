@@ -1,3 +1,10 @@
+## [4.17.1](https://github.com/adobe/helix-pages/compare/v4.17.0...v4.17.1) (2021-03-01)
+
+
+### Bug Fixes
+
+* **config:** fix 404 for static files in breaking branch ([#722](https://github.com/adobe/helix-pages/issues/722)) ([03ce464](https://github.com/adobe/helix-pages/commit/03ce464f1ef920e927cadf42351dfd1da3dd7c73)), closes [#713](https://github.com/adobe/helix-pages/issues/713)
+
 # [4.17.0](https://github.com/adobe/helix-pages/compare/v4.16.14...v4.17.0) (2021-02-26)
 
 
