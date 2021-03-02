@@ -467,7 +467,7 @@ describe('Test sidekick bookmarklet', () => {
           // intercept purge request
           const params = new URL(req.url()).searchParams;
           purged = params.get('path') === purgePath
-            && params.get('xfh') === '';
+            && params.get('xfh') === 'theblog--adobe.hlx.page';
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
