@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "4.17.1",
+  "version": "4.18.1",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -41,8 +41,8 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-fetch": "2.1.6",
-    "@adobe/helix-pipeline": "13.6.20",
-    "@adobe/helix-shared": "7.20.0",
+    "@adobe/helix-pipeline": "13.7.7",
+    "@adobe/helix-shared": "7.21.0",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",
@@ -56,7 +56,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
     "@adobe/helix-cli": "13.2.1",
-    "@adobe/helix-deploy": "3.4.1",
+    "@adobe/helix-deploy": "3.6.0",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",

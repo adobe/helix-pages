@@ -1,3 +1,17 @@
+## [4.18.1](https://github.com/adobe/helix-pages/compare/v4.18.0...v4.18.1) (2021-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.5 ([#720](https://github.com/adobe/helix-pages/issues/720)) ([520334b](https://github.com/adobe/helix-pages/commit/520334bed66cfebd10141e192e881ab91e6c79b3))
+
+# [4.18.0](https://github.com/adobe/helix-pages/compare/v4.17.1...v4.18.0) (2021-03-02)
+
+
+### Features
+
+* **sidekick:** reload plugin ([3df43fd](https://github.com/adobe/helix-pages/commit/3df43fd26ea5905058c15c79420bda30683d630c))
+
 ## [4.17.1](https://github.com/adobe/helix-pages/compare/v4.17.0...v4.17.1) (2021-03-01)
 
 

@@ -256,6 +256,10 @@
   content: "Edit";
 }
 
+.hlx-sk .reload button::before {
+  content: "Reload";
+}
+
 .hlx-sk .publish button::before {
   content: "Publish";
 }
