@@ -61,12 +61,10 @@ describe('Rendering', () => {
       .get(/.*/)
       .reply(404)
       .persist();
-    scope1 = nock('https://adobeioruntime.net')
-      .get('/api/v1/web/helix/helix-services/content-proxy@v2')
-      .query(true)
+    scope1 = nock('https://super-test--helix-pages--adobe.hlx.page')
+      .get(/.*/)
       .reply(async (uri, body, cb) => {
-        const url = new URL(`https://adobeioruntime.net${uri}`);
-        const file = path.resolve(__dirname, 'fixtures', url.searchParams.get('path').substr(1));
+        const file = path.resolve(__dirname, 'fixtures', uri.substring(1));
         const data = await fs.readFile(file, 'utf-8');
         cb(null, [200, data]);
       })
