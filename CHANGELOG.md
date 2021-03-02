@@ -1,3 +1,10 @@
+## [4.18.2](https://github.com/adobe/helix-pages/compare/v4.18.1...v4.18.2) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** reload button not reliable ([8d78af4](https://github.com/adobe/helix-pages/commit/8d78af418e82cc3c43151fcf89fe2ec08aecb160))
+
 ## [4.18.1](https://github.com/adobe/helix-pages/compare/v4.18.0...v4.18.1) (2021-03-02)
 
 
