@@ -1,3 +1,10 @@
+## [4.18.3](https://github.com/adobe/helix-pages/compare/v4.18.2...v4.18.3) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** include branch name in host when purging ([d98b7c1](https://github.com/adobe/helix-pages/commit/d98b7c1c740d5054288016b94ade62954d1ed489))
+
 ## [4.18.2](https://github.com/adobe/helix-pages/compare/v4.18.1...v4.18.2) (2021-03-02)
 
 
