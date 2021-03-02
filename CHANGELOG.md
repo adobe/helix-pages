@@ -1,3 +1,10 @@
+## [4.18.4](https://github.com/adobe/helix-pages/compare/v4.18.3...v4.18.4) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** do not bubble up purge errors to the ui ([e939490](https://github.com/adobe/helix-pages/commit/e9394904fc29f0bd164b2789341a0d237a855be9))
+
 ## [4.18.3](https://github.com/adobe/helix-pages/compare/v4.18.2...v4.18.3) (2021-03-02)
 
 
