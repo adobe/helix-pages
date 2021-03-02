@@ -430,24 +430,17 @@
             urls = urls.concat(window.hlx.dependencies);
           }
 
-          const resps = await Promise.all(urls.map((url) => sk.publish(url)));
-          if (resps.every((r) => r.ok)) {
-            if (config.host) {
-              sk.showModal('Please wait …', true);
-              // fetch and redirect to production
-              const prodURL = `https://${config.host}${path}`;
-              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
-              // eslint-disable-next-line no-console
-              console.log(`redirecting to ${prodURL}`);
-              window.location.href = prodURL;
-            } else {
-              sk.notify('Successfully published');
-            }
+          await Promise.all(urls.map((url) => sk.publish(url)));
+          if (config.host) {
+            sk.showModal('Please wait …', true);
+            // fetch and redirect to production
+            const prodURL = `https://${config.host}${path}`;
+            await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+            // eslint-disable-next-line no-console
+            console.log(`redirecting to ${prodURL}`);
+            window.location.href = prodURL;
           } else {
-            sk.showModal([
-              `Failed to publish ${path}. Please try again later.`,
-              JSON.stringify(resps),
-            ], true, 0);
+            sk.notify('Successfully published');
           }
         },
       },
