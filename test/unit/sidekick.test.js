@@ -454,6 +454,7 @@ describe('Test sidekick bookmarklet', () => {
     const purgePath = '/en/topics/bla.html';
     let loads = 0;
     let purged = false;
+    let branchIncluded = false;
     await page.setRequestInterception(true);
     const reloaded = await new Promise((resolve, reject) => {
       page.on('request', (req) => {
@@ -468,6 +469,7 @@ describe('Test sidekick bookmarklet', () => {
           const params = new URL(req.url()).searchParams;
           purged = params.get('path') === purgePath
             && params.get('xfh') === 'theblog--adobe.hlx.page';
+          branchIncluded = params.get('host').startsWith('master--');
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
@@ -490,6 +492,7 @@ describe('Test sidekick bookmarklet', () => {
     });
     // check result
     assert.ok(purged, 'Purge request not sent');
+    assert.ok(branchIncluded, 'Branch name not included in host parameter');
     assert.ok(reloaded, 'Reload not triggered');
   }).timeout(IT_DEFAULT_TIMEOUT);
 

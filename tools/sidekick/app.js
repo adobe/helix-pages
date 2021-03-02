@@ -93,7 +93,7 @@
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
     const {
-      owner, repo, ref, host, project,
+      owner, repo, ref = 'master', host, project,
     } = cfg;
     const outerPrefix = owner && repo
       ? `${repo}--${owner}`
@@ -101,6 +101,8 @@
     const innerPrefix = ref && !['master', 'main'].includes(ref)
       ? `${ref}--${outerPrefix}`
       : outerPrefix;
+    // host param for purge request must include ref
+    const purgeHost = `${ref}--${outerPrefix}.hlx.page`;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
@@ -126,6 +128,7 @@
       ...cfg,
       innerHost,
       outerHost,
+      purgeHost,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -747,7 +750,7 @@
         : [this.config.innerHost, this.config.outerHost, this.config.host];
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
-        ['host', this.config.innerHost],
+        ['host', this.config.purgeHost],
         ['xfh', xfh.join(',')],
         ['path', path],
       ]).toString();
