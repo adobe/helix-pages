@@ -41,7 +41,7 @@
   "dependencies": {
     "@adobe/helix-fetch": "2.1.6",
     "@adobe/helix-pipeline": "13.7.7",
-    "@adobe/helix-shared": "7.21.0",
+    "@adobe/helix-shared": "7.21.1",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
-    "@adobe/helix-deploy": "3.6.2",
+    "@adobe/helix-deploy": "3.6.3",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
