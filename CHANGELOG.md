@@ -1,3 +1,10 @@
+## [4.18.5](https://github.com/adobe/helix-pages/compare/v4.18.4...v4.18.5) (2021-03-03)
+
+
+### Bug Fixes
+
+* **deploy:** trigger a release to get full universal runtime loggin ([10014d6](https://github.com/adobe/helix-pages/commit/10014d65848814be7aea0af01ba76a308050eda7))
+
 ## [4.18.4](https://github.com/adobe/helix-pages/compare/v4.18.3...v4.18.4) (2021-03-02)
 
 
