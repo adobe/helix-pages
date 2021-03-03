@@ -93,7 +93,7 @@
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
     const {
-      owner, repo, ref, host, project,
+      owner, repo, ref = 'master', host, project,
     } = cfg;
     const outerPrefix = owner && repo
       ? `${repo}--${owner}`
@@ -101,6 +101,8 @@
     const innerPrefix = ref && !['master', 'main'].includes(ref)
       ? `${ref}--${outerPrefix}`
       : outerPrefix;
+    // host param for purge request must include ref
+    const purgeHost = `${ref}--${outerPrefix}.hlx.page`;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
@@ -126,6 +128,7 @@
       ...cfg,
       innerHost,
       outerHost,
+      purgeHost,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -306,8 +309,8 @@
       // check for legacy config property
       if (typeof window.hlxSidekickConfig === 'object') {
         // eslint-disable-next-line no-alert
-        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute ...')) {
-          sk.showModal('Please wait...', true);
+        if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
+          sk.showModal('Please wait …', true);
           const url = new URL(getShareUrl(sk.config));
           const params = new URLSearchParams(url.search);
           params.set('from', sk.location.href);
@@ -326,7 +329,7 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || (sidekick.isHelix() && sidekick.config.host),
+      condition: (s) => s.isEditor() || s.location.host === s.config.host,
       button: {
         action: () => {
           const { config, location } = sk;
@@ -377,6 +380,37 @@
   }
 
   /**
+   * Adds the reload plugin to the sidekick.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function addReloadPlugin(sk) {
+    sk.add({
+      id: 'reload',
+      condition: (sidekick) => sidekick.location.host === sidekick.config.innerHost,
+      button: {
+        action: () => {
+          const { location } = sk;
+          const path = location.pathname;
+          sk.showModal('Please wait …', true);
+          sk
+            .publish(path, true)
+            .then((resp) => {
+              if (resp.ok) {
+                window.location.reload();
+              } else {
+                sk.showModal([
+                  `Failed to reload ${path}. Please try again later.`,
+                  JSON.stringify(resp),
+                ], true, 0);
+              }
+            });
+        },
+      },
+    });
+  }
+
+  /**
    * Adds the publish plugin to the sidekick.
    * @private
    * @param {Sidekick} sk The sidekick
@@ -388,41 +422,25 @@
       button: {
         action: async () => {
           const { config, location } = sk;
-          if (!config.innerHost) {
-            sk.notify(`Publish is not configured for ${config.project}`, 0);
-            return;
-          }
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
           let urls = [path];
-          if (path.endsWith('/')) {
-            // directory, also purge index(.html)
-            urls.push(`${path}index`);
-            urls.push(`${path}index.html`);
-          } else if (path.split('/').pop().startsWith('index')) {
-            // index(.html), also purge directory
-            urls.push(path.substring(0, path.lastIndexOf('/') + 1));
-          }
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
             urls = urls.concat(window.hlx.dependencies);
           }
 
-          const resps = await Promise.all(urls.map((url) => sk.publish(url)));
-          if (resps.every((r) => r.ok)) {
-            if (config.host) {
-              sk.showModal('Please wait...', true);
-              // fetch and redirect to production
-              const prodURL = `https://${config.host}${path}`;
-              await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
-              // eslint-disable-next-line no-console
-              console.log(`redirecting to ${prodURL}`);
-              window.location.href = prodURL;
-            } else {
-              sk.notify('Successfully published');
-            }
+          await Promise.all(urls.map((url) => sk.publish(url)));
+          if (config.host) {
+            sk.showModal('Please wait …', true);
+            // fetch and redirect to production
+            const prodURL = `https://${config.host}${path}`;
+            await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
+            // eslint-disable-next-line no-console
+            console.log(`redirecting to ${prodURL}`);
+            window.location.href = prodURL;
           } else {
-            sk.showModal(`Failed to publish ${path}. Please try again later.`, true, 0);
+            sk.notify('Successfully published');
           }
         },
       },
@@ -478,6 +496,7 @@
       // default plugins
       addEditPlugin(this);
       addPreviewPlugin(this);
+      addReloadPlugin(this);
       addPublishPlugin(this);
       // custom plugins
       if (this.config.plugins && Array.isArray(this.config.plugins)) {
@@ -712,20 +731,19 @@
     /**
      * Publishes the page at the specified path if {@code config.host} is defined.
      * @param {string} path The path of the page to publish
+     * @param {boolean} innerOnly {@code true} to only refresh inner CDN, else {@code false}
      * @return {publishResponse} The response object
      */
-    async publish(path) {
+    async publish(path, innerOnly = false) {
       if (!this.config.host) return null;
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
-      const xfh = [
-        this.config.innerHost,
-        this.config.outerHost,
-        this.config.host,
-      ];
+      const xfh = innerOnly
+        ? [this.config.innerHost]
+        : [this.config.innerHost, this.config.outerHost, this.config.host];
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
-        ['host', this.config.innerHost],
+        ['host', this.config.purgeHost],
         ['xfh', xfh.join(',')],
         ['path', path],
       ]).toString();
