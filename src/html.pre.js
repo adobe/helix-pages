@@ -13,6 +13,7 @@ const { getAbsoluteUrl, toClassName } = require('./utils.js');
 
 const fixSections = require('./fix-sections.js');
 const createPageBlocks = require('./create-page-blocks.js');
+const createPictures = require('./create-pictures.js');
 
 /**
  * Returns the config from a block element as object with key/value pairs.
@@ -116,17 +117,7 @@ async function pre(context, action) {
   createPageBlocks(context);
 
   // transform <img> to <picture>
-  document.querySelectorAll('img[src^="/hlx_"]').forEach((img, i) => {
-    const picture = document.createElement('picture');
-    const source = document.createElement('source');
-    source.setAttribute('media', '(max-width: 400px)');
-    source.setAttribute('srcset', `${img.getAttribute('src')}?width=750&format=webply&optimize=medium`);
-    picture.appendChild(source);
-    img.setAttribute('loading', i > 0 ? 'lazy' : 'eager'); // load all but first image lazy
-    img.setAttribute('src', `${img.getAttribute('src')}?width=2000&format=webply&optimize=medium`);
-    img.parentNode.insertBefore(picture, img);
-    picture.appendChild(img);
-  });
+  createPictures(context);
 
   // ensure content.data is present
   content.data = content.data || {};
