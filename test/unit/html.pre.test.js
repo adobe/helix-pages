@@ -259,7 +259,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
@@ -400,7 +400,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image.substring(1)}?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Meta image uses JPG from repo if no content.image available', async () => {

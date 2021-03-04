@@ -52,14 +52,21 @@ function readBlockConfig($block) {
 }
 
 /**
- * Adds image optimization parameters suitable for meta images to a path.
- * @param {string} path The image path
- * @returns The optimized image path
+ * Adds image optimization parameters suitable for meta images to a URL.
+ * @param {string} url The image URL
+ * @returns The optimized image URL
  */
-function optimizeMetaImage(path) {
-  return (path.startsWith('/') || path.startsWith('./'))
-    ? `${path.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
-    : path;
+function optimizeMetaImage(url) {
+  if (typeof url !== 'string') {
+    return null;
+  }
+  if (url.startsWith('./')) {
+    // eslint-disable-next-line no-param-reassign
+    url = url.substring(1);
+  }
+  return url.startsWith('/')
+    ? `${url.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
+    : url;
 }
 
 /**
