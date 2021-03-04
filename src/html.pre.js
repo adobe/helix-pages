@@ -12,6 +12,7 @@
 const { getAbsoluteUrl, toClassName } = require('./utils.js');
 
 const fixSections = require('./fix-sections.js');
+const createPageBlocks = require('./create-page-blocks.js');
 
 /**
  * Returns the config from a block element as object with key/value pairs.
@@ -93,46 +94,6 @@ async function getDefaultMetaImage(action) {
 }
 
 /**
- * Creates a "DIV representation" of a table.
- * @param {Document} document
- * @param {HTMLTableElement} $table the table element
- * @param {string[]} cols the column names
- * @returns {HTMLDivElement} the resulting div
- */
-function tableToDivs(document, $table, cols) {
-  const $rows = $table.querySelectorAll('tbody tr');
-  const $cards = document.createElement('div');
-  $cards.classList.add(cols.join('-'));
-  $rows.forEach(($tr) => {
-    const $card = document.createElement('div');
-    $tr.querySelectorAll('td').forEach(($td, i) => {
-      const $div = document.createElement('div');
-      if (cols.length > 1) {
-        $div.classList.add(cols[i]);
-      }
-      $div.append(...$td.childNodes);
-      $card.append($div);
-    });
-    $cards.append($card);
-  });
-  return $cards;
-}
-
-/**
- * Converts tables into page blocks.
- * see https://github.com/adobe/helix-pages/issues/638
- * @param {Document} document
- */
-function createPageBlocks(document) {
-  document.querySelectorAll('body div > table').forEach(($table) => {
-    const $cols = $table.querySelectorAll('thead tr th');
-    const cols = Array.from($cols).map((e) => toClassName(e.innerHTML)).filter((e) => !!e);
-    const $div = tableToDivs(document, $table, cols);
-    $table.parentNode.replaceChild($div, $table);
-  });
-}
-
-/**
  * The 'pre' function that is executed before the HTML is rendered
  * @param context The current context of processing pipeline
  * @param context.content The content
@@ -152,7 +113,7 @@ async function pre(context, action) {
   fixSections(context);
 
   // convert tables to page blocks
-  createPageBlocks(document);
+  createPageBlocks(context);
 
   // transform <img> to <picture>
   document.querySelectorAll('img[src^="/hlx_"]').forEach((img, i) => {

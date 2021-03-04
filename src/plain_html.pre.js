@@ -11,6 +11,7 @@
  */
 
 const fixSections = require('./fix-sections.js');
+const createPageBlocks = require('./create-page-blocks.js');
 
 /**
  * The 'pre' function that is executed before the plain HTML is rendered
@@ -18,6 +19,7 @@ const fixSections = require('./fix-sections.js');
  */
 async function pre(context) {
   fixSections(context);
+  createPageBlocks(context);
 }
 
 module.exports.pre = pre;

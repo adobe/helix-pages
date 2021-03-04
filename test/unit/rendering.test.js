@@ -152,12 +152,20 @@ describe('Rendering', () => {
     });
   });
 
-  describe('Page Tables', () => {
+  describe('Page Block', () => {
     it('renders document with singe column page block', async () => {
       await testRender('page-block-1-col');
     });
 
+    it('renders document with singe column page block (plain)', async () => {
+      await testRenderPlain('page-block-1-col');
+    });
+
     it('renders document with double column page block', async () => {
+      await testRender('page-block-2-col');
+    });
+
+    it('renders document with double column page block (plain)', async () => {
       await testRender('page-block-2-col');
     });
   });
