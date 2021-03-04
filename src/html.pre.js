@@ -11,6 +11,11 @@
  */
 const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
 
+/**
+ * Returns the config from a block element as object with key/value pairs.
+ * @param {HTMLDivElement} $block The block element
+ * @returns {object} The block config
+ */
 function readBlockConfig($block) {
   if (!$block) {
     return {};
@@ -20,15 +25,41 @@ function readBlockConfig($block) {
     if ($row.children && $row.children[1]) {
       const name = toClassName($row.children[0].textContent);
       if (name) {
-        const $a = $row.children[1].querySelector('a');
-        let value = '';
-        if ($a) value = $a.href;
-        else value = $row.children[1].textContent;
-        config[name] = value;
+        let value = $row.children[1].textContent.trim();
+        if (!value) {
+          // check for value inside link
+          const $a = $row.children[1].querySelector('a');
+          if ($a) {
+            value = $a.getAttribute('href');
+          }
+        }
+        if (!value) {
+          // check for value inside img
+          const $img = $row.children[1].querySelector('img');
+          if ($img) {
+            // strip query string
+            value = $img.getAttribute('src');
+          }
+        }
+        if (value) {
+          // only keep non-empty value
+          config[name] = value;
+        }
       }
     }
   });
   return config;
+}
+
+/**
+ * Adds image optimization parameters suitable for meta images to a path.
+ * @param {string} path The image path
+ * @returns The optimized image path
+ */
+function optimizeMetaImage(path) {
+  return path.startsWith('/')
+    ? `${path.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
+    : path;
 }
 
 /**
@@ -161,6 +192,7 @@ async function pre(context, action) {
       'title',
       'description',
       'keywords',
+      'image',
     ].forEach((name) => {
       if (metaConfig[name]) {
         meta[name] = metaConfig[name];
@@ -190,8 +222,8 @@ async function pre(context, action) {
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = `${content.image || await getDefaultMetaImage(action)}?auto=webp&format=pjpg&optimize=medium&width=1200`;
-  meta.imageUrl = getAbsoluteUrl(request.headers, meta.imageUrl);
+  meta.image = optimizeMetaImage(meta.image || content.image || await getDefaultMetaImage(action));
+  meta.image = getAbsoluteUrl(request.headers, meta.image);
 }
 
 module.exports.pre = pre;

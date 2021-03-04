@@ -178,6 +178,7 @@ describe('Testing pre.js', () => {
             <div><div>Title</div><div>Foo Bar</div></div>
             <div><div>Description</div><div>Lorem ipsum dolor sit amet</div></div>
             <div><div>Keywords</div><div>Foo, Bar, Baz</div></div>
+            <div><div>Image</div><div>https://foo.bar/baz.jpg</div></div>
           </div>
           <div>
             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
@@ -198,6 +199,67 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.title, 'Foo Bar');
     assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet');
     assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz');
+    assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
+  it('Meta image is extracted from link', () => {
+    const dom = new JSDOM(`
+    <html>
+      <body>
+        <main>
+          <div class="metadata">
+            <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
+          </div>
+        </main>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: 'https://foo.bar/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
+  it('Meta image is extracted from image tag and optimized', () => {
+    const dom = new JSDOM(`
+    <html>
+      <body>
+        <main>
+          <div class="metadata">
+            <div>
+              <div>Image</div>
+              <div>
+                <picture>
+                  <source media="(max-width: 400px)" srcset="/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
+                  <img src="/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
+                </picture>
+              </div>
+            </div>
+          </div>
+        </main>
+      </body>
+    </html>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: 'https://foo.bar/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
@@ -311,7 +373,7 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.url, `https://${req.headers.host}${req.url}`);
   });
 
-  it('Meta imageUrl uses content.image', () => {
+  it('Meta image uses absolute content.image', () => {
     const dom = new JSDOM('<html></html');
     const context = {
       content: {
@@ -323,25 +385,25 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, context.content.image);
   });
 
-  it('Meta imageUrl uses content.image as absolute URL', () => {
+  it('Meta image uses and optimizes relative content.image as absolute URL', () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
         document: dom.window.document,
-        image: '/baz.jpg',
+        image: '/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg',
         meta: {},
       },
       request,
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
-  it('Meta imageUrl uses JPG from repo if no content.image available', async () => {
+  it('Meta image uses JPG from repo if no content.image available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -352,10 +414,10 @@ describe('Testing pre.js', () => {
     };
     await pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
-  it('Meta imageUrl uses default meta image if neither content.image nor JPG from repo available', async () => {
+  it('Meta image uses default meta image if neither content.image nor JPG from repo available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -371,7 +433,7 @@ describe('Testing pre.js', () => {
       },
     });
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200`);
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {
