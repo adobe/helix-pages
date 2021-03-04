@@ -17,7 +17,7 @@ async function createPictures({ content }) {
   const { document } = content;
 
   // transform <img> to <picture>
-  document.querySelectorAll('img[src^="/hlx_"]').forEach((img, i) => {
+  document.querySelectorAll('img[src^="./media_"]').forEach((img, i) => {
     const picture = document.createElement('picture');
     const source = document.createElement('source');
     source.setAttribute('media', '(max-width: 400px)');
