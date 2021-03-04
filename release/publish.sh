@@ -51,6 +51,13 @@ fi
 git checkout master
 git pull
 git checkout $BRANCH -- helix-config.yaml
-git commit -m"chore: update helix-config.yaml from $BRANCH [skip ci]"
-git push origin master
+
+# commit if we have changes
+if [ -n "$(git status --porcelain)" ]; then
+  git commit -m"chore: update helix-config.yaml from $BRANCH [skip ci]"
+  git push origin master
+else
+  echo "no changes to master."
+fi
+
 git checkout $BRANCH
