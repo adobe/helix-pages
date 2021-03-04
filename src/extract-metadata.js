@@ -57,7 +57,7 @@ function readBlockConfig($block) {
  * @returns The optimized image path
  */
 function optimizeMetaImage(path) {
-  return path.startsWith('/')
+  return (path.startsWith('/') || path.startsWith('./'))
     ? `${path.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
     : path;
 }
