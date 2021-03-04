@@ -49,6 +49,7 @@ fi
 
 # merge changes back to master
 git checkout master
+git pull
 git checkout $BRANCH -- helix-config.yaml
 git commit -m"chore: update helix-config.yaml from $BRANCH [skip ci]"
 git push origin master
