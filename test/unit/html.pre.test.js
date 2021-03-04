@@ -239,8 +239,8 @@ describe('Testing pre.js', () => {
               <div>Image</div>
               <div>
                 <picture>
-                  <source media="(max-width: 400px)" srcset="/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
-                  <img src="/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
+                  <source media="(max-width: 400px)" srcset="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
+                  <img src="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
                 </picture>
               </div>
             </div>
@@ -259,7 +259,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
@@ -393,7 +393,7 @@ describe('Testing pre.js', () => {
     const context = {
       content: {
         document: dom.window.document,
-        image: '/hlx_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg',
+        image: './media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg',
         meta: {},
       },
       request,

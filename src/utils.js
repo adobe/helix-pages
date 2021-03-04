@@ -43,7 +43,7 @@ function getAbsoluteUrl(headers, url) {
   if (typeof url !== 'string') {
     return null;
   }
-  return url.startsWith('/')
+  return (url.startsWith('/') || url.startsWith('./'))
     ? `https://${getOriginalHost(headers)}${url}`
     : url;
 }
