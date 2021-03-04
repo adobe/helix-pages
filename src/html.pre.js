@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
+const { getAbsoluteUrl, toClassName } = require('./utils.js');
 
 const fixSections = require('./fix-sections.js');
 
