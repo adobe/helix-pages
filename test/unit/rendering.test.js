@@ -39,7 +39,7 @@ const resolver = {
 
 describe('Rendering', () => {
   let testRoot;
-  let action;
+  const actions = { };
 
   let scope0;
   let scope1;
@@ -55,7 +55,9 @@ describe('Rendering', () => {
       .run();
 
     // eslint-disable-next-line global-require,import/no-dynamic-require
-    action = require(path.resolve(buildDir, 'src', 'html.js'));
+    actions.html = require(path.resolve(buildDir, 'src', 'html.js'));
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    actions.plain_html = require(path.resolve(buildDir, 'src', 'plain_html.js'));
 
     scope0 = nock('https://raw.githubusercontent.com')
       .get(/.*/)
@@ -80,7 +82,7 @@ describe('Rendering', () => {
     nock.cleanAll();
   });
 
-  async function render(reqPath) {
+  async function render(reqPath, script = 'html') {
     const testParams = {
       owner: 'adobe',
       repo: 'helix-pages',
@@ -92,7 +94,7 @@ describe('Rendering', () => {
         host: 'helix-pages.com',
       },
     });
-    const res = await action.main(req, {
+    const res = await actions[script].main(req, {
       resolver,
       env: {},
     });
@@ -109,13 +111,29 @@ describe('Rendering', () => {
     assertEquivalentNode($actMain, $expMain);
   }
 
+  async function testRenderPlain(spec) {
+    const actHtml = await render(`/${spec}.md`, 'plain_html');
+    const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.plain.html`), 'utf-8');
+    const $actMain = new JSDOM(actHtml).window.document.querySelector('body');
+    const $expMain = new JSDOM(expHtml).window.document.querySelector('body');
+    assertEquivalentNode($actMain, $expMain);
+  }
+
   describe('Section DIVS', () => {
     it('renders document with 1 section correctly', async () => {
       await testRender('one-section');
     });
 
+    it('renders document with 1 section correctly (plain)', async () => {
+      await testRenderPlain('one-section');
+    });
+
     it('renders document with 3 sections correctly', async () => {
       await testRender('simple');
+    });
+
+    it('renders document with 3 sections correctly (plain)', async () => {
+      await testRenderPlain('simple');
     });
   });
 

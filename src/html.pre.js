@@ -11,6 +11,8 @@
  */
 const { getAbsoluteUrl, wrapContent, toClassName } = require('./utils.js');
 
+const fixSections = require('./fix-sections.js');
+
 function readBlockConfig($block) {
   if (!$block) {
     return {};
@@ -107,7 +109,6 @@ function createPageBlocks(document) {
 async function pre(context, action) {
   const { request, content } = context;
   const { document } = content;
-  const $sections = document.querySelectorAll('body > div');
 
   // Expose the html & body attributes so they can be used in the HTL
   [document.documentElement, document.body].forEach((el) => {
@@ -117,19 +118,7 @@ async function pre(context, action) {
     }, {});
   });
 
-  // if there are no sections wrap everything in a div with appropriate class names from meta
-  if ($sections.length === 0) {
-    const $outerDiv = document.createElement('div');
-    if (context.content.meta && context.content.meta.class) {
-      context.content.meta.class.split(/[ ,]/)
-        .map((c) => c.trim())
-        .filter((c) => !!c)
-        .forEach((c) => {
-          $outerDiv.classList.add(c);
-        });
-    }
-    wrapContent($outerDiv, document.body);
-  }
+  fixSections(context);
 
   // convert tables to page blocks
   createPageBlocks(document);
