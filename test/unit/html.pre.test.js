@@ -20,7 +20,7 @@ const request = {
     host: 'foo.bar',
     'hlx-forwarded-host': 'www.foo.bar, foo-baz.hlx.page',
   },
-  url: '/baz.html',
+  url: '/foo/bar/baz.html',
 };
 const action = {
   request: {
@@ -230,6 +230,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image is extracted from image tag and optimized', () => {
+    const expectedUrl = `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url.substring(0, request.url.lastIndexOf('/'))}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`;
     const dom = new JSDOM(`
     <html>
       <body>
@@ -259,7 +260,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, expectedUrl);
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
@@ -389,6 +390,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image uses and optimizes relative content.image as absolute URL', () => {
+    const expectedUrl = `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url.substring(0, request.url.lastIndexOf('/'))}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`;
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -400,7 +402,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image.substring(1)}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, expectedUrl);
   });
 
   it('Meta image uses JPG from repo if no content.image available', async () => {

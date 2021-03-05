@@ -53,20 +53,22 @@ function readBlockConfig($block) {
 
 /**
  * Adds image optimization parameters suitable for meta images to a URL.
- * @param {string} url The image URL
+ * @param {string} pagePath The path of the requested page
+ * @param {string} imgUrl The image URL
  * @returns The optimized image URL
  */
-function optimizeMetaImage(url) {
-  if (typeof url !== 'string') {
+function optimizeMetaImage(pagePath, imgUrl) {
+  if (typeof imgUrl !== 'string') {
     return null;
   }
-  if (url.startsWith('./')) {
+  if (imgUrl.startsWith('./')) {
+    // resolve relative image path using page path
     // eslint-disable-next-line no-param-reassign
-    url = url.substring(1);
+    imgUrl = `${pagePath.substring(0, pagePath.lastIndexOf('/'))}${imgUrl.substring(1)}`;
   }
-  return url.startsWith('/')
-    ? `${url.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
-    : url;
+  return imgUrl.startsWith('/')
+    ? `${imgUrl.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
+    : imgUrl;
 }
 
 /**
@@ -104,6 +106,7 @@ async function getDefaultMetaImage(action) {
 async function extractMetaData(context, action) {
   const { request, content } = context;
   const { document } = content;
+  const { url } = request;
 
   // extract metadata
   const { meta = {} } = content;
@@ -147,8 +150,8 @@ async function extractMetaData(context, action) {
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
   meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.image = optimizeMetaImage(meta.image || content.image || await getDefaultMetaImage(action));
-  meta.image = getAbsoluteUrl(request.headers, meta.image);
+  meta.image = getAbsoluteUrl(request.headers,
+    optimizeMetaImage(url, meta.image || content.image || await getDefaultMetaImage(action)));
 }
 
 module.exports = extractMetaData;
