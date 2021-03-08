@@ -37,17 +37,17 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v6-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install npm
           command: sudo npm -g install npm
       - run:
           name: Installing Dependencies
-          command: npm ci
+          command: npm
       - save_cache:
           paths:
             - node_modules
-          key: v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v6-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: prepare test git user
           command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
