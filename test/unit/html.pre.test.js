@@ -168,24 +168,23 @@ describe('Testing pre.js', () => {
 
   it('Meta data is extracted from content', () => {
     const dom = new JSDOM(`
-    <html>
-      <head>
-        <title>Foo</title>
-      </head>
-      <body>
-        <main>
-          <div class="metadata">
-            <div><div>Title</div><div>Foo Bar</div></div>
-            <div><div>Description</div><div>Lorem ipsum dolor sit amet</div></div>
-            <div><div>Keywords</div><div>Foo, Bar, Baz</div></div>
-            <div><div>Image</div><div>https://foo.bar/baz.jpg</div></div>
-          </div>
-          <div>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
-          </div>
-        </main>
-      </body>
-    </html>
+    <div class="metadata">
+      <div>
+        <div>Title</div><div>Foo Bar</div>
+      </div>
+      <div>
+        <div>Description</div><div>Lorem ipsum dolor sit amet</div>
+      </div>
+      <div>
+        <div>Keywords</div><div>Foo, Bar, Baz</div>
+      </div>
+      <div>
+        <div>Image</div><div>https://foo.bar/baz.jpg</div>
+      </div>
+    </div>
+    <div>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
+    </div>
     `);
     const context = {
       content: {
@@ -198,22 +197,70 @@ describe('Testing pre.js', () => {
 
     assert.strictEqual(context.content.meta.title, 'Foo Bar');
     assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet');
-    assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz');
+    assert.deepStrictEqual(context.content.meta.keywords, 'Foo, Bar, Baz');
     assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
+  it('Meta keywords and tags can be comma- and/or line-separated', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Keywords</div>
+        <div>Foo, ,,Bar, Baz   One   Two   Three</div>
+      </div>
+      <div>
+        <div>Tags</div>
+        <div>Foo, Bar, Baz   One      Two   Three</div>
+      </div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz, One, Two, Three');
+    assert.deepStrictEqual(context.content.meta.tags, ['Foo', 'Bar', 'Baz', 'One', 'Two', 'Three']);
+  });
+
+  it('Custom meta data is preserved', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Foo</div>
+        <div>Bar</div>
+      </div>
+      <div>
+        <div>og:locale</div>
+        <div>en_UK</div>
+      </div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.deepStrictEqual(context.content.meta.custom, [
+      { name: 'foo', value: 'Bar', property: false },
+      { name: 'og:locale', value: 'en_UK', property: true },
+    ]);
+  });
+
   it('Meta image is extracted from link', () => {
     const dom = new JSDOM(`
-    <html>
-      <body>
-        <main>
-          <div class="metadata">
-            <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
-          </div>
-        </main>
-      </body>
-    </html>
+    <div class="metadata">
+      <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
+    </div>
     `);
     const context = {
       content: {
@@ -231,23 +278,17 @@ describe('Testing pre.js', () => {
 
   it('Meta image is extracted from image tag and optimized', () => {
     const dom = new JSDOM(`
-    <html>
-      <body>
-        <main>
-          <div class="metadata">
-            <div>
-              <div>Image</div>
-              <div>
-                <picture>
-                  <source media="(max-width: 400px)" srcset="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
-                  <img src="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
-                </picture>
-              </div>
-            </div>
-          </div>
-        </main>
-      </body>
-    </html>
+    <div class="metadata">
+      <div>
+        <div>Image</div>
+        <div>
+          <picture>
+            <source media="(max-width: 400px)" srcset="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
+            <img src="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
+          </picture>
+        </div>
+      </div>
+    </div>
     `);
     const context = {
       content: {

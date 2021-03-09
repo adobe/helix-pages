@@ -9,7 +9,30 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const { getAbsoluteUrl, toClassName } = require('./utils.js');
+const { getAbsoluteUrl } = require('./utils.js');
+
+/**
+ * Converts all non-valid characters to `-`.
+ * @param {string} text input text
+ * @returns {string} the meta name
+ */
+function toMetaName(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^0-9a-z:_]/gi, '-');
+}
+
+/**
+ * Cleans up comma-separated string lists and returns an array.
+ * @param {string} list A comma-separated list
+ * @returns {string[]} The clean list
+ */
+function toList(list) {
+  return list
+    .split(',')
+    .map((key) => key.trim())
+    .filter((key) => !!key);
+}
 
 /**
  * Returns the config from a block element as object with key/value pairs.
@@ -23,9 +46,9 @@ function readBlockConfig($block) {
   const config = {};
   $block.querySelectorAll(':scope>div').forEach(($row) => {
     if ($row.children && $row.children[1]) {
-      const name = toClassName($row.children[0].textContent);
+      const name = toMetaName($row.children[0].textContent);
       if (name) {
-        let value = $row.children[1].textContent.trim();
+        let value = $row.children[1].textContent.trim().replace(/ {3}/g, ',');
         if (!value) {
           // check for value inside link
           const $a = $row.children[1].querySelector('a');
@@ -110,19 +133,31 @@ async function extractMetaData(context, action) {
       'title',
       'description',
       'keywords',
+      'tags',
       'image',
     ].forEach((name) => {
       if (metaConfig[name]) {
         meta[name] = metaConfig[name];
+        delete metaConfig[name];
       }
     });
+    if (Object.keys(metaConfig).length > 0) {
+      // add rest to meta.custom
+      meta.custom = Object.keys(metaConfig).map((name) => ({
+        name,
+        value: metaConfig[name],
+        property: name.includes(':'),
+      }));
+    }
     metaBlock.remove();
   }
 
   if (meta.keywords) {
-    meta.tags = meta.keywords.split(',').map((tag) => tag.trim());
+    meta.keywords = toList(meta.keywords).join(', ');
   }
-
+  if (meta.tags) {
+    meta.tags = toList(meta.tags);
+  }
   if (!meta.title) {
     meta.title = content.title;
   }
