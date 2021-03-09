@@ -1,3 +1,10 @@
+## [4.18.8](https://github.com/adobe/helix-pages/compare/v4.18.7...v4.18.8) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deploy:** bump helix-deploy version ([#762](https://github.com/adobe/helix-pages/issues/762)) ([5ccb105](https://github.com/adobe/helix-pages/commit/5ccb105b4534ba43b071885360dd3e7259086604))
+
 ## [4.18.7](https://github.com/adobe/helix-pages/compare/v4.18.6...v4.18.7) (2021-03-04)
 
 
