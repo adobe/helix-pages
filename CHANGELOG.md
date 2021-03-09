@@ -1,3 +1,11 @@
+## [4.18.9](https://github.com/adobe/helix-pages/compare/v4.18.8...v4.18.9) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#761](https://github.com/adobe/helix-pages/issues/761)) ([679d7dd](https://github.com/adobe/helix-pages/commit/679d7dd151b833498255ce7e40c6361b88d60d84))
+* **rel:** trigger release ([d4d0dd5](https://github.com/adobe/helix-pages/commit/d4d0dd50e1b1d0560483a7d5304c62cb3198b10d))
+
 ## [4.18.8](https://github.com/adobe/helix-pages/compare/v4.18.7...v4.18.8) (2021-03-09)
 
 
