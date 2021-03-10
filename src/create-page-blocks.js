@@ -21,12 +21,15 @@ const { toClassName } = require('./utils.js');
 function tableToDivs(document, $table, cols) {
   const $rows = $table.querySelectorAll('tbody tr');
   const $cards = document.createElement('div');
-  $cards.classList.add(cols.join('-'));
+  const clazz = cols.filter((c) => !!c).join('-');
+  if (clazz) {
+    $cards.classList.add(clazz);
+  }
   $rows.forEach(($tr) => {
     const $card = document.createElement('div');
     $tr.querySelectorAll('td').forEach(($td, i) => {
       const $div = document.createElement('div');
-      if (cols.length > 1) {
+      if (cols.length > 1 && cols[i]) {
         $div.classList.add(cols[i]);
       }
       $div.append(...$td.childNodes);
@@ -46,7 +49,7 @@ function createPageBlocks({ content }) {
   const { document } = content;
   document.querySelectorAll('body div > table').forEach(($table) => {
     const $cols = $table.querySelectorAll('thead tr th');
-    const cols = Array.from($cols).map((e) => toClassName(e.innerHTML)).filter((e) => !!e);
+    const cols = Array.from($cols).map((e) => toClassName(e.textContent));
     const $div = tableToDivs(document, $table, cols);
     $table.parentNode.replaceChild($div, $table);
   });

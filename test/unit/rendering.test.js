@@ -179,7 +179,19 @@ describe('Rendering', () => {
     });
 
     it('renders document with double column page block (plain)', async () => {
-      await testRender('page-block-2-col');
+      await testRenderPlain('page-block-2-col');
+    });
+
+    it('renders document with formatting in header', async () => {
+      await testRender('page-block-strong');
+    });
+
+    it('renders document with empty header', async () => {
+      await testRender('page-block-no-title');
+    });
+
+    it('renders document with some empty header', async () => {
+      await testRender('page-block-empty-cols');
     });
   });
 
