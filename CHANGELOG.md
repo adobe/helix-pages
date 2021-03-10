@@ -1,3 +1,54 @@
+## [4.18.11](https://github.com/adobe/helix-pages/compare/v4.18.10...v4.18.11) (2021-03-10)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#764](https://github.com/adobe/helix-pages/issues/764)) ([c8835b3](https://github.com/adobe/helix-pages/commit/c8835b36b6164ec3500aa644b7dad92808b8ceed))
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.14 ([#763](https://github.com/adobe/helix-pages/issues/763)) ([9c47cbe](https://github.com/adobe/helix-pages/commit/9c47cbe0fffc92fc43cc844a4ab169ed1bac7080))
+
+## [4.18.10](https://github.com/adobe/helix-pages/compare/v4.18.9...v4.18.10) (2021-03-09)
+
+
+### Bug Fixes
+
+* **rel:** trigger release ([b4f5b0a](https://github.com/adobe/helix-pages/commit/b4f5b0a81b20801f100619b7cdccb4642bd68bbb))
+
+## [4.18.9](https://github.com/adobe/helix-pages/compare/v4.18.8...v4.18.9) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#761](https://github.com/adobe/helix-pages/issues/761)) ([679d7dd](https://github.com/adobe/helix-pages/commit/679d7dd151b833498255ce7e40c6361b88d60d84))
+* **rel:** trigger release ([d4d0dd5](https://github.com/adobe/helix-pages/commit/d4d0dd50e1b1d0560483a7d5304c62cb3198b10d))
+
+## [4.18.8](https://github.com/adobe/helix-pages/compare/v4.18.7...v4.18.8) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deploy:** bump helix-deploy version ([#762](https://github.com/adobe/helix-pages/issues/762)) ([5ccb105](https://github.com/adobe/helix-pages/commit/5ccb105b4534ba43b071885360dd3e7259086604))
+
+## [4.18.7](https://github.com/adobe/helix-pages/compare/v4.18.6...v4.18.7) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-fetch to v2.1.7 ([c8b4e12](https://github.com/adobe/helix-pages/commit/c8b4e1271df3f3a9f7e424a9f45bbd66bab58270))
+
+## [4.18.6](https://github.com/adobe/helix-pages/compare/v4.18.5...v4.18.6) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.8 ([#747](https://github.com/adobe/helix-pages/issues/747)) ([d9a77c2](https://github.com/adobe/helix-pages/commit/d9a77c25849214d99ab324bdcaacfab93ffa1ef3))
+
+## [4.18.5](https://github.com/adobe/helix-pages/compare/v4.18.4...v4.18.5) (2021-03-03)
+
+
+### Bug Fixes
+
+* **deploy:** trigger a release to get full universal runtime loggin ([10014d6](https://github.com/adobe/helix-pages/commit/10014d65848814be7aea0af01ba76a308050eda7))
+
 ## [4.18.4](https://github.com/adobe/helix-pages/compare/v4.18.3...v4.18.4) (2021-03-02)
 
 
