@@ -396,7 +396,7 @@
           sk
             .publish(path, true)
             .then((resp) => {
-              if (resp.ok) {
+              if (resp && resp.ok) {
                 window.location.reload();
               } else {
                 sk.showModal([
@@ -735,7 +735,7 @@
      * @return {publishResponse} The response object
      */
     async publish(path, innerOnly = false) {
-      if (!this.config.host) return null;
+      if (!innerOnly && !this.config.host) return null;
       /* eslint-disable no-console */
       console.log(`purging ${path}`);
       const xfh = innerOnly
