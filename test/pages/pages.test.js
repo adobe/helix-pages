@@ -202,8 +202,8 @@ describe('document equivalence', function suite() {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
             try {
-              assertEquivalentDOM(orig_dom.body, test_dom.body);
-              assertEquivalentNode(orig_dom.body, test_dom.body);
+              assertEquivalentDOM(test_dom.body, orig_dom.body);
+              assertEquivalentNode(test_dom.body, orig_dom.body);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
               console.error(`Error while comparing body of ${originalURL} against ${testURL}: ${error.message}
@@ -219,8 +219,8 @@ describe('document equivalence', function suite() {
               assert.fail(`${testURL} failed with ${info.testStatus}`);
             }
             try {
-              assertEquivalentDOM(orig_dom.head, test_dom.head);
-              assertEquivalentNode(orig_dom.head, test_dom.head);
+              assertEquivalentDOM(test_dom.head, orig_dom.head);
+              assertEquivalentNode(test_dom.head, orig_dom.head);
             } catch (error) {
               // temp fix until https://github.com/michaelleeallen/mocha-junit-reporter/issues/139 is fixed
               console.error(`Error while comparing head of ${originalURL} against ${testURL}: ${error.message}
