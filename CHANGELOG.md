@@ -1,3 +1,10 @@
+## [4.18.13](https://github.com/adobe/helix-pages/compare/v4.18.12...v4.18.13) (2021-03-11)
+
+
+### Bug Fixes
+
+* **deps:** use latest pipeline ([#769](https://github.com/adobe/helix-pages/issues/769)) ([f284a2d](https://github.com/adobe/helix-pages/commit/f284a2d2066136010dd6431c5c21b891533acfde))
+
 ## [4.18.12](https://github.com/adobe/helix-pages/compare/v4.18.11...v4.18.12) (2021-03-11)
 
 
