@@ -37,7 +37,7 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+            - v6-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install npm
           command: sudo npm -g install npm
@@ -47,7 +47,7 @@ commands:
       - save_cache:
           paths:
             - node_modules
-          key: v5-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+          key: v6-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
           name: prepare test git user
           command: git config --global user.email "circleci@project-helix.page" && git config --global user.name "CircleCi Build"
@@ -62,6 +62,7 @@ jobs:
           command: npm run lint
       - run: mkdir junit
       - puppeteer/install
+      - run: node node_modules/puppeteer/install.js
       - run:
           name: Unit tests
           command: npx mocha --exit --reporter mocha-junit-reporter test/unit/*.test.js
@@ -134,19 +135,36 @@ jobs:
           command: |
             if [[ $CIRCLE_BRANCH == *"-publish-ci"* ]]; then
                 echo "Using CI Publish"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci | cat
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci 2>&1 | tee publish.out
             else
               if [[ ! -z "<< pipeline.parameters.publish_ci_version >>" ]]; then
                 echo "Using CI Publish provided version: << pipeline.parameters.publish_ci_version >>"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@<< pipeline.parameters.publish_ci_version >> | cat
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@<< pipeline.parameters.publish_ci_version >> 2>&1 | tee publish.out
               else
                 echo "Using regular Publish"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE | cat
+                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE 2>&1 | tee publish.out
               fi
             fi
 
-
       - run: mkdir junit
+
+      - run:
+          name: Store Publish Output as junit results
+          command: |
+            if grep "Error" publish.out; then
+              echo '<?xml version="1.0" encoding="UTF-8" ?>'                                           > junit/publish-as-test.xml
+              echo '<testsuites id="publish" name="hlx publish" tests="1" failures="1" time="0.000">' >> junit/publish-as-test.xml
+              echo '<testsuite id="publish1" name="hlx publish" tests="1" failures="1" time="0.001">' >> junit/publish-as-test.xml
+              echo '<testcase id="publish2" name="run hlx publish" time="0.001">'                     >> junit/publish-as-test.xml
+              echo '<failure message="hlx publish failed with error" type="WARNING">'                 >> junit/publish-as-test.xml
+              cat publish.out                                                                         >> junit/publish-as-test.xml
+              echo '</failure>'                                                                       >> junit/publish-as-test.xml
+              echo '</testcase>'                                                                      >> junit/publish-as-test.xml
+              echo '</testsuite>'                                                                     >> junit/publish-as-test.xml
+              echo '</testsuites>'                                                                    >> junit/publish-as-test.xml
+            fi
+      - store_test_results:
+          path: junit
 
       - persist_to_workspace:
           root: /home/circleci

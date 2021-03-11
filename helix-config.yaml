@@ -15,16 +15,15 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: https://helix-pages.anywhere.run/pages_4.16.7
+    package: https://helix-pages.anywhere.run/pages_4.18.12
 
   - name: universal
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix test deployment subdomain for now.
-    package: https://helix-pages.anywhere.run/pages_4.16.7
+    package: https://helix-pages.anywhere.run/pages_4.18.12
     version-lock:
-      # pinned to AWS, use the other strains to switch runtimes dynamically
       env: amazonwebservices
 
   - name: universal-ci
@@ -32,19 +31,19 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages-ci subdomain
-    package: https://helix-pages-ci.anywhere.run/pages_4.16.7
+    package: https://helix-pages-ci.anywhere.run/pages_4.18.12
 
   - name: universal-prod
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages subdomain
-    package: https://helix-pages.anywhere.run/pages_4.16.7
+    package: https://helix-pages.anywhere.run/pages_4.18.12
 
   - name: breaking-202103
     condition:
       preflight.x-pages-version=: breaking-202103
-    code: https://github.com/tripodsan/helix-pages.git#breaking-202103
-    content: https://github.com/tripodsan/helix-pages.git#breaking-202103
-    static: https://github.com/tripodsan/helix-pages.git/htdocs#breaking-202103
-    package: helix-pages/pages_4.15.4.breaking-202103
+    code: https://github.com/adobe/helix-pages.git#breaking-202103
+    content: https://github.com/adobe/helix-pages.git#breaking-202103
+    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202103
+    package: helix-pages/pages_4.18.11.breaking-202103

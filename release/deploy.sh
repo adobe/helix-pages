@@ -23,7 +23,7 @@ git fetch
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PKG_VERSION=""
 ARG_VERSION=""
-ARG_STRAIN="--strain default --strain universal"
+ARG_STRAIN="--strain default --strain universal --strain universal-ci --strain universal-prod"
 if [[ "$BRANCH" =~ ^breaking-.* ]]; then
   # use special version for deploying on breaking branch
   PKG_VERSION="$(jq -r .version package.json).$BRANCH"
@@ -34,7 +34,7 @@ fi
 
 hlx clean
 hlx build --universal
-hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/html.js       --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=html \
+hedy -v --target=wsk,aws --deploy --entry-file=.hlx/build/src/html.js       $ARG_VERSION --property.scriptName=html \
       --fastly-service-id 0trc7KZPj73TyFfFhsUyWu \
       --checkpath /_status_check/healthcheck.json  # hardcoded health check path
 echo "Gateway Updated."

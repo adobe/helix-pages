@@ -1,3 +1,126 @@
+## [4.18.12](https://github.com/adobe/helix-pages/compare/v4.18.11...v4.18.12) (2021-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([b738b93](https://github.com/adobe/helix-pages/commit/b738b93921c28f81c2ab96bae31aaf64d0d5a989))
+* **sidekick:** reload fails without production host ([4722c97](https://github.com/adobe/helix-pages/commit/4722c978d93f38d6dfcd7d5d4ee4e644f9055538))
+
+## [4.18.11](https://github.com/adobe/helix-pages/compare/v4.18.10...v4.18.11) (2021-03-10)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#764](https://github.com/adobe/helix-pages/issues/764)) ([c8835b3](https://github.com/adobe/helix-pages/commit/c8835b36b6164ec3500aa644b7dad92808b8ceed))
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.14 ([#763](https://github.com/adobe/helix-pages/issues/763)) ([9c47cbe](https://github.com/adobe/helix-pages/commit/9c47cbe0fffc92fc43cc844a4ab169ed1bac7080))
+
+## [4.18.10](https://github.com/adobe/helix-pages/compare/v4.18.9...v4.18.10) (2021-03-09)
+
+
+### Bug Fixes
+
+* **rel:** trigger release ([b4f5b0a](https://github.com/adobe/helix-pages/commit/b4f5b0a81b20801f100619b7cdccb4642bd68bbb))
+
+## [4.18.9](https://github.com/adobe/helix-pages/compare/v4.18.8...v4.18.9) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#761](https://github.com/adobe/helix-pages/issues/761)) ([679d7dd](https://github.com/adobe/helix-pages/commit/679d7dd151b833498255ce7e40c6361b88d60d84))
+* **rel:** trigger release ([d4d0dd5](https://github.com/adobe/helix-pages/commit/d4d0dd50e1b1d0560483a7d5304c62cb3198b10d))
+
+## [4.18.8](https://github.com/adobe/helix-pages/compare/v4.18.7...v4.18.8) (2021-03-09)
+
+
+### Bug Fixes
+
+* **deploy:** bump helix-deploy version ([#762](https://github.com/adobe/helix-pages/issues/762)) ([5ccb105](https://github.com/adobe/helix-pages/commit/5ccb105b4534ba43b071885360dd3e7259086604))
+
+## [4.18.7](https://github.com/adobe/helix-pages/compare/v4.18.6...v4.18.7) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-fetch to v2.1.7 ([c8b4e12](https://github.com/adobe/helix-pages/commit/c8b4e1271df3f3a9f7e424a9f45bbd66bab58270))
+
+## [4.18.6](https://github.com/adobe/helix-pages/compare/v4.18.5...v4.18.6) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.8 ([#747](https://github.com/adobe/helix-pages/issues/747)) ([d9a77c2](https://github.com/adobe/helix-pages/commit/d9a77c25849214d99ab324bdcaacfab93ffa1ef3))
+
+## [4.18.5](https://github.com/adobe/helix-pages/compare/v4.18.4...v4.18.5) (2021-03-03)
+
+
+### Bug Fixes
+
+* **deploy:** trigger a release to get full universal runtime loggin ([10014d6](https://github.com/adobe/helix-pages/commit/10014d65848814be7aea0af01ba76a308050eda7))
+
+## [4.18.4](https://github.com/adobe/helix-pages/compare/v4.18.3...v4.18.4) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** do not bubble up purge errors to the ui ([e939490](https://github.com/adobe/helix-pages/commit/e9394904fc29f0bd164b2789341a0d237a855be9))
+
+## [4.18.3](https://github.com/adobe/helix-pages/compare/v4.18.2...v4.18.3) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** include branch name in host when purging ([d98b7c1](https://github.com/adobe/helix-pages/commit/d98b7c1c740d5054288016b94ade62954d1ed489))
+
+## [4.18.2](https://github.com/adobe/helix-pages/compare/v4.18.1...v4.18.2) (2021-03-02)
+
+
+### Bug Fixes
+
+* **sidekick:** reload button not reliable ([8d78af4](https://github.com/adobe/helix-pages/commit/8d78af418e82cc3c43151fcf89fe2ec08aecb160))
+
+## [4.18.1](https://github.com/adobe/helix-pages/compare/v4.18.0...v4.18.1) (2021-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.7.5 ([#720](https://github.com/adobe/helix-pages/issues/720)) ([520334b](https://github.com/adobe/helix-pages/commit/520334bed66cfebd10141e192e881ab91e6c79b3))
+
+# [4.18.0](https://github.com/adobe/helix-pages/compare/v4.17.1...v4.18.0) (2021-03-02)
+
+
+### Features
+
+* **sidekick:** reload plugin ([3df43fd](https://github.com/adobe/helix-pages/commit/3df43fd26ea5905058c15c79420bda30683d630c))
+
+## [4.17.1](https://github.com/adobe/helix-pages/compare/v4.17.0...v4.17.1) (2021-03-01)
+
+
+### Bug Fixes
+
+* **config:** fix 404 for static files in breaking branch ([#722](https://github.com/adobe/helix-pages/issues/722)) ([03ce464](https://github.com/adobe/helix-pages/commit/03ce464f1ef920e927cadf42351dfd1da3dd7c73)), closes [#713](https://github.com/adobe/helix-pages/issues/713)
+
+# [4.17.0](https://github.com/adobe/helix-pages/compare/v4.16.14...v4.17.0) (2021-02-26)
+
+
+### Features
+
+* **sidekick:** also purge .md ([0f5e7b2](https://github.com/adobe/helix-pages/commit/0f5e7b2351396bca72fc341172bea37f4c7b1d73))
+* **sidekick:** purge with and without extension ([a55f452](https://github.com/adobe/helix-pages/commit/a55f452a710f77c6108f57ddb872a4f9f0211f9b))
+
+## [4.16.14](https://github.com/adobe/helix-pages/compare/v4.16.13...v4.16.14) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deploy:** use release version in deploy script ([5246797](https://github.com/adobe/helix-pages/commit/52467977b02d396191df0f39bc206ebf3d0bbf56)), closes [#716](https://github.com/adobe/helix-pages/issues/716)
+
+## [4.16.13](https://github.com/adobe/helix-pages/compare/v4.16.12...v4.16.13) (2021-02-25)
+
+
+### Bug Fixes
+
+* **deploy:** use separate universal subdomain ([4547049](https://github.com/adobe/helix-pages/commit/4547049bd39a8f904ec71b2122deca5062d6f4a9))
+
 ## [4.16.12](https://github.com/adobe/helix-pages/compare/v4.16.11...v4.16.12) (2021-02-22)
 
 
