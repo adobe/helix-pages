@@ -200,4 +200,10 @@ describe('Rendering', () => {
       await testRender('page-metadata-block', 'head');
     });
   });
+
+  describe('Miscellaneous', () => {
+    it('renders the fedpub header correctly', async () => {
+      await testRenderPlain('fedpub-header');
+    });
+  });
 });
