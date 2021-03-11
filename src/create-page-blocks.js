@@ -27,11 +27,8 @@ function tableToDivs(document, $table, cols) {
   }
   $rows.forEach(($tr) => {
     const $card = document.createElement('div');
-    $tr.querySelectorAll('td').forEach(($td, i) => {
+    $tr.querySelectorAll('td').forEach(($td) => {
       const $div = document.createElement('div');
-      if (cols.length > 1 && cols[i]) {
-        $div.classList.add(cols[i]);
-      }
       $div.append(...$td.childNodes);
       $card.append($div);
     });
