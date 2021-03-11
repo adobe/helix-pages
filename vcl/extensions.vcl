@@ -21,6 +21,11 @@ sub hlx_type_pipeline_before {
 
     # for now, we disable all caching in dispatch.
     set req.http.X-Dispatch-NoCache = "true";
+
+    if (req.url.ext ~ "^html$") {
+        // do not cache HTML at all
+        set req.http.X-Dispatch-Pass = 1;
+    }
 }
 
 sub hlx_type_pipeline_after {}
