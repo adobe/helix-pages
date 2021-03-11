@@ -1,3 +1,15 @@
+# [4.19.0](https://github.com/adobe/helix-pages/compare/v4.18.13...v4.19.0) (2021-03-11)
+
+
+### Bug Fixes
+
+* **deploy:** use universal runtime by default ([4d60ce1](https://github.com/adobe/helix-pages/commit/4d60ce1d2e30bbd9ea4c3801b7c3eab969bb7d83))
+
+
+### Features
+
+* **config:** use universal runtime for preflight ([e3b3d28](https://github.com/adobe/helix-pages/commit/e3b3d28cb060826151398b93f93701173c31f85a))
+
 ## [4.18.13](https://github.com/adobe/helix-pages/compare/v4.18.12...v4.18.13) (2021-03-11)
 
 
