@@ -1,3 +1,11 @@
+## [4.18.12](https://github.com/adobe/helix-pages/compare/v4.18.11...v4.18.12) (2021-03-11)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([b738b93](https://github.com/adobe/helix-pages/commit/b738b93921c28f81c2ab96bae31aaf64d0d5a989))
+* **sidekick:** reload fails without production host ([4722c97](https://github.com/adobe/helix-pages/commit/4722c978d93f38d6dfcd7d5d4ee4e644f9055538))
+
 ## [4.18.11](https://github.com/adobe/helix-pages/compare/v4.18.10...v4.18.11) (2021-03-10)
 
 
