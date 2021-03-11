@@ -24,7 +24,7 @@ sub hlx_type_pipeline_before {
 
     if (req.url.ext ~ "^html$") {
         # do not cache HTML at all
-        set req.http.X-Dispatch-Pass = 1;
+        set req.http.X-Dispatch-Pass = "1";
     }
 }
 
