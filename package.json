@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-deploy": "3.11.0",
+    "@adobe/helix-deploy": "3.14.0",
     "@adobe/helix-fetch": "2.1.7",
     "@adobe/helix-pipeline": "13.7.17",
     "@adobe/helix-shared": "7.21.2",
