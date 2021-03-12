@@ -735,9 +735,8 @@
      * @return {publishResponse} The response object
      */
     async publish(path, innerOnly = false) {
-
       const purgeURL = new URL(path, window.location.href);
-      const pathname = purgeURL.pathname+purgeURL.search;
+      const pathname = `${purgeURL.pathname}${purgeURL.search}`;
 
       if (!innerOnly && !this.config.host) return null;
       /* eslint-disable no-console */
