@@ -1,3 +1,10 @@
+## [4.19.2](https://github.com/adobe/helix-pages/compare/v4.19.1...v4.19.2) (2021-03-12)
+
+
+### Bug Fixes
+
+* **rel:** trigger release ([d3dba10](https://github.com/adobe/helix-pages/commit/d3dba10dd9900708b90efe7eb3391b5784f27723))
+
 ## [4.19.1](https://github.com/adobe/helix-pages/compare/v4.19.0...v4.19.1) (2021-03-12)
 
 

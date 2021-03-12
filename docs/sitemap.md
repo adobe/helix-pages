@@ -1,3 +1,5 @@
+<h2 style="color:red">DEPRECATED</h2>
+
 # How to add a Sitemap to your Helix Pages website
 
 A [`sitemap.xml`](https://en.wikipedia.org/wiki/Sitemaps) file helps search engines crawl and index your site, which increases the chances of visitors finding your content.

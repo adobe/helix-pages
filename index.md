@@ -69,8 +69,7 @@ function takeMeThere() {
 ## For developers
 
 - [Add an Atom feed to your site](docs/feed.md)
-- [Add a Sitemap to your site](docs/sitemap.md)
-- [Add an Index to your site](https://github.com/adobe/helix-home/blob/main/docs/setup-indexing.md)
+- [Add an Index to your site](https://main--helix-home--adobe.hlx.page/docs/setup-indexing.html)
 
 ## For authors
 
