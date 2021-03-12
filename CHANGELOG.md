@@ -1,3 +1,11 @@
+## [4.19.1](https://github.com/adobe/helix-pages/compare/v4.19.0...v4.19.1) (2021-03-12)
+
+
+### Bug Fixes
+
+* **deploy:** use helix-deploy-3.14.0 ([3de69f3](https://github.com/adobe/helix-pages/commit/3de69f3fc86e487fef194a538849480264290804))
+* **vcl:** disable caching of HTML ([#771](https://github.com/adobe/helix-pages/issues/771)) ([d787fd2](https://github.com/adobe/helix-pages/commit/d787fd276026ede40ea74508dec16a815057f56a))
+
 # [4.19.0](https://github.com/adobe/helix-pages/compare/v4.18.13...v4.19.0) (2021-03-11)
 
 
