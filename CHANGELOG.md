@@ -1,3 +1,10 @@
+## [4.19.3](https://github.com/adobe/helix-pages/compare/v4.19.2...v4.19.3) (2021-03-12)
+
+
+### Bug Fixes
+
+* **breaking:** do not set cookies ([33a6d61](https://github.com/adobe/helix-pages/commit/33a6d61946351374054c7ff75ec844f78f899127))
+
 ## [4.19.2](https://github.com/adobe/helix-pages/compare/v4.19.1...v4.19.2) (2021-03-12)
 
 
