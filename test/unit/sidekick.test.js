@@ -545,8 +545,11 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Publish plugin also purges dependencies', async () => {
     const actionHost = 'https://adobeioruntime.net';
-    const purgePath = '/en/topics/foo.html';
-    let purged = false;
+    const dependencies = [
+      '/en/topics/foo.html',
+      'bar.html?step=1',
+    ];
+    const purged = [];
     await page.setRequestInterception(true);
     await new Promise((resolve, reject) => {
       page.on('request', async (req) => {
@@ -554,7 +557,7 @@ describe('Test sidekick bookmarklet', () => {
         if (req.url().startsWith(actionHost)) {
           const params = new URL(req.url()).searchParams;
           // check result
-          purged = params.get('path') === purgePath;
+          purged.push(params.get('path'));
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
@@ -564,22 +567,26 @@ describe('Test sidekick bookmarklet', () => {
         } else {
           req.continue();
         }
-        if (purged) resolve();
+        if (purged.length === 3) resolve();
       });
       // open test page and click publish button
       page
         .goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' })
         .then(async () => {
-          // add dependency
-          await page.evaluate((dPath) => {
-            window.hlx.dependencies = [dPath];
-          }, purgePath);
+          // add dependencies
+          await page.evaluate((deps) => {
+            window.hlx.dependencies = deps;
+          }, dependencies);
         })
         .then(() => execPlugin(page, 'publish'));
       // reject promise before IT time is up
       setTimeout(() => reject(new Error('timed out')), IT_DEFAULT_TIMEOUT - 2000);
     });
-    assert.ok(purged, 'Purge request not sent');
+    assert.deepStrictEqual(purged, [
+      '/en/topics/bla.html',
+      '/en/topics/foo.html',
+      '/en/topics/bar.html?step=1',
+    ], 'Purge request not sent');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin does not purge without production host', async () => {
