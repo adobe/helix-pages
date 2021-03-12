@@ -185,6 +185,19 @@ async function extractMetaData(context, action) {
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
   meta.url = getAbsoluteUrl(request.headers, request.url);
+
+  // content.image is not correct if the first image is in a page-block. since the pipeline
+  // only respects the image nodes in the mdast
+  let $hero;
+  document.querySelectorAll('body > div').forEach(($section) => {
+    if (!$hero) {
+      $hero = $section.querySelector('img');
+    }
+  });
+  if ($hero) {
+    content.image = $hero.src;
+  }
+
   meta.image = getAbsoluteUrl(request.headers,
     optimizeMetaImage(url, meta.image || content.image || await getDefaultMetaImage(action)));
 }
