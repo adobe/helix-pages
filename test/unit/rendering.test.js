@@ -13,7 +13,6 @@
 process.env.HELIX_FETCH_FORCE_HTTP1 = true;
 
 const assert = require('assert');
-const querystring = require('querystring');
 const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs-extra');
@@ -66,7 +65,7 @@ describe('Rendering', () => {
     scope1 = nock('https://super-test--helix-pages--adobe.hlx.page')
       .get(/.*/)
       .reply(async (uri, body, cb) => {
-        const file = path.resolve(__dirname, 'fixtures', uri.substring(1));
+        const file = path.resolve(__dirname, 'fixtures', uri.split('/').pop());
         const data = await fs.readFile(file, 'utf-8');
         cb(null, [200, data]);
       })
@@ -82,16 +81,14 @@ describe('Rendering', () => {
     nock.cleanAll();
   });
 
-  async function render(reqPath, script = 'html') {
-    const testParams = {
-      owner: 'adobe',
-      repo: 'helix-pages',
-      ref: 'super-test',
-      path: reqPath,
-    };
-    const req = new Request(`https://helix-pages.com?${querystring.encode(testParams)}`, {
+  async function render(url, script = 'html') {
+    url.searchParams.append('owner', 'adobe');
+    url.searchParams.append('repo', 'helix-pages');
+    url.searchParams.append('ref', 'super-test');
+    url.searchParams.append('path', `${url.pathname}.md`);
+    const req = new Request(url.href, {
       headers: {
-        host: 'helix-pages.com',
+        host: url.hostname,
       },
     });
     const res = await actions[script].main(req, {
@@ -102,8 +99,13 @@ describe('Rendering', () => {
     return res.text();
   }
 
-  async function testRender(spec, selector = 'main') {
-    const actHtml = await render(`/${spec}.md`);
+  async function testRender(url, selector = 'main') {
+    if (!(url instanceof URL)) {
+      // eslint-disable-next-line no-param-reassign
+      url = new URL(`https://helix-pages.com/${url}`);
+    }
+    const spec = url.pathname.split('/').pop();
+    const actHtml = await render(url, 'html', url);
     // console.log(actHtml);
     const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.html`), 'utf-8');
     const $actMain = new JSDOM(actHtml).window.document.querySelector(selector);
@@ -111,8 +113,13 @@ describe('Rendering', () => {
     assertEquivalentNode($actMain, $expMain);
   }
 
-  async function testRenderPlain(spec) {
-    const actHtml = await render(`/${spec}.md`, 'plain_html');
+  async function testRenderPlain(url) {
+    if (!(url instanceof URL)) {
+      // eslint-disable-next-line no-param-reassign
+      url = new URL(`https://helix-pages.com/${url}`);
+    }
+    const spec = url.pathname.split('/').pop();
+    const actHtml = await render(url, 'plain_html');
     const expHtml = await fs.readFile(path.resolve(__dirname, 'fixtures', `${spec}.plain.html`), 'utf-8');
     const $actMain = new JSDOM(actHtml).window.document.querySelector('body');
     const $expMain = new JSDOM(expHtml).window.document.querySelector('body');
@@ -139,7 +146,7 @@ describe('Rendering', () => {
 
   describe('Images', () => {
     it('renders images.md correctly', async () => {
-      const html = await render('/images.md');
+      const html = await render(new URL('https://helix-pages.com/images'));
       const dom = new JSDOM(html);
       const pics = Array.from(dom.window.document.querySelectorAll('picture'));
       const imgs = pics.map((pic) => pic.querySelector('img'));
@@ -152,7 +159,7 @@ describe('Rendering', () => {
     });
 
     it('renders images.md correctly (plain)', async () => {
-      const html = await render('/images.md', 'plain_html');
+      const html = await render(new URL('https://helix-pages.com/images'), 'plain_html');
       const dom = new JSDOM(html);
       const pics = Array.from(dom.window.document.querySelectorAll('picture'));
       const imgs = pics.map((pic) => pic.querySelector('img'));
@@ -198,6 +205,10 @@ describe('Rendering', () => {
   describe('Metadata Block', () => {
     it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
+    });
+
+    it('uses correct hero image', async () => {
+      await testRender(new URL('https://super-test--helix-pages--adobe.hlx.page/marketing/page-metadata-block-hero'), 'head');
     });
   });
 
