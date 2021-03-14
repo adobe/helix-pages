@@ -102,7 +102,7 @@
       ? `${ref}--${outerPrefix}`
       : outerPrefix;
     // host param for purge request must include ref
-    const purgeHost = `${ref}--${outerPrefix}.hlx.page`;
+    const purgeHost = outerPrefix ? `${ref}--${outerPrefix}.hlx.page` : null;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
@@ -361,7 +361,7 @@
   function addEditPlugin(sk) {
     sk.add({
       id: 'edit',
-      condition: (sidekick) => sidekick.isHelix(),
+      condition: (s) => s.config.owner && s.config.repo && s.isHelix(),
       button: {
         action: () => {
           const { config, location } = sk;
@@ -387,7 +387,7 @@
   function addReloadPlugin(sk) {
     sk.add({
       id: 'reload',
-      condition: (sidekick) => sidekick.location.host === sidekick.config.innerHost,
+      condition: (s) => s.config.purgeHost && (s.isInner() || s.isDev()),
       button: {
         action: () => {
           const { location } = sk;
@@ -606,18 +606,44 @@
     }
 
     /**
+     * Checks if the current location is a development URL.
+     * @returns {boolean} <code>true</code> if development URL, else <code>false</code>
+     */
+    isDev() {
+      const { location } = this;
+      return [
+        '', // for unit testing
+        'localhost:3000', // for development and browser testing
+      ].includes(location.host);
+    }
+
+    /**
+     * Checks if the current location is an inner CDN URL.
+     * @returns {boolean} <code>true</code> if inner CDN URL, else <code>false</code>
+     */
+    isInner() {
+      const { config, location } = this;
+      return location.host.startsWith(config.innerHost);
+    }
+
+    /**
+     * Checks if the current location is an outer CDN URL.
+     * @returns {boolean} <code>true</code> if outer CDN URL, else <code>false</code>
+     */
+    isOuter() {
+      const { config, location } = this;
+      return [
+        config.host,
+        config.outerHost,
+      ].includes(location.host);
+    }
+
+    /**
      * Checks if the current location is a configured Helix URL.
      * @returns {boolean} <code>true</code> if Helix URL, else <code>false</code>
      */
     isHelix() {
-      const { config, location } = this;
-      return [
-        '', // for unit testing
-        'localhost:3000', // for browser testing
-        config.host,
-        config.outerHost,
-        config.innerHost,
-      ].includes(location.host);
+      return this.isDev() || this.isInner() || this.isOuter();
     }
 
     /**

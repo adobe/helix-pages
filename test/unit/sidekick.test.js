@@ -87,12 +87,12 @@ describe('Test sidekick bookmarklet', () => {
     page = null;
   });
 
-  it('Renders default plugins', async () => {
+  it('Renders with missing config', async () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     const skHandle = await page.$('div.hlx-sk');
     assert.ok(skHandle, 'Did not render without config');
     const plugins = await getPlugins(page);
-    assert.strictEqual(plugins.length, 1, 'Did not render default plugins');
+    assert.strictEqual(plugins.length, 0, 'Rendered unexpected plugins');
     const zIndex = await page.evaluate(
       (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
       skHandle,
