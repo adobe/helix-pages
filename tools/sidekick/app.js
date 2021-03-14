@@ -735,10 +735,9 @@
      * @return {publishResponse} The response object
      */
     async publish(path, innerOnly = false) {
+      if (!innerOnly && !this.config.host) return null;
       const purgeURL = new URL(path, this.location.href);
       const pathname = `${purgeURL.pathname}${purgeURL.search}`;
-
-      if (!innerOnly && !this.config.host) return null;
       /* eslint-disable no-console */
       console.log(`purging ${pathname}`);
       const xfh = innerOnly
