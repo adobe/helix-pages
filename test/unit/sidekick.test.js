@@ -627,6 +627,30 @@ describe('Test sidekick bookmarklet', () => {
     });
     assert.ok(noPurge, 'Did not purge inner host only');
   }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Development environment is correctly detected', async () => {
+    await page.goto(`${fixturesPrefix}/is-dev.html`, { waitUntil: 'load' });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isDev() && window.hlx.sidekick.isHelix()),
+      'Did not detect development URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Inner CDN is correctly detected', async () => {
+    await page.goto(`${fixturesPrefix}/publish-staging.html`, { waitUntil: 'load' });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isInner() && window.hlx.sidekick.isHelix()),
+      'Did not detect inner CDN URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Outer CDN is correctly detected', async () => {
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isOuter() && window.hlx.sidekick.isHelix()),
+      'Did not detect outer CDN URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
 });
 
 describe('makeHostHelixCompliant', () => {
