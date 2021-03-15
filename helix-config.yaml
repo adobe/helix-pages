@@ -15,14 +15,14 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: https://helix-pages.anywhere.run/pages_4.19.2
+    package: https://helix-pages.anywhere.run/pages_4.20.1
 
   - name: universal
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix test deployment subdomain for now.
-    package: https://helix-pages.anywhere.run/pages_4.19.2
+    package: https://helix-pages.anywhere.run/pages_4.20.1
     version-lock:
       env: amazonwebservices
 
@@ -31,14 +31,14 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages-ci subdomain
-    package: https://helix-pages-ci.anywhere.run/pages_4.19.2
+    package: https://helix-pages-ci.anywhere.run/pages_4.20.1
 
   - name: universal-prod
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages subdomain
-    package: https://helix-pages.anywhere.run/pages_4.19.2
+    package: https://helix-pages.anywhere.run/pages_4.20.1
 
   - name: breaking-202103
     condition:
