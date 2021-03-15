@@ -1,3 +1,10 @@
+## [4.21.1](https://github.com/adobe/helix-pages/compare/v4.21.0...v4.21.1) (2021-03-15)
+
+
+### Bug Fixes
+
+* **feed:** support leading slash ([9d0a4dd](https://github.com/adobe/helix-pages/commit/9d0a4dd79271bd58cc128e6285c0a8861dd443e0))
+
 # [4.21.0](https://github.com/adobe/helix-pages/compare/v4.20.1...v4.21.0) (2021-03-15)
 
 
