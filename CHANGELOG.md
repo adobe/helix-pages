@@ -1,3 +1,10 @@
+# [4.21.0](https://github.com/adobe/helix-pages/compare/v4.20.1...v4.21.0) (2021-03-15)
+
+
+### Features
+
+* **sidekick:** show reload button on localhost ([b4fc960](https://github.com/adobe/helix-pages/commit/b4fc9603991d3dcf8cea5f9455d5a0ce95d12583))
+
 ## [4.20.1](https://github.com/adobe/helix-pages/compare/v4.20.0...v4.20.1) (2021-03-15)
 
 
