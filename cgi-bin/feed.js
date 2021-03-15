@@ -11,6 +11,7 @@
  */
 const fetchAPI = require('@adobe/helix-fetch');
 const escape = require('xml-escape');
+const path = require('path');
 
 function createFetchContext() {
   /* istanbul ignore next */
@@ -35,12 +36,13 @@ const { getOriginalHost } = require('../src/utils');
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
 function loc(host, hit) {
+  const url = new URL(path.join(host, hit.id));
   return `  <entry>
-    <id>${host}/${hit.id}</id>
+    <id>${url.href}</id>
     <title>${escape(hit.title)}</title>
     <updated>${hit.updated.toISOString()}</updated>
     <content><![CDATA[
-      <esi:include src="/${hit.id.replace(/\.html$/, '.embed.html')}"></esi:include>
+      <esi:include src="${url.pathname.replace(/\.html$/, '.embed.html')}"></esi:include>
    ]]></content>
   </entry>
 `;
