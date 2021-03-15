@@ -35,8 +35,9 @@ const { getOriginalHost } = require('../src/utils');
  * @param {object} hit index hit, containing at least a path
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
-function loc(host, hit) {
+function loc(host, hit, log) {
   const url = new URL(path.join(host, hit.id));
+  log.info(`loc url: ${url}`);
   return `  <entry>
     <id>${url.href}</id>
     <title>${escape(hit.title)}</title>
@@ -74,12 +75,15 @@ async function run(req, context) {
   try {
     const url = `https://${originalHost}${src}`;
     log.info(`requesting: ${url}`);
+    log.info('fetching now...');
     const res = await fetch(url);
     const json = await res.json();
 
     const results = Array.isArray(json) ? json : json.data;
     let mostRecent = new Date(0);
+    log.info(`results.length: ${results.length}`);
     const hits = results.map((result) => {
+      log.info(`result: ${result}`);
       let upd = new Date(0);
       try {
         upd = Number.isInteger(result[updated])
@@ -99,7 +103,7 @@ async function run(req, context) {
     });
     const body = `  <updated>${mostRecent.toISOString()}</updated>
 ${hits.map(
-    (hit) => loc(`https://${originalHost}`, hit),
+    (hit) => loc(`https://${originalHost}`, hit, log),
   ).join('\n')}`;
 
     return new Response(body, {
