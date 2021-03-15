@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "4.19.2",
+  "version": "4.19.3",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -42,8 +42,8 @@
   "dependencies": {
     "@adobe/helix-deploy": "3.14.0",
     "@adobe/helix-fetch": "2.1.7",
-    "@adobe/helix-pipeline": "adobe/helix-pipeline#dom-image-rewrite",
-    "@adobe/helix-shared": "7.21.2",
+    "@adobe/helix-pipeline": "adobe/helix-pipeline#breaking-202103",
+    "@adobe/helix-shared": "7.21.3",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",

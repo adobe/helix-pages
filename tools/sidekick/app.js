@@ -736,8 +736,10 @@
      */
     async publish(path, innerOnly = false) {
       if (!innerOnly && !this.config.host) return null;
+      const purgeURL = new URL(path, this.location.href);
+      const pathname = `${purgeURL.pathname}${purgeURL.search}`;
       /* eslint-disable no-console */
-      console.log(`purging ${path}`);
+      console.log(`purging ${pathname}`);
       const xfh = innerOnly
         ? [this.config.innerHost]
         : [this.config.innerHost, this.config.outerHost, this.config.host];
@@ -745,7 +747,7 @@
       u.search = new URLSearchParams([
         ['host', this.config.purgeHost],
         ['xfh', xfh.join(',')],
-        ['path', path],
+        ['path', pathname],
       ]).toString();
       const resp = await fetch(u, {
         method: 'POST',
