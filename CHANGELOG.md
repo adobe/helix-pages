@@ -1,3 +1,29 @@
+# [4.21.0](https://github.com/adobe/helix-pages/compare/v4.20.1...v4.21.0) (2021-03-15)
+
+
+### Features
+
+* **sidekick:** show reload button on localhost ([b4fc960](https://github.com/adobe/helix-pages/commit/b4fc9603991d3dcf8cea5f9455d5a0ce95d12583))
+
+## [4.20.1](https://github.com/adobe/helix-pages/compare/v4.20.0...v4.20.1) (2021-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([f1e5628](https://github.com/adobe/helix-pages/commit/f1e5628a1e86d069cbb4fbcc52f989dbc0efcba9))
+
+# [4.20.0](https://github.com/adobe/helix-pages/compare/v4.19.3...v4.20.0) (2021-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.21.3 ([#779](https://github.com/adobe/helix-pages/issues/779)) ([9d71767](https://github.com/adobe/helix-pages/commit/9d7176764cb83a34a8c3b54759b03fc3cf4b7f15))
+
+
+### Features
+
+* **sidekick:** support relative dependency URLs ([2b88118](https://github.com/adobe/helix-pages/commit/2b881186df8bb17cfe546b8a6833ebf2508f7615))
+
 ## [4.19.3](https://github.com/adobe/helix-pages/compare/v4.19.2...v4.19.3) (2021-03-12)
 
 
