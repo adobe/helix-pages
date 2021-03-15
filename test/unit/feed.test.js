@@ -57,7 +57,7 @@ const createRequest = () => ({
   })),
 });
 
-describe.only('Atom Feed Tests', () => {
+describe('Atom Feed Tests', () => {
   it('Atom Feed returns ESIs without prefixes', async () => {
     nock('https://blog.adobe.com')
       .get('/en/query-index.json?limit=10')
