@@ -329,7 +329,7 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (s) => s.isEditor() || s.location.host === s.config.host,
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isOuter(),
       button: {
         action: () => {
           const { config, location } = sk;
@@ -361,7 +361,7 @@
   function addEditPlugin(sk) {
     sk.add({
       id: 'edit',
-      condition: (s) => s.config.owner && s.config.repo && s.isHelix(),
+      condition: (sidekick) => sidekick.isHelix(),
       button: {
         action: () => {
           const { config, location } = sk;
@@ -643,7 +643,8 @@
      * @returns {boolean} <code>true</code> if Helix URL, else <code>false</code>
      */
     isHelix() {
-      return this.isDev() || this.isInner() || this.isOuter();
+      return this.config.owner && this.config.repo
+        && (this.isDev() || this.isInner() || this.isOuter());
     }
 
     /**

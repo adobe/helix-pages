@@ -631,7 +631,7 @@ describe('Test sidekick bookmarklet', () => {
   it('Development environment is correctly detected', async () => {
     await page.goto(`${fixturesPrefix}/is-dev.html`, { waitUntil: 'load' });
     assert.ok(
-      await page.evaluate(() => window.hlx.sidekick.isDev() && window.hlx.sidekick.isHelix()),
+      await page.evaluate(() => window.hlx.sidekick.isDev()),
       'Did not detect development URL',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
