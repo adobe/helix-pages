@@ -26,7 +26,7 @@ hedy -v --target=wsk,aws --deploy --entry-file=./cgi-bin/sitemap.js         --pk
 
 # update package secrets
 if [[ -f ".pages-package.env" ]]; then
-  hedy -v --no-build --no-hints --update-package --no-test --pkgVersion=ci$CIRCLE_BUILD_NUM
+  hedy -v --target=wsk,aws --no-build --no-hints --update-package --no-test --pkgVersion=ci$CIRCLE_BUILD_NUM
 fi
 
 # update helix-config.yaml
