@@ -40,14 +40,14 @@ function loc(host, hit, log) {
     const url = new URL(path.join(host, hit.id));
     log.info(`loc url: ${url}`);
     return `  <entry>
-      <id>${url.href}</id>
-      <title>${escape(hit.title)}</title>
-      <updated>${hit.updated.toISOString()}</updated>
-      <content><![CDATA[
-        <esi:include src="${url.pathname.replace(/\.html$/, '.embed.html')}"></esi:include>
-    ]]></content>
-    </entry>
-  `;
+    <id>${url.href}</id>
+    <title>${escape(hit.title)}</title>
+    <updated>${hit.updated.toISOString()}</updated>
+    <content><![CDATA[
+      <esi:include src="${url.pathname.replace(/\.html$/, '.embed.html')}"></esi:include>
+   ]]></content>
+  </entry>
+`;
   } else {
     log.warn(`Hit has no id: ${hit.title}`);
   }
