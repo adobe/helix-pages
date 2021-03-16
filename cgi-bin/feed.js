@@ -36,17 +36,22 @@ const { getOriginalHost } = require('../src/utils');
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
 function loc(host, hit, log) {
-  const url = new URL(path.join(host, hit.id));
-  log.info(`loc url: ${url}`);
-  return `  <entry>
-    <id>${url.href}</id>
-    <title>${escape(hit.title)}</title>
-    <updated>${hit.updated.toISOString()}</updated>
-    <content><![CDATA[
-      <esi:include src="${url.pathname.replace(/\.html$/, '.embed.html')}"></esi:include>
-   ]]></content>
-  </entry>
-`;
+  if (hit.id) {
+    const url = new URL(path.join(host, hit.id));
+    log.info(`loc url: ${url}`);
+    return `  <entry>
+      <id>${url.href}</id>
+      <title>${escape(hit.title)}</title>
+      <updated>${hit.updated.toISOString()}</updated>
+      <content><![CDATA[
+        <esi:include src="${url.pathname.replace(/\.html$/, '.embed.html')}"></esi:include>
+    ]]></content>
+    </entry>
+  `;
+  } else {
+    log.warn(`Hit has no id: ${hit.title}`);
+  }
+  return '';
 }
 
 async function run(req, context) {
@@ -73,6 +78,11 @@ async function run(req, context) {
   }
 
   try {
+    log.info(`Received params: src = ${src}`);
+    log.info(`Received params: id = ${id}`);
+    log.info(`Received params: title = ${title}`);
+    log.info(`Received params: updated = ${updated}`);
+
     const url = `https://${originalHost}${src}`;
     log.info(`requesting: ${url}`);
     log.info('fetching now...');
@@ -83,7 +93,7 @@ async function run(req, context) {
     let mostRecent = new Date(0);
     log.info(`results.length: ${results.length}`);
     const hits = results.map((result) => {
-      log.info(`result: ${result}`);
+      log.info(`result: ${JSON.stringify(result)}`);
       let upd = new Date(0);
       try {
         upd = Number.isInteger(result[updated])
