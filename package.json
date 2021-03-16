@@ -41,7 +41,7 @@
   "dependencies": {
     "@adobe/helix-deploy": "3.14.0",
     "@adobe/helix-fetch": "2.1.7",
-    "@adobe/helix-pipeline": "13.7.19",
+    "@adobe/helix-pipeline": "13.8.0",
     "@adobe/helix-shared": "7.21.4",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.1",
