@@ -35,9 +35,11 @@ const { getOriginalHost } = require('../src/utils');
  * @param {object} hit index hit, containing at least a path
  * @param {object} roots set of mountpoint roots (e.g. 'ms', 'g' )
  */
-function loc(host, hit) {
-  const url = new URL(path.join(host, hit.id));
-  return `  <entry>
+function loc(host, hit, log) {
+  if (hit.id) {
+    const url = new URL(path.join(host, hit.id));
+    log.info(`feed includes loc url: ${url}`);
+    return `  <entry>
     <id>${url.href}</id>
     <title>${escape(hit.title)}</title>
     <updated>${hit.updated.toISOString()}</updated>
@@ -46,6 +48,10 @@ function loc(host, hit) {
    ]]></content>
   </entry>
 `;
+  } else {
+    log.warn(`Hit has no id: ${hit.title}`);
+  }
+  return '';
 }
 
 async function run(req, context) {
@@ -79,6 +85,7 @@ async function run(req, context) {
 
     const results = Array.isArray(json) ? json : json.data;
     let mostRecent = new Date(0);
+    log.info(`recevied ${results.length} results`);
     const hits = results.map((result) => {
       let upd = new Date(0);
       try {
@@ -99,7 +106,7 @@ async function run(req, context) {
     });
     const body = `  <updated>${mostRecent.toISOString()}</updated>
 ${hits.map(
-    (hit) => loc(`https://${originalHost}`, hit),
+    (hit) => loc(`https://${originalHost}`, hit, log),
   ).join('\n')}`;
 
     return new Response(body, {
