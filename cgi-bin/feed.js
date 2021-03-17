@@ -38,7 +38,7 @@ const { getOriginalHost } = require('../src/utils');
 function loc(host, hit, log) {
   if (hit.id) {
     const url = new URL(path.join(host, hit.id));
-    log.info(`loc url: ${url}`);
+    log.info(`feed includes loc url: ${url}`);
     return `  <entry>
     <id>${url.href}</id>
     <title>${escape(hit.title)}</title>
@@ -78,22 +78,15 @@ async function run(req, context) {
   }
 
   try {
-    log.info(`Received params: src = ${src}`);
-    log.info(`Received params: id = ${id}`);
-    log.info(`Received params: title = ${title}`);
-    log.info(`Received params: updated = ${updated}`);
-
     const url = `https://${originalHost}${src}`;
     log.info(`requesting: ${url}`);
-    log.info('fetching now...');
     const res = await fetch(url);
     const json = await res.json();
 
     const results = Array.isArray(json) ? json : json.data;
     let mostRecent = new Date(0);
-    log.info(`results.length: ${results.length}`);
+    log.info(`recevied ${results.length} results`);
     const hits = results.map((result) => {
-      log.info(`result: ${JSON.stringify(result)}`);
       let upd = new Date(0);
       try {
         upd = Number.isInteger(result[updated])
