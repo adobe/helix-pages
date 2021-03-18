@@ -1,3 +1,12 @@
+## [4.21.2](https://github.com/adobe/helix-pages/compare/v4.21.1...v4.21.2) (2021-03-18)
+
+
+### Bug Fixes
+
+* **breaking:** make branch unsticky ([9e1e9b0](https://github.com/adobe/helix-pages/commit/9e1e9b09e89c66fb2722f2389fda2a50336a58ac))
+* **ci:** fix failing smoke tests init ([963d736](https://github.com/adobe/helix-pages/commit/963d736a30b0a3f957b158c08b262c4b26c83a33))
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.0 ([#791](https://github.com/adobe/helix-pages/issues/791)) ([35ae43e](https://github.com/adobe/helix-pages/commit/35ae43ebf836eaf4114a37985eeedc2a06ce46f3))
+
 ## [4.21.1](https://github.com/adobe/helix-pages/compare/v4.21.0...v4.21.1) (2021-03-15)
 
 
