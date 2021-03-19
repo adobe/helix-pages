@@ -1,3 +1,10 @@
+# [4.22.0](https://github.com/adobe/helix-pages/compare/v4.21.2...v4.22.0) (2021-03-19)
+
+
+### Features
+
+* **ci:** hard purge test domain ([37268a3](https://github.com/adobe/helix-pages/commit/37268a3e06ae00f4f3d1481b9420595d900e6352))
+
 ## [4.21.2](https://github.com/adobe/helix-pages/compare/v4.21.1...v4.21.2) (2021-03-18)
 
 
