@@ -415,6 +415,28 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.url, `https://${req.headers.host}${req.url}`);
   });
 
+  it('Meta url does not enforce html extension', () => {
+    const noExtRequest = {
+      ...request,
+      url: '/foo/bar/baz',
+      headers: {
+        ...request.headers,
+        'x-old-url': '/foo/bar/baz',
+      },
+    };
+    const dom = new JSDOM('<html></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: noExtRequest,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.url, `https://${noExtRequest.headers['hlx-forwarded-host'].split(',')[0].trim()}${noExtRequest.headers['x-old-url']}`);
+  });
+
   it('Meta image uses absolute content.image', () => {
     const dom = new JSDOM('<html></html');
     const context = {
