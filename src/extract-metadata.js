@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const minimatch = require('minimatch');
 const { getAbsoluteUrl } = require('./utils.js');
 
 /**
@@ -75,6 +76,100 @@ function readBlockConfig($block) {
 }
 
 /**
+ * Looks for metadata from a spreadsheet.
+ * @param {string} url The request URL
+ * @param {object} action The action
+ * @return {object} The metadata
+ */
+async function getGlobalMetadata(url, action) {
+  // if (action) {
+  //   const { request, downloader } = action;
+  //   const {
+  //     owner, repo, ref,
+  //   } = request.params || {};
+  //   const path = '/metadata.json';
+  //   const res = await downloader.fetch({
+  //     owner,
+  //     repo,
+  //     ref,
+  //     path,
+  //     errorOn404: false,
+  //   });
+  //   if (res.status === 200) {
+  //     return await res.json();
+  //   }
+  // }
+  // return {};
+  const globalConfig = [
+    {
+      URL: '/express/create/*',
+      Category: 'design',
+      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    },
+    {
+      URL: '/express/feature/*',
+      Category: 'design',
+      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    },
+    {
+      URL: '*/video/*',
+      Category: 'video',
+    },
+    {
+      URL: '*/photography/*',
+      Category: 'photo',
+    },
+    {
+      URL: '/express/create/',
+      Category: 'index',
+    },
+    {
+      URL: '/express/post/*',
+      Category: 'none',
+      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    },
+    {
+      URL: '/index.html',
+      'Common Interests': 'photo',
+    },
+    {
+      URL: '/index*',
+      Image: '/skyonfire/media_1c114242816f3dab59d5d5a3478df06b63b0b2ec.jpeg',
+    },
+  ].map((entry) => {
+    // lowercase all keys
+    const lcEntry = {};
+    Object.keys(entry).forEach((key) => {
+      lcEntry[key.toLowerCase()] = entry[key];
+    });
+    return lcEntry;
+  });
+
+  const metaConfig = {};
+  globalConfig.forEach(({ url: glob, ...config }) => {
+    if (minimatch(url, glob)) {
+      Object.assign(metaConfig, config);
+    }
+  });
+  return metaConfig;
+}
+
+/**
+ * Looks for metadata in the document.
+ * @param {HTMLDocument} document The document
+ * @return {object} The metadata
+ */
+function getLocalMetadata(document) {
+  let metaConfig = {};
+  const metaBlock = document.querySelector('body div.metadata');
+  if (metaBlock) {
+    metaConfig = readBlockConfig(metaBlock);
+    metaBlock.remove();
+  }
+  return metaConfig;
+}
+
+/**
  * Adds image optimization parameters suitable for meta images to a URL.
  * @param {string} pagePath The path of the requested page
  * @param {string} imgUrl The image URL
@@ -131,35 +226,37 @@ async function extractMetaData(context, action) {
   const { document } = content;
   const { url } = request;
 
-  // extract metadata
   const { meta = {} } = content;
   content.meta = meta;
 
-  const metaBlock = document.querySelector('body div.metadata');
-  if (metaBlock) {
-    const metaConfig = readBlockConfig(metaBlock);
-    [
-      // supported metadata properties
-      'title',
-      'description',
-      'keywords',
-      'tags',
-      'image',
-    ].forEach((name) => {
-      if (metaConfig[name]) {
-        meta[name] = metaConfig[name];
-        delete metaConfig[name];
-      }
-    });
-    if (Object.keys(metaConfig).length > 0) {
-      // add rest to meta.custom
-      meta.custom = Object.keys(metaConfig).map((name) => ({
-        name,
-        value: metaConfig[name],
-        property: name.includes(':'),
-      }));
+  // extract global metadata from spreadsheet, and overlay
+  // with local metadata from document
+  const metaConfig = Object.assign(
+    await getGlobalMetadata(request.url, action),
+    getLocalMetadata(document),
+  );
+
+  // first process supported metadata properties
+  [
+    'title',
+    'description',
+    'keywords',
+    'tags',
+    'image',
+  ].forEach((name) => {
+    if (metaConfig[name]) {
+      meta[name] = metaConfig[name];
+      delete metaConfig[name];
     }
-    metaBlock.remove();
+  });
+  if (Object.keys(metaConfig).length > 0) {
+    // add rest to meta._custom
+    // eslint-disable-next-line no-underscore-dangle
+    meta._custom = Object.keys(metaConfig).map((name) => ({
+      name: toMetaName(name),
+      value: metaConfig[name],
+      property: name.includes(':'),
+    }));
   }
 
   if (meta.keywords) {
@@ -168,6 +265,8 @@ async function extractMetaData(context, action) {
   if (meta.tags) {
     meta.tags = toList(meta.tags);
   }
+
+  // complete metadata with insights from content
   if (!meta.title) {
     meta.title = content.title;
   }
@@ -184,7 +283,7 @@ async function extractMetaData(context, action) {
     });
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
-  meta.url = getAbsoluteUrl(request.headers, request.url);
+  meta.url = getAbsoluteUrl(request.headers, request.headers['x-old-url'] || request.url);
 
   // content.image is not correct if the first image is in a page-block. since the pipeline
   // only respects the image nodes in the mdast
