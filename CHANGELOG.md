@@ -1,3 +1,10 @@
+## [4.22.1](https://github.com/adobe/helix-pages/compare/v4.22.0...v4.22.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* **sidekick:** encode from param ([022ccd0](https://github.com/adobe/helix-pages/commit/022ccd0c2db2a1ac928390a8ee5d7aad2d03befd))
+
 # [4.22.0](https://github.com/adobe/helix-pages/compare/v4.21.2...v4.22.0) (2021-03-19)
 
 
