@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Adobe. All rights reserved.
+ * Copyright 2021 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -10,7 +10,11 @@
  * governing permissions and limitations under the License.
  */
 const minimatch = require('minimatch');
+const fetchAPI = require('@adobe/helix-fetch');
 const { getAbsoluteUrl } = require('./utils.js');
+
+const fetchContext = fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] });
+const { fetch } = fetchContext;
 
 /**
  * Converts all non-valid characters to `-`.
@@ -82,67 +86,31 @@ function readBlockConfig($block) {
  * @return {object} The metadata
  */
 async function getGlobalMetadata(url, action) {
-  const metaRules = [];
+  let metaRules = [];
   if (action) {
-    // const { request, downloader } = action;
-    // const {
-    //   owner, repo, ref,
-    // } = request.params || {};
-    // const path = '/metadata.json';
-    // const res = await downloader.fetch({
-    //   owner,
-    //   repo,
-    //   ref,
-    //   path,
-    //   errorOn404: false,
-    // });
-    // if (res.status === 200) {
-    //   metaRules = (await res.json()).data;
-    // }
-    // metaRules = [
-    //   {
-    //     URL: '/express/create/*',
-    //     Category: 'design',
-    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    //   },
-    //   {
-    //     URL: '/express/feature/*',
-    //     Category: 'design',
-    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    //   },
-    //   {
-    //     URL: '*/video/*',
-    //     Category: 'video',
-    //   },
-    //   {
-    //     URL: '*/photography/*',
-    //     Category: 'photo',
-    //   },
-    //   {
-    //     URL: '/express/create/',
-    //     Category: 'index',
-    //   },
-    //   {
-    //     URL: '/express/post/*',
-    //     Category: 'none',
-    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    //   },
-    //   {
-    //     URL: '/index.html',
-    //     'Common Interests': 'photo',
-    //   },
-    //   {
-    //     URL: '/index*',
-    //     Image: '/skyonfire/media_1c114242816f3dab59d5d5a3478df06b63b0b2ec.jpeg',
-    //   },
-    // ].map((entry) => {
-    //   // lowercase all keys
-    //   const lcEntry = {};
-    //   Object.keys(entry).forEach((key) => {
-    //     lcEntry[key.toLowerCase()] = entry[key];
-    //   });
-    //   return lcEntry;
-    // });
+    const { request, logger: log } = action;
+    const {
+      owner, repo, ref,
+    } = request.params || {};
+    try {
+      const res = await fetch(`https://${ref}--${repo}--${owner}.hlx.page/metadata.json`);
+      if (res.status === 200) {
+        let json = await res.json();
+        if (typeof json.data === 'object') {
+          json = json.data;
+        }
+        metaRules = json.map((entry) => {
+          // lowercase all keys
+          const lcEntry = {};
+          Object.keys(entry).forEach((key) => {
+            lcEntry[key.toLowerCase()] = entry[key];
+          });
+          return lcEntry;
+        });
+      }
+    } catch (e) {
+      log.debug('failed to load global metadata', e);
+    }
   }
   const metaConfig = {};
   metaRules.forEach(({ url: glob, ...config }) => {
