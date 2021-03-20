@@ -82,71 +82,70 @@ function readBlockConfig($block) {
  * @return {object} The metadata
  */
 async function getGlobalMetadata(url, action) {
-  // if (action) {
-  //   const { request, downloader } = action;
-  //   const {
-  //     owner, repo, ref,
-  //   } = request.params || {};
-  //   const path = '/metadata.json';
-  //   const res = await downloader.fetch({
-  //     owner,
-  //     repo,
-  //     ref,
-  //     path,
-  //     errorOn404: false,
-  //   });
-  //   if (res.status === 200) {
-  //     return await res.json();
-  //   }
-  // }
-  // return {};
-  const globalConfig = [
-    {
-      URL: '/express/create/*',
-      Category: 'design',
-      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    },
-    {
-      URL: '/express/feature/*',
-      Category: 'design',
-      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    },
-    {
-      URL: '*/video/*',
-      Category: 'video',
-    },
-    {
-      URL: '*/photography/*',
-      Category: 'photo',
-    },
-    {
-      URL: '/express/create/',
-      Category: 'index',
-    },
-    {
-      URL: '/express/post/*',
-      Category: 'none',
-      Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
-    },
-    {
-      URL: '/index.html',
-      'Common Interests': 'photo',
-    },
-    {
-      URL: '/index*',
-      Image: '/skyonfire/media_1c114242816f3dab59d5d5a3478df06b63b0b2ec.jpeg',
-    },
-  ].map((entry) => {
-    // lowercase all keys
-    const lcEntry = {};
-    Object.keys(entry).forEach((key) => {
-      lcEntry[key.toLowerCase()] = entry[key];
-    });
-    return lcEntry;
-  });
-
+  const metaRules = [];
+  if (action) {
+    // const { request, downloader } = action;
+    // const {
+    //   owner, repo, ref,
+    // } = request.params || {};
+    // const path = '/metadata.json';
+    // const res = await downloader.fetch({
+    //   owner,
+    //   repo,
+    //   ref,
+    //   path,
+    //   errorOn404: false,
+    // });
+    // if (res.status === 200) {
+    //   metaRules = (await res.json()).data;
+    // }
+    // metaRules = [
+    //   {
+    //     URL: '/express/create/*',
+    //     Category: 'design',
+    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    //   },
+    //   {
+    //     URL: '/express/feature/*',
+    //     Category: 'design',
+    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    //   },
+    //   {
+    //     URL: '*/video/*',
+    //     Category: 'video',
+    //   },
+    //   {
+    //     URL: '*/photography/*',
+    //     Category: 'photo',
+    //   },
+    //   {
+    //     URL: '/express/create/',
+    //     Category: 'index',
+    //   },
+    //   {
+    //     URL: '/express/post/*',
+    //     Category: 'none',
+    //     Image: '/express/media_cf867e391c0b433ec3d416c979aafa1f8e4aae9b.png',
+    //   },
+    //   {
+    //     URL: '/index.html',
+    //     'Common Interests': 'photo',
+    //   },
+    //   {
+    //     URL: '/index*',
+    //     Image: '/skyonfire/media_1c114242816f3dab59d5d5a3478df06b63b0b2ec.jpeg',
+    //   },
+    // ].map((entry) => {
+    //   // lowercase all keys
+    //   const lcEntry = {};
+    //   Object.keys(entry).forEach((key) => {
+    //     lcEntry[key.toLowerCase()] = entry[key];
+    //   });
+    //   return lcEntry;
+    // });
+  }
   const metaConfig = {};
-  globalConfig.forEach(({ url: glob, ...config }) => {
+  metaRules.forEach(({ url: glob, ...config }) => {
     if (minimatch(url, glob)) {
       Object.assign(metaConfig, config);
     }
