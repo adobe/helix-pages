@@ -1,3 +1,10 @@
+## [4.22.2](https://github.com/adobe/helix-pages/compare/v4.22.1...v4.22.2) (2021-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.21.5 ([3eed50c](https://github.com/adobe/helix-pages/commit/3eed50c011c1739f62718d0965c24de57d21fbdc))
+
 ## [4.22.1](https://github.com/adobe/helix-pages/compare/v4.22.0...v4.22.1) (2021-03-19)
 
 
