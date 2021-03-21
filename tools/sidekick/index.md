@@ -120,7 +120,7 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     if (params.has('from')) {
       const from = params.get('from');
       const backLink = document.createElement('a');
-      backLink.href = from;
+      backLink.href = encodeURIComponent(from);
       backLink.textContent = from;
       const wrapper = document.createElement('div');
       wrapper.className = 'back';
