@@ -41,10 +41,9 @@ strains:
     package: https://helix-pages.anywhere.run/pages_4.22.1
 
   - name: breaking-202103
-    sticky: false
     condition:
       preflight.x-pages-version=: breaking-202103
     code: https://github.com/adobe/helix-pages.git#breaking-202103
     content: https://github.com/adobe/helix-pages.git#breaking-202103
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202103
-    package: https://helix-pages.anywhere.run/pages_4.21.0.breaking-202103
+    package: https://helix-pages.anywhere.run/pages_4.22.1.breaking-202103
