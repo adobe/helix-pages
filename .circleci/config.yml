@@ -135,14 +135,14 @@ jobs:
           command: |
             if [[ $CIRCLE_BRANCH == *"-publish-ci"* ]]; then
                 echo "Using CI Publish"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci 2>&1 | tee publish.out
+                npx hlx publish --purge hard --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@ci 2>&1 | tee publish.out
             else
               if [[ ! -z "<< pipeline.parameters.publish_ci_version >>" ]]; then
                 echo "Using CI Publish provided version: << pipeline.parameters.publish_ci_version >>"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@<< pipeline.parameters.publish_ci_version >> 2>&1 | tee publish.out
+                npx hlx publish --purge hard --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE --api-publish  https://adobeioruntime.net/api/v1/web/helix/helix-services/publish@<< pipeline.parameters.publish_ci_version >> 2>&1 | tee publish.out
               else
                 echo "Using regular Publish"
-                npx hlx publish --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE 2>&1 | tee publish.out
+                npx hlx publish --purge hard --custom-vcl='vcl/extensions.vcl' --fastly-serviceid $TEST_SERVICE 2>&1 | tee publish.out
               fi
             fi
 

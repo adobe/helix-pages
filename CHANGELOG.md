@@ -1,3 +1,33 @@
+## [4.22.1](https://github.com/adobe/helix-pages/compare/v4.22.0...v4.22.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* **sidekick:** encode from param ([022ccd0](https://github.com/adobe/helix-pages/commit/022ccd0c2db2a1ac928390a8ee5d7aad2d03befd))
+
+# [4.22.0](https://github.com/adobe/helix-pages/compare/v4.21.2...v4.22.0) (2021-03-19)
+
+
+### Features
+
+* **ci:** hard purge test domain ([37268a3](https://github.com/adobe/helix-pages/commit/37268a3e06ae00f4f3d1481b9420595d900e6352))
+
+## [4.21.2](https://github.com/adobe/helix-pages/compare/v4.21.1...v4.21.2) (2021-03-18)
+
+
+### Bug Fixes
+
+* **breaking:** make branch unsticky ([9e1e9b0](https://github.com/adobe/helix-pages/commit/9e1e9b09e89c66fb2722f2389fda2a50336a58ac))
+* **ci:** fix failing smoke tests init ([963d736](https://github.com/adobe/helix-pages/commit/963d736a30b0a3f957b158c08b262c4b26c83a33))
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.0 ([#791](https://github.com/adobe/helix-pages/issues/791)) ([35ae43e](https://github.com/adobe/helix-pages/commit/35ae43ebf836eaf4114a37985eeedc2a06ce46f3))
+
+## [4.21.1](https://github.com/adobe/helix-pages/compare/v4.21.0...v4.21.1) (2021-03-15)
+
+
+### Bug Fixes
+
+* **feed:** support leading slash ([9d0a4dd](https://github.com/adobe/helix-pages/commit/9d0a4dd79271bd58cc128e6285c0a8861dd443e0))
+
 # [4.21.0](https://github.com/adobe/helix-pages/compare/v4.20.1...v4.21.0) (2021-03-15)
 
 
