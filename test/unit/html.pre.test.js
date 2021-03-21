@@ -277,7 +277,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image is extracted from image tag and optimized', () => {
-    const expectedUrl = `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url.substring(0, request.url.lastIndexOf('/'))}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`;
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
     const dom = new JSDOM(`
     <div class="metadata">
       <div>
@@ -391,7 +391,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.url, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url}`);
+    assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz.html');
   });
 
   it('Meta url uses host header if no hlx-forwarded-host available', () => {
@@ -412,7 +412,29 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.url, `https://${req.headers.host}${req.url}`);
+    assert.strictEqual(context.content.meta.url, 'https://foo.bar/foo/bar/baz.html');
+  });
+
+  it('Meta url does not enforce html extension', () => {
+    const noExtRequest = {
+      ...request,
+      url: '/foo/bar/baz',
+      headers: {
+        ...request.headers,
+        'x-old-url': '/foo/bar/baz',
+      },
+    };
+    const dom = new JSDOM('<html></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: noExtRequest,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz');
   });
 
   it('Meta image uses absolute content.image', () => {
@@ -431,7 +453,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image uses and optimizes relative content.image as absolute URL', () => {
-    const expectedUrl = `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url.substring(0, request.url.lastIndexOf('/'))}/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200`;
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -457,7 +479,7 @@ describe('Testing pre.js', () => {
     };
     await pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200');
   });
 
   it('Meta image uses default meta image if neither content.image nor JPG from repo available', async () => {
@@ -476,7 +498,7 @@ describe('Testing pre.js', () => {
       },
     });
 
-    assert.strictEqual(context.content.meta.image, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200');
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {

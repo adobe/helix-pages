@@ -184,7 +184,7 @@ async function extractMetaData(context, action) {
     });
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
-  meta.url = getAbsoluteUrl(request.headers, request.url);
+  meta.url = getAbsoluteUrl(request.headers, request.headers['x-old-url'] || request.url);
 
   // content.image is not correct if the first image is in a page-block. since the pipeline
   // only respects the image nodes in the mdast
