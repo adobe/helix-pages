@@ -40,6 +40,15 @@ function toList(list) {
 }
 
 /**
+ * Extracts the URL path from the request.
+ * @param {object} request The request
+ * @returns {string} The path
+ */
+function getPath({ headers = {}, url }) {
+  return headers['x-old-url'] || url;
+}
+
+/**
  * Returns the config from a block element as object with key/value pairs.
  * @param {HTMLDivElement} $block The block element
  * @returns {object} The block config
@@ -98,6 +107,9 @@ async function getGlobalMetadata(url, action) {
         let json = await res.json();
         if (typeof json.data === 'object') {
           json = json.data;
+        }
+        if (!(json instanceof Array)) {
+          throw new Error('data must be an array');
         }
         metaRules = json.map((entry) => {
           // lowercase all keys
@@ -200,7 +212,7 @@ async function extractMetaData(context, action) {
   // extract global metadata from spreadsheet, and overlay
   // with local metadata from document
   const metaConfig = Object.assign(
-    await getGlobalMetadata(request.url, action),
+    await getGlobalMetadata(getPath(request), action),
     getLocalMetadata(document),
   );
 
@@ -251,7 +263,7 @@ async function extractMetaData(context, action) {
     });
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
-  meta.url = getAbsoluteUrl(request.headers, request.headers['x-old-url'] || request.url);
+  meta.url = getAbsoluteUrl(request.headers, getPath(request));
 
   // content.image is not correct if the first image is in a page-block. since the pipeline
   // only respects the image nodes in the mdast
