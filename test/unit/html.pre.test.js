@@ -11,6 +11,7 @@
  */
 /* global describe, it */
 const assert = require('assert');
+const { logging } = require('@adobe/helix-testutils');
 const { JSDOM } = require('jsdom');
 
 const { pre } = require('../../src/html.pre.js');
@@ -30,7 +31,9 @@ const action = {
   },
   downloader: {
     fetchGithub: async () => ({ status: 200 }),
+    fetch: async () => ({ status: 200 }),
   },
+  logger: logging.createTestLogger({ level: 'debug' }),
 };
 
 describe('Testing pre requirements for main function', () => {

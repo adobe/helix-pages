@@ -97,14 +97,27 @@ function readBlockConfig($block) {
 async function getGlobalMetadata(url, action) {
   let metaRules = [];
   if (action) {
-    const { request, logger: log } = action;
+    const { request, downloader, secrets, logger: log } = action;
     const {
       owner, repo, ref,
     } = request.params || {};
     try {
-      const res = await fetch(`https://${ref}--${repo}--${owner}.hlx.page/metadata.json`);
+      const headers = {};
+      const token = (secrets && secrets.GITHUB_TOKEN) || (request.headers ? request.headers['x-github-token'] : '');
+      if (token) {
+        headers['x-github-token'] = token;
+      }
+      const res = await downloader.fetch({
+        uri: `https://${ref}--${repo}--${owner}.hlx.page/metadata.json`,
+        options: {
+          timeout: secrets ? secrets.HTTP_TIMEOUT_EXTERNAL : 20000,
+          headers,
+        },
+        headers,
+        errorOn404: false,
+      });
       if (res.status === 200) {
-        let json = await res.json();
+        let json = JSON.parse(res.body);
         if (typeof json.data === 'object') {
           json = json.data;
         }
