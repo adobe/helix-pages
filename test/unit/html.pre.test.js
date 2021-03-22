@@ -256,6 +256,28 @@ describe('Testing pre.js', () => {
     ]);
   });
 
+  it('Meta title is extracted from block', () => {
+    const dom = new JSDOM(`
+    <div class="foo">
+      <div>
+        <div><h1>This is the title</h1></div>
+      </div>
+    </div>
+    <div>This is not the title</div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        title: 'This is not the title',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.title, 'This is the title');
+  });
+
   it('Meta image is extracted from link', () => {
     const dom = new JSDOM(`
     <div class="metadata">

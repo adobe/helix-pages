@@ -168,6 +168,18 @@ async function extractMetaData(context, action) {
   if (meta.tags) {
     meta.tags = toList(meta.tags);
   }
+
+  // content.title is not correct if the h1 is in a page-block since the pipeline
+  // only respects the heading nodes in the mdast
+  let $title;
+  document.querySelectorAll('body > div').forEach(($section) => {
+    if (!$title) {
+      $title = $section.querySelector('h1');
+    }
+  });
+  if ($title) {
+    content.title = $title.textContent;
+  }
   if (!meta.title) {
     meta.title = content.title;
   }
