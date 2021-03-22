@@ -251,7 +251,7 @@ describe('Testing pre.js', () => {
     await pre(context, action);
 
     // eslint-disable-next-line no-underscore-dangle
-    assert.deepStrictEqual(context.content.meta._custom, [
+    assert.deepStrictEqual(context.content.meta.custom, [
       { name: 'foo', value: 'Bar', property: false },
       { name: 'og:locale', value: 'en_UK', property: true },
     ]);

@@ -230,9 +230,8 @@ async function extractMetaData(context, action) {
     }
   });
   if (Object.keys(metaConfig).length > 0) {
-    // add rest to meta._custom
-    // eslint-disable-next-line no-underscore-dangle
-    meta._custom = Object.keys(metaConfig).map((name) => ({
+    // add rest to meta.custom
+    meta.custom = Object.keys(metaConfig).map((name) => ({
       name: toMetaName(name),
       value: metaConfig[name],
       property: name.includes(':'),
