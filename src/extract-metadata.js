@@ -48,7 +48,33 @@ function readBlockConfig($block) {
     if ($row.children && $row.children[1]) {
       const name = toMetaName($row.children[0].textContent);
       if (name) {
-        let value = $row.children[1].textContent.trim().replace(/ {3}/g, ',');
+        let value;
+        if ($row.children[1].hasChildNodes() && $row.children[1].firstElementChild) {
+          // check for multiple paragraph or a list
+          let childNodes;
+          const { tagName } = $row.children[1].firstElementChild;
+          if (tagName === 'P') {
+            // contains a list of <p> paragraphs
+            childNodes = $row.children[1].childNodes;
+          } else if (tagName === 'UL' || tagName === 'OL') {
+            // contains a list
+            childNodes = $row.children[1].children[0].childNodes;
+          }
+
+          if (childNodes) {
+            value = '';
+            childNodes.forEach((child) => {
+              value += `${child.textContent}, `;
+            });
+            value = value.substring(0, value.length - 2);
+          }
+        }
+
+        if (!value) {
+          // for check text content only
+          value = $row.children[1].textContent.trim().replace(/ {3}/g, ',');
+        }
+
         if (!value) {
           // check for value inside link
           const $a = $row.children[1].querySelector('a');
