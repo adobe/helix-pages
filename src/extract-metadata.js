@@ -93,7 +93,12 @@ function readBlockConfig($block) {
 async function getGlobalMetadata(url, action) {
   let metaRules = [];
   if (action) {
-    const { request, downloader, secrets, logger: log } = action;
+    const {
+      request,
+      downloader,
+      secrets,
+      logger: log,
+    } = action;
     const {
       owner, repo, ref,
     } = request.params || {};
