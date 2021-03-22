@@ -10,11 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const minimatch = require('minimatch');
-const fetchAPI = require('@adobe/helix-fetch');
 const { getAbsoluteUrl } = require('./utils.js');
-
-const fetchContext = fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] });
-const { fetch } = fetchContext;
 
 /**
  * Converts all non-valid characters to `-`.
