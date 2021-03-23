@@ -71,7 +71,7 @@ function readBlockConfig($block) {
         }
 
         if (!value) {
-          // for check text content only
+          // for text content only
           value = $row.children[1].textContent.trim().replace(/ {3}/g, ',');
         }
 
