@@ -28,7 +28,7 @@ You need a data source which lists page URLs, page titles, and page update times
   <title>Example Feed</title>
   <link href="https://example.org/"/>
   <id>https://example.org/</id>
-  <esi:include src="/cgi-bin/feed.xml?src=/en/query-index.json%3Flimit%3D10&amp;id=path&amp;title=title&amp;updated=date">
+  <esi:include src="/cgi-bin/feed.xml?src=/en/query-index.json%3Flimit%3D10&id=path&title=title&updated=date">
 </feed>
 ```
 
