@@ -207,6 +207,12 @@ describe('Rendering', () => {
       await testRender('page-metadata-block', 'head');
     });
 
+    it('renders multi value meta tags from metadata block', async () => {
+      await testRender('page-metadata-block-multi-p', 'head');
+      await testRender('page-metadata-block-multi-ul', 'head');
+      await testRender('page-metadata-block-multi-ol', 'head');
+    });
+
     it('uses correct hero image', async () => {
       await testRender(new URL('https://super-test--helix-pages--adobe.hlx.page/marketing/page-metadata-block-hero'), 'head');
     });
