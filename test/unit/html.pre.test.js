@@ -161,7 +161,7 @@ describe('Testing pre.js', () => {
     assert.ok(doc.querySelector('picture'), 'Picture tag missing');
     assert.strictEqual(
       doc.querySelector('picture').innerHTML,
-      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
+      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;auto=webp&amp;format=pjpg&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;auto=webp&amp;format=pjpg&amp;optimize=medium" loading="eager">',
       'Image tag not transformed correctly',
     );
   });

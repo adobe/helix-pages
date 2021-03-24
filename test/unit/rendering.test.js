@@ -152,8 +152,8 @@ describe('Rendering', () => {
       const imgs = pics.map((pic) => pic.querySelector('img'));
       assert.strictEqual(pics.length, 3, 'document has 3 pictures');
       assert.strictEqual(imgs.length, 3, 'document has 3 images');
-      assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&format=webply&optimize=medium')), 'pictures have source sets with correct parameters');
-      assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&format=webply&optimize=medium')), 'images have source with correct parameters');
+      assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&auto=webp&format=pjpg&optimize=medium')), 'pictures have source sets with correct parameters');
+      assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&auto=webp&format=pjpg&optimize=medium')), 'images have source with correct parameters');
       assert.ok(imgs.shift().getAttribute('loading') === 'eager', 'first image has loading set to eager');
       assert.ok(imgs.every((img) => img.getAttribute('loading') === 'lazy'), 'all other images have loading set to lazy');
     });
@@ -165,8 +165,8 @@ describe('Rendering', () => {
       const imgs = pics.map((pic) => pic.querySelector('img'));
       assert.strictEqual(pics.length, 3, 'document has 3 pictures');
       assert.strictEqual(imgs.length, 3, 'document has 3 images');
-      assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&format=webply&optimize=medium')), 'pictures have source sets with correct parameters');
-      assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&format=webply&optimize=medium')), 'images have source with correct parameters');
+      assert.ok(pics.every((pic) => pic.querySelector('source').getAttribute('srcset').endsWith('?width=750&auto=webp&format=pjpg&optimize=medium')), 'pictures have source sets with correct parameters');
+      assert.ok(imgs.every((img) => img.getAttribute('src').endsWith('?width=2000&auto=webp&format=pjpg&optimize=medium')), 'images have source with correct parameters');
       assert.ok(imgs.shift().getAttribute('loading') === 'eager', 'first image has loading set to eager');
       assert.ok(imgs.every((img) => img.getAttribute('loading') === 'lazy'), 'all other images have loading set to lazy');
     });
@@ -205,6 +205,12 @@ describe('Rendering', () => {
   describe('Metadata', () => {
     it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
+    });
+
+    it('renders multi value meta tags from metadata block', async () => {
+      await testRender('page-metadata-block-multi-p', 'head');
+      await testRender('page-metadata-block-multi-ul', 'head');
+      await testRender('page-metadata-block-multi-ol', 'head');
     });
 
     it('uses correct title and hero image', async () => {
