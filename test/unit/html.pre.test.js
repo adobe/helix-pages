@@ -31,7 +31,8 @@ const action = {
   },
   downloader: {
     fetchGithub: async () => ({ status: 200 }),
-    fetch: async () => ({ status: 200 }),
+    fetch: async () => {},
+    getTaskById: async () => ({ status: 404 }),
   },
   logger: logging.createTestLogger({ level: 'debug' }),
 };
@@ -498,6 +499,7 @@ describe('Testing pre.js', () => {
     await pre(context, {
       ...action,
       downloader: {
+        ...action.downloader,
         fetchGithub: async () => ({ status: 404 }),
       },
     });

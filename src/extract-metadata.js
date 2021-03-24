@@ -117,52 +117,30 @@ function readBlockConfig($block) {
  * @return {object} The metadata
  */
 async function getGlobalMetadata(url, action) {
+  const { logger: log, downloader } = action;
   let metaRules = [];
-  if (action) {
-    const {
-      request,
-      downloader,
-      secrets,
-      logger: log,
-    } = action;
-    const {
-      owner, repo, ref,
-    } = request.params || {};
-    try {
-      const headers = {};
-      const token = (secrets && secrets.GITHUB_TOKEN) || (request.headers ? request.headers['x-github-token'] : '');
-      if (token) {
-        headers['x-github-token'] = token;
-      }
-      const res = await downloader.fetch({
-        uri: `https://${ref}--${repo}--${owner}.hlx.page/metadata.json`,
-        options: {
-          timeout: secrets ? secrets.HTTP_TIMEOUT_EXTERNAL : 20000,
-          headers,
-        },
-        headers,
-        errorOn404: false,
-      });
-      if (res.status === 200) {
-        let json = JSON.parse(res.body);
-        if (typeof json.data === 'object') {
-          json = json.data;
-        }
-        if (!(json instanceof Array)) {
-          throw new Error('data must be an array');
-        }
-        metaRules = json.map((entry) => {
-          // lowercase all keys
-          const lcEntry = {};
-          Object.keys(entry).forEach((key) => {
-            lcEntry[key.toLowerCase()] = entry[key];
-          });
-          return lcEntry;
-        });
-      }
-    } catch (e) {
-      log.debug('failed to load global metadata', e);
+  const metaTask = downloader.getTaskById('metadata');
+  if (!metaTask) {
+    log.info('no external metadata. no metadata task scheduled.');
+    return {};
+  }
+  const res = await metaTask;
+  if (res.status === 200) {
+    let json = JSON.parse(res.body);
+    if (typeof json.data === 'object') {
+      json = json.data;
     }
+    if (!(json instanceof Array)) {
+      throw new Error('data must be an array');
+    }
+    metaRules = json.map((entry) => {
+      // lowercase all keys
+      const lcEntry = {};
+      Object.keys(entry).forEach((key) => {
+        lcEntry[key.toLowerCase()] = entry[key];
+      });
+      return lcEntry;
+    });
   }
   const metaConfig = {};
   metaRules.forEach(({ url: glob, ...config }) => {
