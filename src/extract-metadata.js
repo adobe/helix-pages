@@ -144,7 +144,9 @@ async function getGlobalMetadata(url, action) {
   }
   const metaConfig = {};
   metaRules.forEach(({ url: glob, ...config }) => {
-    if (typeof glob !== 'string') return;
+    if (typeof glob !== 'string') {
+      return;
+    }
     if (minimatch(url, glob)) {
       Object.assign(metaConfig, config);
     }
