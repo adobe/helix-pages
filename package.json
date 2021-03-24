@@ -46,7 +46,6 @@
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.1",
     "@adobe/openwhisk-action-utils": "4.4.1",
-    "algoliasearch": "4.8.6",
     "ferrum": "1.8.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
