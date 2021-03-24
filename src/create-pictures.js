@@ -31,4 +31,3 @@ async function createPictures({ content }) {
 }
 
 module.exports = createPictures;
-
