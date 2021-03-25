@@ -40,5 +40,9 @@ async function pre(context, action) {
   await extractMetaData(context, action);
 }
 
-pre.before = { content: fetchMetadata };
-module.exports.pre = pre;
+module.exports = {
+  pre,
+  before: {
+    content: fetchMetadata,
+  },
+};
