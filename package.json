@@ -51,14 +51,14 @@
     "ferrum": "1.8.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
-    "minimatch": "^3.0.4",
+    "minimatch": "3.0.4",
     "xml-escape": "1.1.0",
     "yaml": "1.10.2"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
     "@adobe/helix-cli": "13.3.9",
-    "@adobe/helix-testutils": "^0.4.3",
+    "@adobe/helix-testutils": "0.4.3",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
