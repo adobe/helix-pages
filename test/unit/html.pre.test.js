@@ -283,7 +283,7 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.title, 'This is the title');
   });
 
-  it('Meta image is extracted from link', () => {
+  it('Meta image is extracted from link', async () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
