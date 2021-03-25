@@ -1,3 +1,10 @@
+## [4.22.8](https://github.com/adobe/helix-pages/compare/v4.22.7...v4.22.8) (2021-03-25)
+
+
+### Bug Fixes
+
+* **rel:** trigger release ([6bd49ef](https://github.com/adobe/helix-pages/commit/6bd49efc67e364a761bcceb51a27e9761b87be2e))
+
 ## [4.22.7](https://github.com/adobe/helix-pages/compare/v4.22.6...v4.22.7) (2021-03-24)
 
 
