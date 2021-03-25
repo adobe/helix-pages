@@ -202,7 +202,7 @@ describe('Rendering', () => {
     });
   });
 
-  describe('Metadata Block', () => {
+  describe('Metadata', () => {
     it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
     });
@@ -213,8 +213,8 @@ describe('Rendering', () => {
       await testRender('page-metadata-block-multi-ol', 'head');
     });
 
-    it('uses correct hero image', async () => {
-      await testRender(new URL('https://super-test--helix-pages--adobe.hlx.page/marketing/page-metadata-block-hero'), 'head');
+    it('uses correct title and hero image', async () => {
+      await testRender(new URL('https://super-test--helix-pages--adobe.hlx.page/marketing/page-metadata-content-blocks'), 'head');
     });
   });
 
