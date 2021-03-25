@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-pages",
-  "version": "4.22.5",
+  "version": "4.22.7",
   "private": true,
   "description": "Helix Pages is the Helix project behind [https://*.project-helix.page/](https://www.project-helix.page/)",
   "scripts": {
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-deploy": "3.14.3",
+    "@adobe/helix-deploy": "3.15.1",
     "@adobe/helix-fetch": "2.1.8",
     "@adobe/helix-pipeline": "adobe/helix-pipeline#breaking-202103",
     "@adobe/helix-shared": "7.21.6",

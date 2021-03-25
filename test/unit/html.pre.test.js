@@ -165,7 +165,7 @@ describe('Testing pre.js', () => {
     assert.ok(doc.querySelector('picture'), 'Picture tag missing');
     assert.strictEqual(
       doc.querySelector('picture').innerHTML,
-      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
+      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;auto=webp&amp;format=pjpg&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;auto=webp&amp;format=pjpg&amp;optimize=medium" loading="eager">',
       'Image tag not transformed correctly',
     );
   });
@@ -261,7 +261,29 @@ describe('Testing pre.js', () => {
     ]);
   });
 
-  it('Meta image is extracted from link', async () => {
+  it('Meta title is extracted from block', () => {
+    const dom = new JSDOM(`
+    <div class="foo">
+      <div>
+        <div><h1>This is the title</h1></div>
+      </div>
+    </div>
+    <div>This is not the title</div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        title: 'This is not the title',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.title, 'This is the title');
+  });
+
+  it('Meta image is extracted from link', () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>

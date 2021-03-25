@@ -267,6 +267,12 @@ async function extractMetaData(context, action) {
 
   // complete metadata with insights from content
   if (!meta.title) {
+    // content.title is not correct if the h1 is in a page-block since the pipeline
+    // only respects the heading nodes in the mdast
+    const $title = document.querySelector('body > div h1');
+    if ($title) {
+      content.title = $title.textContent;
+    }
     meta.title = content.title;
   }
   if (!meta.description) {
@@ -286,12 +292,7 @@ async function extractMetaData(context, action) {
 
   // content.image is not correct if the first image is in a page-block. since the pipeline
   // only respects the image nodes in the mdast
-  let $hero;
-  document.querySelectorAll('body > div').forEach(($section) => {
-    if (!$hero) {
-      $hero = $section.querySelector('img');
-    }
-  });
+  const $hero = document.querySelector('body > div img');
   if ($hero) {
     content.image = $hero.src;
   }
