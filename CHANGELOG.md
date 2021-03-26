@@ -1,3 +1,10 @@
+## [4.22.11](https://github.com/adobe/helix-pages/compare/v4.22.10...v4.22.11) (2021-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([1ae8241](https://github.com/adobe/helix-pages/commit/1ae82412e7abf2e084ac82631c27aed284f26833))
+
 ## [4.22.10](https://github.com/adobe/helix-pages/compare/v4.22.9...v4.22.10) (2021-03-26)
 
 
