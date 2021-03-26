@@ -1,3 +1,10 @@
+## [4.22.10](https://github.com/adobe/helix-pages/compare/v4.22.9...v4.22.10) (2021-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-fetch to v2.1.9 ([#819](https://github.com/adobe/helix-pages/issues/819)) ([dc29fda](https://github.com/adobe/helix-pages/commit/dc29fda43835e6906bccc1a38c0b1780db7edf98))
+
 ## [4.22.9](https://github.com/adobe/helix-pages/compare/v4.22.8...v4.22.9) (2021-03-25)
 
 
