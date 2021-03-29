@@ -24,9 +24,7 @@ const scripts = {
   embed_html: require('../.hlx/build/src/embed_html.js'),
   html: require('../.hlx/build/src/html.js'),
   plain_html: require('../.hlx/build/src/plain_html.js'),
-  idx_json: require('../.hlx/build/src/idx_json.js'),
   'cgi-bin-feed': require('../cgi-bin/feed.js'),
-  'cgi-bin-sitemap': require('../cgi-bin/sitemap.js'),
 };
 
 /**
