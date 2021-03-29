@@ -12,7 +12,6 @@
 const fixSections = require('./fix-sections.js');
 const createPageBlocks = require('./create-page-blocks.js');
 const createPictures = require('./create-pictures.js');
-const fetchMetadata = require('./fetch-metadata.js');
 const extractMetaData = require('./extract-metadata.js');
 
 /**
@@ -40,9 +39,4 @@ async function pre(context, action) {
   await extractMetaData(context, action);
 }
 
-module.exports = {
-  pre,
-  before: {
-    content: fetchMetadata,
-  },
-};
+module.exports.pre = pre;

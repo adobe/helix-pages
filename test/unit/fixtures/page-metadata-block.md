@@ -9,4 +9,4 @@
 |Keywords|Foo, Bar, Baz|
 |Tags|One, Two, Three|
 |Template|default|
-|article:section|Test|
+|article:publisher|<https://www.facebook.com/Adobe>|

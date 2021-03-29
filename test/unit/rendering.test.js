@@ -203,10 +203,6 @@ describe('Rendering', () => {
   });
 
   describe('Metadata', () => {
-    it('renders meta tags from metadata json', async () => {
-      await testRender('page-metadata-json', 'head');
-    });
-
     it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
     });
