@@ -261,7 +261,7 @@ describe('Testing pre.js', () => {
     ]);
   });
 
-  it('Meta title is extracted from block', () => {
+  it('Meta title is extracted from block', async () => {
     const dom = new JSDOM(`
     <div class="foo">
       <div>
@@ -278,7 +278,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.title, 'This is the title');
   });
