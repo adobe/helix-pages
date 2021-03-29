@@ -11,6 +11,7 @@
  */
 /* global describe, it */
 const assert = require('assert');
+const { logging } = require('@adobe/helix-testutils');
 const { JSDOM } = require('jsdom');
 
 const { pre } = require('../../src/html.pre.js');
@@ -30,7 +31,10 @@ const action = {
   },
   downloader: {
     fetchGithub: async () => ({ status: 200 }),
+    fetch: async () => {},
+    getTaskById: async () => ({ status: 404 }),
   },
+  logger: logging.createTestLogger({ level: 'debug' }),
 };
 
 describe('Testing pre requirements for main function', () => {
@@ -44,7 +48,7 @@ describe('Testing pre requirements for main function', () => {
 });
 
 describe('Testing pre.js', () => {
-  it('Body content is wrapped in a div', () => {
+  it('Body content is wrapped in a div', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -52,14 +56,14 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div, 'A div must have been added');
     assert.strictEqual(div.innerHTML, '<h1>Title</h1>');
   });
 
-  it('Multiline and text node body content is wrapped in a div', () => {
+  it('Multiline and text node body content is wrapped in a div', async () => {
     const dom = new JSDOM(`<html><head><title>Foo</title></head><body>
       <h1>Title</h1>
       This is a text.
@@ -70,7 +74,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div !== null, 'A div must have been added');
@@ -81,7 +85,7 @@ describe('Testing pre.js', () => {
     `);
   });
 
-  it('Div is wrapped with class name', () => {
+  it('Div is wrapped with class name', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -92,13 +96,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Div is wrapped with multiple class names', () => {
+  it('Div is wrapped with multiple class names', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -109,14 +113,14 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
-  it('Div is wrapped with multiple class names even when space separated', () => {
+  it('Div is wrapped with multiple class names even when space separated', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -127,14 +131,14 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
     assert.ok(div.classList.contains('customcssclass2'));
   });
 
-  it('Section divs are left alone', () => {
+  it('Section divs are left alone', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><div class="customcssclass"><h1>Title</h1></div></body></html>');
     const context = {
       content: {
@@ -142,13 +146,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     const div = dom.window.document.querySelector('div');
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Image tags get transformed to picture tags', () => {
+  it('Image tags get transformed to picture tags', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
     const context = {
       content: {
@@ -156,7 +160,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
     const { documentElement: doc } = context.content.document;
     assert.ok(doc.querySelector('picture'), 'Picture tag missing');
     assert.strictEqual(
@@ -166,7 +170,7 @@ describe('Testing pre.js', () => {
     );
   });
 
-  it('Meta data is extracted from content', () => {
+  it('Meta data is extracted from content', async () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div>
@@ -193,7 +197,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.title, 'Foo Bar');
     assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet');
@@ -202,7 +206,7 @@ describe('Testing pre.js', () => {
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
-  it('Meta keywords and tags can be comma- and/or line-separated', () => {
+  it('Meta keywords and tags can be comma- and/or line-separated', async () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div>
@@ -222,13 +226,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz, One, Two, Three');
     assert.deepStrictEqual(context.content.meta.tags, ['Foo', 'Bar', 'Baz', 'One', 'Two', 'Three']);
   });
 
-  it('Custom meta data is preserved', () => {
+  it('Custom meta data is preserved', async () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div>
@@ -248,15 +252,16 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
+    // eslint-disable-next-line no-underscore-dangle
     assert.deepStrictEqual(context.content.meta.custom, [
       { name: 'foo', value: 'Bar', property: false },
       { name: 'og:locale', value: 'en_UK', property: true },
     ]);
   });
 
-  it('Meta title is extracted from block', () => {
+  it('Meta title is extracted from block', async () => {
     const dom = new JSDOM(`
     <div class="foo">
       <div>
@@ -273,12 +278,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.title, 'This is the title');
   });
 
-  it('Meta image is extracted from link', () => {
+  it('Meta image is extracted from link', async () => {
     const dom = new JSDOM(`
     <div class="metadata">
       <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
@@ -292,13 +297,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
-  it('Meta image is extracted from image tag and optimized', () => {
+  it('Meta image is extracted from image tag and optimized', async () => {
     const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
     const dom = new JSDOM(`
     <div class="metadata">
@@ -321,13 +326,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.image, expectedUrl);
     assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
   });
 
-  it('Meta description is extracted from first <p> with 10 or more words', () => {
+  it('Meta description is extracted from first <p> with 10 or more words', async () => {
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
     const dom = new JSDOM(`
@@ -348,13 +353,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.ok(context.content.meta.description);
     assert.strictEqual(context.content.meta.description, gt10Words);
   });
 
-  it('Meta description is truncated after 25 words', () => {
+  it('Meta description is truncated after 25 words', async () => {
     const desc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
     const dom = new JSDOM(`
     <html>
@@ -373,13 +378,13 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.description.split(' ').length, 26); // 25 words + ...
     assert.ok(context.content.meta.description.endsWith('...'));
   });
 
-  it('Meta description does not contain markup', () => {
+  it('Meta description does not contain markup', async () => {
     const dom = new JSDOM(`
     <html>
       <head>
@@ -397,12 +402,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.'); // 25 words + ...
   });
 
-  it('Meta url uses hlx-forwarded-host header if available', () => {
+  it('Meta url uses hlx-forwarded-host header if available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -411,12 +416,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz.html');
   });
 
-  it('Meta url uses host header if no hlx-forwarded-host available', () => {
+  it('Meta url uses host header if no hlx-forwarded-host available', async () => {
     const req = {
       ...request,
       headers: {
@@ -432,12 +437,12 @@ describe('Testing pre.js', () => {
       },
       request: req,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.url, 'https://foo.bar/foo/bar/baz.html');
   });
 
-  it('Meta url does not enforce html extension', () => {
+  it('Meta url does not enforce html extension', async () => {
     const noExtRequest = {
       ...request,
       url: '/foo/bar/baz',
@@ -454,12 +459,12 @@ describe('Testing pre.js', () => {
       },
       request: noExtRequest,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz');
   });
 
-  it('Meta image uses absolute content.image', () => {
+  it('Meta image uses absolute content.image', async () => {
     const dom = new JSDOM('<html></html');
     const context = {
       content: {
@@ -469,12 +474,12 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.image, context.content.image);
   });
 
-  it('Meta image uses and optimizes relative content.image as absolute URL', () => {
+  it('Meta image uses and optimizes relative content.image as absolute URL', async () => {
     const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
     const dom = new JSDOM('<html></html>');
     const context = {
@@ -485,7 +490,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.strictEqual(context.content.meta.image, expectedUrl);
   });
@@ -516,6 +521,7 @@ describe('Testing pre.js', () => {
     await pre(context, {
       ...action,
       downloader: {
+        ...action.downloader,
         fetchGithub: async () => ({ status: 404 }),
       },
     });
@@ -523,7 +529,7 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200');
   });
 
-  it('Exposes body attributes as a map to be consumed in the HTL', () => {
+  it('Exposes body attributes as a map to be consumed in the HTL', async () => {
     const dom = new JSDOM(
       `<html class="foo" bar="baz" data-qux="corge">
         <body class="grault" garply="waldo" data-fred="plugh">
@@ -540,7 +546,7 @@ describe('Testing pre.js', () => {
       },
       request,
     };
-    pre(context, action);
+    await pre(context, action);
 
     assert.deepStrictEqual(dom.window.document.documentElement.attributesMap, {
       class: 'foo',

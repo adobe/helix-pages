@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Adobe. All rights reserved.
+ * Copyright 2021 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const minimatch = require('minimatch');
 const { getAbsoluteUrl } = require('./utils.js');
 
 /**
@@ -32,6 +33,15 @@ function toList(list) {
     .split(',')
     .map((key) => key.trim())
     .filter((key) => !!key);
+}
+
+/**
+ * Extracts the URL path from the request.
+ * @param {object} request The request
+ * @returns {string} The path
+ */
+function getPath({ headers = {}, url }) {
+  return headers['x-old-url'] || url;
 }
 
 /**
@@ -101,6 +111,65 @@ function readBlockConfig($block) {
 }
 
 /**
+ * Looks for metadata from a spreadsheet.
+ * @param {string} url The request URL
+ * @param {object} action The action
+ * @return {object} The metadata
+ */
+async function getGlobalMetadata(url, action) {
+  const { logger: log, downloader } = action;
+  let metaRules = [];
+  const metaTask = downloader.getTaskById('metadata');
+  if (!metaTask) {
+    log.info('no external metadata. no metadata task scheduled.');
+    return {};
+  }
+  const res = await metaTask;
+  if (res.status === 200) {
+    let json = JSON.parse(res.body);
+    if (typeof json.data === 'object') {
+      json = json.data;
+    }
+    if (!(json instanceof Array)) {
+      throw new Error('data must be an array');
+    }
+    metaRules = json.map((entry) => {
+      // lowercase all keys
+      const lcEntry = {};
+      Object.keys(entry).forEach((key) => {
+        lcEntry[key.toLowerCase()] = entry[key];
+      });
+      return lcEntry;
+    });
+  }
+  const metaConfig = {};
+  metaRules.forEach(({ url: glob, ...config }) => {
+    if (typeof glob !== 'string') {
+      return;
+    }
+    if (minimatch(url, glob)) {
+      Object.assign(metaConfig, config);
+    }
+  });
+  return metaConfig;
+}
+
+/**
+ * Looks for metadata in the document.
+ * @param {HTMLDocument} document The document
+ * @return {object} The metadata
+ */
+function getLocalMetadata(document) {
+  let metaConfig = {};
+  const metaBlock = document.querySelector('body div.metadata');
+  if (metaBlock) {
+    metaConfig = readBlockConfig(metaBlock);
+    metaBlock.remove();
+  }
+  return metaConfig;
+}
+
+/**
  * Adds image optimization parameters suitable for meta images to a URL.
  * @param {string} pagePath The path of the requested page
  * @param {string} imgUrl The image URL
@@ -157,35 +226,36 @@ async function extractMetaData(context, action) {
   const { document } = content;
   const { url } = request;
 
-  // extract metadata
   const { meta = {} } = content;
   content.meta = meta;
 
-  const metaBlock = document.querySelector('body div.metadata');
-  if (metaBlock) {
-    const metaConfig = readBlockConfig(metaBlock);
-    [
-      // supported metadata properties
-      'title',
-      'description',
-      'keywords',
-      'tags',
-      'image',
-    ].forEach((name) => {
-      if (metaConfig[name]) {
-        meta[name] = metaConfig[name];
-        delete metaConfig[name];
-      }
-    });
-    if (Object.keys(metaConfig).length > 0) {
-      // add rest to meta.custom
-      meta.custom = Object.keys(metaConfig).map((name) => ({
-        name,
-        value: metaConfig[name],
-        property: name.includes(':'),
-      }));
+  // extract global metadata from spreadsheet, and overlay
+  // with local metadata from document
+  const metaConfig = Object.assign(
+    await getGlobalMetadata(getPath(request), action),
+    getLocalMetadata(document),
+  );
+
+  // first process supported metadata properties
+  [
+    'title',
+    'description',
+    'keywords',
+    'tags',
+    'image',
+  ].forEach((name) => {
+    if (metaConfig[name]) {
+      meta[name] = metaConfig[name];
+      delete metaConfig[name];
     }
-    metaBlock.remove();
+  });
+  if (Object.keys(metaConfig).length > 0) {
+    // add rest to meta.custom
+    meta.custom = Object.keys(metaConfig).map((name) => ({
+      name: toMetaName(name),
+      value: metaConfig[name],
+      property: name.includes(':'),
+    }));
   }
 
   if (meta.keywords) {
@@ -195,13 +265,14 @@ async function extractMetaData(context, action) {
     meta.tags = toList(meta.tags);
   }
 
-  // content.title is not correct if the h1 is in a page-block since the pipeline
-  // only respects the heading nodes in the mdast
-  const $title = document.querySelector('body > div h1');
-  if ($title) {
-    content.title = $title.textContent;
-  }
+  // complete metadata with insights from content
   if (!meta.title) {
+    // content.title is not correct if the h1 is in a page-block since the pipeline
+    // only respects the heading nodes in the mdast
+    const $title = document.querySelector('body > div h1');
+    if ($title) {
+      content.title = $title.textContent;
+    }
     meta.title = content.title;
   }
   if (!meta.description) {
@@ -217,7 +288,7 @@ async function extractMetaData(context, action) {
     });
     meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
   }
-  meta.url = getAbsoluteUrl(request.headers, request.headers['x-old-url'] || request.url);
+  meta.url = getAbsoluteUrl(request.headers, getPath(request));
 
   // content.image is not correct if the first image is in a page-block. since the pipeline
   // only respects the image nodes in the mdast
