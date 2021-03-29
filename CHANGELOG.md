@@ -1,3 +1,53 @@
+## [4.22.13](https://github.com/adobe/helix-pages/compare/v4.22.12...v4.22.13) (2021-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([8f55c45](https://github.com/adobe/helix-pages/commit/8f55c45bb0641e6ff65a6b9702a5e4cae01b51e1))
+
+## [4.22.12](https://github.com/adobe/helix-pages/compare/v4.22.11...v4.22.12) (2021-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.16.0 ([#821](https://github.com/adobe/helix-pages/issues/821)) ([fbd071d](https://github.com/adobe/helix-pages/commit/fbd071dc066e853c33da9159833f48de3cb2d8c0))
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.8 ([#822](https://github.com/adobe/helix-pages/issues/822)) ([7292679](https://github.com/adobe/helix-pages/commit/7292679bcdab26175f04be8651b5f5ad32d691fa))
+
+## [4.22.11](https://github.com/adobe/helix-pages/compare/v4.22.10...v4.22.11) (2021-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([1ae8241](https://github.com/adobe/helix-pages/commit/1ae82412e7abf2e084ac82631c27aed284f26833))
+
+## [4.22.10](https://github.com/adobe/helix-pages/compare/v4.22.9...v4.22.10) (2021-03-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-fetch to v2.1.9 ([#819](https://github.com/adobe/helix-pages/issues/819)) ([dc29fda](https://github.com/adobe/helix-pages/commit/dc29fda43835e6906bccc1a38c0b1780db7edf98))
+
+## [4.22.9](https://github.com/adobe/helix-pages/compare/v4.22.8...v4.22.9) (2021-03-25)
+
+
+### Bug Fixes
+
+* **releng:** trigger publish ([23f1d2d](https://github.com/adobe/helix-pages/commit/23f1d2df13e490ef447ddfc320588036cd5ef6da))
+
+## [4.22.8](https://github.com/adobe/helix-pages/compare/v4.22.7...v4.22.8) (2021-03-25)
+
+
+### Bug Fixes
+
+* **rel:** trigger release ([6bd49ef](https://github.com/adobe/helix-pages/commit/6bd49efc67e364a761bcceb51a27e9761b87be2e))
+
+## [4.22.7](https://github.com/adobe/helix-pages/compare/v4.22.6...v4.22.7) (2021-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.15.1 ([#815](https://github.com/adobe/helix-pages/issues/815)) ([5291f88](https://github.com/adobe/helix-pages/commit/5291f88edeb2036e55ea9682b55ca67c9e19c5c3))
+
 ## [4.22.6](https://github.com/adobe/helix-pages/compare/v4.22.5...v4.22.6) (2021-03-23)
 
 
