@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const { resolve, parse } = require('url');
 
 /**
  * Returns the original host name from the request to the outer CDN.
@@ -43,13 +44,7 @@ function getAbsoluteUrl(headers, url) {
   if (typeof url !== 'string') {
     return null;
   }
-  if (url.startsWith('./')) {
-    // eslint-disable-next-line no-param-reassign
-    url = url.substring(1);
-  }
-  return url.startsWith('/')
-    ? `https://${getOriginalHost(headers)}${url}`
-    : url;
+  return resolve(`https://${getOriginalHost(headers)}/`, url);
 }
 
 /**
@@ -74,9 +69,30 @@ function toClassName(text) {
     .replace(/[^0-9a-z]/gi, '-');
 }
 
+/**
+ * Adds the fastly-image-optimization url params to the given image src.
+ * @param {string} src The image source.
+ * @param {number} [width = 0] optional 'width' parameter
+ * @param {string} [format = 'webply'] image format.
+ * @param {string} [optimize = 'medium'] optimization.
+ * @returns {string}
+ */
+function optimizeImageURL(src, width, format = 'webply', optimize = 'medium') {
+  // use deprecated api to avoid complexity with non absolute paths
+  const url = parse(src, true);
+  delete url.search;
+  if (width) {
+    url.query.width = String(width);
+  }
+  url.query.format = format;
+  url.query.optimize = optimize;
+  return url.format();
+}
+
 module.exports = {
   getOriginalHost,
   getAbsoluteUrl,
   wrapContent,
   toClassName,
+  optimizeImageURL,
 };
