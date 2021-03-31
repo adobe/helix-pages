@@ -1,3 +1,16 @@
+# [4.23.0](https://github.com/adobe/helix-pages/compare/v4.22.14...v4.23.0) (2021-03-31)
+
+
+### Bug Fixes
+
+* force deploy ([d0e77e9](https://github.com/adobe/helix-pages/commit/d0e77e9690db7cfb9f7fd95deba7f47956159f0c))
+* **deps:** update adobe fixes ([#829](https://github.com/adobe/helix-pages/issues/829)) ([120869a](https://github.com/adobe/helix-pages/commit/120869a0b18503cdd2f20dcc10bdf4345534334a))
+
+
+### Features
+
+* **pre:** remove unused index_json and sitemap cgi ([#816](https://github.com/adobe/helix-pages/issues/816)) ([02ce2cb](https://github.com/adobe/helix-pages/commit/02ce2cb22a5103a134c6120413e0089ab6623666)), closes [#798](https://github.com/adobe/helix-pages/issues/798)
+
 ## [4.22.14](https://github.com/adobe/helix-pages/compare/v4.22.13...v4.22.14) (2021-03-29)
 
 
