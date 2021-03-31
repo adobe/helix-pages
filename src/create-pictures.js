@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+const { optimizeImageURL } = require('./utils.js');
+
 /**
  * Converts imgs to pictures
  * @param context The current context of processing pipeline
@@ -20,11 +22,12 @@ async function createPictures({ content }) {
   document.querySelectorAll('img[src^="./media_"]').forEach((img, i) => {
     const picture = document.createElement('picture');
     const source = document.createElement('source');
+    const src = img.getAttribute('src');
     source.setAttribute('media', '(max-width: 400px)');
-    source.setAttribute('srcset', `${img.getAttribute('src')}?width=750&auto=webp&format=pjpg&optimize=medium`);
+    source.setAttribute('srcset', optimizeImageURL(src, 750));
     picture.appendChild(source);
     img.setAttribute('loading', i > 0 ? 'lazy' : 'eager'); // load all but first image lazy
-    img.setAttribute('src', `${img.getAttribute('src')}?width=2000&auto=webp&format=pjpg&optimize=medium`);
+    img.setAttribute('src', optimizeImageURL(src, 2000));
     img.parentNode.insertBefore(picture, img);
     picture.appendChild(img);
   });

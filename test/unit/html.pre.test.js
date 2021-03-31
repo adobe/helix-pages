@@ -161,7 +161,7 @@ describe('Testing pre.js', () => {
     assert.ok(doc.querySelector('picture'), 'Picture tag missing');
     assert.strictEqual(
       doc.querySelector('picture').innerHTML,
-      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;auto=webp&amp;format=pjpg&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;auto=webp&amp;format=pjpg&amp;optimize=medium" loading="eager">',
+      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
       'Image tag not transformed correctly',
     );
   });
@@ -299,7 +299,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image is extracted from image tag and optimized', () => {
-    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=1200&format=pjpg&optimize=medium';
     const dom = new JSDOM(`
     <div class="metadata">
       <div>
@@ -475,7 +475,7 @@ describe('Testing pre.js', () => {
   });
 
   it('Meta image uses and optimizes relative content.image as absolute URL', () => {
-    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?auto=webp&format=pjpg&optimize=medium&width=1200';
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=1200&format=pjpg&optimize=medium';
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -501,7 +501,7 @@ describe('Testing pre.js', () => {
     };
     await pre(context, action);
 
-    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200');
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.jpg?width=1200&format=pjpg&optimize=medium');
   });
 
   it('Meta image uses default meta image if neither content.image nor JPG from repo available', async () => {
@@ -520,7 +520,7 @@ describe('Testing pre.js', () => {
       },
     });
 
-    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200');
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.png?width=1200&format=pjpg&optimize=medium');
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {
