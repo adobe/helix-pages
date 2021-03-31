@@ -1,3 +1,10 @@
+## [4.23.2](https://github.com/adobe/helix-pages/compare/v4.23.1...v4.23.2) (2021-03-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.16.5 ([f34c54b](https://github.com/adobe/helix-pages/commit/f34c54bca2a65b941fdf01e80dc1f2435f5ecbfd))
+
 ## [4.23.1](https://github.com/adobe/helix-pages/compare/v4.23.0...v4.23.1) (2021-03-31)
 
 
