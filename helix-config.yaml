@@ -23,8 +23,6 @@ strains:
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix test deployment subdomain for now.
     package: https://helix-pages.anywhere.run/pages_4.23.6
-    version-lock:
-      env: amazonwebservices
 
   - name: universal-ci
     code: *defaultRepo
