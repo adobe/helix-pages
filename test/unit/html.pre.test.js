@@ -148,7 +148,7 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Meta description is extracted from first <p> with 10 or more words or 25 or more characters.', () => {
+  it('Meta description is extracted from first <p> with 10 or more words.', () => {
     const lt24Words = 'Lorem ipsum dolor.';
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
@@ -174,7 +174,34 @@ describe('Testing pre.js', () => {
     pre(context, action);
 
     assert.ok(context.content.meta.description);
-    assert.strictEqual(context.content.meta.description, lt10Words);
+    assert.strictEqual(context.content.meta.description, gt10Words);
+  });
+
+  it('Meta description is extracted from first <p> with 10 or more words or 25 or more single word.', () => {
+    const jpDescr = '4月10日「フォントの日」のスペシャル番組。今年はフォントの機能や活⽤のポイントを解説、エンターテインメント的な要素も盛り沢山で、楽しみながらフォントを学んでいただける時間です';
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p>${jpDescr}</p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.ok(context.content.meta.description);
+    assert.strictEqual(context.content.meta.description, jpDescr);
   });
 
   it('Meta description is truncated after 25 words', () => {
