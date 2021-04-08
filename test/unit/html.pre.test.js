@@ -148,7 +148,8 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Meta description is extracted from first <p> with 10 or more words', () => {
+  it('Meta description is extracted from first <p> with 10 or more words or 25 or more characters.', () => {
+    const lt24Words = 'Lorem ipsum dolor.';
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
     const dom = new JSDOM(`
@@ -159,6 +160,7 @@ describe('Testing pre.js', () => {
       <body>
         <div><h1>Title</h1></div>
         <div><p>${lt10Words}</p></div>
+        <div><p>${lt24Words}</p></div>
         <div><p>${gt10Words}</p></div>
       </body>
     </html>`);
@@ -172,7 +174,7 @@ describe('Testing pre.js', () => {
     pre(context, action);
 
     assert.ok(context.content.meta.description);
-    assert.strictEqual(context.content.meta.description, gt10Words);
+    assert.strictEqual(context.content.meta.description, lt10Words);
   });
 
   it('Meta description is truncated after 25 words', () => {
