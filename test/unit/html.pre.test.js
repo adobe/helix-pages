@@ -204,6 +204,33 @@ describe('Testing pre.js', () => {
     assert.strictEqual(context.content.meta.description, jpDescr);
   });
 
+  it('Meta description is extracted from first <p> but excludes links.', () => {
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p><a>https://www.sample.com/alonglinkthatwouldmatch.html</a></p></div>
+        <div><p><a>https://sample.com</a></p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.ok(context.content.meta.description);
+    assert.strictEqual(context.content.meta.description, gt10Words);
+  });
+
   it('Meta description is truncated after 25 words', () => {
     const desc = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.';
     const dom = new JSDOM(`
