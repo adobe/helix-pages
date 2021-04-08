@@ -1,3 +1,16 @@
+# [4.24.0](https://github.com/adobe/helix-pages/compare/v4.23.6...v4.24.0) (2021-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.17.0 ([#839](https://github.com/adobe/helix-pages/issues/839)) ([93a6e8b](https://github.com/adobe/helix-pages/commit/93a6e8b94982f9b25623909d4f029120aa5154c7))
+
+
+### Features
+
+* **deploy:** add two strains for testing google cloud functions ([4ceb58a](https://github.com/adobe/helix-pages/commit/4ceb58a663fc769bc5b6161f8564425fdb3e2782))
+* **deploy:** deploy to google ([ca1648e](https://github.com/adobe/helix-pages/commit/ca1648e2e4b5c25b0db215b1af1d52373204c62f))
+
 ## [4.23.6](https://github.com/adobe/helix-pages/compare/v4.23.5...v4.23.6) (2021-04-05)
 
 
