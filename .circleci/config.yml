@@ -25,7 +25,6 @@ parameters:
 
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
-  helix-gcloud-setup: adobe/helix-gcloud-setup@1.0.0
 
 references:
   run_smoketests: &run_smoketests
@@ -95,7 +94,6 @@ jobs:
             echo "CORALOGIX_LOG_LEVEL=$CORALOGIX_LOG_LEVEL" >> .pages-package.env
             echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
             echo "HTTP_TIMEOUT_EXTERNAL=30000" >> .pages-package.env
-      - helix-gcloud-setup/load-config
 
       - run:
           name: Deploy
@@ -327,8 +325,6 @@ jobs:
             echo "CORALOGIX_LOG_LEVEL=$CORALOGIX_LOG_LEVEL" >> .pages-package.env
             echo "EPSAGON_TOKEN=$EPSAGON_TOKEN" >> .pages-package.env
             echo "HTTP_TIMEOUT_EXTERNAL=30000" >> .pages-package.env
-
-      - helix-gcloud-setup/load-config
 
       - run:
           name: Deploy
