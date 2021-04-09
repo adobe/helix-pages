@@ -83,7 +83,7 @@ async function pre(context, action) {
     if (desc.length === 0) {
       const text = p.textContent.trim();
       const words = text.split(/\s+/);
-      if (words.length >= 10 || (words.length === 1 && text.length > 25 && !text.startsWith('http'))) {
+      if (words.length >= 10 || words.some((w) => w.length > 25 && !w.startsWith('http'))) {
         desc = desc.concat(words);
       }
     }
