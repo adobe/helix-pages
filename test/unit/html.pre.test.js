@@ -148,7 +148,8 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Meta description is extracted from first <p> with 10 or more words', () => {
+  it('Meta description is extracted from first <p> with 10 or more words.', () => {
+    const lt24Words = 'Lorem ipsum dolor.';
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
     const dom = new JSDOM(`
@@ -159,6 +160,88 @@ describe('Testing pre.js', () => {
       <body>
         <div><h1>Title</h1></div>
         <div><p>${lt10Words}</p></div>
+        <div><p>${lt24Words}</p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.ok(context.content.meta.description);
+    assert.strictEqual(context.content.meta.description, gt10Words);
+  });
+
+  it('Meta description is extracted from first <p> with 10 or more words or one word with more than 25 characters (case 1).', () => {
+    const jpDescr = '4月10日「フォントの日」のスペシャル番組。今年はフォントの機能や活⽤のポイントを解説、エンターテインメント的な要素も盛り沢山で、楽しみながらフォントを学んでいただける時間です';
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p>${jpDescr}</p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.ok(context.content.meta.description);
+    assert.strictEqual(context.content.meta.description, jpDescr);
+  });
+
+  it('Meta description is extracted from first <p> with 10 or more words or one word with more than 25 characters (case 2).', () => {
+    const jpDescr = 'Adobe XDの強力な機能である「スタック」と「パディング」について佐々木雄平さんが解説します。';
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p>${jpDescr}</p></div>
+        <div><p>${gt10Words}</p></div>
+      </body>
+    </html>`);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.ok(context.content.meta.description);
+    assert.strictEqual(context.content.meta.description, jpDescr);
+  });
+
+  it('Meta description is extracted from first <p> but excludes links.', () => {
+    const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+    const dom = new JSDOM(`
+    <html>
+      <head>
+        <title>Foo</title>
+      </head>
+      <body>
+        <div><h1>Title</h1></div>
+        <div><p><a>https://www.sample.com/alonglinkthatwouldmatch.html</a></p></div>
+        <div><p><a>https://sample.com</a></p></div>
         <div><p>${gt10Words}</p></div>
       </body>
     </html>`);
