@@ -126,6 +126,7 @@
     const outerHost = outerPrefix ? `${outerPrefix}.hlx.live` : null;
     return {
       ...cfg,
+      ref,
       innerHost,
       outerHost,
       purgeHost,
@@ -177,6 +178,22 @@
       protocol,
       search,
     };
+  }
+
+  /**
+   * Returns the edit URL for a given location.
+   * @private
+   * @param {Location} location The location object
+   */
+  function getEditUrl({ pathname: path, href }) {
+    const file = path.split('/').pop() || 'index'; // use 'index' if no filename
+    let previewPath;
+    if (file.endsWith('.html')) {
+      previewPath = path.replace(/\.html$/, '.lnk');
+    } else if (!file.includes('.')) {
+      previewPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
+    }
+    return new URL(previewPath, href).href;
   }
 
   /**
@@ -331,23 +348,21 @@
       id: 'preview',
       condition: (sidekick) => sidekick.isEditor() || sidekick.isOuter(),
       button: {
-        action: () => {
+        action: (evt) => {
           const { config, location } = sk;
           let url;
           if (sk.isEditor()) {
-            url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-            url.search = new URLSearchParams([
-              ['owner', config.owner],
-              ['repo', config.repo],
-              ['ref', config.ref || 'main'],
-              ['path', '/'],
-              ['lookup', location.href],
-            ]).toString();
+            const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+            url = `https://${config.ref}--${config.repo}--${config.owner}.hlx.page${previewPath}`;
           } else {
             const host = location.host === config.innerHost ? config.host : config.innerHost;
-            url = new URL(`https://${host}${location.pathname}`);
+            url = `https://${host}${location.pathname}`;
           }
-          window.open(url.toString(), `hlx-sk-preview-${btoa(location.href)}`);
+          if (evt.metaKey) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
         },
       },
     });
@@ -363,17 +378,14 @@
       id: 'edit',
       condition: (sidekick) => sidekick.isHelix(),
       button: {
-        action: () => {
-          const { config, location } = sk;
-          const url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-          url.search = new URLSearchParams([
-            ['owner', config.owner],
-            ['repo', config.repo],
-            ['ref', config.ref || 'main'],
-            ['path', '/'],
-            ['edit', location.href],
-          ]).toString();
-          window.open(url, `hlx-sk-edit-${btoa(location.href)}`);
+        action: (evt) => {
+          const { location } = sk;
+          const url = getEditUrl(location);
+          if (evt.metaKey) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
         },
       },
     });
