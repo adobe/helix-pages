@@ -44,7 +44,7 @@
     "@adobe/helix-pipeline": "13.8.22",
     "@adobe/helix-shared": "7.23.1",
     "@adobe/htlengine": "6.3.7",
-    "@adobe/openwhisk-action-logger": "2.4.3",
+    "@adobe/openwhisk-action-logger": "2.4.4",
     "@adobe/openwhisk-action-utils": "4.4.4",
     "ferrum": "1.8.0",
     "lodash.pick": "4.4.0",
