@@ -1,3 +1,12 @@
+## [4.24.1](https://github.com/adobe/helix-pages/compare/v4.24.0...v4.24.1) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#842](https://github.com/adobe/helix-pages/issues/842)) ([8ebb5a3](https://github.com/adobe/helix-pages/commit/8ebb5a302af670be00900451b5db569eecbe6186))
+* **deps:** update adobe fixes ([#849](https://github.com/adobe/helix-pages/issues/849)) ([730e914](https://github.com/adobe/helix-pages/commit/730e9144c02cda4f437b17aea00d0de50f043f02))
+* **html:** new rule for description meta ([bc8e170](https://github.com/adobe/helix-pages/commit/bc8e170e93bbdfe47165fa3d001bbdc47de441b4))
+
 # [4.24.0](https://github.com/adobe/helix-pages/compare/v4.23.6...v4.24.0) (2021-04-08)
 
 
