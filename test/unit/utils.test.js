@@ -12,8 +12,11 @@
 /* global describe, it */
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
+const { Headers } = require('@adobe/helix-fetch');
 
-const { wrapContent } = require('../../src/utils.js');
+const {
+  wrapContent, optimizeImageURL, getAbsoluteUrl, getOriginalHost,
+} = require('../../src/utils.js');
 
 describe('Testing wrapNodes', () => {
   it('Wraps one element in one div', () => {
@@ -60,5 +63,79 @@ describe('Testing wrapNodes', () => {
       Final text
       <div>A div</div>
     </div>`);
+  });
+});
+
+describe('Optimize Image URLs', () => {
+  it('creates correct image optimize urls', () => {
+    assert.equal(optimizeImageURL('/foo.png'), '/foo.png?format=webply&optimize=medium');
+    assert.equal(optimizeImageURL('/foo'), '/foo?format=webply&optimize=medium');
+    assert.equal(optimizeImageURL('/foo#image.png'), '/foo?format=webply&optimize=medium#image.png');
+    assert.equal(optimizeImageURL('/foo?a=42#image.png'), '/foo?a=42&format=webply&optimize=medium#image.png');
+    assert.equal(optimizeImageURL('/foo?width=450'), '/foo?width=450&format=webply&optimize=medium');
+    assert.equal(optimizeImageURL('/foo?format=bogus'), '/foo?format=webply&optimize=medium');
+
+    assert.equal(optimizeImageURL('/foo.png', 2000), '/foo.png?width=2000&format=webply&optimize=medium');
+    assert.equal(optimizeImageURL('/foo.png', 2000, 'pjpg'), '/foo.png?width=2000&format=pjpg&optimize=medium');
+    assert.equal(optimizeImageURL('/foo.png', 2000, 'pjpg', 'low'), '/foo.png?width=2000&format=pjpg&optimize=low');
+    assert.equal(optimizeImageURL('https://blog.adobe.com/foo.png'), 'https://blog.adobe.com/foo.png?format=webply&optimize=medium');
+    assert.equal(optimizeImageURL('./foo.png'), './foo.png?format=webply&optimize=medium');
+  });
+});
+
+describe('Get Absolute URL', () => {
+  it('get correct aboslute url', () => {
+    const headers = { host: 'blog.adobe.com' };
+    assert.equal(getAbsoluteUrl(headers, {}), null);
+    assert.equal(getAbsoluteUrl(headers, '/'), 'https://blog.adobe.com/');
+    assert.equal(getAbsoluteUrl(headers, '/foo.png'), 'https://blog.adobe.com/foo.png');
+    assert.equal(getAbsoluteUrl(headers, './foo.png'), 'https://blog.adobe.com/foo.png');
+    assert.equal(getAbsoluteUrl(headers, 'https://spark.adobe.com/foo.png'), 'https://spark.adobe.com/foo.png');
+  });
+});
+
+describe('Get Original Host', () => {
+  it('get correct host for plain host header', () => {
+    const headers = { host: 'blog.adobe.com' };
+    assert.equal(getOriginalHost(headers), 'blog.adobe.com');
+  });
+
+  it('get correct host for plain xfwd header', () => {
+    const headers = {
+      host: 'blog.adobe.com',
+      'hlx-forwarded-host': 'spark.adobe.com',
+    };
+    assert.equal(getOriginalHost(headers), 'spark.adobe.com');
+  });
+
+  it('get correct host for multiple plain xfwd header', () => {
+    const headers = {
+      host: 'blog.adobe.com',
+      'hlx-forwarded-host': 'spark.adobe.com, cdn1.hlx.page',
+    };
+    assert.equal(getOriginalHost(headers), 'spark.adobe.com');
+  });
+
+  it('get correct host for host header', () => {
+    const headers = new Headers({
+      host: 'blog.adobe.com',
+    });
+    assert.equal(getOriginalHost(headers), 'blog.adobe.com');
+  });
+
+  it('get correct host for xfwd header', () => {
+    const headers = new Headers({
+      host: 'blog.adobe.com',
+      'hlx-forwarded-host': 'spark.adobe.com',
+    });
+    assert.equal(getOriginalHost(headers), 'spark.adobe.com');
+  });
+
+  it('get correct host for multiple xfwd header', () => {
+    const headers = new Headers({
+      host: 'blog.adobe.com',
+      'hlx-forwarded-host': 'spark.adobe.com, cdn1.hlx.page',
+    });
+    assert.equal(getOriginalHost(headers), 'spark.adobe.com');
   });
 });

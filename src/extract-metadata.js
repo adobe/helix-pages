@@ -10,7 +10,8 @@
  * governing permissions and limitations under the License.
  */
 const minimatch = require('minimatch');
-const { getAbsoluteUrl } = require('./utils.js');
+const { resolve } = require('url');
+const { getAbsoluteUrl, optimizeImageURL } = require('./utils.js');
 
 /**
  * Converts all non-valid characters to `-`.
@@ -179,14 +180,11 @@ function optimizeMetaImage(pagePath, imgUrl) {
   if (typeof imgUrl !== 'string') {
     return null;
   }
-  if (imgUrl.startsWith('./')) {
-    // resolve relative image path using page path
-    // eslint-disable-next-line no-param-reassign
-    imgUrl = `${pagePath.substring(0, pagePath.lastIndexOf('/'))}${imgUrl.substring(1)}`;
+  const src = resolve(pagePath, imgUrl);
+  if (src.startsWith('/')) {
+    return optimizeImageURL(src, 1200, 'pjpg');
   }
-  return imgUrl.startsWith('/')
-    ? `${imgUrl.split('?')[0]}?auto=webp&format=pjpg&optimize=medium&width=1200`
-    : imgUrl;
+  return src;
 }
 
 /**
