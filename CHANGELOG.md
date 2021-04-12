@@ -1,3 +1,10 @@
+## [4.24.3](https://github.com/adobe/helix-pages/compare/v4.24.2...v4.24.3) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.22 ([#851](https://github.com/adobe/helix-pages/issues/851)) ([d8e31d6](https://github.com/adobe/helix-pages/commit/d8e31d6b7346ec73107656060ad330ca798ef4c4))
+
 ## [4.24.2](https://github.com/adobe/helix-pages/compare/v4.24.1...v4.24.2) (2021-04-12)
 
 
