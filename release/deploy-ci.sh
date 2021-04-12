@@ -28,4 +28,4 @@ if [[ -f ".pages-package.env" ]]; then
 fi
 
 # update helix-config.yaml
-node ./release/update-config.js --pkgVersion ci$CIRCLE_BUILD_NUM --strain default --strain universal --strain universal-ci
+node ./release/update-config.js --pkgVersion ci$CIRCLE_BUILD_NUM --strain default --strain universal --strain universal-ci --strain gcf --strain gcf-ci
