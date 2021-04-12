@@ -456,14 +456,13 @@
      * {@link window.hlx.sidekickConfig}.
      */
     constructor() {
-      this.config = initConfig();
       this.root = appendTag(document.body, {
         tag: 'div',
         attrs: {
           class: 'hlx-sk hlx-sk-hidden hlx-sk-empty',
         },
       });
-      this.location = getLocation();
+      this.loadContext();
       this.loadCSS();
       // share button
       const share = appendTag(this.root, {
@@ -513,6 +512,17 @@
         });
       }
       checkForUpdates(this);
+    }
+
+    /**
+     * Loads the sidekick configuration based on {@link window.hlx.sidekickConfig}
+     * and retrieves the location of the current document.
+     * @returns {Sidekick} The sidekick
+     */
+    loadContext() {
+      this.config = initConfig();
+      this.location = getLocation();
+      return this;
     }
 
     /**
