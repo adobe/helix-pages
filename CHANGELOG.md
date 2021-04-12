@@ -1,3 +1,10 @@
+## [4.24.4](https://github.com/adobe/helix-pages/compare/v4.24.3...v4.24.4) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/openwhisk-action-logger to v2.4.4 ([#852](https://github.com/adobe/helix-pages/issues/852)) ([be99d2e](https://github.com/adobe/helix-pages/commit/be99d2e91cf0530c7f11e651cc68b5d0e26ac9d2))
+
 ## [4.24.3](https://github.com/adobe/helix-pages/compare/v4.24.2...v4.24.3) (2021-04-12)
 
 
