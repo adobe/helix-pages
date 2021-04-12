@@ -269,7 +269,7 @@
    * @returns {string} The share URL
    */
   function getShareUrl(config) {
-    const shareUrl = new URL('https://www.hlx.page/tools/sidekick/');
+    const shareUrl = new URL('https://www.hlx.live/tools/sidekick/');
     shareUrl.search = new URLSearchParams([
       ['project', config.project || ''],
       ['host', config.host || ''],
