@@ -409,6 +409,7 @@
           if (resp && resp.ok) {
             if (evt.metaKey || evt.which === 2) {
               window.open(window.location.href);
+              sk.hideModal();
             } else {
               window.location.reload();
             }
@@ -453,6 +454,7 @@
             console.log(`redirecting to ${prodURL}`);
             if (evt.metaKey || evt.which === 2) {
               window.open(prodURL);
+              sk.hideModal();
             } else {
               window.location.href = prodURL;
             }
