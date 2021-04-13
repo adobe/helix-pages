@@ -401,26 +401,23 @@
       id: 'reload',
       condition: (s) => s.config.purgeHost && (s.isInner() || s.isDev()),
       button: {
-        action: (evt) => {
+        action: async (evt) => {
           const { location } = sk;
           const path = location.pathname;
           sk.showModal('Please wait …', true);
-          sk
-            .publish(path, true)
-            .then((resp) => {
-              if (resp && resp.ok) {
-                if (evt.metaKey || evt.which === 2) {
-                  window.open(window.location.href);
-                } else {
-                  window.location.reload();
-                }
-              } else {
-                sk.showModal([
-                  `Failed to reload ${path}. Please try again later.`,
-                  JSON.stringify(resp),
-                ], true, 0);
-              }
-            });
+          const resp = await sk.publish(path, true);
+          if (resp && resp.ok) {
+            if (evt.metaKey || evt.which === 2) {
+              window.open(window.location.href);
+            } else {
+              window.location.reload();
+            }
+          } else {
+            sk.showModal([
+              `Failed to reload ${path}. Please try again later.`,
+              JSON.stringify(resp),
+            ], true, 0);
+          }
         },
       },
     });
