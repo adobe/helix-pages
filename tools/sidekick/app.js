@@ -358,7 +358,7 @@
             const host = location.host === config.innerHost ? config.host : config.innerHost;
             url = `https://${host}${location.pathname}`;
           }
-          if (evt.metaKey) {
+          if (evt.metaKey || evt.which === 2) {
             window.open(url);
           } else {
             window.location.href = url;
@@ -381,7 +381,7 @@
         action: (evt) => {
           const { location } = sk;
           const url = getEditUrl(location);
-          if (evt.metaKey) {
+          if (evt.metaKey || evt.which === 2) {
             window.open(url);
           } else {
             window.location.href = url;
@@ -401,7 +401,7 @@
       id: 'reload',
       condition: (s) => s.config.purgeHost && (s.isInner() || s.isDev()),
       button: {
-        action: () => {
+        action: (evt) => {
           const { location } = sk;
           const path = location.pathname;
           sk.showModal('Please wait …', true);
@@ -409,7 +409,11 @@
             .publish(path, true)
             .then((resp) => {
               if (resp && resp.ok) {
-                window.location.reload();
+                if (evt.metaKey || evt.which === 2) {
+                  window.open(window.location.href);
+                } else {
+                  window.location.reload();
+                }
               } else {
                 sk.showModal([
                   `Failed to reload ${path}. Please try again later.`,
@@ -432,7 +436,7 @@
       id: 'publish',
       condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
       button: {
-        action: async () => {
+        action: async (evt) => {
           const { config, location } = sk;
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
@@ -450,7 +454,11 @@
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
-            window.location.href = prodURL;
+            if (evt.metaKey || evt.which === 2) {
+              window.open(prodURL);
+            } else {
+              window.location.href = prodURL;
+            }
           } else {
             sk.notify('Successfully published');
           }
@@ -579,6 +587,7 @@
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
+              auxclick: plugin.button.action,
             },
           };
           const $button = $plugin.querySelector(cfg.tag);
