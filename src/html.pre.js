@@ -81,8 +81,9 @@ async function pre(context, action) {
   let desc = [];
   document.querySelectorAll('div > p').forEach((p) => {
     if (desc.length === 0) {
-      const words = p.textContent.trim().split(/\s+/);
-      if (words.length >= 10) {
+      const text = p.textContent.trim();
+      const words = text.split(/\s+/);
+      if (words.length >= 10 || words.some((w) => w.length > 25 && !w.startsWith('http'))) {
         desc = desc.concat(words);
       }
     }
