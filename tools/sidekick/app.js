@@ -110,7 +110,7 @@
       .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
     if (script) {
       const scriptHost = new URL(script.src).host;
-      if (scriptHost) {
+      if (scriptHost && scriptHost !== 'www.hlx.live') {
         // keep only 1st and 2nd level domain
         innerHost = scriptHost.split('.')
           .reverse()
