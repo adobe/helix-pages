@@ -42,7 +42,7 @@
     "@adobe/helix-deploy": "3.18.6",
     "@adobe/helix-fetch": "2.2.0",
     "@adobe/helix-pipeline": "13.9.2",
-    "@adobe/helix-shared": "7.24.0",
+    "@adobe/helix-shared": "7.25.0",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.4",
     "@adobe/openwhisk-action-utils": "4.4.4",
