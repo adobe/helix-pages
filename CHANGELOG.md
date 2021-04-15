@@ -1,3 +1,11 @@
+## [4.25.2](https://github.com/adobe/helix-pages/compare/v4.25.1...v4.25.2) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#860](https://github.com/adobe/helix-pages/issues/860)) ([4ecf1ef](https://github.com/adobe/helix-pages/commit/4ecf1ef06ca1ba8d5b88d4a6ccb4be789f511c8a))
+* **deps:** update dependency @adobe/helix-shared to v7.25.0 ([#861](https://github.com/adobe/helix-pages/issues/861)) ([85f8368](https://github.com/adobe/helix-pages/commit/85f8368bef6a7d57c9a8e3a74046e61e9f9696be))
+
 ## [4.25.1](https://github.com/adobe/helix-pages/compare/v4.25.0...v4.25.1) (2021-04-13)
 
 
