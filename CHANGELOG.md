@@ -1,3 +1,15 @@
+## [4.25.6](https://github.com/adobe/helix-pages/compare/v4.25.5...v4.25.6) (2021-04-16)
+
+
+### Bug Fixes
+
+* **deploy:** use google-compatible package version names ([71f0c01](https://github.com/adobe/helix-pages/commit/71f0c01c8cfdff79c0ea70b6605df526cc50ccfb))
+
+
+### Reverts
+
+* Revert "Revert "Merge pull request #840 from adobe/deploy-gooooooooooogle"" ([a2d4260](https://github.com/adobe/helix-pages/commit/a2d42602ef06c375ad42fa57beaba419f673ab33)), closes [#840](https://github.com/adobe/helix-pages/issues/840)
+
 ## [4.25.5](https://github.com/adobe/helix-pages/compare/v4.25.4...v4.25.5) (2021-04-15)
 
 
