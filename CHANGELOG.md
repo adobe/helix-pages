@@ -1,3 +1,11 @@
+# [4.26.0](https://github.com/adobe/helix-pages/compare/v4.25.6...v4.26.0) (2021-04-16)
+
+
+### Features
+
+* **sidekick:** always include branch in preview host ([5f92801](https://github.com/adobe/helix-pages/commit/5f9280191914612021187cb830e39ce67f5595be))
+* **sidekick:** use main as default branch ([2a4e3e9](https://github.com/adobe/helix-pages/commit/2a4e3e9880e3c40b2d5ee65eba892b8b72679aa9))
+
 ## [4.25.6](https://github.com/adobe/helix-pages/compare/v4.25.5...v4.25.6) (2021-04-16)
 
 
