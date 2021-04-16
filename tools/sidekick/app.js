@@ -84,6 +84,17 @@
    */
 
   /**
+   * The IDs of plugins that will be treated as environments.
+   * @private
+   */
+  const ENVS = [
+    'edit',
+    'preview',
+    'live',
+    'prod',
+  ];
+
+  /**
    * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
    * @private
    * @returns {Object} The sidekick configuration
@@ -273,10 +284,13 @@
    * @private
    * @param {HTMLElement} parent The parent element
    * @param {elemConfig}  config The tag configuration
+   * @param {HTMLElement} before The element to insert before (optional)
    * @returns {HTMLElement} The new tag
    */
-  function appendTag(parent, config) {
-    return makeAccessible(parent.appendChild(createTag(config)));
+  function appendTag(parent, config, before) {
+    return makeAccessible(before
+      ? parent.insertBefore(createTag(config), before)
+      : parent.appendChild(createTag(config)));
   }
 
   /**
@@ -346,7 +360,7 @@
   function addPreviewPlugin(sk) {
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || sidekick.isOuter(),
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
       button: {
         action: (evt) => {
           const { config, location } = sk;
@@ -355,8 +369,7 @@
             const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
             url = `https://${config.ref}--${config.repo}--${config.owner}.hlx.page${previewPath}`;
           } else {
-            const host = location.host === config.innerHost ? config.host : config.innerHost;
-            url = `https://${host}${location.pathname}`;
+            url = `https://${config.innerHost}${location.pathname}`;
           }
           if (evt.metaKey) {
             window.open(url);
@@ -364,6 +377,55 @@
             window.location.href = url;
           }
         },
+        isPressed: (sidekick) => sidekick.isInner(),
+      },
+    });
+  }
+
+  /**
+   * Adds the live plugin to the sidekick.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function addLivePlugin(sk) {
+    sk.add({
+      id: 'live',
+      condition: (sidekick) => sidekick.config.outerHost && sidekick.isHelix(),
+      button: {
+        action: (evt) => {
+          const { config, location } = sk;
+          const url = `https://${config.outerHost}${location.pathname}`;
+          if (evt.metaKey) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
+        },
+        isPressed: (sidekick) => sidekick.isOuter(),
+      },
+    });
+  }
+
+  /**
+   * Adds the production plugin to the sidekick.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function addProdPlugin(sk) {
+    sk.add({
+      id: 'prod',
+      condition: (sidekick) => sidekick.config.host && sidekick.isHelix(),
+      button: {
+        action: (evt) => {
+          const { config, location } = sk;
+          const url = `https://${config.host}${location.pathname}`;
+          if (evt.metaKey) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
+        },
+        isPressed: (sidekick) => sidekick.isProd(),
       },
     });
   }
@@ -376,7 +438,7 @@
   function addEditPlugin(sk) {
     sk.add({
       id: 'edit',
-      condition: (sidekick) => sidekick.isHelix(),
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
       button: {
         action: (evt) => {
           const { location } = sk;
@@ -387,6 +449,7 @@
             window.location.href = url;
           }
         },
+        isPressed: (sidekick) => sidekick.isEditor(),
       },
     });
   }
@@ -507,6 +570,8 @@
       // default plugins
       addEditPlugin(this);
       addPreviewPlugin(this);
+      addLivePlugin(this);
+      addProdPlugin(this);
       addReloadPlugin(this);
       addPublishPlugin(this);
       // custom plugins
@@ -538,6 +603,29 @@
     }
 
     /**
+     * Shows the sidekick.
+     * @returns {Sidekick} The sidekick
+     */
+    show() {
+      if (this.root.classList.contains('hlx-sk-hidden')) {
+        this.root.classList.remove('hlx-sk-hidden');
+      }
+      return this;
+    }
+
+    /**
+     * Hides the sidekick.
+     * @returns {Sidekick} The sidekick
+     */
+    hide() {
+      if (!this.root.classList.contains('hlx-sk-hidden')) {
+        this.root.classList.add('hlx-sk-hidden');
+      }
+      this.hideModal();
+      return this;
+    }
+
+    /**
      * Shows/hides the sidekick.
      * @returns {Sidekick} The sidekick
      */
@@ -553,39 +641,74 @@
      */
     add(plugin) {
       if (typeof plugin === 'object') {
-        if (plugin.override) {
-          this.remove(plugin.id);
-        }
+        plugin.enabled = typeof plugin.condition === 'function' && plugin.condition(this);
+        // find existing plugin
         let $plugin = this.get(plugin.id);
-        if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
-          if ($plugin) $plugin.remove();
-          return this;
+        let $pluginContainer = this.root;
+        if (ENVS.includes(plugin.id)) {
+          // find or create environment plugin container
+          $pluginContainer = this.root.querySelector('.env');
+          if (!$pluginContainer) {
+            $pluginContainer = appendTag(this.root, {
+              tag: 'div',
+              attrs: {
+                class: 'env',
+              },
+            });
+          }
         }
-        if (!$plugin) {
-          $plugin = appendTag(this.root, {
-            tag: 'div',
-            attrs: {
-              class: plugin.id,
-            },
-          });
-          this.root.classList.remove('hlx-sk-empty');
+        const pluginCfg = {
+          tag: 'div',
+          attrs: {
+            class: plugin.id,
+          },
+        };
+        if (!$plugin && plugin.enabled) {
+          // add new plugin
+          $plugin = appendTag($pluginContainer, pluginCfg);
+          // remove empty text
+          if (this.root.classList.contains('hlx-sk-empty')) {
+            this.root.classList.remove('hlx-sk-empty');
+          }
+        } else if ($plugin) {
+          if (!plugin.enabled) {
+            // remove existing plugin
+            $plugin.remove();
+          } else if (plugin.override) {
+            // replace existing plugin
+            const $existingPlugin = $plugin;
+            $plugin = appendTag($existingPlugin.parentElement, pluginCfg, $existingPlugin);
+            $existingPlugin.remove();
+          }
         }
+        if (!plugin.enabled) {
+          return null;
+        }
+        // add elements
         if (Array.isArray(plugin.elements)) {
           plugin.elements.forEach((elem) => appendTag($plugin, elem));
         }
+        // add or update button
         if (plugin.button) {
-          const cfg = {
+          const buttonCfg = {
             tag: 'button',
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
             },
           };
-          const $button = $plugin.querySelector(cfg.tag);
+          let $button = $plugin ? $plugin.querySelector(buttonCfg.tag) : null;
           if ($button) {
-            extendTag($button, cfg);
+            // extend existing button
+            extendTag($button, buttonCfg);
           } else {
-            appendTag($plugin, cfg);
+            // add button
+            $button = appendTag($plugin, buttonCfg);
+          }
+          // check if button is pressed
+          if (typeof plugin.button.isPressed === 'boolean' || (typeof plugin.button.isPressed === 'function'
+            && plugin.button.isPressed(this))) {
+            $button.classList.add('pressed');
           }
         }
         if (typeof plugin.callback === 'function') {
@@ -654,10 +777,16 @@
      */
     isOuter() {
       const { config, location } = this;
-      return [
-        config.host,
-        config.outerHost,
-      ].includes(location.host);
+      return config.outerHost === location.host;
+    }
+
+    /**
+     * Checks if the current location is a production URL.
+     * @returns {boolean} <code>true</code> if production URL, else <code>false</code>
+     */
+    isProd() {
+      const { config, location } = this;
+      return config.host === location.host;
     }
 
     /**
@@ -666,7 +795,7 @@
      */
     isHelix() {
       return this.config.owner && this.config.repo
-        && (this.isDev() || this.isInner() || this.isOuter());
+        && (this.isDev() || this.isInner() || this.isOuter() || this.isProd());
     }
 
     /**
@@ -816,6 +945,6 @@
   window.hlx = window.hlx || {};
   // launch sidekick
   if (!window.hlx.sidekick) {
-    window.hlx.sidekick = new Sidekick().toggle();
+    window.hlx.sidekick = new Sidekick().show();
   }
 })();
