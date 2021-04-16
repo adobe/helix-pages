@@ -26,6 +26,24 @@ strains:
     version-lock:
       env: amazonwebservices
 
+  - name: gcf
+    code: *defaultRepo
+    content: https://github.com/adobe/helix-pages.git#master
+    static: https://github.com/adobe/helix-pages.git/htdocs#master
+    # universal runtime, on google cloud functions.
+    package: https://helix-pages.anywhere.run/pages_4.23.6
+    version-lock:
+      env: google
+
+  - name: gcf-ci
+    code: *defaultRepo
+    content: https://github.com/adobe/helix-pages.git#master
+    static: https://github.com/adobe/helix-pages.git/htdocs#master
+    # universal runtime (CI), on google cloud functions.
+    package: https://helix-pages-ci.anywhere.run/pages_4.23.6
+    version-lock:
+      env: google
+
   - name: universal-ci
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
