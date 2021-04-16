@@ -1,3 +1,59 @@
+# [4.26.0](https://github.com/adobe/helix-pages/compare/v4.25.6...v4.26.0) (2021-04-16)
+
+
+### Features
+
+* **sidekick:** always include branch in preview host ([5f92801](https://github.com/adobe/helix-pages/commit/5f9280191914612021187cb830e39ce67f5595be))
+* **sidekick:** use main as default branch ([2a4e3e9](https://github.com/adobe/helix-pages/commit/2a4e3e9880e3c40b2d5ee65eba892b8b72679aa9))
+
+## [4.25.6](https://github.com/adobe/helix-pages/compare/v4.25.5...v4.25.6) (2021-04-16)
+
+
+### Bug Fixes
+
+* **deploy:** use google-compatible package version names ([71f0c01](https://github.com/adobe/helix-pages/commit/71f0c01c8cfdff79c0ea70b6605df526cc50ccfb))
+
+
+### Reverts
+
+* Revert "Revert "Merge pull request #840 from adobe/deploy-gooooooooooogle"" ([a2d4260](https://github.com/adobe/helix-pages/commit/a2d42602ef06c375ad42fa57beaba419f673ab33)), closes [#840](https://github.com/adobe/helix-pages/issues/840)
+
+## [4.25.5](https://github.com/adobe/helix-pages/compare/v4.25.4...v4.25.5) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.4 ([760dd4c](https://github.com/adobe/helix-pages/commit/760dd4cd98a74bffe51cdf2772d2c2c6783bd0ce))
+
+## [4.25.4](https://github.com/adobe/helix-pages/compare/v4.25.3...v4.25.4) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.25.1 ([ddbc71c](https://github.com/adobe/helix-pages/commit/ddbc71ccfd816798d08626c387192079e7802816))
+
+## [4.25.3](https://github.com/adobe/helix-pages/compare/v4.25.2...v4.25.3) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.3 ([#862](https://github.com/adobe/helix-pages/issues/862)) ([13fd3c9](https://github.com/adobe/helix-pages/commit/13fd3c98414f6702690d326e1f0216aa7a393ccd))
+
+## [4.25.2](https://github.com/adobe/helix-pages/compare/v4.25.1...v4.25.2) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#860](https://github.com/adobe/helix-pages/issues/860)) ([4ecf1ef](https://github.com/adobe/helix-pages/commit/4ecf1ef06ca1ba8d5b88d4a6ccb4be789f511c8a))
+* **deps:** update dependency @adobe/helix-shared to v7.25.0 ([#861](https://github.com/adobe/helix-pages/issues/861)) ([85f8368](https://github.com/adobe/helix-pages/commit/85f8368bef6a7d57c9a8e3a74046e61e9f9696be))
+
+## [4.25.1](https://github.com/adobe/helix-pages/compare/v4.25.0...v4.25.1) (2021-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.1 ([#855](https://github.com/adobe/helix-pages/issues/855)) ([ca5ebb5](https://github.com/adobe/helix-pages/commit/ca5ebb5c91da33bd10e6343f68e89f43be37243c))
+
 # [4.25.0](https://github.com/adobe/helix-pages/compare/v4.24.4...v4.25.0) (2021-04-12)
 
 
