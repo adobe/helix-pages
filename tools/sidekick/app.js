@@ -93,7 +93,7 @@
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
     const {
-      owner, repo, ref = 'master', host, project,
+      owner, repo, ref = 'main', host, project,
     } = cfg;
     const ghDetails = owner && repo
       ? `${repo}--${owner}`
