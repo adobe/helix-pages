@@ -119,7 +119,7 @@
       .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
     if (script) {
       const scriptHost = new URL(script.src).host;
-      if (scriptHost) {
+      if (scriptHost && scriptHost !== 'www.hlx.live') {
         // keep only 1st and 2nd level domain
         innerHost = scriptHost.split('.')
           .reverse()
@@ -460,7 +460,7 @@
           if (evt.target.classList.contains('pressed')) {
             return;
           }
-          await gotoEnv(sk, 'live', evt.metaKey || evt.which === 2);
+          await gotoEnv(sk, 'prod', evt.metaKey || evt.which === 2);
         },
         isPressed: (sidekick) => sidekick.isProd(),
       },
@@ -485,6 +485,7 @@
           if (resp && resp.ok) {
             if (evt.metaKey || evt.which === 2) {
               window.open(window.location.href);
+              sk.hideModal();
             } else {
               window.location.reload();
             }
@@ -529,6 +530,7 @@
             console.log(`redirecting to ${prodURL}`);
             if (evt.metaKey || evt.which === 2) {
               window.open(prodURL);
+              sk.hideModal();
             } else {
               window.location.href = prodURL;
             }
