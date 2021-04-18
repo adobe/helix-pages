@@ -493,7 +493,7 @@ describe('Test sidekick bookmarklet', () => {
           // intercept purge request
           const params = new URL(req.url()).searchParams;
           purged = params.get('path') === purgePath
-            && params.get('xfh') === 'theblog--adobe.hlx.page';
+            && params.get('xfh') === 'master--theblog--adobe.hlx.page';
           branchIncluded = params.get('host').startsWith('master--');
           req.respond({
             status: 200,

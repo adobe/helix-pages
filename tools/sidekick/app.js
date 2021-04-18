@@ -93,16 +93,13 @@
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
     const {
-      owner, repo, ref = 'master', host, project,
+      owner, repo, ref = 'main', host, project,
     } = cfg;
-    const outerPrefix = owner && repo
+    const ghDetails = owner && repo
       ? `${repo}--${owner}`
       : null;
-    const innerPrefix = ref && !['master', 'main'].includes(ref)
-      ? `${ref}--${outerPrefix}`
-      : outerPrefix;
+    const innerPrefix = ghDetails ? `${ref}--${ghDetails}` : null;
     // host param for purge request must include ref
-    const purgeHost = outerPrefix ? `${ref}--${outerPrefix}.hlx.page` : null;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
@@ -123,13 +120,12 @@
       innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
-    const outerHost = outerPrefix ? `${outerPrefix}.hlx.live` : null;
+    const outerHost = ghDetails ? `${ghDetails}.hlx.live` : null;
     return {
       ...cfg,
       ref,
       innerHost,
       outerHost,
-      purgeHost,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -399,7 +395,7 @@
   function addReloadPlugin(sk) {
     sk.add({
       id: 'reload',
-      condition: (s) => s.config.purgeHost && (s.isInner() || s.isDev()),
+      condition: (s) => s.config.innerHost && (s.isInner() || s.isDev()),
       button: {
         action: async (evt) => {
           const { location } = sk;
@@ -653,7 +649,7 @@
      */
     isInner() {
       const { config, location } = this;
-      return location.host.startsWith(config.innerHost);
+      return config.innerHost.endsWith(location.host);
     }
 
     /**
@@ -802,7 +798,7 @@
         : [this.config.innerHost, this.config.outerHost, this.config.host];
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
-        ['host', this.config.purgeHost],
+        ['host', this.config.innerHost],
         ['xfh', xfh.join(',')],
         ['path', pathname],
       ]).toString();
