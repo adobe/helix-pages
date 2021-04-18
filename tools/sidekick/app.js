@@ -84,15 +84,16 @@
    */
 
   /**
-   * The IDs of plugins that will be treated as environments.
+   * Mapping between the plugin IDs that will be treated as environments
+   * and their corresponding host properties in the config.
    * @private
    */
-  const ENVS = [
-    'edit',
-    'preview',
-    'live',
-    'prod',
-  ];
+  const ENVS = {
+    edit: 'editor',
+    preview: 'innerHost',
+    live: 'outerHost',
+    prod: 'host',
+  };
 
   /**
    * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
@@ -185,22 +186,6 @@
       protocol,
       search,
     };
-  }
-
-  /**
-   * Returns the edit URL for a given location.
-   * @private
-   * @param {Location} location The location object
-   */
-  function getEditUrl({ pathname: path, href }) {
-    const file = path.split('/').pop() || 'index'; // use 'index' if no filename
-    let previewPath;
-    if (file.endsWith('.html')) {
-      previewPath = path.replace(/\.html$/, '.lnk');
-    } else if (!file.includes('.')) {
-      previewPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
-    }
-    return new URL(previewPath, href).href;
   }
 
   /**
@@ -349,103 +334,135 @@
   }
 
   /**
-   * Adds the preview plugin to the sidekick.
-   * @private
-   * @param {Sidekick} sk The sidekick
+   * Switches to or opens a given environment.
+   * @param {Sidekick} sidekick The sidekick
+   * @param {string} targetEnv One of the following environments:
+   *        {@code edit}, {@code preview}, {@code live} or {@code production}
+   * @param {boolean} newWindow=false {@code true} if environment should be opened in new window
    */
-  function addPreviewPlugin(sk) {
-    sk.add({
-      id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
-      button: {
-        action: (evt) => {
-          const { config, location } = sk;
-          let url;
-          if (sk.isEditor()) {
-            const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
-            url = `https://${config.ref}--${config.repo}--${config.owner}.hlx.page${previewPath}`;
-          } else {
-            url = `https://${config.innerHost}${location.pathname}`;
+  async function gotoEnv(sidekick, targetEnv, newWindow) {
+    const { config, location } = sidekick;
+    const hostType = ENVS[targetEnv];
+    if (!hostType) {
+      return;
+    }
+    let url;
+    if (targetEnv === 'edit') {
+      // resolve editor url
+      const path = location.pathname;
+      const file = path.split('/').pop() || 'index'; // use 'index' if no filename
+      let editPath;
+      if (file.endsWith('.html')) {
+        editPath = path.replace(/\.html$/, '.lnk');
+      } else if (!file.includes('.')) {
+        editPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
+      }
+      url = new URL(editPath, location.href).href;
+    } else if (sidekick.isEditor()) {
+      // resolve target env from editor url
+      const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+      const lookupUrl = `https://${config[hostType]}${previewPath}`;
+      if (targetEnv === 'preview') {
+        // use lookup url directly
+        url = lookupUrl;
+      }
+      // fetch report, extract url and patch host
+      try {
+        const resp = await fetch(`${lookupUrl}?report=true`);
+        if (resp.ok) {
+          const { webUrl } = await resp.json();
+          if (webUrl) {
+            const u = new URL(webUrl);
+            u.hostname = config[hostType];
+            url = u.toString();
           }
-          if (evt.metaKey) {
-            window.open(url);
-          } else {
-            window.location.href = url;
-          }
-        },
-        isPressed: (sidekick) => sidekick.isInner(),
-      },
-    });
+        }
+      } catch (e) {
+        // something went wrong
+      }
+    } else {
+      // resolve target env from any env
+      url = `https://${config[hostType]}${location.pathname}`;
+    }
+
+    // switch or open env
+    if (!url) {
+      return;
+    }
+    if (newWindow) {
+      window.open(url);
+    } else {
+      window.location.href = url;
+    }
   }
 
   /**
-   * Adds the live plugin to the sidekick.
+   * Adds the environment plugins to the sidekick:
+   * Edit, Preview, Live and Production
    * @private
    * @param {Sidekick} sk The sidekick
    */
-  function addLivePlugin(sk) {
-    sk.add({
-      id: 'live',
-      condition: (sidekick) => sidekick.config.outerHost && sidekick.isHelix(),
-      button: {
-        action: (evt) => {
-          const { config, location } = sk;
-          const url = `https://${config.outerHost}${location.pathname}`;
-          if (evt.metaKey) {
-            window.open(url);
-          } else {
-            window.location.href = url;
-          }
-        },
-        isPressed: (sidekick) => sidekick.isOuter(),
-      },
-    });
-  }
-
-  /**
-   * Adds the production plugin to the sidekick.
-   * @private
-   * @param {Sidekick} sk The sidekick
-   */
-  function addProdPlugin(sk) {
-    sk.add({
-      id: 'prod',
-      condition: (sidekick) => sidekick.config.host && sidekick.isHelix(),
-      button: {
-        action: (evt) => {
-          const { config, location } = sk;
-          const url = `https://${config.host}${location.pathname}`;
-          if (evt.metaKey) {
-            window.open(url);
-          } else {
-            window.location.href = url;
-          }
-        },
-        isPressed: (sidekick) => sidekick.isProd(),
-      },
-    });
-  }
-
-  /**
-   * Adds the edit plugin to the sidekick.
-   * @private
-   * @param {Sidekick} sk The sidekick
-   */
-  function addEditPlugin(sk) {
+  function addEnvPlugins(sk) {
+    // edit
     sk.add({
       id: 'edit',
       condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
       button: {
-        action: (evt) => {
-          const { location } = sk;
-          const url = getEditUrl(location);
-          if (evt.metaKey) {
-            window.open(url);
-          } else {
-            window.location.href = url;
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
           }
+          await gotoEnv(sk, 'edit', evt.metaKey || evt.which === 2);
         },
         isPressed: (sidekick) => sidekick.isEditor(),
+      },
+    });
+
+    // preview
+    sk.add({
+      id: 'preview',
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'preview', evt.metaKey || evt.which === 2);
+        },
+        isPressed: (sidekick) => sidekick.isInner(),
+      },
+    });
+
+    // live
+    sk.add({
+      id: 'live',
+      condition: (sidekick) => sidekick.config.outerHost
+        && (sidekick.isEditor() || sidekick.isHelix()),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'live', evt.metaKey || evt.which === 2);
+        },
+        isPressed: (sidekick) => sidekick.isOuter(),
+      },
+    });
+
+    // production
+    sk.add({
+      id: 'prod',
+      condition: (sidekick) => sidekick.config.host
+        && sidekick.config.host !== sidekick.config.outerHost
+        && (sidekick.isEditor() || sidekick.isHelix()),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'live', evt.metaKey || evt.which === 2);
+        },
+        isPressed: (sidekick) => sidekick.isProd(),
       },
     });
   }
@@ -460,22 +477,23 @@
       id: 'reload',
       condition: (s) => s.config.innerHost && (s.isInner() || s.isDev()),
       button: {
-        action: () => {
+        action: async (evt) => {
           const { location } = sk;
           const path = location.pathname;
           sk.showModal('Please wait …', true);
-          sk
-            .publish(path, true)
-            .then((resp) => {
-              if (resp && resp.ok) {
-                window.location.reload();
-              } else {
-                sk.showModal([
-                  `Failed to reload ${path}. Please try again later.`,
-                  JSON.stringify(resp),
-                ], true, 0);
-              }
-            });
+          const resp = await sk.publish(path, true);
+          if (resp && resp.ok) {
+            if (evt.metaKey || evt.which === 2) {
+              window.open(window.location.href);
+            } else {
+              window.location.reload();
+            }
+          } else {
+            sk.showModal([
+              `Failed to reload ${path}. Please try again later.`,
+              JSON.stringify(resp),
+            ], true, 0);
+          }
         },
       },
     });
@@ -491,7 +509,7 @@
       id: 'publish',
       condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
       button: {
-        action: async () => {
+        action: async (evt) => {
           const { config, location } = sk;
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
@@ -509,7 +527,11 @@
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
-            window.location.href = prodURL;
+            if (evt.metaKey || evt.which === 2) {
+              window.open(prodURL);
+            } else {
+              window.location.href = prodURL;
+            }
           } else {
             sk.notify('Successfully published');
           }
@@ -564,10 +586,7 @@
         },
       });
       // default plugins
-      addEditPlugin(this);
-      addPreviewPlugin(this);
-      addLivePlugin(this);
-      addProdPlugin(this);
+      addEnvPlugins(this);
       addReloadPlugin(this);
       addPublishPlugin(this);
       // custom plugins
@@ -641,7 +660,7 @@
         // find existing plugin
         let $plugin = this.get(plugin.id);
         let $pluginContainer = this.root;
-        if (ENVS.includes(plugin.id)) {
+        if (ENVS[plugin.id]) {
           // find or create environment plugin container
           $pluginContainer = this.root.querySelector('.env');
           if (!$pluginContainer) {
@@ -691,6 +710,7 @@
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
+              auxclick: plugin.button.action,
             },
           };
           let $button = $plugin ? $plugin.querySelector(buttonCfg.tag) : null;
