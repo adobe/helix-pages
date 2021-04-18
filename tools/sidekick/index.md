@@ -20,7 +20,7 @@ id: book
 style: display:none
 ---
 
-Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually.
+Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually. <span id="update" style="display:none">Then you can safely delete the previous version of this bookmarklet.</span>
 
 <a id="bookmark" title="Sidekick" href="">
   <img src="./helix.svg" alt="Sidekick">
@@ -122,12 +122,13 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     if (params.has('from')) {
       const from = params.get('from');
       const backLink = document.createElement('a');
-      backLink.href = encodeURIComponent(from);
+      backLink.href = encodeURI(from);
       backLink.textContent = from;
       const wrapper = document.createElement('div');
       wrapper.className = 'back';
       wrapper.appendChild(backLink);
       document.getElementById('book').appendChild(wrapper);
+      document.getElementById('update').style.display = 'unset';
     }
     if (autorun) {
       document.getElementById('form').style.display = 'none';

@@ -103,10 +103,11 @@
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
-    const script = Array.from(document.querySelectorAll('script[src]'))
-      .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
+    let scriptUrl;
+    const script = document.querySelector('script[src$="/sidekick/app.js"]');
     if (script) {
-      const scriptHost = new URL(script.src).host;
+      scriptUrl = script.src;
+      const scriptHost = new URL(scriptUrl).host;
       if (scriptHost && scriptHost !== 'www.hlx.live') {
         // keep only 1st and 2nd level domain
         innerHost = scriptHost.split('.')
@@ -127,6 +128,7 @@
       innerHost,
       outerHost,
       purgeHost: innerHost, // backward compatibility
+      scriptUrl,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -319,9 +321,14 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkForUpdates(sk) {
-    window.setTimeout(() => {
-      // check for legacy config property
-      if (typeof window.hlxSidekickConfig === 'object') {
+    const indicators = [
+      // legacy config
+      typeof window.hlxSidekickConfig === 'object',
+      // legacy script host
+      !sk.config.scriptUrl || new URL(sk.config.scriptUrl).host === 'www.hlx.page',
+    ];
+    if (indicators.includes(true)) {
+      window.setTimeout(() => {
         // eslint-disable-next-line no-alert
         if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
           sk.showModal('Please wait …', true);
@@ -331,8 +338,8 @@
           url.search = params.toString();
           window.location.href = url.toString();
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
   }
 
   /**
@@ -751,10 +758,8 @@
     loadCSS(path) {
       let href = path;
       if (!href) {
-        const script = Array.from(document.querySelectorAll('script[src]'))
-          .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
-        if (script) {
-          href = script.src.replace('.js', '.css');
+        if (this.config.scriptUrl) {
+          href = this.config.scriptUrl.replace('.js', '.css');
         } else {
           const filePath = this.location.pathname;
           href = `${filePath.substring(filePath.lastIndexOf('/') + 1).split('.')[0]}.css`;
