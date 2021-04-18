@@ -406,7 +406,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://theblog--adobe.hlx.page/en/topics/bla.html',
+              'https://master--theblog--adobe.hlx.page/en/topics/bla.html',
               'Staging URL not opened',
             );
             resolve();
