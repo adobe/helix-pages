@@ -361,7 +361,7 @@
     } else if (sidekick.isEditor()) {
       // resolve target env from editor url
       const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
-      const lookupUrl = `https://${config[hostType]}${previewPath}`;
+      const lookupUrl = `https://${config.innerHost}${previewPath}`;
       if (targetEnv === 'preview') {
         // use lookup url directly
         url = lookupUrl;
