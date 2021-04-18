@@ -96,7 +96,7 @@ label.small {
     const segs = giturl.pathname.substring(1).split('/');
     const owner = segs[0];
     const repo = segs[1];
-    const ref = segs[3] || 'master';
+    const ref = segs[3] || 'main';
 
     const config = {
       project,
