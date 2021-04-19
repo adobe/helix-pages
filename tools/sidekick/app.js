@@ -526,7 +526,7 @@
       }
       if ((this.isHelix() || this.isEditor())
         && (this.config.pluginHost || this.config.innerHost)) {
-        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.innerHost}` : '');
+        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.host || this.config.innerHost}` : '');
         appendTag(document.head, {
           tag: 'script',
           attrs: {
