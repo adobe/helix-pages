@@ -100,6 +100,12 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(zIndex, '9999999', 'Did not apply default CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Uses main branch by default', async () => {
+    await page.goto(`${fixturesPrefix}/config-no-ref.html`, { waitUntil: 'load' });
+    const ref = await page.evaluate(() => window.hlx.sidekick.config.ref);
+    assert.strictEqual(ref, 'main', 'Did not use main branch');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Adds plugin from config', async () => {
     await mockCustomPlugins(page);
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
