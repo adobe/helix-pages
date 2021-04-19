@@ -1,3 +1,15 @@
+# [4.27.0](https://github.com/adobe/helix-pages/compare/v4.26.1...v4.27.0) (2021-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.8 ([#870](https://github.com/adobe/helix-pages/issues/870)) ([b9bdb5d](https://github.com/adobe/helix-pages/commit/b9bdb5d916c9e397289d36419de060ae441a4115))
+
+
+### Features
+
+* **extension.vcl:** support private gh repos and acls ([ddbc7e1](https://github.com/adobe/helix-pages/commit/ddbc7e11cde044d913915f2d41fd05a679e58bfa))
+
 ## [4.26.1](https://github.com/adobe/helix-pages/compare/v4.26.0...v4.26.1) (2021-04-19)
 
 
