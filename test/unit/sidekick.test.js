@@ -481,11 +481,8 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Reload plugin sends purge request from staging URL and reloads page', async () => {
-    const actionHost = 'https://adobeioruntime.net';
-    const purgePath = '/en/topics/bla.html';
     let loads = 0;
     let purged = false;
-    let branchIncluded = false;
     await page.setRequestInterception(true);
     const reloaded = await new Promise((resolve, reject) => {
       page.on('request', (req) => {
@@ -495,12 +492,11 @@ describe('Test sidekick bookmarklet', () => {
             status: 200,
             body: '',
           });
-        } else if (!purged && req.url().startsWith(actionHost)) {
+        } else if (!purged && req.method() === 'POST') {
           // intercept purge request
-          const params = new URL(req.url()).searchParams;
-          purged = params.get('path') === purgePath
-            && params.get('xfh') === 'master--theblog--adobe.hlx.page';
-          branchIncluded = params.get('host').startsWith('master--');
+          const headers = req.headers();
+          purged = req.url() === 'https://theblog--adobe.hlx.page/en/topics/bla.html'
+            && headers['x-forwarded-host'] === 'master--theblog--adobe.hlx.page';
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
@@ -523,12 +519,10 @@ describe('Test sidekick bookmarklet', () => {
     });
     // check result
     assert.ok(purged, 'Purge request not sent');
-    assert.ok(branchIncluded, 'Branch name not included in host parameter');
     assert.ok(reloaded, 'Reload not triggered');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin sends purge request from staging URL and redirects to production URL', async () => {
-    const actionHost = 'https://adobeioruntime.net';
     const purgePath = '/en/topics/bla.html';
     let purged = false;
     await page.setRequestInterception(true);
@@ -544,11 +538,11 @@ describe('Test sidekick bookmarklet', () => {
             status: 200,
             body: '',
           });
-        } else if (!purged && req.url().startsWith(actionHost)) {
+        } else if (!purged && req.method() === 'POST') {
           // intercept purge request
-          const params = new URL(req.url()).searchParams;
-          purged = params.get('path') === purgePath
-            && params.get('xfh').split(',').length === 3;
+          const headers = req.headers();
+          purged = req.url() === 'https://theblog--adobe.hlx.page/en/topics/bla.html'
+            && headers['x-forwarded-host'].split(',').length === 3;
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
@@ -575,7 +569,6 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin also purges dependencies', async () => {
-    const actionHost = 'https://adobeioruntime.net';
     const dependencies = [
       '/en/topics/foo.html',
       'bar.html?step=1',
@@ -585,16 +578,19 @@ describe('Test sidekick bookmarklet', () => {
     await new Promise((resolve, reject) => {
       page.on('request', async (req) => {
         // intercept purge request
-        if (req.url().startsWith(actionHost)) {
-          const params = new URL(req.url()).searchParams;
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (req.method() === 'POST') {
           // check result
-          purged.push(params.get('path'));
+          const purgeUrl = new URL(req.url());
+          purged.push(`${purgeUrl.pathname}${purgeUrl.search}`);
           req.respond({
             status: 200,
             body: JSON.stringify([{ status: 'ok' }]),
           });
-        } else if (req.url().startsWith('https://blog.adobe.com/')) {
-          req.respond({ status: 200, body: '' });
         } else {
           req.continue();
         }
@@ -621,7 +617,6 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin does not purge without production host', async () => {
-    const actionHost = 'https://adobeioruntime.net';
     await page.setRequestInterception(true);
     const noPurge = await new Promise((resolve) => {
       page.on('request', async (req) => {
@@ -630,7 +625,7 @@ describe('Test sidekick bookmarklet', () => {
             status: 200,
             body: '',
           });
-        } else if (req.url().startsWith(actionHost)) {
+        } else if (req.method() === 'POST') {
           // intercept purge request
           req.respond({
             status: 200,
