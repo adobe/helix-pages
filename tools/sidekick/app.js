@@ -125,6 +125,7 @@
       ...cfg,
       innerHost,
       outerHost,
+      purgeHost: innerHost,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -768,7 +769,7 @@
         : [this.config.innerHost, this.config.outerHost, this.config.host];
       const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
       u.search = new URLSearchParams([
-        ['host', this.config.innerHost],
+        ['host', this.config.purgeHost],
         ['xfh', xfh.join(',')],
         ['path', pathname],
       ]).toString();
