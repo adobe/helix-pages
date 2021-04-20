@@ -10,6 +10,9 @@ id: form
 <input id="giturl" placeholder="https://github.com/....">
 <label for="host">Production Hostname (optional): </label>
 <input id="host">
+<input id="byocdn" type="checkbox">
+<label for="byocdn" class="small">3rd party CDN (optional)</label>
+<br>
 <label for="project">Project Name (optional): </label>
 <input id="project">
 <br>
@@ -20,7 +23,7 @@ id: book
 style: display:none
 ---
 
-Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually.
+Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick="copy()">copy</a> its <b>Link Address</b> to add the bookmarklet manually. <span id="update" style="display:none">Then you can safely delete the previous version of this bookmarklet.</span>
 
 <a id="bookmark" title="Sidekick" href="">
   <img src="./helix.svg" alt="Sidekick">
@@ -53,6 +56,19 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
   display: inline-block;
 }
 
+input#host {
+  margin-bottom: 0.5rem;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  display: inline;
+}
+
+label.small {
+  font-size: 1.2rem;
+}
+
 @media (prefers-color-scheme: dark) {
   #bookmark {
     box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.2);
@@ -70,7 +86,7 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
   function run() {
     let giturl = document.getElementById('giturl').value;
     const host = document.getElementById('host').value;
-    // const title = document.getElementById('title').value;
+    const byocdn = document.getElementById('byocdn').checked;
     const project = document.getElementById('project').value;
     if (!giturl) {
       alert('Repository URL is mandatory.');
@@ -89,6 +105,9 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
       repo,
       ref,
     };
+    if (byocdn) {
+      config.byocdn = true;
+    }
 
     const bm=document.getElementById('bookmark');
     bm.href = [
@@ -116,18 +135,19 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
     params.forEach((v,k) => {
       const field = document.getElementById(k);
       if (!field) return;
-      field.value = v;
+      field.type === 'checkbox' ? field.checked = true : field.value = v;
       autorun = true;
     });
     if (params.has('from')) {
       const from = params.get('from');
       const backLink = document.createElement('a');
-      backLink.href = encodeURIComponent(from);
+      backLink.href = encodeURI(from);
       backLink.textContent = from;
       const wrapper = document.createElement('div');
       wrapper.className = 'back';
       wrapper.appendChild(backLink);
       document.getElementById('book').appendChild(wrapper);
+      document.getElementById('update').style.display = 'unset';
     }
     if (autorun) {
       document.getElementById('form').style.display = 'none';

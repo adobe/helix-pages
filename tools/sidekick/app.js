@@ -64,6 +64,7 @@
    * @prop {string} repo    The GitHub owner or organization (mandatory)
    * @prop {string} ref=main The Git reference or branch (optional)
    * @prop {string} host    The production host name (optional)
+   * @prop {string} byocdn=false {@code true} if the production host is a 3rd party CDN (optional)
    * @prop {string} project The name of the Helix project (optional)
    */
 
@@ -115,10 +116,11 @@
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
-    const script = Array.from(document.querySelectorAll('script[src]'))
-      .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
+    let scriptUrl;
+    const script = document.querySelector('script[src$="/sidekick/app.js"]');
     if (script) {
-      const scriptHost = new URL(script.src).host;
+      scriptUrl = script.src;
+      const scriptHost = new URL(scriptUrl).host;
       if (scriptHost && scriptHost !== 'www.hlx.live') {
         // keep only 1st and 2nd level domain
         innerHost = scriptHost.split('.')
@@ -138,6 +140,8 @@
       ref,
       innerHost,
       outerHost,
+      purgeHost: innerHost, // backward compatibility
+      scriptUrl,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -317,9 +321,14 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkForUpdates(sk) {
-    window.setTimeout(() => {
-      // check for legacy config property
-      if (typeof window.hlxSidekickConfig === 'object') {
+    const indicators = [
+      // legacy config
+      typeof window.hlxSidekickConfig === 'object',
+      // legacy script host
+      !sk.config.scriptUrl || new URL(sk.config.scriptUrl).host === 'www.hlx.page',
+    ];
+    if (indicators.includes(true)) {
+      window.setTimeout(() => {
         // eslint-disable-next-line no-alert
         if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
           sk.showModal('Please wait …', true);
@@ -329,8 +338,8 @@
           url.search = params.toString();
           window.location.href = url.toString();
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
   }
 
   /**
@@ -597,7 +606,7 @@
       }
       if ((this.isHelix() || this.isEditor())
         && (this.config.pluginHost || this.config.innerHost)) {
-        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.innerHost}` : '');
+        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.outerHost || this.config.innerHost}` : '');
         appendTag(document.head, {
           tag: 'script',
           attrs: {
@@ -893,10 +902,8 @@
     loadCSS(path) {
       let href = path;
       if (!href) {
-        const script = Array.from(document.querySelectorAll('script[src]'))
-          .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
-        if (script) {
-          href = script.src.replace('.js', '.css');
+        if (this.config.scriptUrl) {
+          href = this.config.scriptUrl.replace('.js', '.css');
         } else {
           const filePath = this.location.pathname;
           href = `${filePath.substring(filePath.lastIndexOf('/') + 1).split('.')[0]}.css`;
@@ -933,20 +940,23 @@
     async publish(path, innerOnly = false) {
       if (!innerOnly && !this.config.host) return null;
       const purgeURL = new URL(path, this.location.href);
-      const pathname = `${purgeURL.pathname}${purgeURL.search}`;
       /* eslint-disable no-console */
-      console.log(`purging ${pathname}`);
-      const xfh = innerOnly
-        ? [this.config.innerHost]
-        : [this.config.innerHost, this.config.outerHost, this.config.host];
-      const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
-      u.search = new URLSearchParams([
-        ['host', this.config.innerHost],
-        ['xfh', xfh.join(',')],
-        ['path', pathname],
-      ]).toString();
-      const resp = await fetch(u, {
+      console.log(`purging ${purgeURL.href}`);
+      const xfh = [this.config.innerHost];
+      if (!innerOnly) {
+        if (this.config.outerHost) {
+          xfh.push(this.config.outerHost);
+        }
+        if (this.config.host && !this.config.byocdn) {
+          xfh.push(this.config.host);
+        }
+      }
+      const resp = await fetch(purgeURL.href, {
         method: 'POST',
+        headers: {
+          'X-Method-Override': 'HLXPURGE',
+          'X-Forwarded-Host': xfh.join(', '),
+        },
       });
       const json = await resp.json();
       console.log(JSON.stringify(json));
