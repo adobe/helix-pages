@@ -117,7 +117,7 @@ label.small {
         'window.hlx=window.hlx||{};',
         `window.hlx.sidekickConfig=${JSON.stringify(config)};`,
         'if(!window.hlx.sidekick){',
-          'document.head.appendChild(document.createElement("script")).src="https://www.hlx.live/tools/sidekick/app.js";',
+          `document.head.appendChild(document.createElement("script")).src="${window.location.origin}/tools/sidekick/app.js";`,
         '}else{window.hlx.sidekick.loadContext().toggle();}',
       '})();',
     ].join('');
