@@ -368,7 +368,7 @@
       }
       // fetch report, extract url and patch host
       try {
-        const resp = await fetch(`${lookupUrl}?report=true`);
+        const resp = await fetch(`${lookupUrl}?hlx_report=true`);
         if (resp.ok) {
           const { webUrl } = await resp.json();
           if (webUrl) {
