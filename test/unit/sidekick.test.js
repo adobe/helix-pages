@@ -654,6 +654,14 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(noPurge, 'Did not purge inner host only');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('No publish plugin on bring-your-own-CDN production host', async () => {
+    await mockCustomPlugins(page);
+    // open test page
+    await page.goto(`${fixturesPrefix}/publish-byocdn.html`, { waitUntil: 'load' });
+    const plugins = await getPlugins(page);
+    assert.ok(!plugins.includes('publish'), 'Unexpected publish plugin found');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Development environment is correctly detected', async () => {
     await page.goto(`${fixturesPrefix}/is-dev.html`, { waitUntil: 'load' });
     assert.ok(

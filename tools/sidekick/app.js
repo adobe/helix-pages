@@ -437,7 +437,8 @@
   function addPublishPlugin(sk) {
     sk.add({
       id: 'publish',
-      condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
+      condition: (sidekick) => sidekick.isHelix() && sidekick.config.host
+        && !(sidekick.config.byocdn && sidekick.location.host === sidekick.config.host),
       button: {
         action: async (evt) => {
           const { config, location } = sk;
@@ -795,7 +796,10 @@
      * @return {publishResponse} The response object
      */
     async publish(path, innerOnly = false) {
-      if (!innerOnly && !this.config.host) return null;
+      if ((!innerOnly && !this.config.host)
+        || (this.config.byocdn && this.location.host === this.config.host)) {
+        return null;
+      }
       const purgeURL = new URL(path, this.location.href);
       /* eslint-disable no-console */
       console.log(`purging ${purgeURL.href}`);
