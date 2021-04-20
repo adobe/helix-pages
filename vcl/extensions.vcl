@@ -88,22 +88,27 @@ sub hlx_repo_after {
         set req.http.X-Repo = var.r;
     }
 
-    # private github repository support 
-    # write-only dictionary repo_github_token (key: repo, value: github token)
-    if (!req.http.x-github-token && table.contains(repo_github_token, req.http.X-Repo)) {
-        set req.http.x-github-token = table.lookup(repo_github_token, req.http.X-Repo);
-    }
-    
     # restrict access by acl for specific repos
     # dictionary acl_restricted_repos (key: repo, value: acl)
     if (client.as.number != 54113) {
         # not a Fastly request
-        if (table.lookup(acl_restricted_repos, req.http.X-Repo) == "adobe_ips") {
-            # restrict by acl
-            if (!req.http.fastly-ff && client.ip !~ adobe_ips) {
-                error 401 "Unauthorized";
+        if (req.method != "FASTLYPURGE") {
+            # PURGE is sent from helix-purge service, don't apply acl filter
+            # (PURGE method appears in VCL as FASTLYPURGE)
+            if (table.lookup(acl_restricted_repos, req.http.X-Repo) == "adobe_ips") {
+                # restrict by acl unless the client has a token (validity to be confirmed downstream)
+                if (!req.http.fastly-ff && client.ip !~ adobe_ips && !req.http.x-github-token) {
+                    error 401 "Unauthorized";
+                }
             }
         }
+    }
+    # private github repository support 
+    # write-only dictionary repo_github_token (key: repo, value: github token)
+    # we load the token after the ACL check, so that you cannot access acl-restricted
+    # private repos without being either in the ACL or having the token
+    if (!req.http.x-github-token && table.contains(repo_github_token, req.http.X-Repo)) {
+        set req.http.x-github-token = table.lookup(repo_github_token, req.http.X-Repo);
     }
 }
 
