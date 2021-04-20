@@ -22,7 +22,7 @@ describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
-    () => Array.from(document.querySelectorAll('.hlx-sk > div'))
+    () => Array.from(document.querySelectorAll('.hlx-sk > div:not(.env)'))
       .map((plugin) => ({
         id: plugin.className,
         text: plugin.textContent,
@@ -91,6 +91,19 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     const skHandle = await page.$('div.hlx-sk');
     assert.ok(skHandle, 'Did not render without config');
+    const plugins = await getPlugins(page);
+    assert.strictEqual(plugins.length, 0, 'Rendered unexpected plugins');
+    const zIndex = await page.evaluate(
+      (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
+      skHandle,
+    );
+    assert.strictEqual(zIndex, '9999999', 'Did not apply default CSS');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Renders with irrelevant config', async () => {
+    await page.goto(`${fixturesPrefix}/config-wrong.html`, { waitUntil: 'load' });
+    const skHandle = await page.$('div.hlx-sk');
+    assert.ok(skHandle, 'Did not render with irrelevant config');
     const plugins = await getPlugins(page);
     assert.strictEqual(plugins.length, 0, 'Rendered unexpected plugins');
     const zIndex = await page.evaluate(
