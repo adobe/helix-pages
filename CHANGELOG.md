@@ -1,3 +1,12 @@
+## [4.27.2](https://github.com/adobe/helix-pages/compare/v4.27.1...v4.27.2) (2021-04-20)
+
+
+### Bug Fixes
+
+* **extensions:** allow access to private, acl-restricted content with github token ([ee45ff9](https://github.com/adobe/helix-pages/commit/ee45ff9ff739695c553aba3c9ac8841e90356b73))
+* correct client AS number for Fastly ([72f818e](https://github.com/adobe/helix-pages/commit/72f818e71932265f9f6843e9e1022a22070cde14))
+* **extensions.vcl:** don't apply acl filter to PURGE requests ([63b86e8](https://github.com/adobe/helix-pages/commit/63b86e8f5f59b36babb8398af53d6e8a6290b786))
+
 ## [4.27.1](https://github.com/adobe/helix-pages/compare/v4.27.0...v4.27.1) (2021-04-20)
 
 
