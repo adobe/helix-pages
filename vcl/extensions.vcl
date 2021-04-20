@@ -96,7 +96,7 @@ sub hlx_repo_after {
     
     # restrict access by acl for specific repos
     # dictionary acl_restricted_repos (key: repo, value: acl)
-    if (client.as.number != 20940) {
+    if (client.as.number != 54113) {
         # not a Fastly request
         if (req.method != "FASTLYPURGE") {
             # PURGE is sent from helix-purge service, don't apply acl filter
