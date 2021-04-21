@@ -12,8 +12,23 @@
 /* global describe, it */
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
+const { logging } = require('@adobe/helix-testutils');
 
 const { pre } = require('../../src/embed_html.pre.js');
+
+const action = {
+  request: {
+    owner: 'test',
+    repo: 'test',
+    ref: 'main',
+  },
+  downloader: {
+    fetchGithub: async () => ({ status: 200 }),
+    fetch: async () => {},
+    getTaskById: async () => ({ status: 404 }),
+  },
+  logger: logging.createTestLogger({ level: 'debug' }),
+};
 
 describe('Testing pre requirements for main function', () => {
   it('Exports pre', () => {
@@ -26,7 +41,7 @@ describe('Testing pre requirements for main function', () => {
 });
 
 describe('Testing pre.js', () => {
-  it('Basename stays cool', () => {
+  it('Basename stays cool', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -43,12 +58,12 @@ describe('Testing pre.js', () => {
       },
     };
 
-    pre(context);
+    await pre(context, action);
     assert.equal(context.content.meta.basename, 'foo');
     assert.equal(context.content.meta.dirname, 'components');
   });
 
-  it('Basename stays cool even with special chars', () => {
+  it('Basename stays cool even with special chars', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -65,12 +80,12 @@ describe('Testing pre.js', () => {
       },
     };
 
-    pre(context);
+    await pre(context, action);
     assert.equal(context.content.meta.basename, 'foo');
     assert.equal(context.content.meta.dirname, 'components');
   });
 
-  it('Dirname gets extracted, too', () => {
+  it('Dirname gets extracted, too', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -87,12 +102,12 @@ describe('Testing pre.js', () => {
       },
     };
 
-    pre(context);
+    await pre(context, action);
     assert.equal(context.content.meta.basename, 'xyz');
     assert.equal(context.content.meta.dirname, 'promotions');
   });
 
-  it('Null test', () => {
+  it('Null test', async () => {
     const dom = new JSDOM('<html><head><title>Foo</title></head><body><h1>Title</h1></body></html>');
     const context = {
       content: {
@@ -109,7 +124,7 @@ describe('Testing pre.js', () => {
       },
     };
 
-    pre(context);
+    await pre(context, action);
     assert.equal(context.content.meta.basename, '');
     assert.equal(context.content.meta.dirname, '');
   });

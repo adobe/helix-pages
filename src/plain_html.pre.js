@@ -10,18 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
-const fixSections = require('./fix-sections.js');
-const createPageBlocks = require('./create-page-blocks.js');
-const createPictures = require('./create-pictures.js');
+const fetchMetadata = require('./fetch-metadata.js');
+const { pre } = require('./html.pre');
 
-/**
- * The 'pre' function that is executed before the plain HTML is rendered
- * @param context The current context of processing pipeline
- */
-async function pre(context) {
-  fixSections(context);
-  createPageBlocks(context);
-  createPictures(context);
-}
-
-module.exports.pre = pre;
+module.exports = {
+  pre,
+  before: {
+    content: fetchMetadata,
+  },
+};
