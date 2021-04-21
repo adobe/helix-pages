@@ -1,3 +1,25 @@
+# [4.28.0](https://github.com/adobe/helix-pages/compare/v4.27.2...v4.28.0) (2021-04-21)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#874](https://github.com/adobe/helix-pages/issues/874)) ([86329a4](https://github.com/adobe/helix-pages/commit/86329a4b496e91ce2345b45e30f3034e6222466d))
+* accelerate loading plugins in editor ([5554c40](https://github.com/adobe/helix-pages/commit/5554c406b162cc882e955d302dfc6835c8853b0d))
+* **sidekick:** innerHost is hlx.live ([943eed0](https://github.com/adobe/helix-pages/commit/943eed0902247fa662ebf37a20cd1271170d421e))
+
+
+### Features
+
+* **sidekick:** always reload context when activated ([6122e94](https://github.com/adobe/helix-pages/commit/6122e9428c77e0636a9a942d72ae389bf42c44b3))
+* **sidekick:** load sidekick from same host as bookmarklet generator ([b7f3893](https://github.com/adobe/helix-pages/commit/b7f38938996179a521e55415921541919f98278d))
+* **sidekick:** middle click and meta key support for all plugins ([8bc4db5](https://github.com/adobe/helix-pages/commit/8bc4db50d4249b1c0c52a1824ec15e6d23ec186d))
+* **sidekick:** middle click and meta key support for all plugins ([f5bd6c0](https://github.com/adobe/helix-pages/commit/f5bd6c037dc0328c3d301c1abc1daaa3b4915fee))
+* **sidekick:** middle click and meta key support for all plugins ([af52552](https://github.com/adobe/helix-pages/commit/af52552cb68244c7792b0f8d626ca452c2033a60))
+* **sidekick:** no publish button on byocdn prod host ([20c1a21](https://github.com/adobe/helix-pages/commit/20c1a2136b7534a3f55fe1be6ba69196d9d2b3fc))
+* **sidekick:** use .lnk URLs ([2ab96ab](https://github.com/adobe/helix-pages/commit/2ab96ab71f790eafa5f5043e29b59d2c0e00b1a1))
+* **sidekick:** use HLXPURGE ([1a33116](https://github.com/adobe/helix-pages/commit/1a3311679b75a7e0d3438a207dd028a8b4a20fe0))
+* **sidekick:** write sidekick config on every invocation ([b5f53f6](https://github.com/adobe/helix-pages/commit/b5f53f6cc38f605001157e3b7b799076bac6e78f))
+
 ## [4.27.2](https://github.com/adobe/helix-pages/compare/v4.27.1...v4.27.2) (2021-04-20)
 
 
