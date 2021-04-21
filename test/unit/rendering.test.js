@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 process.env.HELIX_FETCH_FORCE_HTTP1 = true;
+process.env.HELIX_PIPELINE_FORCE_HTTP1 = true;
 
 const assert = require('assert');
 const path = require('path');
@@ -18,7 +19,7 @@ const crypto = require('crypto');
 const fs = require('fs-extra');
 const nock = require('nock');
 const { JSDOM } = require('jsdom');
-const { Request } = require('@adobe/helix-fetch');
+const { Request } = require('@adobe/helix-universal');
 const BuildCommand = require('@adobe/helix-cli/src/build.cmd.js');
 const { assertEquivalentNode } = require('@adobe/helix-shared').dom;
 
