@@ -65,4 +65,4 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-202103
     content: https://github.com/adobe/helix-pages.git#breaking-202103
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202103
-    package: https://helix-pages.anywhere.run/pages_4_22_14_breaking-202103
+    package: https://helix-pages.anywhere.run/pages_4-27-2-breaking-202103
