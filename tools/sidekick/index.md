@@ -105,7 +105,7 @@ label.small {
       repo,
       ref,
     };
-    if (byocdn) {
+    if (byocdn || host === 'www.adobe.com') {
       config.byocdn = true;
     }
 
