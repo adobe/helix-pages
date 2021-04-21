@@ -1,3 +1,20 @@
+# [5.0.0](https://github.com/adobe/helix-pages/compare/v4.28.0...v5.0.0) (2021-04-21)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([d952bec](https://github.com/adobe/helix-pages/commit/d952becbd75486ed15b88a0b8dc064b2336f089d))
+
+
+### Features
+
+* **sidekick:** switch default branch to main in bookmarklet generator ([19357fe](https://github.com/adobe/helix-pages/commit/19357fe9fee593dd59945c97288b45c7703be96e))
+
+
+### BREAKING CHANGES
+
+* **sidekick:** projects still using master as default need to specify it as part of the gh url, e.g. https://github/owner/repo/tree/master
+
 # [4.28.0](https://github.com/adobe/helix-pages/compare/v4.27.2...v4.28.0) (2021-04-21)
 
 
