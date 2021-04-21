@@ -208,7 +208,7 @@ async function extractMetaData(context, action) {
     document.querySelectorAll('div > p').forEach((p) => {
       if (desc.length === 0) {
         const words = p.textContent.trim().split(/\s+/);
-        if (words.length >= 10) {
+        if (words.length >= 10 || words.some((w) => w.length > 25 && !w.startsWith('http'))) {
           desc = desc.concat(words);
         }
       }
