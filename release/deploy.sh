@@ -26,7 +26,7 @@ ARG_VERSION="--pkgVersion $PKG_VERSION"
 ARG_STRAIN="--strain default --strain universal --strain universal-ci --strain universal-prod --strain gcf --strain gcf-ci"
 if [[ "$BRANCH" =~ ^breaking-.* ]]; then
   # use special version for deploying on breaking branch
-  PKG_VERSION="$(jq -r .version package.json | sed -e 's/\./_/g').$BRANCH"
+  PKG_VERSION="$(jq -r .version package.json | sed -e 's/\./_/g')_$BRANCH"
   ARG_VERSION="--pkgVersion $PKG_VERSION"
   ARG_STRAIN="--strain $BRANCH"
   echo "using package version: $PKG_VERSION"
