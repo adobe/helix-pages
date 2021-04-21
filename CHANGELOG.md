@@ -1,3 +1,207 @@
+## [4.27.2](https://github.com/adobe/helix-pages/compare/v4.27.1...v4.27.2) (2021-04-20)
+
+
+### Bug Fixes
+
+* **extensions:** allow access to private, acl-restricted content with github token ([ee45ff9](https://github.com/adobe/helix-pages/commit/ee45ff9ff739695c553aba3c9ac8841e90356b73))
+* correct client AS number for Fastly ([72f818e](https://github.com/adobe/helix-pages/commit/72f818e71932265f9f6843e9e1022a22070cde14))
+* **extensions.vcl:** don't apply acl filter to PURGE requests ([63b86e8](https://github.com/adobe/helix-pages/commit/63b86e8f5f59b36babb8398af53d6e8a6290b786))
+
+## [4.27.1](https://github.com/adobe/helix-pages/compare/v4.27.0...v4.27.1) (2021-04-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.26.3 ([e4d4e67](https://github.com/adobe/helix-pages/commit/e4d4e67a6b9d643e61810961aaf907524e41945b))
+
+# [4.27.0](https://github.com/adobe/helix-pages/compare/v4.26.1...v4.27.0) (2021-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.8 ([#870](https://github.com/adobe/helix-pages/issues/870)) ([b9bdb5d](https://github.com/adobe/helix-pages/commit/b9bdb5d916c9e397289d36419de060ae441a4115))
+
+
+### Features
+
+* **extension.vcl:** support private gh repos and acls ([ddbc7e1](https://github.com/adobe/helix-pages/commit/ddbc7e11cde044d913915f2d41fd05a679e58bfa))
+
+## [4.26.1](https://github.com/adobe/helix-pages/compare/v4.26.0...v4.26.1) (2021-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#865](https://github.com/adobe/helix-pages/issues/865)) ([757495f](https://github.com/adobe/helix-pages/commit/757495fd8c3b2f101ec49daac3171abd30a81317))
+* **deps:** update external fixes ([#869](https://github.com/adobe/helix-pages/issues/869)) ([d81dd95](https://github.com/adobe/helix-pages/commit/d81dd95b1aafde6577b8b9acfba81f84e8f68ded))
+
+# [4.26.0](https://github.com/adobe/helix-pages/compare/v4.25.6...v4.26.0) (2021-04-16)
+
+
+### Features
+
+* **sidekick:** always include branch in preview host ([5f92801](https://github.com/adobe/helix-pages/commit/5f9280191914612021187cb830e39ce67f5595be))
+* **sidekick:** use main as default branch ([2a4e3e9](https://github.com/adobe/helix-pages/commit/2a4e3e9880e3c40b2d5ee65eba892b8b72679aa9))
+
+## [4.25.6](https://github.com/adobe/helix-pages/compare/v4.25.5...v4.25.6) (2021-04-16)
+
+
+### Bug Fixes
+
+* **deploy:** use google-compatible package version names ([71f0c01](https://github.com/adobe/helix-pages/commit/71f0c01c8cfdff79c0ea70b6605df526cc50ccfb))
+
+
+### Reverts
+
+* Revert "Revert "Merge pull request #840 from adobe/deploy-gooooooooooogle"" ([a2d4260](https://github.com/adobe/helix-pages/commit/a2d42602ef06c375ad42fa57beaba419f673ab33)), closes [#840](https://github.com/adobe/helix-pages/issues/840)
+
+## [4.25.5](https://github.com/adobe/helix-pages/compare/v4.25.4...v4.25.5) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.4 ([760dd4c](https://github.com/adobe/helix-pages/commit/760dd4cd98a74bffe51cdf2772d2c2c6783bd0ce))
+
+## [4.25.4](https://github.com/adobe/helix-pages/compare/v4.25.3...v4.25.4) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-shared to v7.25.1 ([ddbc71c](https://github.com/adobe/helix-pages/commit/ddbc71ccfd816798d08626c387192079e7802816))
+
+## [4.25.3](https://github.com/adobe/helix-pages/compare/v4.25.2...v4.25.3) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.3 ([#862](https://github.com/adobe/helix-pages/issues/862)) ([13fd3c9](https://github.com/adobe/helix-pages/commit/13fd3c98414f6702690d326e1f0216aa7a393ccd))
+
+## [4.25.2](https://github.com/adobe/helix-pages/compare/v4.25.1...v4.25.2) (2021-04-15)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#860](https://github.com/adobe/helix-pages/issues/860)) ([4ecf1ef](https://github.com/adobe/helix-pages/commit/4ecf1ef06ca1ba8d5b88d4a6ccb4be789f511c8a))
+* **deps:** update dependency @adobe/helix-shared to v7.25.0 ([#861](https://github.com/adobe/helix-pages/issues/861)) ([85f8368](https://github.com/adobe/helix-pages/commit/85f8368bef6a7d57c9a8e3a74046e61e9f9696be))
+
+## [4.25.1](https://github.com/adobe/helix-pages/compare/v4.25.0...v4.25.1) (2021-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.1 ([#855](https://github.com/adobe/helix-pages/issues/855)) ([ca5ebb5](https://github.com/adobe/helix-pages/commit/ca5ebb5c91da33bd10e6343f68e89f43be37243c))
+
+# [4.25.0](https://github.com/adobe/helix-pages/compare/v4.24.4...v4.25.0) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.9.0 ([#853](https://github.com/adobe/helix-pages/issues/853)) ([6438f69](https://github.com/adobe/helix-pages/commit/6438f6914a9c749ce786544fa389a367d13075f9))
+
+
+### Features
+
+* **sidekick:** serve from www.hlx.live ([b1dbf4c](https://github.com/adobe/helix-pages/commit/b1dbf4cc92941ed0bc0386e97f6082f566f2cea5))
+
+## [4.24.4](https://github.com/adobe/helix-pages/compare/v4.24.3...v4.24.4) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/openwhisk-action-logger to v2.4.4 ([#852](https://github.com/adobe/helix-pages/issues/852)) ([be99d2e](https://github.com/adobe/helix-pages/commit/be99d2e91cf0530c7f11e651cc68b5d0e26ac9d2))
+
+## [4.24.3](https://github.com/adobe/helix-pages/compare/v4.24.2...v4.24.3) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.22 ([#851](https://github.com/adobe/helix-pages/issues/851)) ([d8e31d6](https://github.com/adobe/helix-pages/commit/d8e31d6b7346ec73107656060ad330ca798ef4c4))
+
+## [4.24.2](https://github.com/adobe/helix-pages/compare/v4.24.1...v4.24.2) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([4467c04](https://github.com/adobe/helix-pages/commit/4467c04aff2f8d92b0300ca8f510b423124b56a0))
+
+## [4.24.1](https://github.com/adobe/helix-pages/compare/v4.24.0...v4.24.1) (2021-04-12)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#842](https://github.com/adobe/helix-pages/issues/842)) ([8ebb5a3](https://github.com/adobe/helix-pages/commit/8ebb5a302af670be00900451b5db569eecbe6186))
+* **deps:** update adobe fixes ([#849](https://github.com/adobe/helix-pages/issues/849)) ([730e914](https://github.com/adobe/helix-pages/commit/730e9144c02cda4f437b17aea00d0de50f043f02))
+* **html:** new rule for description meta ([bc8e170](https://github.com/adobe/helix-pages/commit/bc8e170e93bbdfe47165fa3d001bbdc47de441b4))
+
+# [4.24.0](https://github.com/adobe/helix-pages/compare/v4.23.6...v4.24.0) (2021-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.17.0 ([#839](https://github.com/adobe/helix-pages/issues/839)) ([93a6e8b](https://github.com/adobe/helix-pages/commit/93a6e8b94982f9b25623909d4f029120aa5154c7))
+
+
+### Features
+
+* **deploy:** add two strains for testing google cloud functions ([4ceb58a](https://github.com/adobe/helix-pages/commit/4ceb58a663fc769bc5b6161f8564425fdb3e2782))
+* **deploy:** deploy to google ([ca1648e](https://github.com/adobe/helix-pages/commit/ca1648e2e4b5c25b0db215b1af1d52373204c62f))
+
+## [4.23.6](https://github.com/adobe/helix-pages/compare/v4.23.5...v4.23.6) (2021-04-05)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#838](https://github.com/adobe/helix-pages/issues/838)) ([0e56575](https://github.com/adobe/helix-pages/commit/0e56575083183aece982c645f868c7d4e8521ab7))
+
+## [4.23.5](https://github.com/adobe/helix-pages/compare/v4.23.4...v4.23.5) (2021-04-05)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#835](https://github.com/adobe/helix-pages/issues/835)) ([13a2211](https://github.com/adobe/helix-pages/commit/13a2211302afa2bc9797613b87934bbbea3b23ac))
+* **deps:** update dependency @adobe/helix-pipeline to v13.8.15 ([#836](https://github.com/adobe/helix-pages/issues/836)) ([2b9b1f1](https://github.com/adobe/helix-pages/commit/2b9b1f117188d2c44fdb8c856ce8c4d2e003126a))
+
+## [4.23.4](https://github.com/adobe/helix-pages/compare/v4.23.3...v4.23.4) (2021-04-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.16.6 ([40d2eb4](https://github.com/adobe/helix-pages/commit/40d2eb481fc83bae9ed3246609bec2adcd29313a))
+
+## [4.23.3](https://github.com/adobe/helix-pages/compare/v4.23.2...v4.23.3) (2021-03-31)
+
+
+### Bug Fixes
+
+* force release/deploy/publish ([8befa04](https://github.com/adobe/helix-pages/commit/8befa0447ff5691feb5e888eb4062f7ade1248ec))
+
+## [4.23.2](https://github.com/adobe/helix-pages/compare/v4.23.1...v4.23.2) (2021-03-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v3.16.5 ([f34c54b](https://github.com/adobe/helix-pages/commit/f34c54bca2a65b941fdf01e80dc1f2435f5ecbfd))
+
+## [4.23.1](https://github.com/adobe/helix-pages/compare/v4.23.0...v4.23.1) (2021-03-31)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#830](https://github.com/adobe/helix-pages/issues/830)) ([aa8b759](https://github.com/adobe/helix-pages/commit/aa8b759c1af8152e39ff828a94a79120f98dd820))
+* **deps:** update dependency @adobe/helix-deploy to v3.16.4 ([97d8788](https://github.com/adobe/helix-pages/commit/97d87887c1eeb5efcf01aeeef2c6258125c4e575))
+
+# [4.23.0](https://github.com/adobe/helix-pages/compare/v4.22.14...v4.23.0) (2021-03-31)
+
+
+### Bug Fixes
+
+* force deploy ([d0e77e9](https://github.com/adobe/helix-pages/commit/d0e77e9690db7cfb9f7fd95deba7f47956159f0c))
+* **deps:** update adobe fixes ([#829](https://github.com/adobe/helix-pages/issues/829)) ([120869a](https://github.com/adobe/helix-pages/commit/120869a0b18503cdd2f20dcc10bdf4345534334a))
+
+
+### Features
+
+* **pre:** remove unused index_json and sitemap cgi ([#816](https://github.com/adobe/helix-pages/issues/816)) ([02ce2cb](https://github.com/adobe/helix-pages/commit/02ce2cb22a5103a134c6120413e0089ab6623666)), closes [#798](https://github.com/adobe/helix-pages/issues/798)
+
 ## [4.22.14](https://github.com/adobe/helix-pages/compare/v4.22.13...v4.22.14) (2021-03-29)
 
 
