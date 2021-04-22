@@ -31,6 +31,9 @@ async function fetchMetadata(context, action) {
       uri: `https://${ref}--${repo}--${owner}.hlx.page/metadata.json`,
       headers,
       errorOn404: false,
+      options: {
+        timeout: 20000,
+      },
       id: 'metadata',
     });
   } catch (err) {
