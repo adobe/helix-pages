@@ -1,3 +1,10 @@
+## [5.0.1](https://github.com/adobe/helix-pages/compare/v5.0.0...v5.0.1) (2021-04-22)
+
+
+### Bug Fixes
+
+* **sidekick:** share url missing byocdn flag ([a9099a7](https://github.com/adobe/helix-pages/commit/a9099a76cfa08b812c9b12316c63cbed260b9412))
+
 # [5.0.0](https://github.com/adobe/helix-pages/compare/v4.28.0...v5.0.0) (2021-04-21)
 
 
