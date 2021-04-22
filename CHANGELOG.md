@@ -1,3 +1,10 @@
+## [5.0.2](https://github.com/adobe/helix-pages/compare/v5.0.1...v5.0.2) (2021-04-22)
+
+
+### Bug Fixes
+
+* trigger publish ([d946a05](https://github.com/adobe/helix-pages/commit/d946a05b23b81a4c87d806c90cd3b89f86f8604b))
+
 ## [5.0.1](https://github.com/adobe/helix-pages/compare/v5.0.0...v5.0.1) (2021-04-22)
 
 
