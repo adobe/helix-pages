@@ -125,34 +125,41 @@ async function getGlobalMetadata(url, action) {
     log.info('no external metadata. no metadata task scheduled.');
     return {};
   }
-  const res = await metaTask;
-  if (res.status === 200) {
-    let json = JSON.parse(res.body);
-    if (typeof json.data === 'object') {
-      json = json.data;
-    }
-    if (!(json instanceof Array)) {
-      throw new Error('data must be an array');
-    }
-    metaRules = json.map((entry) => {
-      // lowercase all keys
-      const lcEntry = {};
-      Object.keys(entry).forEach((key) => {
-        lcEntry[key.toLowerCase()] = entry[key];
+  try {
+    const res = await metaTask;
+    if (res.status === 200) {
+      let json = JSON.parse(res.body);
+      if (typeof json.data === 'object') {
+        json = json.data;
+      }
+      if (!(json instanceof Array)) {
+        throw new Error('data must be an array');
+      }
+      metaRules = json.map((entry) => {
+        // lowercase all keys and drop empty values
+        const lcEntry = {};
+        Object.keys(entry).forEach((key) => {
+          if (entry[key]) {
+            lcEntry[key.toLowerCase()] = entry[key];
+          }
+        });
+        return lcEntry;
       });
-      return lcEntry;
+    }
+    const metaConfig = {};
+    metaRules.forEach(({ url: glob, ...config }) => {
+      if (typeof glob !== 'string') {
+        return;
+      }
+      if (minimatch(url, glob)) {
+        Object.assign(metaConfig, config);
+      }
     });
+    return metaConfig;
+  } catch (e) {
+    log.error(`unable to load metadata: ${e.message}`);
   }
-  const metaConfig = {};
-  metaRules.forEach(({ url: glob, ...config }) => {
-    if (typeof glob !== 'string') {
-      return;
-    }
-    if (minimatch(url, glob)) {
-      Object.assign(metaConfig, config);
-    }
-  });
-  return metaConfig;
+  return {};
 }
 
 /**
