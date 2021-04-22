@@ -64,6 +64,7 @@
    * @prop {string} repo    The GitHub owner or organization (mandatory)
    * @prop {string} ref=main The Git reference or branch (optional)
    * @prop {string} host    The production host name (optional)
+   * @prop {string} byocdn=false {@code true} if the production host is a 3rd party CDN (optional)
    * @prop {string} project The name of the Helix project (optional)
    */
 
@@ -103,11 +104,12 @@
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     // get hlx domain from script src
     let innerHost;
-    const script = Array.from(document.querySelectorAll('script[src]'))
-      .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
+    let scriptUrl;
+    const script = document.querySelector('script[src$="/sidekick/app.js"]');
     if (script) {
-      const scriptHost = new URL(script.src).host;
-      if (scriptHost) {
+      scriptUrl = script.src;
+      const scriptHost = new URL(scriptUrl).host;
+      if (scriptHost && scriptHost !== 'www.hlx.live') {
         // keep only 1st and 2nd level domain
         innerHost = scriptHost.split('.')
           .reverse()
@@ -123,8 +125,11 @@
     const outerHost = ghDetails ? `${ghDetails}.hlx.live` : null;
     return {
       ...cfg,
+      ref,
       innerHost,
       outerHost,
+      purgeHost: innerHost, // backward compatibility
+      scriptUrl,
       host: publicHost,
       project: project || 'your Helix Pages project',
     };
@@ -173,6 +178,22 @@
       protocol,
       search,
     };
+  }
+
+  /**
+   * Returns the edit URL for a given location.
+   * @private
+   * @param {Location} location The location object
+   */
+  function getEditUrl({ pathname: path, href }) {
+    const file = path.split('/').pop() || 'index'; // use 'index' if no filename
+    let previewPath;
+    if (file.endsWith('.html')) {
+      previewPath = path.replace(/\.html$/, '.lnk');
+    } else if (!file.includes('.')) {
+      previewPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
+    }
+    return new URL(previewPath, href).href;
   }
 
   /**
@@ -301,9 +322,14 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkForUpdates(sk) {
-    window.setTimeout(() => {
-      // check for legacy config property
-      if (typeof window.hlxSidekickConfig === 'object') {
+    const indicators = [
+      // legacy config
+      typeof window.hlxSidekickConfig === 'object',
+      // legacy script host
+      !sk.config.scriptUrl || new URL(sk.config.scriptUrl).host === 'www.hlx.page',
+    ];
+    if (indicators.includes(true)) {
+      window.setTimeout(() => {
         // eslint-disable-next-line no-alert
         if (window.confirm('Good news! There is a newer version of the Helix Sidekick Bookmarklet available!\n\nDo you want to install it now? It will only take a minute …')) {
           sk.showModal('Please wait …', true);
@@ -313,8 +339,8 @@
           url.search = params.toString();
           window.location.href = url.toString();
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
   }
 
   /**
@@ -327,23 +353,21 @@
       id: 'preview',
       condition: (sidekick) => sidekick.isEditor() || sidekick.isOuter(),
       button: {
-        action: () => {
+        action: (evt) => {
           const { config, location } = sk;
           let url;
           if (sk.isEditor()) {
-            url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-            url.search = new URLSearchParams([
-              ['owner', config.owner],
-              ['repo', config.repo],
-              ['ref', config.ref || 'main'],
-              ['path', '/'],
-              ['lookup', location.href],
-            ]).toString();
+            const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+            url = `https://${config.ref}--${config.repo}--${config.owner}.hlx.page${previewPath}`;
           } else {
             const host = location.host === config.innerHost ? config.host : config.innerHost;
-            url = new URL(`https://${host}${location.pathname}`);
+            url = `https://${host}${location.pathname}`;
           }
-          window.open(url.toString(), `hlx-sk-preview-${btoa(location.href)}`);
+          if (evt.metaKey || evt.which === 2) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
         },
       },
     });
@@ -359,17 +383,14 @@
       id: 'edit',
       condition: (sidekick) => sidekick.isHelix(),
       button: {
-        action: () => {
-          const { config, location } = sk;
-          const url = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/content-proxy@v2');
-          url.search = new URLSearchParams([
-            ['owner', config.owner],
-            ['repo', config.repo],
-            ['ref', config.ref || 'main'],
-            ['path', '/'],
-            ['edit', location.href],
-          ]).toString();
-          window.open(url, `hlx-sk-edit-${btoa(location.href)}`);
+        action: (evt) => {
+          const { location } = sk;
+          const url = getEditUrl(location);
+          if (evt.metaKey || evt.which === 2) {
+            window.open(url);
+          } else {
+            window.location.href = url;
+          }
         },
       },
     });
@@ -385,22 +406,24 @@
       id: 'reload',
       condition: (s) => s.config.innerHost && (s.isInner() || s.isDev()),
       button: {
-        action: () => {
+        action: async (evt) => {
           const { location } = sk;
           const path = location.pathname;
           sk.showModal('Please wait …', true);
-          sk
-            .publish(path, true)
-            .then((resp) => {
-              if (resp && resp.ok) {
-                window.location.reload();
-              } else {
-                sk.showModal([
-                  `Failed to reload ${path}. Please try again later.`,
-                  JSON.stringify(resp),
-                ], true, 0);
-              }
-            });
+          const resp = await sk.publish(path, true);
+          if (resp && resp.ok) {
+            if (evt.metaKey || evt.which === 2) {
+              window.open(window.location.href);
+              sk.hideModal();
+            } else {
+              window.location.reload();
+            }
+          } else {
+            sk.showModal([
+              `Failed to reload ${path}. Please try again later.`,
+              JSON.stringify(resp),
+            ], true, 0);
+          }
         },
       },
     });
@@ -414,9 +437,10 @@
   function addPublishPlugin(sk) {
     sk.add({
       id: 'publish',
-      condition: (sidekick) => sidekick.isHelix() && sidekick.config.host,
+      condition: (sidekick) => sidekick.isHelix() && sidekick.config.host
+        && !(sidekick.config.byocdn && sidekick.location.host === sidekick.config.host),
       button: {
-        action: async () => {
+        action: async (evt) => {
           const { config, location } = sk;
           const path = location.pathname;
           sk.showModal(`Publishing ${path}`, true);
@@ -434,7 +458,12 @@
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
-            window.location.href = prodURL;
+            if (evt.metaKey || evt.which === 2) {
+              window.open(prodURL);
+              sk.hideModal();
+            } else {
+              window.location.href = prodURL;
+            }
           } else {
             sk.notify('Successfully published');
           }
@@ -452,14 +481,13 @@
      * {@link window.hlx.sidekickConfig}.
      */
     constructor() {
-      this.config = initConfig();
       this.root = appendTag(document.body, {
         tag: 'div',
         attrs: {
           class: 'hlx-sk hlx-sk-hidden hlx-sk-empty',
         },
       });
-      this.location = getLocation();
+      this.loadContext();
       this.loadCSS();
       // share button
       const share = appendTag(this.root, {
@@ -500,7 +528,7 @@
       }
       if ((this.isHelix() || this.isEditor())
         && (this.config.pluginHost || this.config.innerHost)) {
-        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.innerHost}` : '');
+        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.outerHost || this.config.innerHost}` : '');
         appendTag(document.head, {
           tag: 'script',
           attrs: {
@@ -509,6 +537,17 @@
         });
       }
       checkForUpdates(this);
+    }
+
+    /**
+     * Loads the sidekick configuration based on {@link window.hlx.sidekickConfig}
+     * and retrieves the location of the current document.
+     * @returns {Sidekick} The sidekick
+     */
+    loadContext() {
+      this.config = initConfig();
+      this.location = getLocation();
+      return this;
     }
 
     /**
@@ -553,6 +592,7 @@
             text: plugin.button.text,
             lstnrs: {
               click: plugin.button.action,
+              auxclick: plugin.button.action,
             },
           };
           const $button = $plugin.querySelector(cfg.tag);
@@ -720,10 +760,8 @@
     loadCSS(path) {
       let href = path;
       if (!href) {
-        const script = Array.from(document.querySelectorAll('script[src]'))
-          .filter((include) => include.src.endsWith('sidekick/app.js'))[0];
-        if (script) {
-          href = script.src.replace('.js', '.css');
+        if (this.config.scriptUrl) {
+          href = this.config.scriptUrl.replace('.js', '.css');
         } else {
           const filePath = this.location.pathname;
           href = `${filePath.substring(filePath.lastIndexOf('/') + 1).split('.')[0]}.css`;
@@ -758,22 +796,28 @@
      * @return {publishResponse} The response object
      */
     async publish(path, innerOnly = false) {
-      if (!innerOnly && !this.config.host) return null;
+      if ((!innerOnly && !this.config.host)
+        || (this.config.byocdn && this.location.host === this.config.host)) {
+        return null;
+      }
       const purgeURL = new URL(path, this.location.href);
-      const pathname = `${purgeURL.pathname}${purgeURL.search}`;
       /* eslint-disable no-console */
-      console.log(`purging ${pathname}`);
-      const xfh = innerOnly
-        ? [this.config.innerHost]
-        : [this.config.innerHost, this.config.outerHost, this.config.host];
-      const u = new URL('https://adobeioruntime.net/api/v1/web/helix/helix-services/purge@v1');
-      u.search = new URLSearchParams([
-        ['host', this.config.innerHost],
-        ['xfh', xfh.join(',')],
-        ['path', pathname],
-      ]).toString();
-      const resp = await fetch(u, {
+      console.log(`purging ${purgeURL.href}`);
+      const xfh = [this.config.innerHost];
+      if (!innerOnly) {
+        if (this.config.outerHost) {
+          xfh.push(this.config.outerHost);
+        }
+        if (this.config.host && !this.config.byocdn) {
+          xfh.push(this.config.host);
+        }
+      }
+      const resp = await fetch(purgeURL.href, {
         method: 'POST',
+        headers: {
+          'X-Method-Override': 'HLXPURGE',
+          'X-Forwarded-Host': xfh.join(', '),
+        },
       });
       const json = await resp.json();
       console.log(JSON.stringify(json));
