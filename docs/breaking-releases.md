@@ -14,7 +14,7 @@ the changes. A potential timeline would be:
 | April     | notify customers |
 |           | customers have time to adjust their code base |
 | EOF April | apply breaking changes to default |
-| May       | start the breaking release **MAy 2021**. |
+| May       | start the breaking release **May 2021**. |
 
 
 Here's an overview of lifecycle of a breaking change:
