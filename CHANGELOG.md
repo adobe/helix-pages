@@ -1,3 +1,10 @@
+## [5.0.3](https://github.com/adobe/helix-pages/compare/v5.0.2...v5.0.3) (2021-04-23)
+
+
+### Bug Fixes
+
+* **vcl:** reduce workspace usage ([3ff5f21](https://github.com/adobe/helix-pages/commit/3ff5f21dd6b3d98be6da5f8cb23d370853910d67))
+
 ## [5.0.2](https://github.com/adobe/helix-pages/compare/v5.0.1...v5.0.2) (2021-04-22)
 
 
