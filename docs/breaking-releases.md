@@ -3,7 +3,7 @@
 Most of the new features and bug fixes are backward compatible. Those updates are automatically
 applied to helix pages and its services.
 
-For major update or incompatible changes, helix has a mechanism in place to deal with those breaking
+For major updates or incompatible changes, helix has a mechanism in place to deal with those breaking
 changes. We usually allow 1 month for stabilizing the release and 1 month for customers to adopt
 the changes. A potential timeline would be:
 
