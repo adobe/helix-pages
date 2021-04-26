@@ -12,3 +12,5 @@ helix-config.yaml.old
 coverage
 dist
 .publish_ok
+bin
+pkg

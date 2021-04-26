@@ -13,7 +13,12 @@
     "build": "hlx clean && hlx build",
     "deploy": "./release/deploy.sh",
     "deploy-ci": "./release/deploy-ci.sh",
-    "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'"
+    "deploy:multiaction": "hedy -v --deploy --entry-file=universal/index.js --test='/plain_html?path=/OK.md&owner=adobe&repo=helix-purge&ref=main'",
+    "asbuild:untouched": "asc assembly/index.ts --target debug",
+    "asbuild:optimized": "asc assembly/index.ts --target release",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
+    "bundle": "npm run asbuild:optimized && mkdir -p pkg && tar  zcvf pkg/helix3.tgz -s ';^;helix3/;'   bin fastly.toml package.json",
+    "fastly-deploy": "fastly compute deploy"
   },
   "wsk": {
     "name": "/pages_${version}/${scriptName}",
@@ -46,6 +51,8 @@
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.4",
     "@adobe/openwhisk-action-utils": "4.4.4",
+    "@fastly/as-compute": "0.2.1",
+    "assemblyscript-json": "1.0.0",
     "ferrum": "1.9.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
@@ -54,9 +61,11 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.4",
+    "@as-pect/cli": "5.0.1",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
+    "assemblyscript": "0.17.14",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
     "dotenv": "8.2.0",

@@ -1,0 +1,9 @@
+# This file describes a Fastly Compute@Edge package. To learn more visit:
+# https://developer.fastly.com/reference/fastly-toml/
+
+authors = ["lars@trieloff.net"]
+description = "trieloff - helix3 prototype - *.hlx3.page"
+language = "assemblyscript"
+manifest_version = 1
+name = "helix3"
+service_id = "7axGUZ53RH8ygZBaWLJZGh"
