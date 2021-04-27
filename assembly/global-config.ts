@@ -9,6 +9,10 @@ export class GlobalConfig {
   }
 
   get fstab(): MountConfig {
-    return new MountConfig(<JSON.Obj>this.json.getObj("fstab"));
+    return new MountConfig(this.json.getObj("fstab"));
+  }
+
+  toString(): string {
+    return this.json.toString();
   }
 }

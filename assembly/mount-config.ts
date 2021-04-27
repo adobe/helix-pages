@@ -15,7 +15,6 @@ export class MountPoint {
       this.url = (<JSON.Str>value).toString();
       return this;
     }
-    throw new Error("Invalid Mountpoint at path" + path);
   }
 
   match(path: string): boolean {
@@ -41,25 +40,27 @@ export class MountPointMatch {
   }
 
   get hash(): string {
-    return "hlx03-" + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.url)))).substr(0, 57);
+    return "h3" + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.url)))).substr(0, 60);
   }
 }
 
 export class MountConfig {
-  private json: JSON.Obj;
   private mountpoints: MountPoint[];
 
-  constructor(init: JSON.Obj) {
-    this.json = init;
-
+  constructor(init: JSON.Obj | null) {
     this.mountpoints = new Array<MountPoint>();
-    
-    const jmountpoints = this.json.getObj("mountpoints");
-    if (jmountpoints != null) {
-      for (let i = 0;i < jmountpoints.keys.length; i++) {
-        this.mountpoints.push(new MountPoint(jmountpoints.keys[i], <JSON.Value>jmountpoints.get(jmountpoints.keys[i])));
+    if (init != null) {
+      const jmountpoints = init.getObj("mountpoints");
+        if (jmountpoints != null) {
+        for (let i = 0;i < jmountpoints.keys.length; i++) {
+          this.mountpoints.push(new MountPoint(jmountpoints.keys[i], <JSON.Value>jmountpoints.get(jmountpoints.keys[i])));
+        }
       }
     }
+  }
+
+  get length(): i32 {
+    return this.mountpoints.length;
   }
 
   match(path: string): MountPointMatch | null {

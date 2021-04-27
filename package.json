@@ -18,7 +18,7 @@
     "asbuild:optimized": "asc assembly/index.ts --target release",
     "astest": "asp",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "bundle": "npm run asbuild:optimized && mkdir -p pkg && tar  zcvf pkg/helix3.tgz -s ';^;helix3/;'   bin fastly.toml package.json",
+    "bundle": "npm run asbuild:optimized && mkdir -p pkg && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;'   bin fastly.toml package.json",
     "fastly-deploy": "fastly compute deploy"
   },
   "wsk": {
@@ -54,6 +54,7 @@
     "@adobe/openwhisk-action-utils": "4.4.4",
     "@fastly/as-compute": "0.2.1",
     "assemblyscript-json": "1.0.0",
+    "assemblyscript-regex": "1.6.2",
     "ferrum": "1.9.0",
     "lodash.pick": "4.4.0",
     "lodash.pickby": "4.6.0",
