@@ -38,9 +38,9 @@ function main(req: Request): Response {
     });
   }
 
-  const dispatcher = new RequestDispatcher()
+  const dispatcher = new RequestDispatcher(match)
     .withHandler(new FallbackHandler());
-  
+
   return dispatcher.handle(req);
   
   return new Response(String.UTF8.encode("Found mountpoint: " 

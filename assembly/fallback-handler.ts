@@ -1,5 +1,6 @@
-import { Request,  Response, Fastly, URL, Headers } from "@fastly/as-compute";
+import { Request,  Response, Fastly, Headers } from "@fastly/as-compute";
 import { RequestHandler } from "./request-handler";
+import { MountPointMatch } from "./mount-config";
 import { BACKEND_S3 } from "./backends";
 
 export class FallbackHandler extends RequestHandler {
@@ -7,11 +8,10 @@ export class FallbackHandler extends RequestHandler {
     return true;
   }
 
-  handle(req: Request): Response {
-    const pathname = new URL(req.url).pathname;
+  handle(req: Request, mount: MountPointMatch): Response {
     let fallbackheaders = new Headers();
     fallbackheaders.set('host', 'helix3-prototype-fallback-public.s3.us-east-1.amazonaws.com')
-    let fallbackreq = new Request('https://helix3-prototype-fallback-public.s3.us-east-1.amazonaws.com' + pathname, {
+    let fallbackreq = new Request('https://helix3-prototype-fallback-public.s3.us-east-1.amazonaws.com' + mount.relpath, {
         headers: fallbackheaders,
         method: 'GET',
         body: null,
