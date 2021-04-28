@@ -1,3 +1,12 @@
+## [5.0.4](https://github.com/adobe/helix-pages/compare/v5.0.3...v5.0.4) (2021-04-28)
+
+
+### Bug Fixes
+
+* **sidekick:** auto-heal ([8d0e1e4](https://github.com/adobe/helix-pages/commit/8d0e1e4561930086244ff6f402a23fd8b78361e1))
+* **sidekick:** byocdn flag always set on update ([7622deb](https://github.com/adobe/helix-pages/commit/7622debaf2945c4234c11c00f0f78693e452235a))
+* **sidekick:** trigger update dialog on affected configs ([d113272](https://github.com/adobe/helix-pages/commit/d1132729feff70d1f77aa6b045250cfbff9f2ce4))
+
 ## [5.0.3](https://github.com/adobe/helix-pages/compare/v5.0.2...v5.0.3) (2021-04-23)
 
 
