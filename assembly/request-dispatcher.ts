@@ -23,7 +23,11 @@ export class RequestDispatcher {
     for (let i = 0; i < this.handlers.length; i++) {
       const handler = this.handlers[i];
       if (handler.match(request)) {
-        return handler.handle(request, this.mount);
+        const res = handler.handle(request, this.mount);
+        if (res.ok) {
+          return res;
+        }
+        // keep iterating, so that the fallback handler can jump in
       }
     }
     return new Response(String.UTF8.encode('Unable to handle this URL pattern'), {

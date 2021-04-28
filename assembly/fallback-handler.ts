@@ -33,6 +33,5 @@ export class FallbackHandler extends RequestHandler {
       headers: null,
       status: 404,
     });
-
   }
 }

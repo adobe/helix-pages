@@ -10,7 +10,10 @@ function main(req: Request): Response {
   // get config
   let configheaders = new Headers();
   configheaders.set('host', 'hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com')
-  let configreq = new Request('https://hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com/trieloff--helix-demo.json', {
+
+  const configurl = "https://hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com/" + (<string>req.headers.get("host")).split(".")[0] + ".json";
+
+  let configreq = new Request(configurl, {
       headers: configheaders,
       method: 'GET',
       body: null,
