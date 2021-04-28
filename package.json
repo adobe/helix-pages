@@ -53,6 +53,8 @@
     "@adobe/openwhisk-action-logger": "2.4.4",
     "@adobe/openwhisk-action-utils": "4.4.4",
     "@fastly/as-compute": "0.2.1",
+    "as-date": "0.1.2",
+    "as-wasi": "0.4.4",
     "assemblyscript-json": "1.0.0",
     "assemblyscript-regex": "1.6.2",
     "ferrum": "1.9.0",

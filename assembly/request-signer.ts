@@ -1,29 +1,42 @@
 import { Request, URL } from "@fastly/as-compute";
-import { encodeuri } from "./encode-utils";
+import { uriencode } from "./encode-utils";
+import {toHexString, hash } from "./vendor/sha256";
+import { getISO8601Timestamp, getyyyymmddTimestamp } from "./date-utils";
 
 const LF = '\n';
 
 export class RequestSigner {
   private id: string;
   private key: string;
-  private service: string;
+  private scope: string;
+  private region: string;
 
-  constructor(id: string, key: string, service: string = "S3") {
+  constructor(id: string, key: string, scope: string = "/s3/aws4_request", region: string = "us-east-1") {
     this.id = id;
     this.key = key;
-    this.service = service;
+    this.scope = scope;
+    this.region = region;
   }
 
-  getCanonicalRequest(request: Request) {
+  getScope(): string {
+    return getyyyymmddTimestamp() + "/" + this.region + this.scope;
+  }
+
+  getStringToSign(request: Request): string {
+    return "AWS4-HMAC-SHA256" + LF
+      + getISO8601Timestamp() + LF
+      + this.getScope() + LF
+      + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.getCanonicalRequest(request)))));
+  }
+
+  getCanonicalRequest(request: Request): string {
     // CanonicalRequest =
     //   HTTPRequestMethod + '\n' +
     //   CanonicalURI + '\n' +
     //   CanonicalQueryString + '\n' +
     //   CanonicalHeaders + '\n' +
     //   SignedHeaders + '\n' +
-    //   HexEncode(Hash(RequestPayload))
-
-
+    //   'UNSIGNED-PAYLOAD'
 
     return request.method + LF
       + this.getCanonicalURI(request) + LF
@@ -35,10 +48,10 @@ export class RequestSigner {
 
   getCanonicalURI(request: Request) {
     const url = new URL(request.url);
-    if (this.service == "S3") {  
-      return encodeuri(url.pathname);
+    if (this.scope == "/s3/aws4_request") {  
+      return uriencode(url.pathname);
     }
-    return encodeuri(encodeuri(url.pathname, true));
+    return uriencode(uriencode(url.pathname, true));
   }
 
   getCanonicalQueryString(request: Request) {
