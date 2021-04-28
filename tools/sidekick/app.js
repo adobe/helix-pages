@@ -328,6 +328,8 @@
       typeof window.hlxSidekickConfig === 'object',
       // legacy script host
       !sk.config.scriptUrl || new URL(sk.config.scriptUrl).host === 'www.hlx.page',
+      // wrong byocdn config, see https://github.com/adobe/helix-pages/issues/885
+      sk.config.byocdn && !/^www.*\.adobe\.com$/.test(sk.config.host),
     ];
     if (indicators.includes(true)) {
       window.setTimeout(() => {

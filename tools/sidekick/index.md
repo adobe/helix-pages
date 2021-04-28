@@ -105,7 +105,7 @@ label.small {
       repo,
       ref,
     };
-    if (byocdn || /www.*adobe\.com/.test(host)) { // treat www*.adobe.com as byoCDN
+    if (byocdn || /www.*\.adobe\.com/.test(host)) { // treat www*.adobe.com as byoCDN
       config.byocdn = true;
     }
 
