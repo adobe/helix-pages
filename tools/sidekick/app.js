@@ -325,7 +325,7 @@
   function checkForUpdates(sk) {
     // check for wrong byocdn config
     // https://github.com/adobe/helix-pages/issues/885
-    if (sk.config.byocdn && !/^www.*\.adobe\.com$/.test(sk.config.host)) {
+    if (sk.config.byocdn && sk.config.host.endsWith('.adobe.com') && !sk.config.host.startsWith('www.')) {
       sk.config.byocdn = false;
       sk.updateRequired = true;
     }
