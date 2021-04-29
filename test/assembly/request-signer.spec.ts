@@ -65,9 +65,10 @@ describe("request-signer", () => {
     const signer = new RequestSigner("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
       .withTimestamp(i64(1369353600000));
     
-    log(signer.getCanonicalRequest(request));
-    log(signer.getStringToSign(request));
-    log("signature (should be f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41)")
-    log(signer.getSignature(request));
+    // log("signature (should be f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41)")
+    // log(signer.getAuthorizationHeaderValue(request));
+
+    const signed = signer.sign(request);
+    log(signed.headers.get('authorization'));
   });
 });

@@ -94,7 +94,19 @@ export class RequestSigner {
       retval.push(headernames[i]);
     }
     return retval.join(';');
-  } 
+  }
 
+  getAuthorizationHeaderValue(request: Request): string {
+    return "AWS4-HMAC-SHA256 Credential=" + 
+      this.accessKeyID + "/"+ 
+      getyyyymmddTimestamp(this.timestamp) + "/" + 
+      this.region + this.scope + 
+      ",SignedHeaders=" + this.getSignedHeaders(request) + 
+      ",Signature=" + this.getSignature(request);
+  }
 
+  sign(request: Request): Request {
+    request.headers.set('Authorization', this.getAuthorizationHeaderValue(request));
+    return request;
+  }
 }
