@@ -1,3 +1,4 @@
+// SHA256 implementation public domain
 //https://github.com/dchest/fast-sha256-js/blob/master/src/sha256.ts
 const DIGEST_LENGTH = 32;
 export const INPUT_LENGTH = 512;
@@ -281,10 +282,61 @@ export function toHexString(bin: Uint8Array): string {
   return hex;
 }
 
+// hash & hmac implementation from scratch
+
 export function hash(data: Uint8Array): Uint8Array {
   const output = new Uint8Array(32);
   init();
   update(changetype<usize>(data.buffer), data.length);
   final(changetype<usize>(output.buffer));
   return output;
+}
+
+export function hmac(message: string, key: string): string {
+  const m8 = Uint8Array.wrap(String.UTF8.encode(message));
+  const k8full = Uint8Array.wrap(String.UTF8.encode(key));
+  // 64 bit for sha256
+  const blocksize = 64;
+
+  // keys longer than B bytes are first hashed using H).
+  const k8 = k8full.length <= blocksize ? k8full : hash(k8full);
+
+  const ipad = new Uint8Array(blocksize);
+  const opad = new Uint8Array(blocksize);
+  const k = new Uint8Array(blocksize)
+  for (let i = 0; i < blocksize; i++) {
+    ipad[i] = 0x36;
+    opad[i] = 0x5c;
+    // (1) append zeros to the end of K to create a B byte string
+    // (e.g., if K is of length 20 bytes and B=64, then K will be
+    //  appended with 44 zero bytes 0x00)    
+    k[i] = (i >= k8.length) ? 0x00 : k8[i];
+  }
+
+  const kxipad = new Uint8Array(blocksize);
+  const kxopad = new Uint8Array(blocksize);
+  // (2) XOR (bitwise exclusive-OR) the B byte string computed in step
+  // 1 with ipad
+  for (let i = 0; i < blocksize; i++) {
+    kxipad[i] = k[i] ^ ipad[i];
+    kxopad[i] = k[i] ^ opad[i];
+  }
+
+  let innerHash = new Uint8Array(32)
+        
+  init();
+  // (3) append the stream of data 'text' to the B byte string resulting
+  // from step 2
+  update(changetype<usize>(kxipad.buffer), kxipad.length);
+  update(changetype<usize>(m8.buffer), m8.length);
+  // (4) apply H to the stream generated in step (3)
+  final(changetype<usize>(innerHash.buffer));
+
+  let outerHash = new Uint8Array(32);
+  init()
+  update(changetype<usize>(kxopad.buffer), kxopad.length);
+  update(changetype<usize>(innerHash.buffer), innerHash.length);
+  final(changetype<usize>(outerHash.buffer));
+
+  return toHexString(outerHash);
 }
