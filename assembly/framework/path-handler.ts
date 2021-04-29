@@ -1,6 +1,6 @@
 import { RequestHandler } from "./request-handler";
 import { Request,  Response, URL } from "@fastly/as-compute";
-import { RegExp } from "assemblyscript-regex";
+import { RegExp } from "assemblyscript-regex"
 import { MountPointMatch } from "../mount-config";
 
 export class PathHandler extends RequestHandler {
