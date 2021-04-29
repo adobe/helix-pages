@@ -1,6 +1,6 @@
 import { Request, URL } from "@fastly/as-compute";
 import { uriencode } from "./encode-utils";
-import {toHexString, hash } from "./vendor/sha256";
+import {toHexString, hash, hmac } from "./vendor/sha256";
 import { getISO8601Timestamp, getyyyymmddTimestamp } from "./date-utils";
 
 const LF = '\n';
@@ -27,6 +27,15 @@ export class RequestSigner {
 
   getScope(): string {
     return getyyyymmddTimestamp(this.timestamp) + "/" + this.region + this.scope;
+  }
+
+  getSignature(request: Request) {
+    const dateKey = hmac("AWS" + this.key, getyyyymmddTimestamp(this.timestamp));
+    const dateRegionKey = hmac(dateKey, this.region);
+    const dateRegionServiceKey = hmac(dateRegionKey, "S3"); // TODO: make service configurable
+    const signingKey = hmac(dateRegionServiceKey, "aws4_request");
+
+    return hmac(signingKey, this.getStringToSign(request));
   }
 
   getStringToSign(request: Request): string {
