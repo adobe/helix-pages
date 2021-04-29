@@ -1,7 +1,7 @@
 import { Request,  Response, Fastly, Headers } from "@fastly/as-compute";
-import { RequestHandler } from "./request-handler";
-import { MountPointMatch } from "./mount-config";
-import { BACKEND_S3 } from "./backends";
+import { RequestHandler } from "../framework/request-handler";
+import { MountPointMatch } from "../mount-config";
+import { BACKEND_S3 } from "../backends";
 
 export class FallbackHandler extends RequestHandler {
   match(req: Request): boolean {

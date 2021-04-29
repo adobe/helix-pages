@@ -1,7 +1,7 @@
 import { RequestHandler } from "./request-handler";
 import { Request,  Response, URL } from "@fastly/as-compute";
 import { RegExp } from "assemblyscript-regex";
-import { MountPointMatch } from "./mount-config";
+import { MountPointMatch } from "../mount-config";
 
 export class PathHandler extends RequestHandler {
   private handler: RequestHandler;
@@ -22,7 +22,6 @@ export class PathHandler extends RequestHandler {
     const m = this.regex.exec(pathname);
     return (m != null);
   }
-
 }
 
 export abstract class AbstractPathHandler extends RequestHandler {

@@ -1,10 +1,11 @@
 import { Request,  Response, Headers, URL, Fastly } from "@fastly/as-compute";
 import { GlobalConfig } from "./global-config";
 import { MountPointMatch } from "./mount-config";
-import { JSON } from "assemblyscript-json";
 import { BACKEND_S3 } from "./backends";
-import { RequestDispatcher } from "./request-dispatcher";
-import { FallbackHandler} from "./fallback-handler";
+import { RequestDispatcher } from "./framework/request-dispatcher";
+import { MediaHandler} from "./handlers/media-handler";
+import { FallbackHandler} from "./handlers/fallback-handler";
+import { PipelineHandler } from "./handlers/pipeline-handler";
 
 function main(req: Request): Response {
   // get config
@@ -42,6 +43,11 @@ function main(req: Request): Response {
   }
 
   const dispatcher = new RequestDispatcher(match)
+    .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
+    .withPathHandler("/$", new PipelineHandler())
+    .withPathHandler("\\.plain\\.html$", new PipelineHandler())
+    .withPathHandler("\\.json$", new ContentHandler())
+    .withPathHandler("\\.md$", new ContentHandler())
     .withHandler(new FallbackHandler());
 
   return dispatcher.handle(req);

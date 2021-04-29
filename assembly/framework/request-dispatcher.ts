@@ -1,6 +1,7 @@
 import { Request,  Response } from "@fastly/as-compute";
 import { RequestHandler } from "./request-handler";
-import { MountPointMatch } from "./mount-config";
+import { MountPointMatch } from "../mount-config";
+import { PathHandler } from "./path-handler";
 
 export class RequestDispatcher {
   private handlers: RequestHandler[];
@@ -16,6 +17,7 @@ export class RequestDispatcher {
   }
 
   withPathHandler(pattern: string, handler: RequestHandler): RequestDispatcher {
+    this.handlers.push(new PathHandler(pattern, handler));
     return this;
   }
 
