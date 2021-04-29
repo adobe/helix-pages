@@ -10,21 +10,28 @@ export class RequestSigner {
   private key: string;
   private scope: string;
   private region: string;
+  private timestamp: i64;
 
   constructor(id: string, key: string, scope: string = "/s3/aws4_request", region: string = "us-east-1") {
     this.id = id;
     this.key = key;
     this.scope = scope;
     this.region = region;
+    this.timestamp = 0;
+  }
+
+  withTimestamp(t: i64) {
+    this.timestamp = t;
+    return this;
   }
 
   getScope(): string {
-    return getyyyymmddTimestamp() + "/" + this.region + this.scope;
+    return getyyyymmddTimestamp(this.timestamp) + "/" + this.region + this.scope;
   }
 
   getStringToSign(request: Request): string {
     return "AWS4-HMAC-SHA256" + LF
-      + getISO8601Timestamp() + LF
+      + getISO8601Timestamp(this.timestamp) + LF
       + this.getScope() + LF
       + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.getCanonicalRequest(request)))));
   }

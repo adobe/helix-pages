@@ -1,8 +1,7 @@
-import { Date as WASIDate } from "as-wasi";
 import { Date } from "as-date";
 
-export function getISO8601Timestamp(): string {
-  const now =  new Date(<i64>WASIDate.now());
+export function getISO8601Timestamp(d: i64): string {
+  const now =  new Date(d);
   const year = now.getUTCFullYear().toString().padStart(4, '0');
   const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
   const day = now.getUTCDate().toString().padStart(2, '0');
@@ -13,8 +12,8 @@ export function getISO8601Timestamp(): string {
   return year + month + day + "T" + hour + min + seconds + "Z";
 }
 
-export function getyyyymmddTimestamp(): string {
-  const now =  new Date(<i64>WASIDate.now());
+export function getyyyymmddTimestamp(d: i64): string {
+  const now =  new Date(d);
   const year = now.getUTCFullYear().toString().padStart(4, '0');
   const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
   const day = now.getUTCDate().toString().padStart(2, '0');
