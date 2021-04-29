@@ -6,7 +6,7 @@
   * Encode the forward slash character, '/', everywhere except in the object key name. For example, if the object key name is photos/Jan/sample.jpg, the forward slash in the key name is not encoded.
  * @param value the string to encode
  */
-export function uriencode(value: string, encodeSlash: boolean = false) {
+export function uriencode(value: string, encodeSlash: boolean = false): string {
   const encoded = new Array<string>();
   for (let i = 0; i< value.length; i++) {
     const char = value.charAt(i);

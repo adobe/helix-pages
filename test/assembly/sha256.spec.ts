@@ -2,9 +2,9 @@ import { hmac, hash, toHexString } from "../../assembly/vendor/sha256";
 
 describe("sha256", () => {
   it("hmac", () => {
-    expect<string>(hmac("message", "abc")).toBe("859cc656e12c0ecd0afdd7e3d034c3ee81609fcac1b454c231211c7ac69895e8");
-    expect<string>(hmac("helix", "abc")).toBe("73e0b24817dc55c7d1296f0f96ca452c95fa3d294db6b7a0871fa1c35b4ef5a7");
-    expect<string>(hmac("helix", "this key is long. definitely longer than 256 chars. let's see how truncation works in this case. it will be interesting.")).toBe("02024487855433a389a3f559b16032c5feb08b6b05846de662c5c6a9caf2bac3");
+    expect<string>(hmac("abc", "message")).toBe("859cc656e12c0ecd0afdd7e3d034c3ee81609fcac1b454c231211c7ac69895e8");
+    expect<string>(hmac("abc", "helix")).toBe("73e0b24817dc55c7d1296f0f96ca452c95fa3d294db6b7a0871fa1c35b4ef5a7");
+    expect<string>(hmac("this key is long. definitely longer than 256 chars. let's see how truncation works in this case. it will be interesting.", "helix")).toBe("02024487855433a389a3f559b16032c5feb08b6b05846de662c5c6a9caf2bac3");
   });
 
   it("hash", () => {

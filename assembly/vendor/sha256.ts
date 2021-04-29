@@ -1,4 +1,5 @@
 // SHA256 implementation public domain
+
 //https://github.com/dchest/fast-sha256-js/blob/master/src/sha256.ts
 const DIGEST_LENGTH = 32;
 export const INPUT_LENGTH = 512;
@@ -292,9 +293,9 @@ export function hash(data: Uint8Array): Uint8Array {
   return output;
 }
 
-export function hmac(message: string, key: string): string {
-  const m8 = Uint8Array.wrap(String.UTF8.encode(message));
-  const k8full = Uint8Array.wrap(String.UTF8.encode(key));
+export function hmacraw(key: Uint8Array, message: Uint8Array): Uint8Array {
+  const m8 = message;
+  const k8full = key;
   // 64 bit for sha256
   const blocksize = 64;
 
@@ -338,5 +339,22 @@ export function hmac(message: string, key: string): string {
   update(changetype<usize>(innerHash.buffer), innerHash.length);
   final(changetype<usize>(outerHash.buffer));
 
-  return toHexString(outerHash);
+  return outerHash;
+}
+
+export function hmac2(key: Uint8Array, message: string): Uint8Array {
+  return hmacraw(key, Uint8Array.wrap(String.UTF8.encode(message)));
+}
+
+export function hmac1(key: string, message: string): Uint8Array {
+  return hmacraw(
+    Uint8Array.wrap(String.UTF8.encode(key)), 
+    Uint8Array.wrap(String.UTF8.encode(message)));
+}
+
+export function hmac(key: string, message: string): string {
+  const res = hmacraw(
+    Uint8Array.wrap(String.UTF8.encode(key)), 
+    Uint8Array.wrap(String.UTF8.encode(message)));
+  return toHexString(res);
 }
