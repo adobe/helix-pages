@@ -40,7 +40,7 @@ describe("config", () => {
     expect<string>((<MountPointMatch>config.fstab.match('/ms/')).url).toBe("https://adobe.sharepoint.com/sites/TheBlog/Shared%20Documents/theblog");
     expect<string>((<MountPointMatch>config.fstab.match('/ms/some/where/deep/in/the/woods')).url).toBe("https://adobe.sharepoint.com/sites/TheBlog/Shared%20Documents/theblog");
     expect<string>((<MountPointMatch>config.fstab.match('/ms/some/where/deep/in/the/woods')).relpath).toBe("/some/where/deep/in/the/woods");
-    expect<string>((<MountPointMatch>config.fstab.match('/ms/some/where/deep/in/the/woods')).hash).toBe("hlx03-9b08ed882cc3217ceb23a3e71d769dbe47576312869465a0a302ed29c");
+    expect<string>((<MountPointMatch>config.fstab.match('/ms/some/where/deep/in/the/woods')).hash).toBe("h39b08ed882cc3217ceb23a3e71d769dbe47576312869465a0a302ed29c6d7");
   });
 
   it("config can be constructed when fstab is missing", () => {
