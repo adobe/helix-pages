@@ -17,10 +17,27 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const domain = process.env.HLX3_HOST || 'hlx3.page';
 
+console.log(`Using ${domain}`);
+
 describe('Helix Pages 3 Test Harness: Repository Resolution', () => {
-  it('Missing owner and ref returns 404', async () => {
+  it('Missing owner and repo returns 404', async () => {
     const response = await chai.request(`https://none.${domain}`)
       .get('/');
     expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error');
+  });
+
+  it('Invalid ref for valid owner and repo returns 404', async () => {
+    const response = await chai.request(`https://invalid-ref--helix-demo--trieloff.${domain}`)
+      .get('/');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error');
+  });
+
+  it('Valid ref for valid owner and repo returns 500 (for now)', async () => {
+    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+      .get('/');
+    expect(response).to.have.status(500);
+    expect(response).to.have.header('x-error', 'Not implemented yet');
   });
 });

@@ -1,21 +1,39 @@
 import { Request,  Response, Headers, URL, Fastly } from "@fastly/as-compute";
 import { GlobalConfig } from "./global-config";
-import { MountPointMatch } from "./mount-config";
+import { Console } from "as-wasi";
 import { BACKEND_S3 } from "./backends";
 import { RequestDispatcher } from "./framework/request-dispatcher";
+import { MountPointMatch } from "./mount-config";
 import { MediaHandler} from "./handlers/media-handler";
 import { FallbackHandler} from "./handlers/fallback-handler";
 import { PipelineHandler } from "./handlers/pipeline-handler";
+import { ContentHandler } from "./handlers/content-handler";
+import { CodeHandler } from "./handlers/code-handler";
+import { HeaderBuilder } from "./header-builder";
 
 function main(req: Request): Response {
-  // get config
-  let configheaders = new Headers();
-  configheaders.set('host', 'hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com')
+  const subdomain = (<string>req.headers.get("host")).split(".")[0];
+  const subdomainparts = subdomain.split('--');
+  if (subdomainparts.length < 2) {
+    return new Response(String.UTF8.encode("Specify at least repo--owner.hlx3.page"), {
+      status: 404,
+      headers: new HeaderBuilder('x-error', 'No owner, repo, ref'),
+      url: null
+    });
+  }
+  let owner = subdomainparts.pop();
+  let repo = subdomainparts.pop();
+  let ref = subdomainparts.length > 0 ? subdomainparts.pop() : "main";
+  
+  Console.log("\nreceived: " + owner + " " + repo + " " + ref);
 
-  const configurl = "https://hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com/" + (<string>req.headers.get("host")).split(".")[0] + ".json";
+  const configpath = "/" + owner + "/" + repo + "/" + ref + ".json";
+  // get config
+  const configurl = "https://hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com" + configpath;
+  Console.log('\nLoading: ' + configurl);
 
   let configreq = new Request(configurl, {
-      headers: configheaders,
+      headers: new HeaderBuilder('host', 'hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com'),
       method: 'GET',
       body: null,
   });
@@ -27,11 +45,29 @@ function main(req: Request): Response {
       cacheOverride,
   }).wait();
 
+  if (!configresponse.ok) {
+    Console.log("\nUnable to load configuration at " + configurl + " (" + configresponse.status.toString(10) + ")");
+    return new Response(String.UTF8.encode("Unable to load configuration for " + owner + "/" + repo + "."), {
+      status: configresponse.status,
+      headers: new HeaderBuilder('x-error', 'Error from S3'),
+      url: null
+    });
+  }
+
+  
+
   // return configresponse;
   const pathname = new URL(req.url).pathname;
   // TODO: check for response status
   const global = new GlobalConfig(configresponse.text());
 
+  Console.log("\nGlobal Configuration has been loaded");
+
+  return new Response(String.UTF8.encode("Not implemented yet."), {
+      status: 500,
+      headers: new HeaderBuilder("x-error", "Not implemented yet"),
+      url: null
+    });
   const match = global.fstab.match(pathname);
 
   if (match == null) {
@@ -42,26 +78,18 @@ function main(req: Request): Response {
     });
   }
 
-  const dispatcher = new RequestDispatcher(match)
+  Console.log('Starting dispatcher');
+
+  const dispatcher = new RequestDispatcher(match as MountPointMatch)
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
     .withPathHandler("/$", new PipelineHandler())
     .withPathHandler("\\.plain\\.html$", new PipelineHandler())
     .withPathHandler("\\.json$", new ContentHandler())
     .withPathHandler("\\.md$", new ContentHandler())
+    .withHandler(new CodeHandler())
     .withHandler(new FallbackHandler());
 
   return dispatcher.handle(req);
-  
-  return new Response(String.UTF8.encode("Found mountpoint: " 
-    + (<MountPointMatch>match).hash + "\n"
-    + (<string>req.headers.get("host")).split(".")[0]
-    ), {
-      status: 200,
-      headers: null,
-      url: null
-  });
-  
-  
 }
 
 // Get the request from the client.
