@@ -10,17 +10,15 @@ export class FallbackHandler extends RequestHandler {
   }
 
   handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    let fallbackheaders = new Headers();
-    fallbackheaders.set('host', 'helix3-prototype-fallback-public.s3.us-east-1.amazonaws.com')
-    let fallbackreq = new Request('https://helix3-prototype-fallback-public.s3.us-east-1.amazonaws.com' + mount.relpath, {
-        headers: fallbackheaders,
+    let fallbackreq = new Request('https://helix3-prototype-fallback-private.s3.us-east-1.amazonaws.com' + mount.relpath, {
+        headers: null,
         method: 'GET',
         body: null,
     });
 
     let cacheOverride = new Fastly.CacheOverride();
     cacheOverride.setTTL(30); // fallback content is changed infrequently and fetched frequently
-    const fallbackresponse = Fastly.fetch(fallbackreq, {
+    const fallbackresponse = Fastly.fetch(config.sign(fallbackreq), {
         backend: BACKEND_S3,
         cacheOverride,
     }).wait();

@@ -54,6 +54,6 @@ describe('Helix Pages 3 Test Harness: Content Resolution', () => {
     const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
       .get('/ms/missing.md');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern ');
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
   });
 });
