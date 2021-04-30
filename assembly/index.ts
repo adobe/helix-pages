@@ -1,6 +1,6 @@
 import { Request, Response, Headers, URL, Fastly } from "@fastly/as-compute";
 import { GlobalConfig } from "./global-config";
-import { Console } from "as-wasi";
+import { Console, Date } from "as-wasi";
 import { BACKEND_S3 } from "./backends";
 import { RequestDispatcher } from "./framework/request-dispatcher";
 import { MountPointMatch } from "./mount-config";
@@ -11,6 +11,34 @@ import { ContentHandler } from "./handlers/content-handler";
 import { CodeHandler } from "./handlers/code-handler";
 import { HeaderBuilder } from "./header-builder";
 import { MaybeResponse } from "./maybe-response";
+import { RequestSigner } from "./request-signer";
+
+function loadRequestSigner(request: Request): MaybeResponse<RequestSigner> {
+  let secretsDict = new Fastly.Dictionary("secrets");
+  let awsKey = "";
+  let awsID = "";
+  if (secretsDict.contains("AWS_SECRET_ACCESS_KEY") && secretsDict.contains("AWS_ACCESS_KEY_ID")) {
+    awsKey = secretsDict.get("AWS_SECRET_ACCESS_KEY") != null ? <string>secretsDict.get("AWS_SECRET_ACCESS_KEY") : "";
+    awsID = secretsDict.get("AWS_ACCESS_KEY_ID") != null ? <string>secretsDict.get("AWS_ACCESS_KEY_ID") : "";
+  }
+  if (awsID == "" || awsKey == "") {
+    return new MaybeResponse<RequestSigner>().withResponse(
+      new Response(String.UTF8.encode("Unable to load credentials."), {
+        status: 500,
+        headers: new HeaderBuilder('x-error', 'Unable to load credentials'),
+        url: null
+      }));
+  }
+
+  const now = <i64>Date.now();
+
+  Console.log("\nLoaded AWS Credentials: " + awsKey.substr(0, 4) + "... " + awsID.substr(0, 4) + "... at" + now.toString());
+
+  const signer = new RequestSigner(awsID, awsKey)
+    .withTimestamp(now);
+  
+  return new MaybeResponse<RequestSigner>().withValue(signer);
+}
 
 function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
   const subdomain = (<string>req.headers.get("host")).split(".")[0];
@@ -31,24 +59,35 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
 
   const configpath = "/" + owner + "/" + repo + "/" + ref + ".json";
   // get config
-  const configurl = "https://hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com" + configpath;
+  // https://helix3-prototype-private-bucket.s3.us-east-1.amazonaws.com/
+  const confighost = 'helix3-prototype-private-bucket.s3.us-east-1.amazonaws.com';
+  const configurl = "https://" + confighost + configpath;
   Console.log('\nLoading: ' + configurl);
 
   let configreq = new Request(configurl, {
-    headers: new HeaderBuilder('host', 'hlx3-prototype-configs-public.s3.us-east-1.amazonaws.com'),
+    headers: null,
     method: 'GET',
     body: null,
   });
 
-  let cacheOverride = new Fastly.CacheOverride();
-  cacheOverride.setTTL(60);
-  const configresponse = Fastly.fetch(configreq, {
+  let signerorresp = loadRequestSigner(req);
+  if (signerorresp.hasResponse()) {
+    return new MaybeResponse<GlobalConfig>().withResponse(signerorresp.getResponse());
+  }
+  const signer = signerorresp.getValue();
+
+  const signedrequest = signer.sign(configreq);
+
+  Console.log('Request has been signed with Authorization header: ' + <string>signedrequest.headers.get('authorization'));
+
+  const configresponse = Fastly.fetch(signedrequest, {
     backend: BACKEND_S3,
-    cacheOverride,
+    cacheOverride: null,
   }).wait();
 
   if (!configresponse.ok) {
     Console.log("\nUnable to load configuration at " + configurl + " (" + configresponse.status.toString(10) + ")");
+    Console.log(configresponse.text());
     return new MaybeResponse<GlobalConfig>().withResponse(
       new Response(String.UTF8.encode("Unable to load configuration for " + owner + "/" + repo + "."), {
         status: configresponse.status,
@@ -58,7 +97,7 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
   }
 
   // TODO: check for response status
-  const global = new GlobalConfig(configresponse.text());
+  const global = new GlobalConfig(configresponse.text(), signer);
 
   Console.log("\nGlobal Configuration has been loaded");
 
@@ -72,27 +111,9 @@ function main(req: Request): Response {
   }
   const global = globalorerr.getValue();
 
-  return new Response(String.UTF8.encode("Not implemented yet."), {
-    status: 500,
-    headers: new HeaderBuilder("x-error", "Not implemented yet"),
-    url: null
-  });
-
-  // return configresponse;
-  const pathname = new URL(req.url).pathname;
-  const match = global.fstab.match(pathname);
-
-  if (match == null) {
-    return new Response(String.UTF8.encode("This page does not exist."), {
-      status: 404,
-      headers: null,
-      url: null
-    });
-  }
-
   Console.log('Starting dispatcher');
 
-  const dispatcher = new RequestDispatcher(match as MountPointMatch)
+  const dispatcher = new RequestDispatcher(global)
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
     .withPathHandler("/$", new PipelineHandler())
     .withPathHandler("\\.plain\\.html$", new PipelineHandler())

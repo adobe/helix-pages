@@ -2,9 +2,10 @@ import { Request, Response, Headers, Fastly } from "@fastly/as-compute";
 import { AbstractPathHandler } from "../framework/path-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_BLOBSTORE } from "../backends";
+import { GlobalConfig } from "../global-config";
 
 export class MediaHandler extends AbstractPathHandler {
-  handle(request: Request, mount: MountPointMatch): Response {
+  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     const name = mount.relpath.split("_media").pop();
     const hash = name.split(".")[0];
     let sas = "";

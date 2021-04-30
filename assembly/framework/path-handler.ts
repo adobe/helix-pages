@@ -2,6 +2,7 @@ import { RequestHandler } from "./request-handler";
 import { Request,  Response, URL } from "@fastly/as-compute";
 import { RegExp } from "assemblyscript-regex"
 import { MountPointMatch } from "../mount-config";
+import { GlobalConfig } from "../global-config";
 
 export class PathHandler extends RequestHandler {
   private handler: RequestHandler;
@@ -13,8 +14,8 @@ export class PathHandler extends RequestHandler {
     this.handler = handler;
   }
 
-  handle(req: Request, mount: MountPointMatch): Response {
-    return this.handler.handle(req, mount);
+  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    return this.handler.handle(req, mount, config);
   }
 
   match(req: Request): boolean {

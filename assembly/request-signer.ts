@@ -106,6 +106,16 @@ export class RequestSigner {
   }
 
   sign(request: Request): Request {
+    if (!request.headers.has('x-amaz-content-sha256')) {
+      // TODO: calculate for request bodies when we start to POST or PUT
+      request.headers.set('x-amz-content-sha256', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
+    }
+    if (!request.headers.has('x-amaz-date')) {
+      request.headers.set('x-amz-date', getISO8601Timestamp(this.timestamp));
+    }
+    if (!request.headers.has('host')) {
+      request.headers.set('host', new URL(request.url).hostname);
+    }
     request.headers.set('Authorization', this.getAuthorizationHeaderValue(request));
     return request;
   }

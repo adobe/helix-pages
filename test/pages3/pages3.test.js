@@ -34,10 +34,26 @@ describe('Helix Pages 3 Test Harness: Repository Resolution', () => {
     expect(response).to.have.header('x-error');
   });
 
-  it('Valid ref for valid owner and repo returns 500 (for now)', async () => {
+  it('Valid ref for valid owner and repo returns 404 (if mountpoint not found)', async () => {
     const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
       .get('/');
-    expect(response).to.have.status(500);
-    expect(response).to.have.header('x-error', 'Not implemented yet');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'mountpoint not found');
+  });
+});
+
+describe('Helix Pages 3 Test Harness: Content Resolution', () => {
+  it('Delivers Markdown from Fallback Repo', async () => {
+    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+      .get('/ms/index.md');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('content-type', 'text/markdown');
+  });
+
+  it('Delivers 404 if Fallback Repo does not have the content', async () => {
+    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+      .get('/ms/missing.md');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
   });
 });
