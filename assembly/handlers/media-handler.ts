@@ -3,10 +3,11 @@ import { AbstractPathHandler } from "../framework/path-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_BLOBSTORE } from "../backends";
 import { GlobalConfig } from "../global-config";
+import { Console } from "as-wasi";
 
 export class MediaHandler extends AbstractPathHandler {
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    const name = mount.relpath.split("_media").pop();
+    const name = mount.relpath.split("media_").pop();
     const hash = name.split(".")[0];
     let sas = "";
 
@@ -18,9 +19,11 @@ export class MediaHandler extends AbstractPathHandler {
       }
     }
 
+    Console.log("\n handling media for hash " + hash + " with sas " + sas.substr(0, 4));
+
     let mediaheaders = new Headers();
     mediaheaders.set('host', 'hlx.blob.core.windows.net')
-    let mediarequest = new Request('https://hlx.blob.core.windows.net/external' + hash + sas, {
+    let mediarequest = new Request('https://hlx.blob.core.windows.net/external/' + hash + sas, {
       headers: mediaheaders,
       method: 'GET',
       body: null,

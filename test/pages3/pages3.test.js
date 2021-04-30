@@ -57,3 +57,19 @@ describe('Helix Pages 3 Test Harness: Content Resolution', () => {
     expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
   });
 });
+
+describe('Media Bus', () => {
+  it('Delivers Images from Media Bus', async () => {
+    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+      .get('/ms/media_14b5aa8a1e70779587d4ea68cadff8bad1bd49099.png');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('content-type', 'image/png');
+  });
+
+  it('Does not deliver missing Images from Media Bus', async () => {
+    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+      .get('/ms/media_0000aaaa1e70779587d4ea68cadff8bad1bd49099.png');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+  });
+});
