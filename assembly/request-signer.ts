@@ -5,6 +5,10 @@ import { getISO8601Timestamp, getyyyymmddTimestamp } from "./date-utils";
 
 const LF = '\n';
 
+/**
+ * Helper class for signing AWS requests, modeled after 
+ * https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
+ */
 export class RequestSigner {
   private accessKeyID: string;
   private secretAccessKey: string;
