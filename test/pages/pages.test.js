@@ -16,7 +16,7 @@ const fs = require('fs-extra');
 const sanitize = require('sanitize-filename');
 const fetchAPI = require('@adobe/helix-fetch');
 const { JSDOM } = require('jsdom');
-const { dumpDOM: assertEquivalentDOM, assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { dumpDOM: assertEquivalentDOM, assertEquivalentNode } = require('@adobe/helix-shared-dom');
 const { Base } = require('mocha').reporters;
 
 const fetchContext = fetchAPI.context({ alpnProtocols: [fetchAPI.ALPN_HTTP1_1] });
