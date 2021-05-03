@@ -12,6 +12,7 @@ import { CodeHandler } from "./handlers/code-handler";
 import { HeaderBuilder } from "./header-builder";
 import { MaybeResponse } from "./maybe-response";
 import { RequestSigner } from "./request-signer";
+import { CoralogixLogger } from "./coralogix-logger";
 
 function loadRequestSigner(request: Request): MaybeResponse<RequestSigner> {
   let secretsDict = new Fastly.Dictionary("secrets");
@@ -105,15 +106,17 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
 }
 
 function main(req: Request): Response {
+  const logger = new CoralogixLogger("helix3", req);
+
   const globalorerr = loadConfig(req);
   if (globalorerr.hasResponse()) {
     return globalorerr.getResponse();
   }
   const global = globalorerr.getValue();
 
-  Console.log('Starting dispatcher');
+  logger.debug('Starting dispatcher');
 
-  const dispatcher = new RequestDispatcher(global)
+  const dispatcher = new RequestDispatcher(global, logger)
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
     .withPathHandler("/$", new PipelineHandler())
     .withPathHandler("\\.plain\\.html$", new PipelineHandler())

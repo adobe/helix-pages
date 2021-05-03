@@ -4,33 +4,36 @@ import { PathHandler } from "./path-handler";
 import { GlobalConfig } from "../global-config";
 import { HeaderBuilder } from "../header-builder";
 import { Console } from "as-wasi";
+import { CoralogixLogger } from "../coralogix-logger";
 
 export class RequestDispatcher {
   private handlers: RequestHandler[];
   private config: GlobalConfig;
-  constructor(config: GlobalConfig) {
+  private logger: CoralogixLogger;
+
+  constructor(config: GlobalConfig, logger: CoralogixLogger) {
     this.handlers = new Array<RequestHandler>();
     this.config = config;
+    this.logger = logger;
   }
 
   withHandler(handler: RequestHandler): RequestDispatcher {
-    this.handlers.push(handler);
+    this.handlers.push(handler.withLogger(this.logger));
     return this;
   }
 
   withPathHandler(pattern: string, handler: RequestHandler): RequestDispatcher {
-    this.handlers.push(new PathHandler(pattern, handler));
+    this.handlers.push(new PathHandler(pattern, handler).withLogger(this.logger));
     return this;
   }
 
   handle(request: Request): Response {
-    
     const pathname = new URL(request.url).pathname;
     const match = this.config.fstab.match(pathname);
-    Console.log("\nDispatching request for " + pathname);
+    this.logger.info("Dispatching request for " + pathname);
 
     if (match == null) {
-      Console.log("\nNo mountpoint found for " + pathname);
+      this.logger.info("No mountpoint found for " + pathname);
       return new Response(String.UTF8.encode("This page does not exist."), {
         status: 404,
         headers: new HeaderBuilder('x-error', 'mountpoint not found'),
@@ -42,7 +45,7 @@ export class RequestDispatcher {
       const handler = this.handlers[i];
       if (handler.match(request)) {
         const res = handler.handle(request, match, this.config);
-        Console.log("\nHandler " + i.toString() + " got response status " + res.status.toString());
+        this.logger.info("Handler " + i.toString() + " got response status " + res.status.toString());
         if (res.ok) {
           return res;
         }
