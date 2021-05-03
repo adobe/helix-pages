@@ -3,6 +3,7 @@ import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
 import { GlobalConfig } from "../global-config";
+import { HeaderFilter } from "../header-filter";
 
 export class FallbackHandler extends RequestHandler {
   match(req: Request): boolean {
@@ -24,7 +25,15 @@ export class FallbackHandler extends RequestHandler {
     }).wait();
 
     if (fallbackresponse.ok) {
-      return fallbackresponse;
+      const filter = new HeaderFilter()
+        .allow('age')
+        .allow('content-length')
+        .allow('content-type')
+        .allow('date')
+        .allow('etag')
+        .allow('last-modified')
+
+      return filter.filterResponse(fallbackresponse);
     }
 
     return new Response(String.UTF8.encode('No content'), {
