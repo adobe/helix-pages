@@ -4,6 +4,7 @@ import { MountPointMatch } from "../mount-config";
 import { BACKEND_BLOBSTORE } from "../backends";
 import { GlobalConfig } from "../global-config";
 import { Console } from "as-wasi";
+import { HeaderFilter } from "../header-filter";
 
 export class MediaHandler extends AbstractPathHandler {
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
@@ -36,6 +37,14 @@ export class MediaHandler extends AbstractPathHandler {
 
     // todo: cleanup response headers
     
-    return mediaresponse;
+    const filter = new HeaderFilter()
+      .allow('age')
+      .allow('content-length')
+      .allow('content-type')
+      .allow('date')
+      .allow('etag')
+      .allow('last-modified')
+
+    return filter.filterResponse(mediaresponse);
   }
 }
