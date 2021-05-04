@@ -47,7 +47,7 @@ describe('Helix Pages 3 Test Harness: Content Bus', () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/express/create/advertisement/cyber-monday.md');
     expect(response).to.have.status(200);
-    expect(response).to.have.header('content-type', 'text/markdown');
+    expect(response).to.have.header('content-type', 'text/markdown; charset=utf-8');
   });
 
   it('Delivers 404 if Content Repo does not have the content', async () => {
@@ -58,12 +58,28 @@ describe('Helix Pages 3 Test Harness: Content Bus', () => {
   });
 });
 
+describe('Helix Pages 3 Test Harness: Pipeline', () => {
+  it('Delivers HTML from Pipeline Service', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/express/create/advertisement/cyber-monday');
+    expect(response).to.have.status(200);
+    expect(response).to.be.html;
+  });
+
+  it('Delivers 404 if Content Repo does not have the content', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/ms/missing');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+  });
+});
+
 describe('Helix Pages 3 Test Harness: Code Bus', () => {
   it('Delivers Markdown from Code Repo', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/README.md');
     expect(response).to.have.status(200);
-    expect(response).to.have.header('content-type', 'text/markdown');
+    expect(response).to.have.header('content-type', 'text/markdown; charset=utf-8');
   });
 
   it('Delivers PNG from Code Repo', async () => {

@@ -26,7 +26,7 @@ export class ContentHandler extends AbstractPathHandler {
 
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".md")) {
-        contentresponse.headers.set('content-type', 'text/markdown');
+        contentresponse.headers.set('content-type', 'text/markdown; charset=utf-8');
       }
       if (mount.relpath.endsWith(".json")) {
         contentresponse.headers.set('content-type', 'application/json');

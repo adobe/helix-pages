@@ -30,7 +30,7 @@ export class CodeHandler extends RequestHandler {
 
     if (coderesponse.ok) {
       if (mount.relpath.endsWith(".md")) {
-        coderesponse.headers.set('content-type', 'text/markdown');
+        coderesponse.headers.set('content-type', 'text/markdown; charset=utf-8');
       }
 
       const filter = new HeaderFilter()
