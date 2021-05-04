@@ -31,6 +31,9 @@ export class ContentHandler extends AbstractPathHandler {
       if (mount.relpath.endsWith(".json")) {
         contentresponse.headers.set('content-type', 'application/json');
       }
+      if (mount.relpath.endsWith(".xml")) {
+        contentresponse.headers.set('content-type', 'application/xml; charset=utf-8');
+      }
       
       const filter = new HeaderFilter()
         .allow('age')

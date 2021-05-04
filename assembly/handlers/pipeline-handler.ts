@@ -2,7 +2,6 @@ import { Fastly, Request, Response, URL } from "@fastly/as-compute";
 import { GlobalConfig } from "../global-config";
 import { HeaderBuilder } from "../header-builder";
 import { MountPointMatch } from "../mount-config";
-import { BACKEND_UNIVERSAL} from "../backends";
 import { HeaderFilter } from "../header-filter";
 import { RequestHandler } from "../framework/request-handler";
 

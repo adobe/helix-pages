@@ -122,6 +122,7 @@ function main(req: Request): Response {
     // .withPathHandler("\\.plain\\.html$", new PipelineHandler())
     .withPathHandler("\\.json$", new ContentHandler())
     .withPathHandler("\\.md$", new ContentHandler())
+    .withPathHandler("sitemap[0-9a-z-_]*\\.xml$", new ContentHandler())
     .withHandler(new CodeHandler())
     .withHandler(new FallbackHandler());
 
