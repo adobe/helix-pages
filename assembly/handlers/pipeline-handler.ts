@@ -4,6 +4,10 @@ import { GlobalConfig } from "../global-config";
 import { MountPointMatch } from "../mount-config";
 
 export class PipelineHandler extends AbstractPathHandler {
+  get name(): string {
+    return "pipeline";
+  }
+
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     return new Response(String.UTF8.encode('Not implemented yet.'), {
       url: null,

@@ -64,7 +64,7 @@ export class CoralogixLogger {
     return encoder.toString();
   }
 
-  public logResponse(response: Response) {
+  public logResponse(response: Response): void {
     let encoder = new JSONEncoder();
     let now: i64 = Math.floor(Date.now()) as i64;
 
@@ -125,10 +125,10 @@ export class CoralogixLogger {
     encoder.popObject(); // .json
     encoder.popObject(); // .
 
-    return encoder.toString();
+    this.logger.log(encoder.toString());
   }
 
-  private logHeader(encoder: JSONEncoder, headers: Headers, name: string, label?: string) {
+  private logHeader(encoder: JSONEncoder, headers: Headers, name: string, label?: string): void {
     if (!label) {
       label = name;
     }

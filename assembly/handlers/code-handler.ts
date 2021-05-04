@@ -5,6 +5,10 @@ import { BACKEND_S3 } from "../backends";
 import { GlobalConfig } from "../global-config";
 
 export class CodeHandler extends RequestHandler {
+  get name(): string {
+    return "code";
+  }
+
   match(req: Request): boolean {
     return true;
   }

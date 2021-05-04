@@ -6,6 +6,10 @@ import { GlobalConfig } from "../global-config";
 import { HeaderFilter } from "../header-filter";
 
 export class FallbackHandler extends RequestHandler {
+  get name(): string {
+    return "fallback";
+  }
+
   match(req: Request): boolean {
     return true;
   }

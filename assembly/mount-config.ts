@@ -1,5 +1,6 @@
 import { JSON } from "assemblyscript-json";
 import {toHexString, hash } from "./vendor/sha256";
+import { Console } from "as-wasi";
 
 export class MountPoint {
   path: string;
@@ -18,7 +19,11 @@ export class MountPoint {
   }
 
   match(path: string): boolean {
-    if (path == '') {
+    Console.log("Validating path " + path + " against mountpoint " + this.path + "\n");
+    if (this.path == "/" && path == "") {
+      Console.log("Root mountpoint matched\n");
+      return true;
+    } else if (path == '') {
       return false;
     } else if (this.path == path) {
       return true;
@@ -36,7 +41,12 @@ export class MountPointMatch {
   constructor(parent: MountPoint, path: string) {
     this.path = parent.path;
     this.url = parent.url;
-    this.relpath = path.slice(this.path.length);
+    Console.log("Building mountpoint match for <" + path + "> at <" + this.path + ">\n");
+    this.relpath = path;
+    if (this.path.length > 1) {
+      this.relpath = path.slice(this.path.length);
+    }
+    Console.log("path is <" + this.path + "> and relpath is <" + this.relpath + ">\n");
   }
 
   get hash(): string {
@@ -67,7 +77,9 @@ export class MountConfig {
     for (let i = 0; i < this.mountpoints.length; i++) {
       const mountpoint = this.mountpoints[i];
       if (mountpoint.match(path)) {
-        return new MountPointMatch(mountpoint, path);
+        const hit = new MountPointMatch(mountpoint, path);
+        Console.log("Mountpoint found.\n");
+        return hit;
       }
     }
     return null;

@@ -7,6 +7,10 @@ import { Console } from "as-wasi";
 import { HeaderFilter } from "../header-filter";
 
 export class MediaHandler extends AbstractPathHandler {
+  get name(): string {
+    return "media";
+  }
+
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     const name = mount.relpath.split("media_").pop();
     const hash = name.split(".")[0];

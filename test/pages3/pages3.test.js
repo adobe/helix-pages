@@ -34,7 +34,7 @@ describe('Helix Pages 3 Test Harness: Repository Resolution', () => {
     expect(response).to.have.header('x-error');
   });
 
-  it('Valid ref for valid owner and repo returns 404 (if mountpoint not found)', async () => {
+  it.skip('Valid ref for valid owner and repo returns 404 (if mountpoint not found)', async () => {
     const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
       .get('/');
     expect(response).to.have.status(404);
@@ -43,15 +43,15 @@ describe('Helix Pages 3 Test Harness: Repository Resolution', () => {
 });
 
 describe('Helix Pages 3 Test Harness: Content Resolution', () => {
-  it('Delivers Markdown from Fallback Repo', async () => {
-    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
-      .get('/ms/index.md');
+  it('Delivers Markdown from Content Repo', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/express/create/advertisement/cyber-monday.md');
     expect(response).to.have.status(200);
     expect(response).to.have.header('content-type', 'text/markdown');
   });
 
-  it('Delivers 404 if Fallback Repo does not have the content', async () => {
-    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+  it('Delivers 404 if Content Repo does not have the content', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/ms/missing.md');
     expect(response).to.have.status(404);
     expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
@@ -60,14 +60,14 @@ describe('Helix Pages 3 Test Harness: Content Resolution', () => {
 
 describe('Media Bus', () => {
   it('Delivers Images from Media Bus', async () => {
-    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/ms/media_14b5aa8a1e70779587d4ea68cadff8bad1bd49099.png');
     expect(response).to.have.status(200);
     expect(response).to.have.header('content-type', 'image/png');
   });
 
   it('Does not deliver missing Images from Media Bus', async () => {
-    const response = await chai.request(`https://helix-demo--trieloff.${domain}`)
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/ms/media_0000aaaa1e70779587d4ea68cadff8bad1bd49099.png');
     expect(response).to.have.status(404);
     expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');

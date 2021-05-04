@@ -9,6 +9,8 @@ export abstract class RequestHandler {
   abstract match(req: Request): boolean;
   abstract handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response;
 
+  abstract get name(): string;
+
   withLogger(logger: CoralogixLogger): RequestHandler {
     this.log = logger;
     return this;

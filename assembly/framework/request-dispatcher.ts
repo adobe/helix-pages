@@ -42,10 +42,12 @@ export class RequestDispatcher {
     }
 
     for (let i = 0; i < this.handlers.length; i++) {
+      Console.log("Trying handler #" + i.toString() + "\n");
       const handler = this.handlers[i];
       if (handler.match(request)) {
+        Console.log("Matched handler #" + i.toString() + " " + handler.name +"\n");
         const res = handler.handle(request, match, this.config);
-        this.logger.info("Handler " + i.toString() + " got response status " + res.status.toString());
+        this.logger.info("Handler #" + i.toString() + " got response status " + res.status.toString());
         if (res.ok) {
           return res;
         }

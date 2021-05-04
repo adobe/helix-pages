@@ -46,7 +46,7 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
   const subdomainparts = subdomain.split('--');
   if (subdomainparts.length < 2) {
     return new MaybeResponse<GlobalConfig>().withResponse(
-      new Response(String.UTF8.encode("Specify at least repo--owner.hlx3.page"), {
+      new Response(String.UTF8.encode("Specify at least repo--owner.hlx3.one"), {
         status: 404,
         headers: new HeaderBuilder('x-error', 'No owner, repo, ref'),
         url: null
@@ -58,10 +58,10 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
 
   Console.log("\nreceived: " + owner + " " + repo + " " + ref);
 
-  const configpath = "/" + owner + "/" + repo + "/" + ref + ".json";
+  const configpath = "/" + owner + "/" + repo + "/" + ref + "/config.json";
   // get config
   // https://helix3-prototype-private-bucket.s3.us-east-1.amazonaws.com/
-  const confighost = 'helix3-prototype-private-bucket.s3.us-east-1.amazonaws.com';
+  const confighost = 'helix-code-bus.s3.us-east-1.amazonaws.com';
   const configurl = "https://" + confighost + configpath;
   Console.log('\nLoading: ' + configurl);
 
