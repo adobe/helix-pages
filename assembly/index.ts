@@ -98,7 +98,7 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
   }
 
   // TODO: check for response status
-  const global = new GlobalConfig(configresponse.text(), signer);
+  const global = new GlobalConfig(configresponse.text(), signer, owner, repo, ref);
 
   Console.log("\nGlobal Configuration has been loaded");
 

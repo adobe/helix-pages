@@ -42,7 +42,7 @@ describe('Helix Pages 3 Test Harness: Repository Resolution', () => {
   });
 });
 
-describe('Helix Pages 3 Test Harness: Content Resolution', () => {
+describe('Helix Pages 3 Test Harness: Content Bus', () => {
   it('Delivers Markdown from Content Repo', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/express/create/advertisement/cyber-monday.md');
@@ -53,6 +53,29 @@ describe('Helix Pages 3 Test Harness: Content Resolution', () => {
   it('Delivers 404 if Content Repo does not have the content', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/ms/missing.md');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+  });
+});
+
+describe('Helix Pages 3 Test Harness: Code Bus', () => {
+  it('Delivers Markdown from Code Repo', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/README.md');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('content-type', 'text/markdown');
+  });
+
+  it('Delivers PNG from Code Repo', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/default-meta-image.png');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('content-type', 'image/png');
+  });
+
+  it('Delivers 404 if Content Repo does not have the content', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/code/missing.md');
     expect(response).to.have.status(404);
     expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
   });

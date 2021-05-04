@@ -6,10 +6,16 @@ import { RequestSigner } from "./request-signer";
 export class GlobalConfig {
   private json: JSON.Obj;
   private signer: RequestSigner;
+  owner: string;
+  repo: string;
+  ref: string;
 
-  constructor(jsonstr: string, signer: RequestSigner) {
+  constructor(jsonstr: string, signer: RequestSigner, owner: string, repo: string, ref: string) {
     this.json = <JSON.Obj>JSON.parse(jsonstr);
     this.signer = signer;
+    this.owner = owner;
+    this.repo = repo;
+    this.ref = ref;
   }
 
   get fstab(): MountConfig {
