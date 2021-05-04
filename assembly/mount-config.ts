@@ -40,7 +40,7 @@ export class MountPointMatch {
   }
 
   get hash(): string {
-    return "h3" + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.url)))).substr(0, 60);
+    return "h3" + toHexString(hash(Uint8Array.wrap(String.UTF8.encode(this.url)))).substr(0, 59);
   }
 }
 
