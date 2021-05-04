@@ -39,9 +39,9 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-deploy": "4.1.0",
+    "@adobe/helix-deploy": "4.3.1",
     "@adobe/helix-fetch": "2.2.0",
-    "@adobe/helix-pipeline": "13.9.10",
+    "@adobe/helix-pipeline": "13.9.20",
     "@adobe/htlengine": "6.3.7",
     "@adobe/openwhisk-action-logger": "2.4.4",
     "@adobe/openwhisk-action-utils": "4.4.4",
