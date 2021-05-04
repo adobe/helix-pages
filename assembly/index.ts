@@ -3,12 +3,12 @@ import { GlobalConfig } from "./global-config";
 import { Console, Date } from "as-wasi";
 import { BACKEND_S3 } from "./backends";
 import { RequestDispatcher } from "./framework/request-dispatcher";
-import { MountPointMatch } from "./mount-config";
 import { MediaHandler } from "./handlers/media-handler";
 import { FallbackHandler } from "./handlers/fallback-handler";
 import { PipelineHandler } from "./handlers/pipeline-handler";
 import { ContentHandler } from "./handlers/content-handler";
 import { CodeHandler } from "./handlers/code-handler";
+import { JSONHandler } from "./handlers/json-handler";
 import { HeaderBuilder } from "./header-builder";
 import { MaybeResponse } from "./maybe-response";
 import { RequestSigner } from "./request-signer";
@@ -120,7 +120,7 @@ function main(req: Request): Response {
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
     .withHandler(new PipelineHandler())
     // .withPathHandler("\\.plain\\.html$", new PipelineHandler())
-    .withPathHandler("\\.json$", new ContentHandler())
+    .withPathHandler("\\.json$", new JSONHandler())
     .withPathHandler("\\.md$", new ContentHandler())
     .withPathHandler("sitemap[0-9a-z-_]*\\.xml$", new ContentHandler())
     .withHandler(new CodeHandler())

@@ -58,6 +58,37 @@ describe('Helix Pages 3 Test Harness: Content Bus', () => {
   });
 });
 
+describe('Helix Pages 3 Test Harness: Content Bus for JSON', () => {
+  it('Delivers JSON from Content Repo', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/express/create/advertisement/data.json');
+    expect(response).to.have.status(200);
+    expect(response).to.be.json;
+    expect(response.body).to.be.an('object');
+    expect(response.body.countries).to.be.an('array');
+  });
+
+  it('Delivers filtered JSON from Content Repo', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/express/create/advertisement/data.json?sheet=countries&offset=2&limit=1');
+    expect(response).to.have.status(200);
+    expect(response).to.be.json;
+    expect(response.body).to.be.an('object');
+    expect(response.body).to.deep.equal({
+      data: [
+        {
+          Code: 'US',
+          Country: 'USA',
+          Number: 7,
+        },
+      ],
+      limit: 1,
+      offset: 2,
+      total: 1,
+    });
+  });
+});
+
 describe('Helix Pages 3 Test Harness: Pipeline', () => {
   it('Delivers HTML from Pipeline Service', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
