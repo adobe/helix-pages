@@ -118,14 +118,16 @@ function main(req: Request): Response {
 
   const dispatcher = new RequestDispatcher(global, logger)
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
-    .withPathHandler("/$", new PipelineHandler())
-    .withPathHandler("\\.plain\\.html$", new PipelineHandler())
+    .withHandler(new PipelineHandler())
+    // .withPathHandler("\\.plain\\.html$", new PipelineHandler())
     .withPathHandler("\\.json$", new ContentHandler())
     .withPathHandler("\\.md$", new ContentHandler())
     .withHandler(new CodeHandler())
     .withHandler(new FallbackHandler());
 
-  return dispatcher.handle(req);
+  const dispatchresponse = dispatcher.handle(req);
+  logger.logResponse(dispatchresponse);
+  return dispatchresponse;
 }
 
 // Get the request from the client.

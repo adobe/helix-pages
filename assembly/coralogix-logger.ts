@@ -128,10 +128,7 @@ export class CoralogixLogger {
     this.logger.log(encoder.toString());
   }
 
-  private logHeader(encoder: JSONEncoder, headers: Headers, name: string, label?: string): void {
-    if (!label) {
-      label = name;
-    }
+  private logHeader(encoder: JSONEncoder, headers: Headers, name: string, label: string = name): void {
     if (headers.has(name)) {
       encoder.setString(label, headers.get(name) as string);
     }
