@@ -36,6 +36,7 @@ export class PipelineHandler extends RequestHandler {
       "&repo=" + config.repo + 
       "&ref=" + config.ref + 
       "&path=" + requrl.pathname + ".md" +
+      "&contentBusId=" + mount.hash +
       "&proxyDomain=" + requrl.hostname.split(".").slice(1).join("."));
 
     let pipelinereq = new Request(url.href, {
