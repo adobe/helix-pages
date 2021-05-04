@@ -406,7 +406,7 @@
   }
 
   /**
-   * Adds the environment plugins to the sidekick:
+   * Adds the following environment plugins to the sidekick:
    * Edit, Preview, Live and Production
    * @private
    * @param {Sidekick} sk The sidekick
@@ -607,7 +607,7 @@
       }
       if ((this.isHelix() || this.isEditor())
         && (this.config.pluginHost || this.config.innerHost)) {
-        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.outerHost || this.config.innerHost}` : '');
+        const prefix = this.config.pluginHost || `https://${this.config.outerHost || this.config.innerHost}`;
         appendTag(document.head, {
           tag: 'script',
           attrs: {
