@@ -1,4 +1,4 @@
-import { Fastly, Request, Response, URL } from "@fastly/as-compute";
+import { Fastly, FastlyPendingUpstreamRequest, Request, Response, URL } from "@fastly/as-compute";
 import { JSON, JSONEncoder } from "assemblyscript-json";
 import { BACKEND_S3 } from "../backends";
 import { AbstractPathHandler } from "../framework/path-handler";
@@ -9,23 +9,29 @@ import { MountPointMatch } from "../mount-config";
 import { queryparam, queryparamint } from "../url-utils";
 
 export class JSONHandler extends AbstractPathHandler {
+  private contentreq: Request | null;
+
   get name(): string {
     return "json";
   }
-
-  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    let contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/live' + mount.relpath, {
+  setup(request: Request, mount: MountPointMatch, config: GlobalConfig): void {
+    this.contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/live' + mount.relpath, {
         headers: null,
         method: 'GET',
         body: null,
     });
 
-    this.logger.debug("fetching json from " + contentreq.url);
+    this.logger.debug("fetching json from " + (this.contentreq as Request).url);
 
-    const contentresponse = Fastly.fetch(config.sign(contentreq), {
+    this.pending = Fastly.fetch(config.sign(this.contentreq as Request), {
       backend: BACKEND_S3,
       cacheOverride: null,
-    }).wait();
+    });
+  }
+
+
+  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    const contentresponse = (this.pending as FastlyPendingUpstreamRequest).wait();
 
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".json")) {
@@ -139,7 +145,7 @@ export class JSONHandler extends AbstractPathHandler {
       return filter.filterResponse(contentresponse);
     }
 
-    this.logger.debug("no content found for " + contentreq.url + " (" + contentresponse.status.toString() + ")");
+    this.logger.debug("no content found for " + (this.contentreq as Request).url + " (" + contentresponse.status.toString() + ")");
 
     return new Response(String.UTF8.encode('No content found.'), {
       url: null,

@@ -19,6 +19,10 @@ export class PathHandler extends RequestHandler {
     return "path:" + this.handler.name;
   }
 
+  setup(req: Request, mount: MountPointMatch, config: GlobalConfig): void {
+    this.handler.setup(req, mount, config);
+  }
+
   handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     return this.handler.handle(req, mount, config);
   }

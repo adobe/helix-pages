@@ -19,7 +19,8 @@
     "astest": "asp",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "bundle": "npm run asbuild:optimized && mkdir -p pkg && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;'   bin fastly.toml package.json",
-    "fastly-deploy": "fastly compute deploy"
+    "fastly-deploy": "fastly compute deploy",
+    "monkeypatch": "echo '' >> node_modules/@fastly/as-compute/assembly/index.ts && echo '// monkey patch' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'import { FastlyPendingUpstreamRequest } from \"./fastly/fastly-upstream/fastly-pending-upstream-request\";' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'export { FastlyPendingUpstreamRequest };' >> node_modules/@fastly/as-compute/assembly/index.ts"
   },
   "wsk": {
     "name": "/pages_${version}/${scriptName}",

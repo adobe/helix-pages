@@ -41,8 +41,17 @@ export class RequestDispatcher {
       });
     }
 
+    // run the setup method first, so that we can queue backend
+    // requests
     for (let i = 0; i < this.handlers.length; i++) {
-      Console.log("Trying handler #" + i.toString() + "\n");
+      const handler = this.handlers[i];
+      if (handler.match(request)) {
+        Console.log("Preparing handler #" + i.toString() + " " + handler.name +"\n");
+        handler.setup(request, match, this.config);
+      }
+    }
+
+    for (let i = 0; i < this.handlers.length; i++) {
       const handler = this.handlers[i];
       if (handler.match(request)) {
         Console.log("Matched handler #" + i.toString() + " " + handler.name +"\n");

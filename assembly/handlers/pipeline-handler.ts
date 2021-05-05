@@ -1,4 +1,4 @@
-import { Fastly, Request, Response, URL } from "@fastly/as-compute";
+import { Fastly, FastlyPendingUpstreamRequest, Request, Response, URL } from "@fastly/as-compute";
 import { GlobalConfig } from "../global-config";
 import { HeaderBuilder } from "../header-builder";
 import { MountPointMatch } from "../mount-config";
@@ -27,7 +27,7 @@ export class PipelineHandler extends RequestHandler {
     return false;
   }
 
-  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+  setup(request: Request, mount: MountPointMatch, config: GlobalConfig):void {
     const requrl = new URL(request.url);
 
     let path = requrl.pathname;
@@ -64,7 +64,19 @@ export class PipelineHandler extends RequestHandler {
     const contentresponse = Fastly.fetch(config.sign(pipelinereq), {
       backend: "helix-pages.anywhere.run",
       cacheOverride,
-    }).wait();
+    });
+
+    this.logger.debug('Pending pipeline request has been stashed.');
+    this.pending = contentresponse;
+  }
+
+  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    if (this.pending == null) {
+      this.logger.debug('No pending pipeline request has been found, retrying.');
+      this.setup(request, mount, config);
+    }
+    this.logger.debug('A pending pipeline request has been found, continuing.');
+    const contentresponse = (this.pending as FastlyPendingUpstreamRequest).wait();
 
     if (contentresponse.ok) {
       const filter = new HeaderFilter()
