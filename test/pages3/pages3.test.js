@@ -122,11 +122,10 @@ describe('Helix Pages 3 Test Harness: Plain Pipeline', () => {
 });
 
 describe('Helix Pages 3 Test Harness: Code Bus', () => {
-  it('Delivers Markdown from Code Repo', async () => {
+  it('Delivers No Markdown from Code Repo', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)
       .get('/README.md');
-    expect(response).to.have.status(200);
-    expect(response).to.have.header('content-type', 'text/markdown; charset=utf-8');
+    expect(response).to.have.status(404);
   });
 
   it('Delivers PNG from Code Repo', async () => {

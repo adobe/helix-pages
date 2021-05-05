@@ -1,4 +1,4 @@
-import { Request,  Response, Fastly, Headers } from "@fastly/as-compute";
+import { Request,  Response, Fastly, Headers, URL } from "@fastly/as-compute";
 import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
@@ -11,6 +11,12 @@ export class CodeHandler extends RequestHandler {
   }
 
   match(req: Request): boolean {
+    const url = new URL(req.url);
+    // according to david: .md -> content bus only, .json is the only exception 
+    // where we try content bus first, then code bus
+    if (url.pathname.endsWith(".md")) {
+      return false;
+    }
     return true;
   }
 
