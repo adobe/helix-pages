@@ -54,9 +54,23 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
   }
   let owner = subdomainparts.pop();
   let repo = subdomainparts.pop();
-  let ref = subdomainparts.length > 0 ? subdomainparts.pop() : "main";
+  let ref = subdomainparts.length > 0 ? subdomainparts.pop() : "";
 
   Console.log("\nreceived: " + owner + " " + repo + " " + ref);
+
+  const domain = (<string>req.headers.get("host")).split(".").slice(1).join(".");
+  const url = new URL(req.url);
+
+  if (ref == "") {
+    return new MaybeResponse<GlobalConfig>().withResponse(
+      new Response(String.UTF8.encode("A ref is required, assuming main"), {
+        status: 301,
+        headers: new HeaderBuilder('x-error', 'No ref specified')
+          .with("location", "https://main--" + repo + "--" + owner + "." + domain + url.pathname + url.search),
+        url: null,
+      })
+    )
+  }
 
   const configpath = "/" + owner + "/" + repo + "/" + ref + "/config.json";
   // get config
