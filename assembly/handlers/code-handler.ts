@@ -17,6 +17,9 @@ export class CodeHandler extends RequestHandler {
     if (url.pathname.endsWith(".md")) {
       return false;
     }
+    if (url.pathname.includes("/media_")) {
+      return false;
+    }
     return true;
   }
 
