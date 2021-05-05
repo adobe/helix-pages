@@ -1,4 +1,4 @@
-import { Request, Response, Headers, Fastly } from "@fastly/as-compute";
+import { Request, Response, Headers, Fastly, URL } from "@fastly/as-compute";
 import { AbstractPathHandler } from "../framework/path-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_BLOBSTORE } from "../backends";
@@ -26,16 +26,18 @@ export class MediaHandler extends AbstractPathHandler {
 
     Console.log("\n handling media for hash " + hash + " with sas " + sas.substr(0, 4));
 
+    const qs = new URL(request.url).search.replace("?", "&");
+
     let mediaheaders = new Headers();
-    mediaheaders.set('host', 'hlx.blob.core.windows.net')
-    let mediarequest = new Request('https://hlx.blob.core.windows.net/external/' + hash + sas, {
+    mediaheaders.set('host', 'media.hlx3.one')
+    let mediarequest = new Request('https://media.hlx3.one/external/' + hash + sas + qs, {
       headers: mediaheaders,
       method: 'GET',
       body: null,
     });
 
     let mediaresponse = Fastly.fetch(mediarequest, {
-      backend: BACKEND_BLOBSTORE,
+      backend: 'media.hlx3.one',
       cacheOverride: null,
     }).wait();
 

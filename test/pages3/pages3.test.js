@@ -158,6 +158,15 @@ describe('Media Bus', () => {
       .get('/ms/media_14b5aa8a1e70779587d4ea68cadff8bad1bd49099.png');
     expect(response).to.have.status(200);
     expect(response).to.have.header('content-type', 'image/png');
+    expect(response).to.have.header('content-length', '55969');
+  });
+
+  it('Delivers rescaled Images from Media Bus', async () => {
+    const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
+      .get('/ms/media_14b5aa8a1e70779587d4ea68cadff8bad1bd49099.png?width=10');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('content-type', 'image/png');
+    expect(response).to.have.header('content-length', '243');
   });
 
   it('Does not deliver missing Images from Media Bus', async () => {
