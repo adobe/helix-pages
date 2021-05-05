@@ -1,4 +1,4 @@
-import { Request,  Response, Fastly, Headers, URL } from "@fastly/as-compute";
+import { Request,  Response, Fastly, Headers, URL, FastlyPendingUpstreamRequest } from "@fastly/as-compute";
 import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
@@ -23,7 +23,7 @@ export class CodeHandler extends RequestHandler {
     return true;
   }
 
-  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+  setup(req: Request, mount: MountPointMatch, config: GlobalConfig): void {
     let codereq = new Request('https://helix-code-bus.s3.us-east-1.amazonaws.com/' + config.owner + "/" + config.repo + "/" + config.ref + mount.relpath, {
         headers: null,
         method: 'GET',
@@ -35,13 +35,15 @@ export class CodeHandler extends RequestHandler {
     const coderesponse = Fastly.fetch(config.sign(codereq), {
       backend: BACKEND_S3,
       cacheOverride: null,
-    }).wait();
+    });
+
+    this.pending = coderesponse;
+  }
+
+  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    const coderesponse = (this.pending as FastlyPendingUpstreamRequest).wait();
 
     if (coderesponse.ok) {
-      if (mount.relpath.endsWith(".md")) {
-        coderesponse.headers.set('content-type', 'text/markdown; charset=utf-8');
-      }
-
       const filter = new HeaderFilter()
         .allow('age')
         .allow('content-length')
