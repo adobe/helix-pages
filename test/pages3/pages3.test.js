@@ -105,6 +105,22 @@ describe('Helix Pages 3 Test Harness: Pipeline', () => {
   });
 });
 
+describe('Helix Pages 3 Test Harness: Plain Pipeline', () => {
+  it('Delivers HTML from Pipeline Service', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/express/create/advertisement/cyber-monday.plain.html');
+    expect(response).to.have.status(200);
+    expect(response).to.be.html;
+  });
+
+  it('Delivers 404 if Content Repo does not have the content', async () => {
+    const response = await chai.request(`https://spark-website--adobe.${domain}`)
+      .get('/ms/missing.plain.html');
+    expect(response).to.have.status(404);
+    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+  });
+});
+
 describe('Helix Pages 3 Test Harness: Code Bus', () => {
   it('Delivers Markdown from Code Repo', async () => {
     const response = await chai.request(`https://spark-website--adobe.${domain}`)

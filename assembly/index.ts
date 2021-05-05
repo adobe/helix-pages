@@ -118,12 +118,14 @@ function main(req: Request): Response {
 
   const dispatcher = new RequestDispatcher(global, logger)
     .withPathHandler("/(media_([0-9a-f]){40,41}).([0-9a-z]+)$", new MediaHandler())
+    
     .withHandler(new PipelineHandler())
-    // .withPathHandler("\\.plain\\.html$", new PipelineHandler())
+    .withPathHandler("\\.plain\\.html$", new PipelineHandler())
     .withPathHandler("\\.json$", new JSONHandler())
     .withPathHandler("\\.md$", new ContentHandler())
     .withPathHandler("sitemap[0-9a-z-_]*\\.xml$", new ContentHandler())
     .withHandler(new CodeHandler())
+    // TODO: 404 handling.
     .withHandler(new FallbackHandler());
 
   const dispatchresponse = dispatcher.handle(req);

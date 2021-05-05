@@ -11,8 +11,8 @@ export class PipelineHandler extends RequestHandler {
   }
 
   match(req: Request): boolean {
-    const url = req.url;
-    if (url == "/") {
+    const url = new URL(req.url).pathname;
+    if (url.endsWith("/") ) {
       return true;
     }
     const lastsegment = url.split("/").pop();
@@ -30,12 +30,24 @@ export class PipelineHandler extends RequestHandler {
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     const requrl = new URL(request.url);
 
+    let path = requrl.pathname;
+    if (path.endsWith(".plain.html")) {
+      path = path.substr(0, path.length - ".plain.html".length);
+    }
+    if (path.endsWith("/")) {
+      path = path + "index";
+    }
+    path = path + ".md";
+
     const url = new URL("https://helix-pages.anywhere.run/helix-services/pipeline-service@v1" +
       "?owner="  + config.owner +
       "&repo=" + config.repo + 
       "&ref=" + config.ref + 
-      "&path=" + requrl.pathname + ".md" +
+      "&path=" + path +
       "&contentBusId=" + mount.hash +
+      (requrl.pathname.endsWith(".plain.html") 
+        ? "&selector=plain"
+        : "") +
       "&proxyDomain=" + requrl.hostname.split(".").slice(1).join("."));
 
     let pipelinereq = new Request(url.href, {
@@ -46,9 +58,12 @@ export class PipelineHandler extends RequestHandler {
 
     this.logger.debug("fetching pipeline from " + pipelinereq.url);
 
+    let cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setTTL(0);
+
     const contentresponse = Fastly.fetch(config.sign(pipelinereq), {
       backend: "helix-pages.anywhere.run",
-      cacheOverride: null,
+      cacheOverride,
     }).wait();
 
     if (contentresponse.ok) {
