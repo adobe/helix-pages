@@ -51,6 +51,8 @@ export class RequestDispatcher {
       }
     }
 
+    let lastres: Response | null;
+    lastres = null;
     for (let i = 0; i < this.handlers.length; i++) {
       const handler = this.handlers[i];
       if (handler.match(request)) {
@@ -60,14 +62,18 @@ export class RequestDispatcher {
         if (res.ok) {
           return res;
         }
+        lastres = res;
         // keep iterating, so that the fallback handler can jump in
       }
     }
 
-    return new Response(String.UTF8.encode('Unable to handle this URL pattern'), {
-      status: 404,
-      headers: new HeaderBuilder('x-error', 'No matching handler found for this URL pattern'),
-      url: null,
-    })
+    if (lastres == null) {
+      return new Response(String.UTF8.encode('Unable to handle request'), {
+        status: 500,
+        headers: new HeaderBuilder('x-error', 'No handlers registered.'),
+        url: null,
+      });
+    }
+    return lastres as Response;
   }
 }

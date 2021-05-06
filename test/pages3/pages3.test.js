@@ -63,7 +63,7 @@ describe('Helix Pages 3 Test Harness: Content Bus', () => {
     const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
       .get('/ms/missing.md');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+    expect(response).to.have.header('content-length', '1479');
   });
 });
 
@@ -110,7 +110,7 @@ describe('Helix Pages 3 Test Harness: Pipeline', () => {
     const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
       .get('/ms/missing');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+    expect(response).to.have.header('content-length', '1479');
   });
 });
 
@@ -126,7 +126,7 @@ describe('Helix Pages 3 Test Harness: Plain Pipeline', () => {
     const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
       .get('/ms/missing.plain.html');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+    expect(response).to.have.header('content-length', '1479');
   });
 });
 
@@ -148,7 +148,7 @@ describe('Helix Pages 3 Test Harness: Code Bus', () => {
     const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
       .get('/code/missing.md');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+    expect(response).to.have.header('content-length', '1479');
   });
 });
 
@@ -173,6 +173,6 @@ describe('Media Bus', () => {
     const response = await chai.request(`https://main--spark-website--adobe.${domain}`)
       .get('/ms/media_0000aaaa1e70779587d4ea68cadff8bad1bd49099.png');
     expect(response).to.have.status(404);
-    expect(response).to.have.header('x-error', 'No matching handler found for this URL pattern');
+    expect(response).to.have.header('content-length', '1479');
   });
 });

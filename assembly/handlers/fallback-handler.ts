@@ -1,9 +1,10 @@
-import { Request,  Response, Fastly, Headers } from "@fastly/as-compute";
+import { Request,  Response, Fastly, Headers, FastlyPendingUpstreamRequest } from "@fastly/as-compute";
 import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
 import { GlobalConfig } from "../global-config";
 import { HeaderFilter } from "../header-filter";
+import { HeaderBuilder } from "../header-builder";
 
 export class FallbackHandler extends RequestHandler {
   get name(): string {
@@ -14,21 +15,31 @@ export class FallbackHandler extends RequestHandler {
     return true;
   }
 
-  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    let fallbackreq = new Request('https://helix3-prototype-fallback-private.s3.us-east-1.amazonaws.com' + mount.relpath, {
+
+  setup(req: Request, mount: MountPointMatch, config: GlobalConfig): void {
+    let codereq = new Request('https://helix-code-bus.s3.us-east-1.amazonaws.com/' + config.owner + "/" + config.repo + "/" + config.ref + "/404.html", {
         headers: null,
         method: 'GET',
         body: null,
     });
 
-    let cacheOverride = new Fastly.CacheOverride();
-    cacheOverride.setTTL(30); // fallback content is changed infrequently and fetched frequently
-    const fallbackresponse = Fastly.fetch(config.sign(fallbackreq), {
-        backend: BACKEND_S3,
-        cacheOverride,
-    }).wait();
+    this.logger.debug("fetching 404 page from " + codereq.url);
 
-    if (fallbackresponse.ok) {
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setTTL(15);
+
+    const coderesponse = Fastly.fetch(config.sign(codereq), {
+      backend: BACKEND_S3,
+      cacheOverride,
+    });
+
+    this.pending = coderesponse;
+  }
+
+  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    const coderesponse = (this.pending as FastlyPendingUpstreamRequest).wait();
+
+    if (coderesponse.ok) {
       const filter = new HeaderFilter()
         .allow('age')
         .allow('content-length')
@@ -37,12 +48,18 @@ export class FallbackHandler extends RequestHandler {
         .allow('etag')
         .allow('last-modified')
 
-      return filter.filterResponse(fallbackresponse);
+      return filter.filterResponse(new Response(String.UTF8.encode(coderesponse.text()), {
+        headers: coderesponse.headers,
+        status: 404, // but in a good way
+        url: null,
+      }));
     }
 
-    return new Response(String.UTF8.encode('No content'), {
+    this.logger.debug("no 404 page found for " + coderesponse.url + " (" + coderesponse.status.toString() + ")");
+
+    return new Response(String.UTF8.encode('Page not found.'), {
       url: null,
-      headers: null,
+      headers: new HeaderBuilder("x-error", "Page not found and no custom error page defined."),
       status: 404,
     });
   }
