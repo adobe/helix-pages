@@ -1,3 +1,52 @@
+# [6.0.0](https://github.com/adobe/helix-pages/compare/v5.0.4...v6.0.0) (2021-05-06)
+
+
+* Merge pull request #662 from adobe/breaking-202103 ([f00f452](https://github.com/adobe/helix-pages/commit/f00f452bc8a52a97e296fbb40b373f9a537382da)), closes [#662](https://github.com/adobe/helix-pages/issues/662) [#657](https://github.com/adobe/helix-pages/issues/657) [#638](https://github.com/adobe/helix-pages/issues/638) [#728](https://github.com/adobe/helix-pages/issues/728) [#729](https://github.com/adobe/helix-pages/issues/729) [#745](https://github.com/adobe/helix-pages/issues/745) [#786](https://github.com/adobe/helix-pages/issues/786) [#796](https://github.com/adobe/helix-pages/issues/796) [#806](https://github.com/adobe/helix-pages/issues/806) [#748](https://github.com/adobe/helix-pages/issues/748) [adobe/helix-pipeline#1005](https://github.com/adobe/helix-pipeline/issues/1005)
+
+
+### Bug Fixes
+
+* **breaking:** make branch unsticky ([0478b9a](https://github.com/adobe/helix-pages/commit/0478b9a3e6912dee3d1e34340f8ba8d60601b879))
+* **breaking:** revert metadata from spreadsheet ([a59601b](https://github.com/adobe/helix-pages/commit/a59601b881a910bcc0ae5b1eef8cd721b9240383)), closes [#801](https://github.com/adobe/helix-pages/issues/801)
+* **config:** add breaking strain and version file ([9513746](https://github.com/adobe/helix-pages/commit/9513746eb65f677fa7b07ef5bb2a10ca61823a26))
+* **deps:** update adobe fixes ([#661](https://github.com/adobe/helix-pages/issues/661)) ([161bf09](https://github.com/adobe/helix-pages/commit/161bf09547528ce220355829597fdac918a15e54))
+* **deps:** update adobe fixes ([#881](https://github.com/adobe/helix-pages/issues/881)) ([09d5c77](https://github.com/adobe/helix-pages/commit/09d5c77ca354e2924b83f6b717808b736c96712f))
+* **deps:** use universal-logger ([c3ba89a](https://github.com/adobe/helix-pages/commit/c3ba89a683fbffb1a93af76b8b6a717d4ee25c0a))
+* **html:** fix sections for also plain.html ([65a78de](https://github.com/adobe/helix-pages/commit/65a78def95da7fc1d1f43ff25a25f5888db8d3cd)), closes [#748](https://github.com/adobe/helix-pages/issues/748)
+* **meta:** hero image is not correct ([#775](https://github.com/adobe/helix-pages/issues/775)) ([b510376](https://github.com/adobe/helix-pages/commit/b510376f7fb607de1230d3b0054efbec4c874808)), closes [#745](https://github.com/adobe/helix-pages/issues/745)
+* **pageblocks:** avoid errors if empty table header ([40b57be](https://github.com/adobe/helix-pages/commit/40b57be219b16f0d61f805d2e43d95ddf5e3c050))
+* **pageblocks:** remove classes from cells ([04fff0c](https://github.com/adobe/helix-pages/commit/04fff0cc9c62e935b3bc9cd30c4f3793cc945af4))
+* **picture:** use backward compatible format ([0491276](https://github.com/adobe/helix-pages/commit/049127683ff30188ccae73078ac8420b96ed0c0b))
+* **pre:** adjust image optimization ([#828](https://github.com/adobe/helix-pages/issues/828)) ([743911b](https://github.com/adobe/helix-pages/commit/743911b8e75cf772249052aca49d360b0be808e6)), closes [#657](https://github.com/adobe/helix-pages/issues/657)
+* **seo:** canonical url enforces html extension ([5f121cd](https://github.com/adobe/helix-pages/commit/5f121cdd7ff34baedfe7776cc19afc266449ef80))
+* **seo:** detect meta title inside block ([6a25bef](https://github.com/adobe/helix-pages/commit/6a25bef371d2e81e51ad8b33e73f4051e470f7e6))
+* **seo:** meta title is not document title ([62b8533](https://github.com/adobe/helix-pages/commit/62b85336d73cb628142761fff6060864d05d4ea9))
+* **sidekick:** endless update loop ([a3ca8f7](https://github.com/adobe/helix-pages/commit/a3ca8f7619dc30772f924aa979429487eefafae1))
+
+
+### Features
+
+* **blob:** adjust to rootless image paths ([daaf3b3](https://github.com/adobe/helix-pages/commit/daaf3b33cc2238dab89841659d20a4030268bb40))
+* **blob:** adjust to rootless image paths ([91ad284](https://github.com/adobe/helix-pages/commit/91ad2844c06944f9d2c232067f2bf2922895b1ee))
+* **blob:** adjust to rootless image paths ([ba541cd](https://github.com/adobe/helix-pages/commit/ba541cd93f90f1746352bf0fbe3251817f2c3856))
+* **blobs:** adjust to rootless image paths ([6dce2ec](https://github.com/adobe/helix-pages/commit/6dce2ec5936adac58abbdc566b223560ed008476))
+* **html:** all img tags ([00c3bbf](https://github.com/adobe/helix-pages/commit/00c3bbfdba7626ac4aea268b7595b15faa26e90f))
+* **html:** responsive images with <picture> ([#657](https://github.com/adobe/helix-pages/issues/657)) ([4e81f25](https://github.com/adobe/helix-pages/commit/4e81f25ab81df15b3972500a3520307eeb0ba43d))
+* **html:** responsive images with <picture> ([#657](https://github.com/adobe/helix-pages/issues/657)) ([ee700b5](https://github.com/adobe/helix-pages/commit/ee700b5adac46b88b547cbcd539ffa86d6abfc8f))
+* **html:** responsive images with <picture> ([#657](https://github.com/adobe/helix-pages/issues/657)) ([31bcc77](https://github.com/adobe/helix-pages/commit/31bcc77a61d543e35ca286364e5e68d6c779ddee))
+* **meta:** add support for metadata with array of values (multiple p or ol/ul) ([4f03461](https://github.com/adobe/helix-pages/commit/4f03461fc0ac525e59556fb2e015ae3a100418a3))
+* **metadata:** support line-separated lists and custom metadata ([688e9c0](https://github.com/adobe/helix-pages/commit/688e9c0fa4d41a117a6c43c7687fdf81fe19f6cb))
+* **render:** wrap all sections in 2 divs ([85990f9](https://github.com/adobe/helix-pages/commit/85990f9983fc0d5731112fb87a8e096209d6c171)), closes [#640](https://github.com/adobe/helix-pages/issues/640)
+* **seo:** metadata block handling ([fbfa503](https://github.com/adobe/helix-pages/commit/fbfa503c02e424b47985f5114cfa7de004277e18))
+* **seo:** metadata from spreadsheet ([#801](https://github.com/adobe/helix-pages/issues/801)) ([cd6b9db](https://github.com/adobe/helix-pages/commit/cd6b9db1d47c2b98af4229ade61a5b4a8b13bdb5))
+* **seo:** use meta image from block ([5ffa59e](https://github.com/adobe/helix-pages/commit/5ffa59e15310949cfe81b7508689af9abd37b996))
+* inplement server side blocks handling ([#702](https://github.com/adobe/helix-pages/issues/702)) ([73c1a0a](https://github.com/adobe/helix-pages/commit/73c1a0a2bcfce0783c072d0a4094b9ec8c06adae)), closes [#638](https://github.com/adobe/helix-pages/issues/638)
+
+
+### BREAKING CHANGES
+
+* march 2021
+
 ## [5.0.4](https://github.com/adobe/helix-pages/compare/v5.0.3...v5.0.4) (2021-04-28)
 
 
