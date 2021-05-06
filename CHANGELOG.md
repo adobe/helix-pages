@@ -1,3 +1,33 @@
+## [5.0.4](https://github.com/adobe/helix-pages/compare/v5.0.3...v5.0.4) (2021-04-28)
+
+
+### Bug Fixes
+
+* **sidekick:** auto-heal ([8d0e1e4](https://github.com/adobe/helix-pages/commit/8d0e1e4561930086244ff6f402a23fd8b78361e1))
+* **sidekick:** byocdn flag always set on update ([7622deb](https://github.com/adobe/helix-pages/commit/7622debaf2945c4234c11c00f0f78693e452235a))
+* **sidekick:** trigger update dialog on affected configs ([d113272](https://github.com/adobe/helix-pages/commit/d1132729feff70d1f77aa6b045250cfbff9f2ce4))
+
+## [5.0.3](https://github.com/adobe/helix-pages/compare/v5.0.2...v5.0.3) (2021-04-23)
+
+
+### Bug Fixes
+
+* **vcl:** reduce workspace usage ([3ff5f21](https://github.com/adobe/helix-pages/commit/3ff5f21dd6b3d98be6da5f8cb23d370853910d67))
+
+## [5.0.2](https://github.com/adobe/helix-pages/compare/v5.0.1...v5.0.2) (2021-04-22)
+
+
+### Bug Fixes
+
+* trigger publish ([d946a05](https://github.com/adobe/helix-pages/commit/d946a05b23b81a4c87d806c90cd3b89f86f8604b))
+
+## [5.0.1](https://github.com/adobe/helix-pages/compare/v5.0.0...v5.0.1) (2021-04-22)
+
+
+### Bug Fixes
+
+* **sidekick:** share url missing byocdn flag ([a9099a7](https://github.com/adobe/helix-pages/commit/a9099a76cfa08b812c9b12316c63cbed260b9412))
+
 # [5.0.0](https://github.com/adobe/helix-pages/compare/v4.28.0...v5.0.0) (2021-04-21)
 
 
