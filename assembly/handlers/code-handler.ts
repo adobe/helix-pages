@@ -32,9 +32,12 @@ export class CodeHandler extends RequestHandler {
 
     this.logger.debug("fetching code from " + codereq.url);
 
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setPass();
+
     const coderesponse = Fastly.fetch(config.sign(codereq), {
       backend: BACKEND_S3,
-      cacheOverride: null,
+      cacheOverride,
     });
 
     this.pending = coderesponse;
