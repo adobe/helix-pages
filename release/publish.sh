@@ -20,7 +20,7 @@ echo "publish new version for $BRANCH"
 hlx publish --log-level debug --custom-vcl='vcl/extensions.vcl' --only="$BRANCH" | cat
 
 echo "here's what changed:"
-git diff
+git diff | cat
 
 if [ "$BRANCH" == "master" ]; then
   # store last known good
