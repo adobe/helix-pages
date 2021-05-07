@@ -21,7 +21,7 @@ const nock = require('nock');
 const { JSDOM } = require('jsdom');
 const { Request } = require('@adobe/helix-universal');
 const BuildCommand = require('@adobe/helix-cli/src/build.cmd.js');
-const { assertEquivalentNode } = require('@adobe/helix-shared').dom;
+const { assertEquivalentNode } = require('@adobe/helix-shared-dom');
 
 async function createTestRoot() {
   const dir = path.resolve(__dirname, '..', 'tmp', crypto.randomBytes(16).toString('hex'));

@@ -26,7 +26,7 @@ const { fetch } = fetchContext;
 
 const { Response } = require('@adobe/helix-universal');
 const { logger } = require('@adobe/helix-universal-logger');
-const { wrap } = require('@adobe/helix-shared');
+const wrap = require('@adobe/helix-shared-wrap');
 const { getOriginalHost } = require('../src/utils');
 
 /**
