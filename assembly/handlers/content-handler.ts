@@ -21,9 +21,12 @@ export class ContentHandler extends AbstractPathHandler {
 
     this.logger.debug("fetching content from " + (this.contentreq as Request).url);
 
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setPass();
+
     const contentresponse = Fastly.fetch(config.sign(this.contentreq as Request), {
       backend: BACKEND_S3,
-      cacheOverride: null,
+      cacheOverride,
     });
 
     this.logger.debug("stashing content response");

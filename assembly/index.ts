@@ -95,6 +95,9 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
 
   Console.log('Request has been signed with Authorization header: ' + <string>signedrequest.headers.get('authorization'));
 
+  const cacheOverride = new Fastly.CacheOverride();
+  cacheOverride.setTTL(15);
+
   const configresponse = Fastly.fetch(signedrequest, {
     backend: BACKEND_S3,
     cacheOverride: null,

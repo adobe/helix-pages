@@ -23,9 +23,12 @@ export class JSONHandler extends AbstractPathHandler {
 
     this.logger.debug("fetching json from " + (this.contentreq as Request).url);
 
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setPass();
+
     this.pending = Fastly.fetch(config.sign(this.contentreq as Request), {
       backend: BACKEND_S3,
-      cacheOverride: null,
+      cacheOverride,
     });
   }
 

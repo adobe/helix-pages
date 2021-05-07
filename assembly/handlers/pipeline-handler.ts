@@ -58,8 +58,8 @@ export class PipelineHandler extends RequestHandler {
 
     this.logger.debug("fetching pipeline from " + pipelinereq.url);
 
-    let cacheOverride = new Fastly.CacheOverride();
-    cacheOverride.setTTL(0);
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setPass();
 
     const contentresponse = Fastly.fetch(config.sign(pipelinereq), {
       backend: "helix-pages.anywhere.run",

@@ -36,9 +36,12 @@ export class MediaHandler extends AbstractPathHandler {
       body: null,
     });
 
+    const cacheOverride = new Fastly.CacheOverride();
+    cacheOverride.setPass();
+
     let mediaresponse = Fastly.fetch(mediarequest, {
       backend: 'media.hlx3.one',
-      cacheOverride: null,
+      cacheOverride,
     }).wait();
 
     // todo: cleanup response headers
