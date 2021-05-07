@@ -111,6 +111,32 @@ function readBlockConfig($block) {
   return config;
 }
 
+function applyLowerCase(target, obj) {
+  Object.keys(obj).forEach((key) => {
+    const lowerKey = key.toLowerCase();
+    if (lowerKey !== 'url' && obj[key]) {
+      target[lowerKey] = obj[key];
+    }
+  });
+}
+
+function filterGlobalMetadata(metaRules, url) {
+  const metaConfig = {};
+  metaRules.forEach((rule) => {
+    const glob = rule.url || rule.URL || rule.Url;
+    if (glob && typeof glob === 'string') {
+      if (glob.indexOf('*') >= 0) {
+        if (minimatch(url, glob)) {
+          applyLowerCase(metaConfig, rule);
+        }
+      } else if (glob === url) {
+        applyLowerCase(metaConfig, rule);
+      }
+    }
+  });
+  return metaConfig;
+}
+
 /**
  * Looks for metadata from a spreadsheet.
  * @param {string} url The request URL
@@ -119,7 +145,6 @@ function readBlockConfig($block) {
  */
 async function getGlobalMetadata(url, action) {
   const { logger: log, downloader } = action;
-  let metaRules = [];
   const metaTask = downloader.getTaskById('metadata');
   if (!metaTask) {
     log.info('no external metadata. no metadata task scheduled.');
@@ -135,27 +160,8 @@ async function getGlobalMetadata(url, action) {
       if (!(json instanceof Array)) {
         throw new Error('data must be an array');
       }
-      metaRules = json.map((entry) => {
-        // lowercase all keys and drop empty values
-        const lcEntry = {};
-        Object.keys(entry).forEach((key) => {
-          if (entry[key]) {
-            lcEntry[key.toLowerCase()] = entry[key];
-          }
-        });
-        return lcEntry;
-      });
+      return filterGlobalMetadata(json, url);
     }
-    const metaConfig = {};
-    metaRules.forEach(({ url: glob, ...config }) => {
-      if (typeof glob !== 'string') {
-        return;
-      }
-      if (minimatch(url, glob)) {
-        Object.assign(metaConfig, config);
-      }
-    });
-    return metaConfig;
   } catch (e) {
     log.error(`unable to load metadata: ${e.message}`);
   }
@@ -306,4 +312,5 @@ async function extractMetaData(context, action) {
     optimizeMetaImage(url, meta.image || content.image || await getDefaultMetaImage(action)));
 }
 
+extractMetaData.filter = filterGlobalMetadata;
 module.exports = extractMetaData;
