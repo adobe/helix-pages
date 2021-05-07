@@ -66,4 +66,4 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-800
     content: https://github.com/adobe/helix-pages.git#breaking-800
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-800
-    package: https://helix-pages.anywhere.run/pages_5-0-0-breaking-800
+    package: https://helix-pages.anywhere.run/pages_6-0-0-breaking-800
