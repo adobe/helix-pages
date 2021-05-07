@@ -14,7 +14,8 @@
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const fs = require('fs-extra');
-const { HelixConfig } = require('@adobe/helix-shared');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { HelixConfig } = require('@adobe/helix-shared-config');
 const pkgJson = require('../package.json');
 
 // eslint-disable-next-line import/no-extraneous-dependencies
