@@ -1,3 +1,11 @@
+## [6.0.1](https://github.com/adobe/helix-pages/compare/v6.0.0...v6.0.1) (2021-05-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v4.5.0 ([fa901fb](https://github.com/adobe/helix-pages/commit/fa901fbd1ae4ecfe89ce1c724371894540babeb2))
+* **deps:** update dependency @adobe/helix-universal to v1.5.0 ([6a771bd](https://github.com/adobe/helix-pages/commit/6a771bde7c6bff71d3abce96c5b634471cea919d))
+
 # [6.0.0](https://github.com/adobe/helix-pages/compare/v5.0.4...v6.0.0) (2021-05-06)
 
 
