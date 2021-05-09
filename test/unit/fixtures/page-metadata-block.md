@@ -10,3 +10,4 @@
 |Tags|One, Two, Three|
 |Template|default|
 |article:section|Test|
+|short-title|local metadata wins|

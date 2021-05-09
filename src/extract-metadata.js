@@ -111,11 +111,11 @@ function readBlockConfig($block) {
   return config;
 }
 
-function applyLowerCase(target, obj) {
+function applyMetaRule(target, obj) {
   Object.keys(obj).forEach((key) => {
-    const lowerKey = key.toLowerCase();
-    if (lowerKey !== 'url' && obj[key]) {
-      target[lowerKey] = obj[key];
+    const metaKey = toMetaName(key);
+    if (metaKey !== 'url' && obj[key]) {
+      target[metaKey] = obj[key];
     }
   });
 }
@@ -127,10 +127,10 @@ function filterGlobalMetadata(metaRules, url) {
     if (glob && typeof glob === 'string') {
       if (glob.indexOf('*') >= 0) {
         if (minimatch(url, glob)) {
-          applyLowerCase(metaConfig, rule);
+          applyMetaRule(metaConfig, rule);
         }
       } else if (glob === url) {
-        applyLowerCase(metaConfig, rule);
+        applyMetaRule(metaConfig, rule);
       }
     }
   });
@@ -263,7 +263,8 @@ async function extractMetaData(context, action) {
   if (Object.keys(metaConfig).length > 0) {
     // add rest to meta.custom
     meta.custom = Object.keys(metaConfig).map((name) => ({
-      name: toMetaName(name),
+      // name: toMetaName(name),
+      name,
       value: metaConfig[name],
       property: name.includes(':'),
     }));
