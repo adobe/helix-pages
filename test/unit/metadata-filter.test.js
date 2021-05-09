@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
+/* eslint-disable no-console */
 /* eslint-env mocha */
 const assert = require('assert');
 const fs = require('fs-extra');
