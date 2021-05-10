@@ -1,4 +1,4 @@
-import { Request,  Response, Fastly, Headers, FastlyPendingUpstreamRequest } from "@fastly/as-compute";
+import { Request, Response, Fastly, Headers, FastlyPendingUpstreamRequest } from "@fastly/as-compute";
 import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
@@ -16,11 +16,11 @@ export class FallbackHandler extends RequestHandler {
   }
 
 
-  setup(req: Request, mount: MountPointMatch, config: GlobalConfig): void {
+  setup(pool: Fastly.FetchPool, req: Request, mount: MountPointMatch, config: GlobalConfig): Fastly.FetchPool {
     let codereq = new Request('https://helix-code-bus.s3.us-east-1.amazonaws.com/' + config.owner + "/" + config.repo + "/" + config.ref + "/404.html", {
-        headers: null,
-        method: 'GET',
-        body: null,
+      headers: null,
+      method: 'GET',
+      body: null,
     });
 
     this.logger.debug("fetching 404 page from " + codereq.url);
@@ -28,17 +28,18 @@ export class FallbackHandler extends RequestHandler {
     const cacheOverride = new Fastly.CacheOverride();
     cacheOverride.setTTL(15);
 
-    const coderesponse = Fastly.fetch(config.sign(codereq), {
+    this.pending = config.sign(codereq);
+
+    pool.push(Fastly.fetch(this.pending as Request, {
       backend: BACKEND_S3,
       cacheOverride,
-    });
+    }));
 
-    this.pending = coderesponse;
+    this.pool = pool;
+    return pool;
   }
 
-  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    const coderesponse = (this.pending as FastlyPendingUpstreamRequest).wait();
-
+  handle(coderesponse: Response, req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     if (coderesponse.ok) {
       const filter = new HeaderFilter()
         .allow('age')

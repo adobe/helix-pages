@@ -14,7 +14,7 @@ export class JSONHandler extends AbstractPathHandler {
   get name(): string {
     return "json";
   }
-  setup(request: Request, mount: MountPointMatch, config: GlobalConfig): void {
+  setup(pool: Fastly.FetchPool, request: Request, mount: MountPointMatch, config: GlobalConfig): Fastly.FetchPool {
     this.contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/live' + mount.relpath, {
         headers: null,
         method: 'GET',
@@ -24,18 +24,21 @@ export class JSONHandler extends AbstractPathHandler {
     this.logger.debug("fetching json from " + (this.contentreq as Request).url);
 
     const cacheOverride = new Fastly.CacheOverride();
-    cacheOverride.setPass();
+    // cacheOverride.setPass();
 
-    this.pending = Fastly.fetch(config.sign(this.contentreq as Request), {
+    this.pending = config.sign(this.contentreq as Request);
+
+    pool.push(Fastly.fetch(this.pending as Request, {
       backend: BACKEND_S3,
       cacheOverride,
-    });
+    }));
+
+    this.pool = pool;
+    return pool;
   }
 
 
-  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    const contentresponse = (this.pending as FastlyPendingUpstreamRequest).wait();
-
+  handle(contentresponse: Response, request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".json")) {
         contentresponse.headers.set('content-type', 'application/json');

@@ -1,5 +1,5 @@
 import { RequestHandler } from "./request-handler";
-import { Request,  Response, URL } from "@fastly/as-compute";
+import { Request,  Response, URL, Fastly } from "@fastly/as-compute";
 import { RegExp } from "assemblyscript-regex"
 import { MountPointMatch } from "../mount-config";
 import { GlobalConfig } from "../global-config";
@@ -19,12 +19,12 @@ export class PathHandler extends RequestHandler {
     return "path:" + this.handler.name;
   }
 
-  setup(req: Request, mount: MountPointMatch, config: GlobalConfig): void {
-    this.handler.setup(req, mount, config);
+  setup(pool: Fastly.FetchPool, req: Request, mount: MountPointMatch, config: GlobalConfig): Fastly.FetchPool {
+    return this.handler.setup(pool, req, mount, config);
   }
 
-  handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    return this.handler.handle(req, mount, config);
+  handle(resp: Response, req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+    return this.handler.handle(resp, req, mount, config);
   }
 
   match(req: Request): boolean {
@@ -36,6 +36,10 @@ export class PathHandler extends RequestHandler {
   withLogger(logger: CoralogixLogger): PathHandler {
     this.handler.withLogger(logger);
     return this;
+  }
+
+  fulfill(all: Fastly.FufilledRequest[]): Response | null {
+    return this.handler.fulfill(all);
   }
 }
 

@@ -3,7 +3,6 @@ import { AbstractPathHandler } from "../framework/path-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_BLOBSTORE } from "../backends";
 import { GlobalConfig } from "../global-config";
-import { Console } from "as-wasi";
 import { HeaderFilter } from "../header-filter";
 
 export class MediaHandler extends AbstractPathHandler {
@@ -11,7 +10,7 @@ export class MediaHandler extends AbstractPathHandler {
     return "media";
   }
 
-  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+  setup(pool: Fastly.FetchPool, request: Request, mount: MountPointMatch, config: GlobalConfig): Fastly.FetchPool {
     const name = mount.relpath.split("media_").pop();
     const hash = name.split(".")[0];
     let sas = "";
@@ -24,7 +23,7 @@ export class MediaHandler extends AbstractPathHandler {
       }
     }
 
-    Console.log("\n handling media for hash " + hash + " with sas " + sas.substr(0, 4));
+    this.logger.info("handling media for hash " + hash + " with sas " + sas.substr(0, 4));
 
     const qs = new URL(request.url).search.replace("?", "&");
 
@@ -39,13 +38,18 @@ export class MediaHandler extends AbstractPathHandler {
     const cacheOverride = new Fastly.CacheOverride();
     cacheOverride.setPass();
 
-    let mediaresponse = Fastly.fetch(mediarequest, {
+    this.pending = mediarequest;
+
+    pool.push(Fastly.fetch(this.pending as Request, {
       backend: 'media.hlx3.one',
       cacheOverride,
-    }).wait();
+    }));
 
-    // todo: cleanup response headers
-    
+    this.pool = pool;
+    return pool;
+  }
+
+  handle(mediaresponse: Response, request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     const filter = new HeaderFilter()
       .allow('age')
       .allow('content-length')
@@ -56,4 +60,6 @@ export class MediaHandler extends AbstractPathHandler {
 
     return filter.filterResponse(mediaresponse);
   }
+
+
 }

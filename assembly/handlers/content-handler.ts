@@ -12,7 +12,7 @@ export class ContentHandler extends AbstractPathHandler {
     return "content";
   }
 
-  setup(request: Request, mount: MountPointMatch, config: GlobalConfig): void {
+  setup(pool: Fastly.FetchPool, request: Request, mount: MountPointMatch, config: GlobalConfig): Fastly.FetchPool {
     this.contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/live' + mount.relpath, {
         headers: null,
         method: 'GET',
@@ -22,20 +22,22 @@ export class ContentHandler extends AbstractPathHandler {
     this.logger.debug("fetching content from " + (this.contentreq as Request).url);
 
     const cacheOverride = new Fastly.CacheOverride();
-    cacheOverride.setPass();
+    // cacheOverride.setPass();
 
-    const contentresponse = Fastly.fetch(config.sign(this.contentreq as Request), {
+    this.pending = config.sign(this.contentreq as Request);
+
+    pool.push(Fastly.fetch(this.pending as Request, {
       backend: BACKEND_S3,
       cacheOverride,
-    });
+    }));
 
     this.logger.debug("stashing content response");
-    this.pending = contentresponse;
+    this.pool = pool;
+    return pool;
   }
 
-  handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
+  handle(contentresponse: Response, request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     this.logger.debug("continuing with stashed content response");
-    const contentresponse = (<FastlyPendingUpstreamRequest>this.pending).wait();
 
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".md")) {

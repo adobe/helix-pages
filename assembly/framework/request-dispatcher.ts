@@ -1,4 +1,4 @@
-import { Request,  Response, URL } from "@fastly/as-compute";
+import { Request,  Response, URL, Fastly } from "@fastly/as-compute";
 import { RequestHandler } from "./request-handler";
 import { PathHandler } from "./path-handler";
 import { GlobalConfig } from "../global-config";
@@ -28,6 +28,10 @@ export class RequestDispatcher {
   }
 
   handle(request: Request): Response {
+    const pool = new Fastly.FetchPool();
+    // we need to store them here, because FetchPool.all() is not persistent
+    const all = new Array<Fastly.FufilledRequest>();
+
     const pathname = new URL(request.url).pathname;
     const match = this.config.fstab.match(pathname);
     this.logger.info("Dispatching request for " + pathname);
@@ -47,7 +51,7 @@ export class RequestDispatcher {
       const handler = this.handlers[i];
       if (handler.match(request)) {
         Console.log("Preparing handler #" + i.toString() + " " + handler.name +"\n");
-        handler.setup(request, match, this.config);
+        handler.setup(pool, request, match, this.config);
       }
     }
 
@@ -57,13 +61,16 @@ export class RequestDispatcher {
       const handler = this.handlers[i];
       if (handler.match(request)) {
         Console.log("Matched handler #" + i.toString() + " " + handler.name +"\n");
-        const res = handler.handle(request, match, this.config);
-        this.logger.info("Handler #" + i.toString() + " got response status " + res.status.toString());
-        if (res.ok) {
-          return res;
+        const resp = handler.fulfill(all);
+        if (resp != null) {
+          const res = handler.handle(resp, request, match, this.config);
+          this.logger.info("Handler #" + i.toString() + " got response status " + res.status.toString());
+          if (res.ok) {
+            return res;
+          }
+          lastres = res;
+          // keep iterating, so that the fallback handler can jump in
         }
-        lastres = res;
-        // keep iterating, so that the fallback handler can jump in
       }
     }
 
