@@ -59,7 +59,9 @@ export class PipelineHandler extends RequestHandler {
     this.logger.debug("fetching pipeline from " + pipelinereq.url);
 
     const cacheOverride = new Fastly.CacheOverride();
-    cacheOverride.setPass();
+    // cacheOverride.setPass();
+    // cacheOverride.setTTL(5);
+    cacheOverride.setSWR(15);
 
     const contentresponse = Fastly.fetch(config.sign(pipelinereq), {
       backend: "helix-pages.anywhere.run",
@@ -90,7 +92,7 @@ export class PipelineHandler extends RequestHandler {
       return filter.filterResponse(contentresponse);
     }
     
-    this.logger.debug(contentresponse.status.toString());
+    this.logger.debug("Pipeline request failed with status " + contentresponse.status.toString());
 
     return new Response(String.UTF8.encode('Not implemented yet.'), {
       url: null,
