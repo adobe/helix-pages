@@ -9,45 +9,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const { getAbsoluteUrl, wrapContent } = require('./utils.js');
-
-/**
- * Looks for a default meta image (JPG) in the GitHub repository
- * and defaults to PNG version.
- * @param context The current context of processing pipeline
- * @param action The action
- * @return The path to the default meta image
- */
-async function getDefaultMetaImage(action) {
-  if (action) {
-    const { request, downloader } = action;
-    const {
-      owner, repo, ref,
-    } = request.params || {};
-    const path = '/default-meta-image.jpg';
-    const res = await downloader.fetchGithub({
-      owner,
-      repo,
-      ref,
-      path,
-      errorOn404: false,
-    });
-    if (res.status === 200) {
-      return path;
-    }
-  }
-  return '/default-meta-image.png';
-}
+const fixSections = require('./fix-sections.js');
+const createPageBlocks = require('./create-page-blocks.js');
+const createPictures = require('./create-pictures.js');
+const extractMetaData = require('./extract-metadata.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
- * @param context The current context of processing pipeline
- * @param context.content The content
+ * @param {object} context The current context of processing pipeline
+ * @param {object} action The action
  */
 async function pre(context, action) {
-  const { request, content } = context;
+  const { content } = context;
   const { document } = content;
-  const $sections = document.querySelectorAll('body > div');
 
   // Expose the html & body attributes so they can be used in the HTL
   [document.documentElement, document.body].forEach((el) => {
@@ -56,42 +30,13 @@ async function pre(context, action) {
       return map;
     }, {});
   });
-
-  // if there are no sections wrap everything in a div
-  // with appropriate class names from meta
-  if ($sections.length === 0) {
-    const div = document.createElement('div');
-    if (context.content.meta && context.content.meta.class) {
-      context.content.meta.class.split(/[ ,]/)
-        .map((c) => c.trim())
-        .filter((c) => !!c)
-        .forEach((c) => {
-          div.classList.add(c);
-        });
-    }
-    wrapContent(div, document.body);
-  }
-
   // ensure content.data is present
   content.data = content.data || {};
 
-  // extract metadata
-  const { meta = {} } = content;
-  // description: text from paragraphs with 10 or more words
-  let desc = [];
-  document.querySelectorAll('div > p').forEach((p) => {
-    if (desc.length === 0) {
-      const text = p.textContent.trim();
-      const words = text.split(/\s+/);
-      if (words.length >= 10 || words.some((w) => w.length > 25 && !w.startsWith('http'))) {
-        desc = desc.concat(words);
-      }
-    }
-  });
-  meta.description = `${desc.slice(0, 25).join(' ')}${desc.length > 25 ? ' ...' : ''}`;
-  meta.url = getAbsoluteUrl(request.headers, request.url);
-  meta.imageUrl = `${content.image || await getDefaultMetaImage(action)}?auto=webp&format=pjpg&optimize=medium&width=1200`;
-  meta.imageUrl = getAbsoluteUrl(request.headers, meta.imageUrl);
+  fixSections(context);
+  createPageBlocks(context);
+  createPictures(context);
+  await extractMetaData(context, action);
 }
 
 module.exports.pre = pre;
