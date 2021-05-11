@@ -15,17 +15,26 @@ const { toClassName } = require('./utils.js');
  * Creates a "DIV representation" of a table.
  * @param {Document} document
  * @param {HTMLTableElement} $table the table element
- * @param {string[]} cols the column names
  * @returns {HTMLDivElement} the resulting div
  */
-function tableToDivs(document, $table, cols) {
-  const $rows = $table.querySelectorAll('tbody tr');
+function tableToDivs(document, $table) {
   const $cards = document.createElement('div');
+  const $rows = $table.querySelectorAll('table tr');
+  if ($rows.length === 0) {
+    return $cards;
+  }
+
+  // get columns names
+  const cols = Array.from($rows[0].children).map((e) => toClassName(e.textContent));
   const clazz = cols.filter((c) => !!c).join('-');
   if (clazz) {
     $cards.classList.add(clazz);
   }
-  $rows.forEach(($tr) => {
+  $rows.forEach(($tr, idx) => {
+    if (idx === 0) {
+      // skip header
+      return;
+    }
     const $card = document.createElement('div');
     $tr.querySelectorAll('td').forEach(($td) => {
       const $div = document.createElement('div');
@@ -45,9 +54,7 @@ function tableToDivs(document, $table, cols) {
 function createPageBlocks({ content }) {
   const { document } = content;
   document.querySelectorAll('body div > table').forEach(($table) => {
-    const $cols = $table.querySelectorAll('thead tr th');
-    const cols = Array.from($cols).map((e) => toClassName(e.textContent));
-    const $div = tableToDivs(document, $table, cols);
+    const $div = tableToDivs(document, $table);
     $table.parentNode.replaceChild($div, $table);
   });
 }
