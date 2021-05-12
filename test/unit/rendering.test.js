@@ -205,6 +205,10 @@ describe('Rendering', () => {
     it('renders document html tables', async () => {
       await testRender('page-block-with-html-table');
     });
+
+    it('renders document tables in tables', async () => {
+      await testRender('page-block-table-in-table');
+    });
   });
 
   describe('Metadata', () => {

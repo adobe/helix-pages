@@ -19,30 +19,47 @@ const { toClassName } = require('./utils.js');
  */
 function tableToDivs(document, $table) {
   const $cards = document.createElement('div');
-  const $rows = $table.querySelectorAll('table tr');
+
+  // iterate over the table to avoid problem with query selector and nested tables
+  const $rows = [];
+  if ($table.tHead) {
+    $rows.push(...$table.tHead.rows);
+  }
+  for (const $tbody of $table.tBodies) {
+    $rows.push(...$tbody.rows);
+  }
   if ($rows.length === 0) {
     return $cards;
   }
+  const $headerRow = $rows.shift();
+
+  // special case, only 1 row and 1 column with a nested table
+  if ($rows.length === 0 && $headerRow.cells.length === 1) {
+    const $nestedTable = $headerRow.cells[0].querySelector(':scope table');
+    if ($nestedTable) {
+      return $nestedTable;
+    }
+  }
 
   // get columns names
-  const cols = Array.from($rows[0].children).map((e) => toClassName(e.textContent));
-  const clazz = cols.filter((c) => !!c).join('-');
+  const clazz = Array.from($headerRow.cells)
+    .map((e) => toClassName(e.textContent))
+    .filter((c) => !!c)
+    .join('-');
   if (clazz) {
     $cards.classList.add(clazz);
   }
-  $rows.forEach(($tr, idx) => {
-    if (idx === 0) {
-      // skip header
-      return;
-    }
+
+  // construct page block
+  for (const $row of $rows) {
     const $card = document.createElement('div');
-    $tr.querySelectorAll('td').forEach(($td) => {
+    for (const $cell of $row.cells) {
       const $div = document.createElement('div');
-      $div.append(...$td.childNodes);
+      $div.append(...$cell.childNodes);
       $card.append($div);
-    });
+    }
     $cards.append($card);
-  });
+  }
   return $cards;
 }
 
@@ -53,7 +70,7 @@ function tableToDivs(document, $table) {
  */
 function createPageBlocks({ content }) {
   const { document } = content;
-  document.querySelectorAll('body div > table').forEach(($table) => {
+  document.querySelectorAll('body > div > table').forEach(($table) => {
     const $div = tableToDivs(document, $table);
     $table.parentNode.replaceChild($div, $table);
   });
