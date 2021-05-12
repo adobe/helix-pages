@@ -120,9 +120,10 @@ function applyMetaRule(target, obj) {
 }
 
 function globToRegExp(glob) {
-  let reString = glob.replace(/\*\*/g, '_');
-  reString = reString.replace(/\*/g, '[0-9a-z-]*');
-  reString = reString.replace(/_/g, '.*');
+  const reString = glob
+    .replace(/\*\*/g, '_')
+    .replace(/\*/g, '[0-9a-z-]*')
+    .replace(/_/g, '.*');
   return new RegExp(`^${reString}`);
 }
 
