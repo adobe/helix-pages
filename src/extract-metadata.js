@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const minimatch = require('minimatch');
 const { resolve } = require('url');
 const { getAbsoluteUrl, optimizeImageURL } = require('./utils.js');
 
@@ -120,13 +119,21 @@ function applyMetaRule(target, obj) {
   });
 }
 
+function globToRegExp(glob) {
+  const reString = glob
+    .replace(/\*\*/g, '_')
+    .replace(/\*/g, '[0-9a-z-]*')
+    .replace(/_/g, '.*');
+  return new RegExp(`^${reString}`);
+}
+
 function filterGlobalMetadata(metaRules, url) {
   const metaConfig = {};
   metaRules.forEach((rule) => {
     const glob = rule.url || rule.URL || rule.Url;
-    if (glob && typeof glob === 'string') {
+    if (glob && typeof glob === 'string' && /[0-9a-z-/*]/.test(glob)) {
       if (glob.indexOf('*') >= 0) {
-        if (minimatch(url, glob)) {
+        if (globToRegExp(glob).test(url)) {
           applyMetaRule(metaConfig, rule);
         }
       } else if (glob === url) {

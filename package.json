@@ -47,7 +47,6 @@
     "@adobe/helix-universal": "1.5.0",
     "@adobe/helix-universal-logger": "1.0.3",
     "@adobe/htlengine": "6.3.7",
-    "minimatch": "3.0.4",
     "xml-escape": "1.1.0",
     "yaml": "1.10.2"
   },
