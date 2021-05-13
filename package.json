@@ -18,7 +18,7 @@
   },
   "wsk": {
     "name": "/pages_${version}/${scriptName}",
-    "memory": 512,
+    "memory": 1024,
     "test": "/_status_check/healthcheck.json",
     "format": {
       "aws": "/pages_${version}/${scriptName}"

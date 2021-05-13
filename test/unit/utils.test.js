@@ -15,7 +15,7 @@ const { JSDOM } = require('jsdom');
 const { Headers } = require('@adobe/helix-fetch');
 
 const {
-  wrapContent, optimizeImageURL, getAbsoluteUrl, getOriginalHost,
+  wrapContent, optimizeImageURL, getAbsoluteUrl, getOriginalHost, toClassName,
 } = require('../../src/utils.js');
 
 describe('Testing wrapNodes', () => {
@@ -137,5 +137,11 @@ describe('Get Original Host', () => {
       'hlx-forwarded-host': 'spark.adobe.com, cdn1.hlx.page',
     });
     assert.equal(getOriginalHost(headers), 'spark.adobe.com');
+  });
+});
+
+describe('toClassName', () => {
+  it('converts text to class name', () => {
+    assert.equal(toClassName('  This, is a \n cool FEATURE. #99! '), 'this--is-a---cool-feature---99-');
   });
 });

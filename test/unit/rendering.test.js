@@ -201,11 +201,23 @@ describe('Rendering', () => {
     it('renders document with some empty header', async () => {
       await testRender('page-block-empty-cols');
     });
+
+    it('renders document html tables', async () => {
+      await testRender('page-block-with-html-table');
+    });
+
+    it('renders document tables in tables', async () => {
+      await testRender('page-block-table-in-table');
+    });
   });
 
   describe('Metadata', () => {
     it('renders meta tags from metadata block', async () => {
       await testRender('page-metadata-block', 'head');
+    });
+
+    it('renders meta tags from metadata html block', async () => {
+      await testRender('page-metadata-block-html', 'head');
     });
 
     it('renders multi value meta tags from metadata block', async () => {
