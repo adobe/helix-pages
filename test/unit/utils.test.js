@@ -142,6 +142,6 @@ describe('Get Original Host', () => {
 
 describe('toClassName', () => {
   it('converts text to class name', () => {
-    assert.equal(toClassName('  This, is a \n cool FEATURE. #99! '), 'this-is-a-cool-feature-99');
+    assert.equal(toClassName('  This, is a \n cool FEATURE. #99! '), 'this--is-a---cool-feature---99-');
   });
 });

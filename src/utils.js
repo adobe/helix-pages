@@ -65,10 +65,9 @@ function wrapContent($parent, $node) {
  */
 function toClassName(text) {
   return text
+    .trim()
     .toLowerCase()
-    .replace(/[^0-9a-z]+/gi, '-')
-    .replace(/^-+/g, '')
-    .replace(/-+$/g, '');
+    .replace(/[^0-9a-z]/gi, '-');
 }
 
 /**
