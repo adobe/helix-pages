@@ -18,7 +18,7 @@
   },
   "wsk": {
     "name": "/pages_${version}/${scriptName}",
-    "memory": 512,
+    "memory": 1024,
     "test": "/_status_check/healthcheck.json",
     "format": {
       "aws": "/pages_${version}/${scriptName}"
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
-    "@adobe/helix-deploy": "4.5.0",
+    "@adobe/helix-deploy": "4.5.1",
     "@adobe/helix-fetch": "2.2.0",
     "@adobe/helix-pipeline": "14.0.2",
     "@adobe/helix-shared-wrap": "1.0.0",

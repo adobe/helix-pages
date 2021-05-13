@@ -15,25 +15,51 @@ const { toClassName } = require('./utils.js');
  * Creates a "DIV representation" of a table.
  * @param {Document} document
  * @param {HTMLTableElement} $table the table element
- * @param {string[]} cols the column names
  * @returns {HTMLDivElement} the resulting div
  */
-function tableToDivs(document, $table, cols) {
-  const $rows = $table.querySelectorAll('tbody tr');
+function tableToDivs(document, $table) {
   const $cards = document.createElement('div');
-  const clazz = cols.filter((c) => !!c).join('-');
+
+  // iterate over the table to avoid problem with query selector and nested tables
+  const $rows = [];
+  if ($table.tHead) {
+    $rows.push(...$table.tHead.rows);
+  }
+  for (const $tbody of $table.tBodies) {
+    $rows.push(...$tbody.rows);
+  }
+  if ($rows.length === 0) {
+    return $cards;
+  }
+  const $headerRow = $rows.shift();
+
+  // special case, only 1 row and 1 column with a nested table
+  if ($rows.length === 0 && $headerRow.cells.length === 1) {
+    const $nestedTable = $headerRow.cells[0].querySelector(':scope table');
+    if ($nestedTable) {
+      return $nestedTable;
+    }
+  }
+
+  // get columns names
+  const clazz = Array.from($headerRow.cells)
+    .map((e) => toClassName(e.textContent))
+    .filter((c) => !!c)
+    .join('-');
   if (clazz) {
     $cards.classList.add(clazz);
   }
-  $rows.forEach(($tr) => {
+
+  // construct page block
+  for (const $row of $rows) {
     const $card = document.createElement('div');
-    $tr.querySelectorAll('td').forEach(($td) => {
+    for (const $cell of $row.cells) {
       const $div = document.createElement('div');
-      $div.append(...$td.childNodes);
+      $div.append(...$cell.childNodes);
       $card.append($div);
-    });
+    }
     $cards.append($card);
-  });
+  }
   return $cards;
 }
 
@@ -44,10 +70,8 @@ function tableToDivs(document, $table, cols) {
  */
 function createPageBlocks({ content }) {
   const { document } = content;
-  document.querySelectorAll('body div > table').forEach(($table) => {
-    const $cols = $table.querySelectorAll('thead tr th');
-    const cols = Array.from($cols).map((e) => toClassName(e.textContent));
-    const $div = tableToDivs(document, $table, cols);
+  document.querySelectorAll('body > div > table').forEach(($table) => {
+    const $div = tableToDivs(document, $table);
     $table.parentNode.replaceChild($div, $table);
   });
 }
