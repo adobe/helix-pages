@@ -105,7 +105,7 @@ label.small {
       repo,
       ref,
     };
-    if (byocdn) {
+    if (byocdn || /^www.*\.adobe\.com$/.test(host)) { // treat www*.adobe.com as byoCDN
       config.byocdn = true;
     }
 
@@ -135,7 +135,7 @@ label.small {
     params.forEach((v,k) => {
       const field = document.getElementById(k);
       if (!field) return;
-      field.type === 'checkbox' ? field.checked = true : field.value = v;
+      field.type === 'checkbox' ? field.checked = (v === 'true') : field.value = v;
       autorun = true;
     });
     if (params.has('from')) {

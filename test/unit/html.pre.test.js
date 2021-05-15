@@ -20,7 +20,7 @@ const request = {
     host: 'foo.bar',
     'hlx-forwarded-host': 'www.foo.bar, foo-baz.hlx.page',
   },
-  url: '/baz.html',
+  url: '/foo/bar/baz.html',
 };
 const action = {
   request: {
@@ -148,7 +148,186 @@ describe('Testing pre.js', () => {
     assert.ok(div.classList.contains('customcssclass'));
   });
 
-  it('Meta description is extracted from first <p> with 10 or more words.', () => {
+  it('Image tags get transformed to picture tags', () => {
+    const dom = new JSDOM('<html><head><title>Foo</title></head><body><div><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png"></div></body></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+      },
+      request,
+    };
+    pre(context, action);
+    const { documentElement: doc } = context.content.document;
+    assert.ok(doc.querySelector('picture'), 'Picture tag missing');
+    assert.strictEqual(
+      doc.querySelector('picture').innerHTML,
+      '<source media="(max-width: 400px)" srcset="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=750&amp;format=webply&amp;optimize=medium"><img src="./media_dd76df9c9b121fec5f1b6bc39481247a1f756139.png?width=2000&amp;format=webply&amp;optimize=medium" loading="eager">',
+      'Image tag not transformed correctly',
+    );
+  });
+
+  it('Meta data is extracted from content', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Title</div><div>Foo Bar</div>
+      </div>
+      <div>
+        <div>Description</div><div>Lorem ipsum dolor sit amet</div>
+      </div>
+      <div>
+        <div>Keywords</div><div>Foo, Bar, Baz</div>
+      </div>
+      <div>
+        <div>Image</div><div>https://foo.bar/baz.jpg</div>
+      </div>
+    </div>
+    <div>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.title, 'Foo Bar');
+    assert.strictEqual(context.content.meta.description, 'Lorem ipsum dolor sit amet');
+    assert.deepStrictEqual(context.content.meta.keywords, 'Foo, Bar, Baz');
+    assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
+  it('Meta keywords and tags can be comma- and/or line-separated', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Keywords</div>
+        <div>Foo, ,,Bar, Baz   One   Two   Three</div>
+      </div>
+      <div>
+        <div>Tags</div>
+        <div>Foo, Bar, Baz   One      Two   Three</div>
+      </div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.keywords, 'Foo, Bar, Baz, One, Two, Three');
+    assert.deepStrictEqual(context.content.meta.tags, ['Foo', 'Bar', 'Baz', 'One', 'Two', 'Three']);
+  });
+
+  it('Custom meta data is preserved', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Foo</div>
+        <div>Bar</div>
+      </div>
+      <div>
+        <div>og:locale</div>
+        <div>en_UK</div>
+      </div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.deepStrictEqual(context.content.meta.custom, [
+      { name: 'foo', value: 'Bar', property: false },
+      { name: 'og:locale', value: 'en_UK', property: true },
+    ]);
+  });
+
+  it('Meta title is extracted from block', () => {
+    const dom = new JSDOM(`
+    <div class="foo">
+      <div>
+        <div><h1>This is the title</h1></div>
+      </div>
+    </div>
+    <div>This is not the title</div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        title: 'This is not the title',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.title, 'This is the title');
+  });
+
+  it('Meta image is extracted from link', () => {
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div><div>Image</div><div><a href="https://foo.bar/baz.jpg"></a></div></div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: 'https://foo.bar/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.image, 'https://foo.bar/baz.jpg');
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
+  it('Meta image is extracted from image tag and optimized', () => {
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=1200&format=pjpg&optimize=medium';
+    const dom = new JSDOM(`
+    <div class="metadata">
+      <div>
+        <div>Image</div>
+        <div>
+          <picture>
+            <source media="(max-width: 400px)" srcset="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=750&amp;format=webply&amp;optimize=medium">
+            <img src="./media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=2000&amp;format=webply&amp;optimize=medium" alt="" loading="eager">
+          </picture>
+        </div>
+      </div>
+    </div>
+    `);
+    const context = {
+      content: {
+        document: dom.window.document,
+        image: 'https://foo.bar/baz.jpg',
+        meta: {},
+      },
+      request,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.image, expectedUrl);
+    assert.ok(!context.content.document.querySelector('.metadata'), 'Metadata block not removed');
+  });
+
+  it('Meta description is extracted from first <p> with 10 or more words', () => {
     const lt24Words = 'Lorem ipsum dolor.';
     const lt10Words = 'Lorem ipsum dolor sit amet.';
     const gt10Words = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
@@ -317,7 +496,7 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.url, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${request.url}`);
+    assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz.html');
   });
 
   it('Meta url uses host header if no hlx-forwarded-host available', () => {
@@ -338,10 +517,32 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.url, `https://${req.headers.host}${req.url}`);
+    assert.strictEqual(context.content.meta.url, 'https://foo.bar/foo/bar/baz.html');
   });
 
-  it('Meta imageUrl uses content.image', () => {
+  it('Meta url does not enforce html extension', () => {
+    const noExtRequest = {
+      ...request,
+      url: '/foo/bar/baz',
+      headers: {
+        ...request.headers,
+        'x-old-url': '/foo/bar/baz',
+      },
+    };
+    const dom = new JSDOM('<html></html>');
+    const context = {
+      content: {
+        document: dom.window.document,
+        meta: {},
+      },
+      request: noExtRequest,
+    };
+    pre(context, action);
+
+    assert.strictEqual(context.content.meta.url, 'https://www.foo.bar/foo/bar/baz');
+  });
+
+  it('Meta image uses absolute content.image', () => {
     const dom = new JSDOM('<html></html');
     const context = {
       content: {
@@ -353,25 +554,26 @@ describe('Testing pre.js', () => {
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, context.content.image);
   });
 
-  it('Meta imageUrl uses content.image as absolute URL', () => {
+  it('Meta image uses and optimizes relative content.image as absolute URL', () => {
+    const expectedUrl = 'https://www.foo.bar/foo/bar/media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg?width=1200&format=pjpg&optimize=medium';
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
         document: dom.window.document,
-        image: '/baz.jpg',
+        image: './media_d6675ca179a0837756ceebe7f93aba2f14dabde.jpeg',
         meta: {},
       },
       request,
     };
     pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}${context.content.image}?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, expectedUrl);
   });
 
-  it('Meta imageUrl uses JPG from repo if no content.image available', async () => {
+  it('Meta image uses JPG from repo if no content.image available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -382,10 +584,10 @@ describe('Testing pre.js', () => {
     };
     await pre(context, action);
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.jpg?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.jpg?width=1200&format=pjpg&optimize=medium');
   });
 
-  it('Meta imageUrl uses default meta image if neither content.image nor JPG from repo available', async () => {
+  it('Meta image uses default meta image if neither content.image nor JPG from repo available', async () => {
     const dom = new JSDOM('<html></html>');
     const context = {
       content: {
@@ -401,7 +603,7 @@ describe('Testing pre.js', () => {
       },
     });
 
-    assert.strictEqual(context.content.meta.imageUrl, `https://${request.headers['hlx-forwarded-host'].split(',')[0].trim()}/default-meta-image.png?auto=webp&format=pjpg&optimize=medium&width=1200`);
+    assert.strictEqual(context.content.meta.image, 'https://www.foo.bar/default-meta-image.png?width=1200&format=pjpg&optimize=medium');
   });
 
   it('Exposes body attributes as a map to be consumed in the HTL', () => {

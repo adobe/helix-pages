@@ -22,10 +22,11 @@ function createFetchContext() {
   return fetchAPI.context({});
 }
 const fetchContext = createFetchContext();
-const { fetch, Response } = fetchContext;
+const { fetch } = fetchContext;
 
-const { logger } = require('@adobe/openwhisk-action-logger');
-const { wrap } = require('@adobe/openwhisk-action-utils');
+const { Response } = require('@adobe/helix-universal');
+const { logger } = require('@adobe/helix-universal-logger');
+const wrap = require('@adobe/helix-shared-wrap');
 const { getOriginalHost } = require('../src/utils');
 
 /**

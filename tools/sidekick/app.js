@@ -289,6 +289,7 @@
     shareUrl.search = new URLSearchParams([
       ['project', config.project || ''],
       ['host', config.host || ''],
+      ['byocdn', !!config.byocdn],
       ['giturl', `https://github.com/${config.owner}/${config.repo}${config.ref ? `/tree/${config.ref}` : ''}`],
     ]).toString();
     return shareUrl.toString();
@@ -321,11 +322,21 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkForUpdates(sk) {
+    // check for wrong byocdn config
+    // https://github.com/adobe/helix-pages/issues/885
+    if (sk.config.byocdn && sk.config.host
+      && sk.config.host.endsWith('.adobe.com')
+      && !sk.config.host.startsWith('www.')) {
+      sk.config.byocdn = false;
+      sk.updateRequired = true;
+    }
     const indicators = [
       // legacy config
       typeof window.hlxSidekickConfig === 'object',
       // legacy script host
       !sk.config.scriptUrl || new URL(sk.config.scriptUrl).host === 'www.hlx.page',
+      // update flag
+      sk.updateRequired,
     ];
     if (indicators.includes(true)) {
       window.setTimeout(() => {
