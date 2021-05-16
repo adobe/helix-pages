@@ -39,6 +39,7 @@
    * a shorthand for {@link elemConfig}.
    * @prop {string}   text   The button text
    * @prop {Function} action The click listener
+   * @prop {boolean|Function} isPressed Determines whether the button is pressed
    */
 
   /**
@@ -134,7 +135,7 @@
       innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
-    const outerHost = ghDetails ? `${ghDetails}.hlx.live` : null;
+    const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
     return {
       ...cfg,
       ref,
@@ -545,7 +546,7 @@
           if (config.host) {
             sk.showModal('Please wait …', true);
             // fetch and redirect to production
-            const prodURL = `https://${config.host}${path}`;
+            const prodURL = `https://${config.byocdn ? config.outerHost : config.host}${path}`;
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
@@ -679,7 +680,8 @@
      */
     add(plugin) {
       if (typeof plugin === 'object') {
-        plugin.enabled = typeof plugin.condition === 'function' && plugin.condition(this);
+        plugin.enabled = typeof plugin.condition === 'undefined'
+          || (typeof plugin.condition === 'function' && plugin.condition(this));
         // find existing plugin
         let $plugin = this.get(plugin.id);
         let $pluginContainer = this.root;
@@ -745,8 +747,8 @@
             $button = appendTag($plugin, buttonCfg);
           }
           // check if button is pressed
-          if (typeof plugin.button.isPressed === 'boolean' || (typeof plugin.button.isPressed === 'function'
-            && plugin.button.isPressed(this))) {
+          if ((typeof plugin.button.isPressed === 'boolean' && !!plugin.button.isPressed)
+            || (typeof plugin.button.isPressed === 'function' && plugin.button.isPressed(this))) {
             $button.classList.add('pressed');
           }
         }
