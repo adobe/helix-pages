@@ -22,10 +22,12 @@ describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
-    () => Array.from(document.querySelectorAll('.hlx-sk > div:not(.env)'))
+    () => Array.from(document.querySelectorAll('.hlx-sk > div.env > div, .hlx-sk > div:not(.env)'))
       .map((plugin) => ({
         id: plugin.className,
         text: plugin.textContent,
+        buttonPressed: plugin.querySelector(':scope > button')
+          && plugin.querySelector(':scope > button').classList.contains('pressed'),
       })),
   );
 
@@ -203,15 +205,19 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       window.hlx.sidekick.add({
-        id: 'foo',
+        id: 'edit',
         override: true,
         button: {
-          text: 'ReplaceFoo',
+          text: 'Replaced',
         },
       });
     });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ReplaceFoo'), 'Did not replace plugin');
+    const replacedPlugin = plugins.find((p) => p.id === 'edit' && p.text === 'Replaced');
+    const originalPluginIndex = plugins.findIndex((p) => p.id === 'edit');
+    const replacedPluginIndex = plugins.findIndex((p) => p.text === 'Replaced');
+    assert.ok(replacedPlugin, 'Did not replace plugin');
+    assert.strictEqual(replacedPluginIndex, originalPluginIndex, 'Replaced plugin did not retain original position');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Extends plugin', async () => {
@@ -222,11 +228,14 @@ describe('Test sidekick bookmarklet', () => {
         id: 'foo',
         button: {
           text: 'ExtendFoo',
+          isPressed: true,
         },
       });
     });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ExtendFoo'), 'Did not extend plugin');
+    const extendedPlugin = plugins.find((p) => p.id === 'foo' && p.text === 'ExtendFoo');
+    assert.ok(extendedPlugin, 'Did not extend plugin');
+    assert.ok(extendedPlugin.buttonPressed, 'Extended plugin button not pressed');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Removes plugin', async () => {
@@ -692,10 +701,18 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Outer CDN is correctly detected', async () => {
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await page.goto(`${fixturesPrefix}/is-live.html`, { waitUntil: 'load' });
     assert.ok(
       await page.evaluate(() => window.hlx.sidekick.isOuter() && window.hlx.sidekick.isHelix()),
       'Did not detect outer CDN URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Production is correctly detected', async () => {
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isProd() && window.hlx.sidekick.isHelix()),
+      'Did not detect production URL',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
