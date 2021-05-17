@@ -355,13 +355,22 @@
   }
 
   /**
+   * Determines whether to open a new tab or reuse the existing window.
+   * @param {Event} evt The event
+   * @returns {@code true} if a new tab should be opened, else {@code false}
+   */
+  function newTab(evt) {
+    return evt.metaKey || evt.shiftKey || evt.which === 2;
+  }
+
+  /**
    * Switches to or opens a given environment.
    * @param {Sidekick} sidekick The sidekick
    * @param {string} targetEnv One of the following environments:
    *        {@code edit}, {@code preview}, {@code live} or {@code production}
-   * @param {boolean} newWindow=false {@code true} if environment should be opened in new window
+   * @param {boolean} open=false {@code true} if environment should be opened in new tab
    */
-  async function gotoEnv(sidekick, targetEnv, newWindow) {
+  async function gotoEnv(sidekick, targetEnv, open) {
     const { config, location } = sidekick;
     const hostType = ENVS[targetEnv];
     if (!hostType) {
@@ -410,7 +419,7 @@
     if (!url) {
       return;
     }
-    if (newWindow) {
+    if (open) {
       window.open(url);
     } else {
       window.location.href = url;
@@ -433,7 +442,7 @@
           if (evt.target.classList.contains('pressed')) {
             return;
           }
-          await gotoEnv(sk, 'edit', evt.metaKey || evt.which === 2);
+          await gotoEnv(sk, 'edit', newTab(evt));
         },
         isPressed: (sidekick) => sidekick.isEditor(),
       },
@@ -448,7 +457,7 @@
           if (evt.target.classList.contains('pressed')) {
             return;
           }
-          await gotoEnv(sk, 'preview', evt.metaKey || evt.which === 2);
+          await gotoEnv(sk, 'preview', newTab(evt));
         },
         isPressed: (sidekick) => sidekick.isInner(),
       },
@@ -464,7 +473,7 @@
           if (evt.target.classList.contains('pressed')) {
             return;
           }
-          await gotoEnv(sk, 'live', evt.metaKey || evt.which === 2);
+          await gotoEnv(sk, 'live', newTab(evt));
         },
         isPressed: (sidekick) => sidekick.isOuter(),
       },
@@ -481,7 +490,7 @@
           if (evt.target.classList.contains('pressed')) {
             return;
           }
-          await gotoEnv(sk, 'prod', evt.metaKey || evt.which === 2);
+          await gotoEnv(sk, 'prod', newTab(evt));
         },
         isPressed: (sidekick) => sidekick.isProd(),
       },
@@ -504,7 +513,7 @@
           sk.showModal('Please wait …', true);
           const resp = await sk.publish(path, true);
           if (resp && resp.ok) {
-            if (evt.metaKey || evt.which === 2) {
+            if (newTab(evt)) {
               window.open(window.location.href);
               sk.hideModal();
             } else {
@@ -550,7 +559,7 @@
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
-            if (evt.metaKey || evt.which === 2) {
+            if (newTab(evt)) {
               window.open(prodURL);
               sk.hideModal();
             } else {
