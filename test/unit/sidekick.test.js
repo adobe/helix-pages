@@ -356,7 +356,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://master--pages--adobe.hlx.page/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk',
+              'https://admin.hlx3.page/adobe/pages/master/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -394,7 +394,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://master--theblog--adobe.hlx.page/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -460,7 +460,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://theblog--adobe.hlx.page/en/topics/bla.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
               'Editor lookup URL not opened',
             );
             resolve();
@@ -486,7 +486,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://blog.adobe.com/en/topics/bla.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
               'Editor lookup URL not opened',
             );
             resolve();

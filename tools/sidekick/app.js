@@ -372,11 +372,12 @@
    */
   async function gotoEnv(sidekick, targetEnv, open) {
     const { config, location } = sidekick;
+    const { owner, repo, ref } = config;
     const hostType = ENVS[targetEnv];
     if (!hostType) {
       return;
     }
-    let url;
+    let url = `https://admin.hlx3.page/${owner}/${repo}/${ref}`;
     if (targetEnv === 'edit') {
       // resolve editor url
       const path = location.pathname;
@@ -387,28 +388,25 @@
       } else if (!file.includes('.')) {
         editPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
       }
-      url = new URL(editPath, location.href).href;
+      url += new URL(editPath, location.href).pathname;
     } else if (sidekick.isEditor()) {
       // resolve target env from editor url
-      const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
-      const lookupUrl = `https://${config.innerHost}${previewPath}`;
-      if (targetEnv === 'preview') {
-        // use lookup url directly
-        url = lookupUrl;
-      }
-      // fetch report, extract url and patch host
-      try {
-        const resp = await fetch(`${lookupUrl}?hlx_report=true`);
-        if (resp.ok) {
-          const { webUrl } = await resp.json();
-          if (webUrl) {
-            const u = new URL(webUrl);
-            u.hostname = config[hostType];
-            url = u.toString();
+      url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+      if (targetEnv !== 'preview') {
+        // fetch report, extract url and patch host
+        try {
+          const resp = await fetch(`${url}?hlx_report=true`);
+          if (resp.ok) {
+            const { webUrl } = await resp.json();
+            if (webUrl) {
+              const u = new URL(webUrl);
+              u.hostname = config[hostType];
+              url = u.toString();
+            }
           }
+        } catch (e) {
+          // something went wrong
         }
-      } catch (e) {
-        // something went wrong
       }
     } else {
       // resolve target env from any env
