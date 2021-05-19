@@ -1,3 +1,24 @@
+# [6.2.0](https://github.com/adobe/helix-pages/compare/v6.1.0...v6.2.0) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-cli to v13.4.34 ([#911](https://github.com/adobe/helix-pages/issues/911)) ([53fa896](https://github.com/adobe/helix-pages/commit/53fa896e843bd2d944375224bcd0aee46427ab1a))
+* **pre:** ensure that embed and plain also run pre ([3f53072](https://github.com/adobe/helix-pages/commit/3f53072bf9d492ffc6e60394e56a285d990ea94a))
+* **seo:** metadata can be duplicated vs overridden ([db4bb01](https://github.com/adobe/helix-pages/commit/db4bb0152f2d7de8e4ec07e69d6c16e37067ef6d))
+* add own strain ([0e51996](https://github.com/adobe/helix-pages/commit/0e519967e01c811db05e5efc4bda17303bae3afb))
+
+
+### Features
+
+* simpler glob matching ([2d948c4](https://github.com/adobe/helix-pages/commit/2d948c4d05a02863ba3e68e40401874e00e81347))
+* simpler glob matching ([1ae0ad9](https://github.com/adobe/helix-pages/commit/1ae0ad9124b32742559eb588ac8ba139bf7c1127))
+* **seo:** do not overwrite empty values ([13468f0](https://github.com/adobe/helix-pages/commit/13468f059156bac7899de3e89d5f4200d926a483))
+* **seo:** metadata from spreadsheet ([2221248](https://github.com/adobe/helix-pages/commit/2221248e8db5084a87c7f01392f3b30cff7f4dee))
+* **seo:** metadata from spreadsheet ([0fa085d](https://github.com/adobe/helix-pages/commit/0fa085d3083a2300ea6849abd856f74679cf4e3a))
+* **seo:** metadata from spreadsheet ([ea76cf3](https://github.com/adobe/helix-pages/commit/ea76cf317b68817a5aaf7729cd2a57507d17dedd))
+* **seo:** metadata from spreadsheet ([978b3e2](https://github.com/adobe/helix-pages/commit/978b3e2bd9d6f85331a6ab90a85804fd5646cd36))
+
 # [6.1.0](https://github.com/adobe/helix-pages/compare/v6.0.1...v6.1.0) (2021-05-13)
 
 
