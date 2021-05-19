@@ -54,13 +54,3 @@ strains:
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages subdomain
     package: https://helix-pages.anywhere.run/pages_6_2_0
-
-  # temporary strain to test the metadata.json loading from sharepoint
-  - name: breaking-800
-    sticky: false
-    condition:
-      preflight.x-pages-version=: breaking-800
-    code: https://github.com/adobe/helix-pages.git#breaking-800
-    content: https://github.com/adobe/helix-pages.git#breaking-800
-    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-800
-    package: https://helix-pages.anywhere.run/pages_6-1-0-breaking-800
