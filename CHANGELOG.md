@@ -1,3 +1,16 @@
+# [6.1.0](https://github.com/adobe/helix-pages/compare/v6.0.1...v6.1.0) (2021-05-13)
+
+
+### Bug Fixes
+
+* **blocks:** add support for package block in tables ([cd839f5](https://github.com/adobe/helix-pages/commit/cd839f5283d184b533f0405d9bae52677fe0f26a))
+* **deps:** update dependency @adobe/helix-deploy to v4.5.1 ([#906](https://github.com/adobe/helix-pages/issues/906)) ([75268f9](https://github.com/adobe/helix-pages/commit/75268f9747a7faba6b723b1c804f1b2bb8f86fb1))
+
+
+### Features
+
+* **tables:** support nested tables ([96b7092](https://github.com/adobe/helix-pages/commit/96b70925812b51cd97cbd276f7482e6f4d927f1d))
+
 ## [6.0.1](https://github.com/adobe/helix-pages/compare/v6.0.0...v6.0.1) (2021-05-08)
 
 
