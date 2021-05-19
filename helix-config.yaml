@@ -15,21 +15,20 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    package: https://helix-pages.anywhere.run/pages_6_0_0
+    package: https://helix-pages.anywhere.run/pages_6_2_0
 
   - name: universal
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    # universal runtime, using the helix test deployment subdomain for now.
-    package: https://helix-pages.anywhere.run/pages_6_0_0
+    package: https://helix-pages.anywhere.run/pages_6_2_0
 
   - name: gcf
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, on google cloud functions.
-    package: https://helix-pages.anywhere.run/pages_6_0_0
+    package: https://helix-pages.anywhere.run/pages_6_2_0
     version-lock:
       env: google
 
@@ -38,7 +37,7 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime (CI), on google cloud functions.
-    package: https://helix-pages-ci.anywhere.run/pages_6_0_0
+    package: https://helix-pages-ci.anywhere.run/pages_6_2_0
     version-lock:
       env: google
 
@@ -47,14 +46,14 @@ strains:
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages-ci subdomain
-    package: https://helix-pages-ci.anywhere.run/pages_6_0_0
+    package: https://helix-pages-ci.anywhere.run/pages_6_2_0
 
   - name: universal-prod
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages subdomain
-    package: https://helix-pages.anywhere.run/pages_6_0_0
+    package: https://helix-pages.anywhere.run/pages_6_2_0
 
   # temporary strain to test the metadata.json loading from sharepoint
   - name: breaking-800
@@ -64,4 +63,4 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-800
     content: https://github.com/adobe/helix-pages.git#breaking-800
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-800
-    package: https://helix-pages.anywhere.run/pages_6-0-1-breaking-800
+    package: https://helix-pages.anywhere.run/pages_6-1-0-breaking-800
