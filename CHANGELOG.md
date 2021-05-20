@@ -1,3 +1,26 @@
+# [7.0.0](https://github.com/adobe/helix-pages/compare/v6.2.0...v7.0.0) (2021-05-20)
+
+
+### Bug Fixes
+
+* **pages:** Revert back to 6.1.0 ([37848b2](https://github.com/adobe/helix-pages/commit/37848b29bc71741e704947a63a2f6fba3ca33bb6))
+* **pages:** Revert Revert. back to 6.2.0 [skip ci] ([7c72356](https://github.com/adobe/helix-pages/commit/7c72356a6c09f1c4dc06de0d06dae20837f1c648))
+
+
+### Features
+
+* **sidekick:** seamless env roundtrips ([6133483](https://github.com/adobe/helix-pages/commit/613348374708374675a9c3beecf21671d8f176dd))
+* **sidekick:** seamless env roundtrips ([98215c0](https://github.com/adobe/helix-pages/commit/98215c02125dc47a1a09cdd11db0ec41e57b373f))
+* **sidekick:** seamless env roundtrips ([91cd642](https://github.com/adobe/helix-pages/commit/91cd6428c68f5bf0efe97e322e78347544e89727))
+* **sidekick:** switch default branch to main in bookmarklet generator ([915e00e](https://github.com/adobe/helix-pages/commit/915e00ebee83bba30d2a4fdbd81c4af253529902))
+* **sidekick:** use hlx3 lookup links ([07e5334](https://github.com/adobe/helix-pages/commit/07e533432b663d5fced6b0636328e2fa8660332c))
+
+
+### BREAKING CHANGES
+
+* **sidekick:** custom overrides or extensions of the prior edit or preview plugins need to be refactored
+* **sidekick:** projects still using master as default need to specify it as part of the gh url, e.g. https://github/owner/repo/tree/master
+
 # [6.2.0](https://github.com/adobe/helix-pages/compare/v6.1.0...v6.2.0) (2021-05-19)
 
 
