@@ -9,16 +9,32 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-const fetchMetadata = require('./fetch-metadata.js');
-const preHTML = require('./html.pre').pre;
+const fixSections = require('./fix-sections.js');
+const createPageBlocks = require('./create-page-blocks.js');
+const createPictures = require('./create-pictures.js');
 
 /**
  * The 'pre' function that is executed before the HTML is rendered
  * @param context The current context of processing pipeline
  * @param context.content The content
  */
-async function pre(context, action) {
-  await preHTML(context, action);
+async function pre(context) {
+  const { content } = context;
+  const { document } = content;
+
+  // Expose the html & body attributes so they can be used in the HTL
+  [document.documentElement, document.body].forEach((el) => {
+    el.attributesMap = [...el.attributes].reduce((map, attr) => {
+      map[attr.name] = attr.value;
+      return map;
+    }, {});
+  });
+  // ensure content.data is present
+  content.data = content.data || {};
+
+  fixSections(context);
+  createPageBlocks(context);
+  createPictures(context);
 
   const [filename, dirname] = context.request.pathInfo.split('/').reverse();
   const [basename] = filename.split('.');
@@ -28,7 +44,4 @@ async function pre(context, action) {
 
 module.exports = {
   pre,
-  before: {
-    content: fetchMetadata,
-  },
 };
