@@ -1,3 +1,10 @@
+## [7.0.1](https://github.com/adobe/helix-pages/compare/v7.0.0...v7.0.1) (2021-05-20)
+
+
+### Bug Fixes
+
+* **metadata:** use real Headers ([67a348c](https://github.com/adobe/helix-pages/commit/67a348c3210545fa25453c135aad66f17e155d11))
+
 # [7.0.0](https://github.com/adobe/helix-pages/compare/v6.2.0...v7.0.0) (2021-05-20)
 
 
