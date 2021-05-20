@@ -42,7 +42,7 @@ async function pre(context, action) {
 
 module.exports = {
   pre,
-  after: {
+  before: {
     content: fetchMetadata,
   },
 };
