@@ -22,7 +22,9 @@ async function fetchMetadata(context, action) {
   } = request.params || {};
   try {
     const headers = {};
-    const token = (secrets && secrets.GITHUB_TOKEN) || (request.headers ? request.headers['x-github-token'] : '');
+    const token = (secrets && secrets.GITHUB_TOKEN)
+      || (request.headers && typeof request.headers.get === "function" ? request.headers.get('x-github-token') : '') 
+      || (request.headers ? request.headers['x-github-token'] : '');
     if (token) {
       headers['x-github-token'] = token;
     }
