@@ -39,6 +39,7 @@
    * a shorthand for {@link elemConfig}.
    * @prop {string}   text   The button text
    * @prop {Function} action The click listener
+   * @prop {boolean|Function} isPressed Determines whether the button is pressed
    */
 
   /**
@@ -85,6 +86,18 @@
    */
 
   /**
+   * Mapping between the plugin IDs that will be treated as environments
+   * and their corresponding host properties in the config.
+   * @private
+   */
+  const ENVS = {
+    edit: 'editor',
+    preview: 'innerHost',
+    live: 'outerHost',
+    prod: 'host',
+  };
+
+  /**
    * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
    * @private
    * @returns {Object} The sidekick configuration
@@ -122,7 +135,7 @@
       innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
-    const outerHost = ghDetails ? `${ghDetails}.hlx.live` : null;
+    const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
     return {
       ...cfg,
       ref,
@@ -178,22 +191,6 @@
       protocol,
       search,
     };
-  }
-
-  /**
-   * Returns the edit URL for a given location.
-   * @private
-   * @param {Location} location The location object
-   */
-  function getEditUrl({ pathname: path, href }) {
-    const file = path.split('/').pop() || 'index'; // use 'index' if no filename
-    let previewPath;
-    if (file.endsWith('.html')) {
-      previewPath = path.replace(/\.html$/, '.lnk');
-    } else if (!file.includes('.')) {
-      previewPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
-    }
-    return new URL(previewPath, href).href;
   }
 
   /**
@@ -273,10 +270,13 @@
    * @private
    * @param {HTMLElement} parent The parent element
    * @param {elemConfig}  config The tag configuration
+   * @param {HTMLElement} before The element to insert before (optional)
    * @returns {HTMLElement} The new tag
    */
-  function appendTag(parent, config) {
-    return makeAccessible(parent.appendChild(createTag(config)));
+  function appendTag(parent, config, before) {
+    return makeAccessible(before
+      ? parent.insertBefore(createTag(config), before)
+      : parent.appendChild(createTag(config)));
   }
 
   /**
@@ -355,54 +355,142 @@
   }
 
   /**
-   * Adds the preview plugin to the sidekick.
-   * @private
-   * @param {Sidekick} sk The sidekick
+   * Determines whether to open a new tab or reuse the existing window.
+   * @param {Event} evt The event
+   * @returns {@code true} if a new tab should be opened, else {@code false}
    */
-  function addPreviewPlugin(sk) {
-    sk.add({
-      id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || sidekick.isOuter(),
-      button: {
-        action: (evt) => {
-          const { config, location } = sk;
-          let url;
-          if (sk.isEditor()) {
-            const previewPath = `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
-            url = `https://${config.ref}--${config.repo}--${config.owner}.hlx.page${previewPath}`;
-          } else {
-            const host = location.host === config.innerHost ? config.host : config.innerHost;
-            url = `https://${host}${location.pathname}`;
-          }
-          if (evt.metaKey || evt.which === 2) {
-            window.open(url);
-          } else {
-            window.location.href = url;
-          }
-        },
-      },
-    });
+  function newTab(evt) {
+    return evt.metaKey || evt.shiftKey || evt.which === 2;
   }
 
   /**
-   * Adds the edit plugin to the sidekick.
+   * Switches to or opens a given environment.
+   * @param {Sidekick} sidekick The sidekick
+   * @param {string} targetEnv One of the following environments:
+   *        {@code edit}, {@code preview}, {@code live} or {@code production}
+   * @param {boolean} open=false {@code true} if environment should be opened in new tab
+   */
+  async function gotoEnv(sidekick, targetEnv, open) {
+    const { config, location } = sidekick;
+    const { owner, repo, ref } = config;
+    const hostType = ENVS[targetEnv];
+    if (!hostType) {
+      return;
+    }
+    let url = `https://admin.hlx3.page/${owner}/${repo}/${ref}`;
+    if (targetEnv === 'edit') {
+      // resolve editor url
+      const path = location.pathname;
+      const file = path.split('/').pop() || 'index'; // use 'index' if no filename
+      let editPath;
+      if (file.endsWith('.html')) {
+        editPath = path.replace(/\.html$/, '.lnk');
+      } else if (!file.includes('.')) {
+        editPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
+      }
+      url += new URL(editPath, location.href).pathname;
+    } else if (sidekick.isEditor()) {
+      // resolve target env from editor url
+      url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+      if (targetEnv !== 'preview') {
+        // fetch report, extract url and patch host
+        try {
+          const resp = await fetch(`${url}?hlx_report=true`);
+          if (resp.ok) {
+            const { webUrl } = await resp.json();
+            if (webUrl) {
+              const u = new URL(webUrl);
+              u.hostname = config[hostType];
+              url = u.toString();
+            }
+          }
+        } catch (e) {
+          // something went wrong
+        }
+      }
+    } else {
+      // resolve target env from any env
+      url = `https://${config[hostType]}${location.pathname}`;
+    }
+
+    // switch or open env
+    if (!url) {
+      return;
+    }
+    if (open) {
+      window.open(url);
+    } else {
+      window.location.href = url;
+    }
+  }
+
+  /**
+   * Adds the following environment plugins to the sidekick:
+   * Edit, Preview, Live and Production
    * @private
    * @param {Sidekick} sk The sidekick
    */
-  function addEditPlugin(sk) {
+  function addEnvPlugins(sk) {
+    // edit
     sk.add({
       id: 'edit',
-      condition: (sidekick) => sidekick.isHelix(),
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
       button: {
-        action: (evt) => {
-          const { location } = sk;
-          const url = getEditUrl(location);
-          if (evt.metaKey || evt.which === 2) {
-            window.open(url);
-          } else {
-            window.location.href = url;
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
           }
+          await gotoEnv(sk, 'edit', newTab(evt));
         },
+        isPressed: (sidekick) => sidekick.isEditor(),
+      },
+    });
+
+    // preview
+    sk.add({
+      id: 'preview',
+      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'preview', newTab(evt));
+        },
+        isPressed: (sidekick) => sidekick.isInner(),
+      },
+    });
+
+    // live
+    sk.add({
+      id: 'live',
+      condition: (sidekick) => sidekick.config.outerHost
+        && (sidekick.isEditor() || sidekick.isHelix()),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'live', newTab(evt));
+        },
+        isPressed: (sidekick) => sidekick.isOuter(),
+      },
+    });
+
+    // production
+    sk.add({
+      id: 'prod',
+      condition: (sidekick) => sidekick.config.host
+        && sidekick.config.host !== sidekick.config.outerHost
+        && (sidekick.isEditor() || sidekick.isHelix()),
+      button: {
+        action: async (evt) => {
+          if (evt.target.classList.contains('pressed')) {
+            return;
+          }
+          await gotoEnv(sk, 'prod', newTab(evt));
+        },
+        isPressed: (sidekick) => sidekick.isProd(),
       },
     });
   }
@@ -423,7 +511,7 @@
           sk.showModal('Please wait …', true);
           const resp = await sk.publish(path, true);
           if (resp && resp.ok) {
-            if (evt.metaKey || evt.which === 2) {
+            if (newTab(evt)) {
               window.open(window.location.href);
               sk.hideModal();
             } else {
@@ -465,11 +553,11 @@
           if (config.host) {
             sk.showModal('Please wait …', true);
             // fetch and redirect to production
-            const prodURL = `https://${config.host}${path}`;
+            const prodURL = `https://${config.byocdn ? config.outerHost : config.host}${path}`;
             await fetch(prodURL, { cache: 'reload', mode: 'no-cors' });
             // eslint-disable-next-line no-console
             console.log(`redirecting to ${prodURL}`);
-            if (evt.metaKey || evt.which === 2) {
+            if (newTab(evt)) {
               window.open(prodURL);
               sk.hideModal();
             } else {
@@ -529,8 +617,7 @@
         },
       });
       // default plugins
-      addEditPlugin(this);
-      addPreviewPlugin(this);
+      addEnvPlugins(this);
       addReloadPlugin(this);
       addPublishPlugin(this);
       // custom plugins
@@ -539,7 +626,7 @@
       }
       if ((this.isHelix() || this.isEditor())
         && (this.config.pluginHost || this.config.innerHost)) {
-        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.outerHost || this.config.innerHost}` : '');
+        const prefix = this.config.pluginHost || (this.isEditor() ? `https://${this.config.innerHost}` : '');
         appendTag(document.head, {
           tag: 'script',
           attrs: {
@@ -562,6 +649,29 @@
     }
 
     /**
+     * Shows the sidekick.
+     * @returns {Sidekick} The sidekick
+     */
+    show() {
+      if (this.root.classList.contains('hlx-sk-hidden')) {
+        this.root.classList.remove('hlx-sk-hidden');
+      }
+      return this;
+    }
+
+    /**
+     * Hides the sidekick.
+     * @returns {Sidekick} The sidekick
+     */
+    hide() {
+      if (!this.root.classList.contains('hlx-sk-hidden')) {
+        this.root.classList.add('hlx-sk-hidden');
+      }
+      this.hideModal();
+      return this;
+    }
+
+    /**
      * Shows/hides the sidekick.
      * @returns {Sidekick} The sidekick
      */
@@ -577,28 +687,57 @@
      */
     add(plugin) {
       if (typeof plugin === 'object') {
-        if (plugin.override) {
-          this.remove(plugin.id);
-        }
+        plugin.enabled = typeof plugin.condition === 'undefined'
+          || (typeof plugin.condition === 'function' && plugin.condition(this));
+        // find existing plugin
         let $plugin = this.get(plugin.id);
-        if (typeof plugin.condition === 'function' && !plugin.condition(this)) {
-          if ($plugin) $plugin.remove();
-          return this;
+        let $pluginContainer = this.root;
+        if (ENVS[plugin.id]) {
+          // find or create environment plugin container
+          $pluginContainer = this.root.querySelector('.env');
+          if (!$pluginContainer) {
+            $pluginContainer = appendTag(this.root, {
+              tag: 'div',
+              attrs: {
+                class: 'env',
+              },
+            });
+          }
         }
-        if (!$plugin) {
-          $plugin = appendTag(this.root, {
-            tag: 'div',
-            attrs: {
-              class: plugin.id,
-            },
-          });
-          this.root.classList.remove('hlx-sk-empty');
+        const pluginCfg = {
+          tag: 'div',
+          attrs: {
+            class: plugin.id,
+          },
+        };
+        if (!$plugin && plugin.enabled) {
+          // add new plugin
+          $plugin = appendTag($pluginContainer, pluginCfg);
+          // remove empty text
+          if (this.root.classList.contains('hlx-sk-empty')) {
+            this.root.classList.remove('hlx-sk-empty');
+          }
+        } else if ($plugin) {
+          if (!plugin.enabled) {
+            // remove existing plugin
+            $plugin.remove();
+          } else if (plugin.override) {
+            // replace existing plugin
+            const $existingPlugin = $plugin;
+            $plugin = appendTag($existingPlugin.parentElement, pluginCfg, $existingPlugin);
+            $existingPlugin.remove();
+          }
         }
+        if (!plugin.enabled) {
+          return null;
+        }
+        // add elements
         if (Array.isArray(plugin.elements)) {
           plugin.elements.forEach((elem) => appendTag($plugin, elem));
         }
+        // add or update button
         if (plugin.button) {
-          const cfg = {
+          const buttonCfg = {
             tag: 'button',
             text: plugin.button.text,
             lstnrs: {
@@ -606,11 +745,18 @@
               auxclick: plugin.button.action,
             },
           };
-          const $button = $plugin.querySelector(cfg.tag);
+          let $button = $plugin ? $plugin.querySelector(buttonCfg.tag) : null;
           if ($button) {
-            extendTag($button, cfg);
+            // extend existing button
+            extendTag($button, buttonCfg);
           } else {
-            appendTag($plugin, cfg);
+            // add button
+            $button = appendTag($plugin, buttonCfg);
+          }
+          // check if button is pressed
+          if ((typeof plugin.button.isPressed === 'boolean' && !!plugin.button.isPressed)
+            || (typeof plugin.button.isPressed === 'function' && plugin.button.isPressed(this))) {
+            $button.classList.add('pressed');
           }
         }
         if (typeof plugin.callback === 'function') {
@@ -679,10 +825,16 @@
      */
     isOuter() {
       const { config, location } = this;
-      return [
-        config.host,
-        config.outerHost,
-      ].includes(location.host);
+      return config.outerHost === location.host;
+    }
+
+    /**
+     * Checks if the current location is a production URL.
+     * @returns {boolean} <code>true</code> if production URL, else <code>false</code>
+     */
+    isProd() {
+      const { config, location } = this;
+      return config.host === location.host;
     }
 
     /**
@@ -691,7 +843,7 @@
      */
     isHelix() {
       return this.config.owner && this.config.repo
-        && (this.isDev() || this.isInner() || this.isOuter());
+        && (this.isDev() || this.isInner() || this.isOuter() || this.isProd());
     }
 
     /**
@@ -845,6 +997,6 @@
   window.hlx = window.hlx || {};
   // launch sidekick
   if (!window.hlx.sidekick) {
-    window.hlx.sidekick = new Sidekick().toggle();
+    window.hlx.sidekick = new Sidekick().show();
   }
 })();
