@@ -26,7 +26,10 @@ async function fetchMetadata(context, action) {
       || (request.headers && typeof request.headers.get === 'function' ? request.headers.get('x-github-token') : '')
       || (request.headers ? request.headers['x-github-token'] : '');
     if (token) {
+      log.info('metadata: setting github token');
       headers['x-github-token'] = token;
+    } else {
+      log.info('metadata: not using github token');
     }
     // schedule fetch task
     downloader.fetch({
