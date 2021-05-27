@@ -334,6 +334,58 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Edit plugin opens editor from staging URL', async () => {
+    await mockCustomPlugins(page);
+    await new Promise((resolve, reject) => {
+      // watch for new url
+      browser.on('targetchanged', async (target) => {
+        if (target.url().startsWith('https://')) {
+          // check result
+          try {
+            assert.strictEqual(
+              target.url(),
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
+              'Editor lookup URL not opened',
+            );
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'edit'));
+    });
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Edit plugin opens editor from production URL', async () => {
+    await mockCustomPlugins(page);
+    await new Promise((resolve, reject) => {
+      // watch for new url
+      browser.on('targetchanged', async (target) => {
+        if (target.url().startsWith('https://')) {
+          // check result
+          try {
+            assert.strictEqual(
+              target.url(),
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
+              'Editor lookup URL not opened',
+            );
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'edit'));
+    });
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Preview plugin opens staging URL from gdrive URL', async () => {
     await mockCustomPlugins(page);
     page.on('request', (req) => {
@@ -356,7 +408,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://admin.hlx3.page/adobe/pages/master/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk',
+              'https://admin.hlx3.page/adobe/pages/master/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk?hlx_legacy=true',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -394,7 +446,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://admin.hlx3.page/adobe/theblog/master/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk?hlx_legacy=true',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -450,55 +502,89 @@ describe('Test sidekick bookmarklet', () => {
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Edit plugin opens editor from staging URL', async () => {
-    await mockCustomPlugins(page);
+  it('Live plugin opens live URL from gdrive URL', async () => {
+    const webUrl = 'https://master--pages--adobe.hlx.page/en/cc/photoshop/trial';
+    const liveUrl = 'https://pages--adobe.hlx.live/en/cc/photoshop/trial';
+    await page.setRequestInterception(true);
     await new Promise((resolve, reject) => {
-      // watch for new url
-      browser.on('targetchanged', async (target) => {
-        if (target.url().startsWith('https://')) {
-          // check result
+      page.on('request', (req) => {
+        // mock custom plugins
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (req.url().startsWith('https://admin.hlx3.page/')) {
+          // mock lookup response
+          req.respond({
+            status: 200,
+            body: JSON.stringify({
+              webUrl,
+            }),
+          });
+        } else if (req.url().startsWith('https://')) {
+          // watch for live url request
           try {
-            assert.strictEqual(
-              target.url(),
-              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
-              'Editor lookup URL not opened',
-            );
+            assert.strictEqual(req.url(), liveUrl, 'Expected live URL not called');
             resolve();
           } catch (e) {
             reject(e);
           }
+          req.respond({
+            status: 200,
+            body: 'dummy html',
+          });
+        } else {
+          req.continue();
         }
       });
       // open test page and click preview button
       page
-        .goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' })
-        .then(() => execPlugin(page, 'edit'));
+        .goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'live'));
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Edit plugin opens editor from production URL', async () => {
-    await mockCustomPlugins(page);
+  it('Production plugin opens production URL from gdrive URL', async () => {
+    const webUrl = 'https://master--pages--adobe.hlx.page/en/cc/photoshop/trial';
+    const prodUrl = 'https://pages.adobe.com/en/cc/photoshop/trial';
+    await page.setRequestInterception(true);
     await new Promise((resolve, reject) => {
-      // watch for new url
-      browser.on('targetchanged', async (target) => {
-        if (target.url().startsWith('https://')) {
-          // check result
+      page.on('request', (req) => {
+        // mock custom plugins
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (req.url().startsWith('https://admin.hlx3.page/')) {
+          // mock lookup response
+          req.respond({
+            status: 200,
+            body: JSON.stringify({
+              webUrl,
+            }),
+          });
+        } else if (req.url().startsWith('https://')) {
+          // watch for production url request
           try {
-            assert.strictEqual(
-              target.url(),
-              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
-              'Editor lookup URL not opened',
-            );
+            assert.strictEqual(req.url(), prodUrl, 'Expected production URL not called');
             resolve();
           } catch (e) {
             reject(e);
           }
+          req.respond({
+            status: 200,
+            body: 'dummy html',
+          });
+        } else {
+          req.continue();
         }
       });
-      // open test page and click preview button
+      // open test page and click production button
       page
-        .goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' })
-        .then(() => execPlugin(page, 'edit'));
+        .goto(`${fixturesPrefix}/preview-gdrive.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'prod'));
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -541,6 +627,46 @@ describe('Test sidekick bookmarklet', () => {
     });
     // check result
     assert.ok(purged, 'Purge request not sent');
+    assert.ok(reloaded, 'Reload not triggered');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Reload plugin uses Helix 3 API', async () => {
+    let loads = 0;
+    let apiCalled = false;
+    await page.setRequestInterception(true);
+    const reloaded = await new Promise((resolve, reject) => {
+      page.on('request', (req) => {
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          // intercept custom plugin request
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (!apiCalled && req.method() === 'POST') {
+          // intercept purge request
+          apiCalled = req.url() === 'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.html?action=reload';
+          req.respond({
+            status: 200,
+            body: JSON.stringify([{ status: 'ok' }]),
+          });
+        } else if (req.url().endsWith('reload-staging-hlx3.html')) {
+          loads += 1;
+          if (loads === 2) {
+            // reload triggered
+            resolve(true);
+          }
+        }
+        req.continue();
+      });
+      // open test page and click reload button
+      page
+        .goto(`${fixturesPrefix}/reload-staging-hlx3.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'reload'));
+      // reject promise before IT time is up
+      setTimeout(() => reject(new Error('timed out')), IT_DEFAULT_TIMEOUT - 2000);
+    });
+    // check result
+    assert.ok(apiCalled, 'Purge request not sent');
     assert.ok(reloaded, 'Reload not triggered');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -674,6 +800,51 @@ describe('Test sidekick bookmarklet', () => {
       setTimeout(() => resolve(true), 10000);
     });
     assert.ok(noPurge, 'Did not purge inner host only');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Publish plugin uses Helix 3 API', async () => {
+    const purgePath = '/en/topics/bla.html';
+    let apiCalled = false;
+    await page.setRequestInterception(true);
+    const redirected = await new Promise((resolve, reject) => {
+      browser.on('targetchanged', (target) => {
+        if (target.url() === `https://blog.adobe.com${purgePath}`) {
+          resolve(true);
+        }
+      });
+      page.on('request', (req) => {
+        if (req.url().endsWith('/tools/sidekick/plugins.js')) {
+          // intercept plugins request
+          req.respond({
+            status: 200,
+            body: '',
+          });
+        } else if (!apiCalled && req.method() === 'POST') {
+          // intercept purge request
+          apiCalled = req.url() === 'https://admin.hlx3.page/adobe/theblog/main/en/topics/bla.html?action=publish';
+          req.respond({
+            status: 200,
+            body: JSON.stringify([{ status: 'ok' }]),
+          });
+        } else if (req.url().startsWith('https://blog.adobe.com')) {
+          req.respond({
+            status: 200,
+            body: 'dummy html',
+          });
+        } else {
+          req.continue();
+        }
+      });
+      // open test page and click publish button
+      page
+        .goto(`${fixturesPrefix}/publish-staging-hlx3.html`, { waitUntil: 'load' })
+        .then(() => execPlugin(page, 'publish'));
+      // reject promise before IT time is up
+      setTimeout(() => reject(new Error('timed out')), IT_DEFAULT_TIMEOUT - 2000);
+    });
+    // check result
+    assert.ok(apiCalled, 'Purge request not sent');
+    assert.ok(redirected, 'Redirect not sent');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('No publish plugin on bring-your-own-CDN production host', async () => {
