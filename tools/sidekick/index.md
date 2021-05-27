@@ -15,6 +15,12 @@ id: form
 <br>
 <label for="project">Project Name (optional): </label>
 <input id="project">
+<div class="advanced">
+  <div>
+    <input id="hlx3" type="checkbox">
+    <label for="hlx3" class="small">Helix 3 project</label>
+  </div>
+</div>
 <br>
 <button onclick="run()">Generate Bookmarklet</button>
 
@@ -56,7 +62,8 @@ Drag the Helix logo below to your browser's bookmark bar, or <a href="#" onclick
   display: inline-block;
 }
 
-input#host {
+input#host,
+input#project {
   margin-bottom: 0.5rem;
 }
 
@@ -67,6 +74,10 @@ input[type="checkbox"] {
 
 label.small {
   font-size: 1.2rem;
+}
+
+div.advanced > div  {
+  display: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,6 +99,7 @@ label.small {
     const host = document.getElementById('host').value;
     const byocdn = document.getElementById('byocdn').checked;
     const project = document.getElementById('project').value;
+    const hlx3 = document.getElementById('hlx3').checked;
     if (!giturl) {
       alert('Repository URL is mandatory.');
       return;
@@ -107,6 +119,9 @@ label.small {
     };
     if (byocdn || /^www.*\.adobe\.com$/.test(host)) { // treat www*.adobe.com as byoCDN
       config.byocdn = true;
+    }
+    if (hlx3) {
+      config.hlx3 = true;
     }
 
     const bm=document.getElementById('bookmark');
