@@ -417,6 +417,7 @@
             if (webUrl) {
               const u = new URL(webUrl);
               u.hostname = config[hostType];
+              u.pathname = u.pathname === '/index' ? '/' : u.pathname;
               url = u.toString();
             }
           }
