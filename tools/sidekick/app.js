@@ -115,24 +115,28 @@
     const innerPrefix = ghDetails ? `${ref}--${ghDetails}` : null;
     // host param for purge request must include ref
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
-    // get hlx domain from script src
-    let innerHost;
-    let scriptUrl;
     const script = document.querySelector('script[src$="/sidekick/app.js"]');
-    if (script) {
-      scriptUrl = script.src;
-      const scriptHost = new URL(scriptUrl).host;
-      if (scriptHost && scriptHost !== 'www.hlx.live') {
-        // keep only 1st and 2nd level domain
-        innerHost = scriptHost.split('.')
-          .reverse()
-          .splice(0, 2)
-          .reverse()
-          .join('.');
-      }
+    const scriptUrl = script && script.src;
+    let innerHost;
+    if (hlx3) {
+      // force hlx3.page
+      innerHost = 'hlx3.page';
     }
     if (!innerHost || innerHost.startsWith('localhost')) {
-      innerHost = hlx3 ? 'hlx3.page' : 'hlx.page';
+      // get hlx domain from script src (used for branch deployment testing)
+      if (scriptUrl) {
+        const scriptHost = new URL(scriptUrl).host;
+        if (scriptHost && scriptHost !== 'www.hlx.live') {
+          // keep only 1st and 2nd level domain
+          innerHost = scriptHost.split('.')
+            .reverse()
+            .splice(0, 2)
+            .reverse()
+            .join('.');
+        }
+      }
+      // fall back to hlx.page
+      innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
     const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
@@ -355,7 +359,7 @@
     if (sk.location.hostname.endsWith('hlx3.page') && !sk.config.hlx3) {
       window.setTimeout(() => {
         // eslint-disable-next-line no-alert
-        if (window.confirm('Unfortunately, your Helix Sidekick Bookmarklet is not able to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now …')) {
+        if (window.confirm('Your Helix Sidekick Bookmarklet is not able to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now!')) {
           sk.showModal('Please wait …', true);
           // set hlx3 flag
           sk.config.hlx3 = true;
