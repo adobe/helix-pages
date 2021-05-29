@@ -817,7 +817,13 @@
      */
     isInner() {
       const { config, location } = this;
-      return config.innerHost.endsWith(location.host);
+      const ref = location.host.split('--').length === 3
+        && location.host.split('--')[0];
+      return config.innerHost === location.host
+        // match without ref
+        || (!ref && config.innerHost.endsWith(location.host))
+        // match with any ref
+        || (ref && config.innerHost.endsWith(location.host.substring(ref.length + 2)));
     }
 
     /**
