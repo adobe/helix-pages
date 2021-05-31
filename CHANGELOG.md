@@ -1,3 +1,11 @@
+# [7.1.0](https://github.com/adobe/helix-pages/compare/v7.0.1...v7.1.0) (2021-05-31)
+
+
+### Features
+
+* enable RUM through helix-publish ([9112300](https://github.com/adobe/helix-pages/commit/9112300f310ceb4a9ee5ddcbd36066135571dbe0))
+* **sidekick:** suppress /index from webUrl in .lnk report ([6de207f](https://github.com/adobe/helix-pages/commit/6de207f918526b6c882949a191b7758cca75bfa6))
+
 ## [7.0.1](https://github.com/adobe/helix-pages/compare/v7.0.0...v7.0.1) (2021-05-20)
 
 
