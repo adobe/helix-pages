@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/adobe/helix-pages/compare/v7.1.0...v7.2.0) (2021-05-31)
+
+
+### Features
+
+* **sidekick:** make branch-agnostic ([195530b](https://github.com/adobe/helix-pages/commit/195530b52b168bd015f37f027973af8d553fada8))
+
 # [7.1.0](https://github.com/adobe/helix-pages/compare/v7.0.1...v7.1.0) (2021-05-31)
 
 
