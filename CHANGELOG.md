@@ -1,3 +1,10 @@
+## [7.2.1](https://github.com/adobe/helix-pages/compare/v7.2.0...v7.2.1) (2021-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#912](https://github.com/adobe/helix-pages/issues/912)) ([ae43b17](https://github.com/adobe/helix-pages/commit/ae43b170cc99fca6d55f3c97afe38a511f91ceb5))
+
 # [7.2.0](https://github.com/adobe/helix-pages/compare/v7.1.0...v7.2.0) (2021-05-31)
 
 
