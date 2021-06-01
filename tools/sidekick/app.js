@@ -986,7 +986,7 @@
           `/${config.repo}`,
           `/${config.ref}`,
           path,
-          '?action=reload',
+          '?action=update',
         ].join('');
         resp = await fetch(adminURL, { method: 'POST' });
       } else {
