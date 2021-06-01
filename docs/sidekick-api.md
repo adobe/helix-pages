@@ -25,6 +25,9 @@ a shorthand for <a href="#elemConfig">elemConfig</a>.</p>
 <dt><a href="#plugin">plugin</a> : <code>Object</code></dt>
 <dd><p>The plugin configuration.</p>
 </dd>
+<dt><a href="#publishResponse">publishResponse</a> : <code>Object</code></dt>
+<dd><p>The response object for a publish action.</p>
+</dd>
 </dl>
 
 ## External
@@ -32,7 +35,7 @@ a shorthand for <a href="#elemConfig">elemConfig</a>.</p>
 <dl>
 <dt><a href="#external_window.hlx.sidekickConfig">window.hlx.sidekickConfig</a> : <code>Object</code></dt>
 <dd><p>The sidekick configuration needs to be defined in this global variable
-before creating the <a href="#Sidekick">Sidekick</a> and will be deleted after consumption.</p>
+before creating the <a href="#Sidekick">Sidekick</a>.</p>
 </dd>
 <dt><a href="#external_window.hlx.sidekick">window.hlx.sidekick</a> : <code><a href="#Sidekick">Sidekick</a></code></dt>
 <dd><p>The global variable referencing the <a href="#Sidekick">Sidekick</a> singleton.</p>
@@ -48,16 +51,24 @@ The sidekick provides helper tools for authors.
 
 * [Sidekick](#Sidekick)
     * [new Sidekick()](#new_Sidekick_new)
+    * [.loadContext()](#Sidekick+loadContext) ⇒ [<code>Sidekick</code>](#Sidekick)
+    * [.show()](#Sidekick+show) ⇒ [<code>Sidekick</code>](#Sidekick)
+    * [.hide()](#Sidekick+hide) ⇒ [<code>Sidekick</code>](#Sidekick)
     * [.toggle()](#Sidekick+toggle) ⇒ [<code>Sidekick</code>](#Sidekick)
     * [.add(plugin)](#Sidekick+add) ⇒ <code>HTMLElement</code>
     * [.get(id)](#Sidekick+get) ⇒ <code>HTMLElement</code>
     * [.remove(id)](#Sidekick+remove) ⇒ [<code>Sidekick</code>](#Sidekick)
     * [.isEditor()](#Sidekick+isEditor) ⇒ <code>boolean</code>
+    * [.isDev()](#Sidekick+isDev) ⇒ <code>boolean</code>
+    * [.isInner()](#Sidekick+isInner) ⇒ <code>boolean</code>
+    * [.isOuter()](#Sidekick+isOuter) ⇒ <code>boolean</code>
+    * [.isProd()](#Sidekick+isProd) ⇒ <code>boolean</code>
     * [.isHelix()](#Sidekick+isHelix) ⇒ <code>boolean</code>
     * [.notify(msg, level)](#Sidekick+notify)
     * [.showModal(msg, sticky, level)](#Sidekick+showModal) ⇒ [<code>Sidekick</code>](#Sidekick)
     * [.hideModal()](#Sidekick+hideModal) ⇒ [<code>Sidekick</code>](#Sidekick)
     * [.loadCSS(path)](#Sidekick+loadCSS) ⇒ [<code>Sidekick</code>](#Sidekick)
+    * [.publish(path, innerOnly)](#Sidekick+publish) ⇒ [<code>publishResponse</code>](#publishResponse)
 
 <a name="new_Sidekick_new"></a>
 
@@ -65,6 +76,28 @@ The sidekick provides helper tools for authors.
 Creates a new sidekick based on a configuration object in
 [window.hlx.sidekickConfig](window.hlx.sidekickConfig).
 
+<a name="Sidekick+loadContext"></a>
+
+### sidekick.loadContext() ⇒ [<code>Sidekick</code>](#Sidekick)
+Loads the sidekick configuration based on [window.hlx.sidekickConfig](window.hlx.sidekickConfig)
+and retrieves the location of the current document.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: [<code>Sidekick</code>](#Sidekick) - The sidekick  
+<a name="Sidekick+show"></a>
+
+### sidekick.show() ⇒ [<code>Sidekick</code>](#Sidekick)
+Shows the sidekick.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: [<code>Sidekick</code>](#Sidekick) - The sidekick  
+<a name="Sidekick+hide"></a>
+
+### sidekick.hide() ⇒ [<code>Sidekick</code>](#Sidekick)
+Hides the sidekick.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: [<code>Sidekick</code>](#Sidekick) - The sidekick  
 <a name="Sidekick+toggle"></a>
 
 ### sidekick.toggle() ⇒ [<code>Sidekick</code>](#Sidekick)
@@ -115,6 +148,34 @@ Checks if the current location is an editor URL (SharePoint or Google Docs).
 
 **Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
 **Returns**: <code>boolean</code> - <code>true</code> if editor URL, else <code>false</code>  
+<a name="Sidekick+isDev"></a>
+
+### sidekick.isDev() ⇒ <code>boolean</code>
+Checks if the current location is a development URL.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: <code>boolean</code> - <code>true</code> if development URL, else <code>false</code>  
+<a name="Sidekick+isInner"></a>
+
+### sidekick.isInner() ⇒ <code>boolean</code>
+Checks if the current location is an inner CDN URL.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: <code>boolean</code> - <code>true</code> if inner CDN URL, else <code>false</code>  
+<a name="Sidekick+isOuter"></a>
+
+### sidekick.isOuter() ⇒ <code>boolean</code>
+Checks if the current location is an outer CDN URL.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: <code>boolean</code> - <code>true</code> if outer CDN URL, else <code>false</code>  
+<a name="Sidekick+isProd"></a>
+
+### sidekick.isProd() ⇒ <code>boolean</code>
+Checks if the current location is a production URL.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: <code>boolean</code> - <code>true</code> if production URL, else <code>false</code>  
 <a name="Sidekick+isHelix"></a>
 
 ### sidekick.isHelix() ⇒ <code>boolean</code>
@@ -169,6 +230,19 @@ current JS or HTML file. E.g. when called without argument from
 | --- | --- | --- |
 | path | <code>string</code> | The path to the CSS file (optional) |
 
+<a name="Sidekick+publish"></a>
+
+### sidekick.publish(path, innerOnly) ⇒ [<code>publishResponse</code>](#publishResponse)
+Publishes the page at the specified path if {@code config.host} is defined.
+
+**Kind**: instance method of [<code>Sidekick</code>](#Sidekick)  
+**Returns**: [<code>publishResponse</code>](#publishResponse) - The response object  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| path | <code>string</code> |  | The path of the page to publish |
+| innerOnly | <code>boolean</code> | <code>false</code> | {@code true} to only refresh inner CDN, else {@code false} |
+
 <a name="elemAttr"></a>
 
 ## elemAttr : <code>Object.&lt;string, string&gt;</code>
@@ -209,6 +283,7 @@ a shorthand for [elemConfig](#elemConfig).
 | --- | --- | --- |
 | text | <code>string</code> | The button text |
 | action | <code>function</code> | The click listener |
+| isPressed | <code>boolean</code> \| <code>function</code> | Determines whether the button is pressed |
 
 <a name="plugin"></a>
 
@@ -227,11 +302,26 @@ The plugin configuration.
 | condition | <code>function</code> |  | Determines whether to show this plugin (optional). This function is expected to return a boolean when called with the sidekick as argument. |
 | callback | <code>function</code> |  | A function called after adding the plugin (optional). This function is called with the sidekick and the newly added plugin as arguments. |
 
+<a name="publishResponse"></a>
+
+## publishResponse : <code>Object</code>
+The response object for a publish action.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| ok | <code>boolean</code> | True if publish action was successful, else false |
+| status | <code>string</code> | The status text returned by the publish action |
+| json | <code>Object</code> | The JSON object returned by the publish action |
+| path | <code>string</code> | The path of the published page |
+
 <a name="external_window.hlx.sidekickConfig"></a>
 
 ## window.hlx.sidekickConfig : <code>Object</code>
 The sidekick configuration needs to be defined in this global variable
-before creating the [Sidekick](#Sidekick) and will be deleted after consumption.
+before creating the [Sidekick](#Sidekick).
 
 **Kind**: global external  
 **Properties**
@@ -242,6 +332,7 @@ before creating the [Sidekick](#Sidekick) and will be deleted after consumption.
 | repo | <code>string</code> |  | The GitHub owner or organization (mandatory) |
 | ref | <code>string</code> | <code>&quot;main&quot;</code> | The Git reference or branch (optional) |
 | host | <code>string</code> |  | The production host name (optional) |
+| byocdn | <code>string</code> | <code>false</code> | {@code true} if the production host is a 3rd party CDN (optional) |
 | project | <code>string</code> |  | The name of the Helix project (optional) |
 
 <a name="external_window.hlx.sidekick"></a>
