@@ -869,6 +869,14 @@ describe('Test sidekick bookmarklet', () => {
       await page.evaluate(() => window.hlx.sidekick.isInner() && window.hlx.sidekick.isHelix()),
       'Did not detect inner CDN URL',
     );
+    // check with different ref
+    await page.evaluate(() => {
+      window.hlx.sidekick.location.host = 'test--theblog--adobe.hlx.page';
+    });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isInner()),
+      'Did not detect inner CDN URL with different ref',
+    );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Outer CDN is correctly detected', async () => {

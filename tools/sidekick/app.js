@@ -391,7 +391,6 @@
       owner,
       repo,
       ref,
-      hlx3,
     } = config;
     const hostType = ENVS[targetEnv];
     if (!hostType) {
@@ -833,8 +832,12 @@
      */
     isInner() {
       const { config, location } = this;
+      const hasRef = location.host.split('--').length === 3;
       return config.innerHost === location.host
-        || config.innerHost.endsWith(location.host);
+        // match without ref
+        || (!hasRef && config.innerHost.endsWith(location.host))
+        // match with any ref
+        || (hasRef && config.innerHost.endsWith(location.host.substring(location.host.indexOf('--') + 2)));
     }
 
     /**

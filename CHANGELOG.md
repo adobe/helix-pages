@@ -1,3 +1,25 @@
+## [7.2.1](https://github.com/adobe/helix-pages/compare/v7.2.0...v7.2.1) (2021-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#912](https://github.com/adobe/helix-pages/issues/912)) ([ae43b17](https://github.com/adobe/helix-pages/commit/ae43b170cc99fca6d55f3c97afe38a511f91ceb5))
+
+# [7.2.0](https://github.com/adobe/helix-pages/compare/v7.1.0...v7.2.0) (2021-05-31)
+
+
+### Features
+
+* **sidekick:** make branch-agnostic ([195530b](https://github.com/adobe/helix-pages/commit/195530b52b168bd015f37f027973af8d553fada8))
+
+# [7.1.0](https://github.com/adobe/helix-pages/compare/v7.0.1...v7.1.0) (2021-05-31)
+
+
+### Features
+
+* enable RUM through helix-publish ([9112300](https://github.com/adobe/helix-pages/commit/9112300f310ceb4a9ee5ddcbd36066135571dbe0))
+* **sidekick:** suppress /index from webUrl in .lnk report ([6de207f](https://github.com/adobe/helix-pages/commit/6de207f918526b6c882949a191b7758cca75bfa6))
+
 ## [7.0.1](https://github.com/adobe/helix-pages/compare/v7.0.0...v7.0.1) (2021-05-20)
 
 
