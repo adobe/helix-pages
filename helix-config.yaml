@@ -58,6 +58,17 @@ strains:
     # universal runtime, using the helix-pages subdomain
     package: https://helix-pages.anywhere.run/pages_7_2_1
 
+  - name: breaking-202106
+    sticky: false
+    condition:
+      preflight.x-pages-version=: breaking-202106
+    code: https://github.com/adobe/helix-pages.git#breaking-202106
+    content: https://github.com/adobe/helix-pages.git#breaking-202106
+    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202106
+    package: https://helix-pages.anywhere.run/pages_6-1-0-breaking-202106
+    version-lock:
+      word2md: ci3440
+
   # temporary strain to test the metadata.json loading from sharepoint
   - name: breaking-800
     sticky: false
