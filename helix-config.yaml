@@ -67,7 +67,7 @@ strains:
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202106
     package: https://helix-pages.anywhere.run/pages_7-2-1-breaking-202106
     version-lock:
-      word2md: ci3440
+      word2md: ci3442
 
   # temporary strain to test the metadata.json loading from sharepoint
   - name: breaking-800
