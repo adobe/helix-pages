@@ -65,7 +65,7 @@ strains:
     code: https://github.com/adobe/helix-pages.git#breaking-202106
     content: https://github.com/adobe/helix-pages.git#breaking-202106
     static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202106
-    package: https://helix-pages.anywhere.run/pages_6-1-0-breaking-202106
+    package: https://helix-pages.anywhere.run/pages_7-2-1-breaking-202106
     version-lock:
       word2md: ci3440
 
