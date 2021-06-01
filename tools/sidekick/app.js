@@ -410,23 +410,21 @@
       url += new URL(editPath, location.href).pathname;
     } else if (sidekick.isEditor()) {
       // resolve target env from editor url
-      url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk?hlx_legacy=${!hlx3}`;
-      if (targetEnv !== 'preview') {
-        // fetch report, extract url and patch host
-        try {
-          const resp = await fetch(`${url}&hlx_report=true`);
-          if (resp.ok) {
-            const { webUrl } = await resp.json();
-            if (webUrl) {
-              const u = new URL(webUrl);
-              u.hostname = config[hostType];
-              u.pathname = u.pathname === '/index' ? '/' : u.pathname;
-              url = u.toString();
-            }
+      url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
+      // fetch report, extract url and patch host
+      try {
+        const resp = await fetch(`${url}&hlx_report=true`);
+        if (resp.ok) {
+          const { webUrl } = await resp.json();
+          if (webUrl) {
+            const u = new URL(webUrl);
+            u.hostname = config[hostType];
+            u.pathname = u.pathname === '/index' ? '/' : u.pathname;
+            url = u.toString();
           }
-        } catch (e) {
-          // something went wrong
         }
+      } catch (e) {
+        // something went wrong
       }
     } else {
       // resolve target env from any env
