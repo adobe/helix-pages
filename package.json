@@ -44,7 +44,7 @@
     "@adobe/helix-fetch": "2.2.1",
     "@adobe/helix-pipeline": "14.0.8",
     "@adobe/helix-shared-wrap": "1.0.0",
-    "@adobe/helix-universal": "1.6.1",
+    "@adobe/helix-universal": "1.6.2",
     "@adobe/helix-universal-logger": "1.0.4",
     "@adobe/htlengine": "6.3.7",
     "xml-escape": "1.1.0",
