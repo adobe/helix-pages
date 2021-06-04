@@ -1,4 +1,4 @@
-import { Fastly, FastlyPendingUpstreamRequest, Request, Response } from "@fastly/as-compute";
+import { Fastly, Request, Response } from "@fastly/as-compute";
 import { BACKEND_S3 } from "../backends";
 import { AbstractPathHandler } from "../framework/path-handler";
 import { GlobalConfig } from "../global-config";
@@ -35,7 +35,7 @@ export class ContentHandler extends AbstractPathHandler {
 
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
     this.logger.debug("continuing with stashed content response");
-    const contentresponse = (<FastlyPendingUpstreamRequest>this.pending).wait();
+    const contentresponse = (<Fastly.FastlyPendingUpstreamRequest>this.pending).wait();
 
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".md")) {

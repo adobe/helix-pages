@@ -1,4 +1,4 @@
-import { Fastly, FastlyPendingUpstreamRequest, Request, Response, URL } from "@fastly/as-compute";
+import { Fastly, Request, Response, URL } from "@fastly/as-compute";
 import { JSON, JSONEncoder } from "assemblyscript-json";
 import { BACKEND_S3 } from "../backends";
 import { AbstractPathHandler } from "../framework/path-handler";
@@ -34,7 +34,7 @@ export class JSONHandler extends AbstractPathHandler {
 
 
   handle(request: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    const contentresponse = (this.pending as FastlyPendingUpstreamRequest).wait();
+    const contentresponse = (this.pending as Fastly.FastlyPendingUpstreamRequest).wait();
 
     if (contentresponse.ok) {
       if (mount.relpath.endsWith(".json")) {

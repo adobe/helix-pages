@@ -1,4 +1,4 @@
-import { Fastly, FastlyPendingUpstreamRequest, Request, Response, URL } from "@fastly/as-compute";
+import { Fastly, Request, Response, URL } from "@fastly/as-compute";
 import { GlobalConfig } from "../global-config";
 import { HeaderBuilder } from "../header-builder";
 import { MountPointMatch } from "../mount-config";
@@ -78,7 +78,7 @@ export class PipelineHandler extends RequestHandler {
       this.setup(request, mount, config);
     }
     this.logger.debug('A pending pipeline request has been found, continuing.');
-    const contentresponse = (this.pending as FastlyPendingUpstreamRequest).wait();
+    const contentresponse = (this.pending as Fastly.FastlyPendingUpstreamRequest).wait();
 
     if (contentresponse.ok) {
       const filter = new HeaderFilter()

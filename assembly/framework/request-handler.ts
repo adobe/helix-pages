@@ -1,11 +1,11 @@
-import { FastlyPendingUpstreamRequest, Request,  Response } from "@fastly/as-compute";
+import { Request,  Response, Fastly } from "@fastly/as-compute";
 import { MountPointMatch } from "../mount-config";
 import { GlobalConfig } from "../global-config";
 import { CoralogixLogger } from "../coralogix-logger";
 
 export abstract class RequestHandler {
   private log: CoralogixLogger | null;
-  protected pending: FastlyPendingUpstreamRequest | null;
+  protected pending: Fastly.FastlyPendingUpstreamRequest | null;
 
   /**
    * Determines if a handler is eligible to serve a given request. Returning

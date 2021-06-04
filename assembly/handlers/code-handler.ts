@@ -1,4 +1,4 @@
-import { Request,  Response, Fastly, Headers, URL, FastlyPendingUpstreamRequest } from "@fastly/as-compute";
+import { Request,  Response, Fastly, URL } from "@fastly/as-compute";
 import { RequestHandler } from "../framework/request-handler";
 import { MountPointMatch } from "../mount-config";
 import { BACKEND_S3 } from "../backends";
@@ -44,7 +44,7 @@ export class CodeHandler extends RequestHandler {
   }
 
   handle(req: Request, mount: MountPointMatch, config: GlobalConfig): Response {
-    const coderesponse = (this.pending as FastlyPendingUpstreamRequest).wait();
+    const coderesponse = (this.pending as Fastly.FastlyPendingUpstreamRequest).wait();
 
     if (coderesponse.ok) {
       const filter = new HeaderFilter()
