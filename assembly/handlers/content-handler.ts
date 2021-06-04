@@ -4,6 +4,7 @@ import { AbstractPathHandler } from "../framework/path-handler";
 import { GlobalConfig } from "../global-config";
 import { HeaderFilter } from "../header-filter";
 import { MountPointMatch } from "../mount-config";
+import { contentBusPartition } from "./utils";
 
 export class ContentHandler extends AbstractPathHandler {
   private contentreq: Request | null;
@@ -13,7 +14,7 @@ export class ContentHandler extends AbstractPathHandler {
   }
 
   setup(request: Request, mount: MountPointMatch, config: GlobalConfig): void {
-    this.contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/live' + mount.relpath, {
+    this.contentreq = new Request('https://' + mount.hash +'.s3.us-east-1.amazonaws.com/' + contentBusPartition(request) + mount.relpath, {
         headers: null,
         method: 'GET',
         body: null,

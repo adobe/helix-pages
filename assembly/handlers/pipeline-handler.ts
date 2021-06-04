@@ -4,6 +4,7 @@ import { HeaderBuilder } from "../header-builder";
 import { MountPointMatch } from "../mount-config";
 import { HeaderFilter } from "../header-filter";
 import { RequestHandler } from "../framework/request-handler";
+import { contentBusPartition } from "./utils";
 
 export class PipelineHandler extends RequestHandler {
   get name(): string {
@@ -45,6 +46,7 @@ export class PipelineHandler extends RequestHandler {
       "&ref=" + config.ref + 
       "&path=" + path +
       "&contentBusId=" + mount.hash +
+      "&contentBusPartition=" + contentBusPartition(request) +
       (requrl.pathname.endsWith(".plain.html") 
         ? "&selector=plain"
         : "") +
