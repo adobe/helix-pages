@@ -6,7 +6,7 @@ import { GlobalConfig } from "../global-config";
 import { HeaderBuilder } from "../header-builder";
 import { HeaderFilter } from "../header-filter";
 import { MountPointMatch } from "../mount-config";
-import { queryparam, queryparamint } from "../url-utils";
+import { queryparam, queryparamarray, queryparamint } from "../url-utils";
 
 export class JSONHandler extends AbstractPathHandler {
   private contentreq: Request | null;
@@ -42,23 +42,45 @@ export class JSONHandler extends AbstractPathHandler {
       }
 
       const urlParams = new URL(request.url).search;
-      const sheet = queryparam(urlParams, "sheet", "");
+      let sheets = queryparamarray(urlParams, "sheet");
       let limit = queryparamint(urlParams, "limit", -1);
       let offset = queryparamint(urlParams, "offset", -1);
 
       this.logger.debug("Query string: " + urlParams);
 
-      if (sheet != "") {
-        this.logger.debug("Filtering sheet " + sheet + " from " + offset.toString(10) + " to " + limit.toString(10));
-
-        const data = <JSON.Obj>JSON.parse(contentresponse.text());
-        if (data == null) {
-          return new Response(String.UTF8.encode('No JSON object found.'), {
+      const data = <JSON.Obj>JSON.parse(contentresponse.text());
+      if (data == null) {
+        return new Response(String.UTF8.encode('No JSON object found.'), {
+          url: null,
+          headers: new HeaderBuilder("x-error", "No JSON object found."),
+          status: 502,
+        });
+      }
+      if (sheets.length == 0) {
+        // take all sheets
+        sheets = new Array<string>();
+        const knownsheets = data.getArr(":sheets");
+        if (knownsheets == null) {
+          return new Response(String.UTF8.encode('JSON does not have sheets.'), {
             url: null,
-            headers: new HeaderBuilder("x-error", "No JSON object found."),
+            headers: new HeaderBuilder("x-error", 'JSON does not have sheets.'),
             status: 502,
           });
+        } else {
+          const knownsheetvalues = knownsheets.valueOf();
+          for (let i = 0;i<knownsheetvalues.length;i++) {
+            if (knownsheetvalues[i].isString) {
+              sheets.push((knownsheetvalues[i] as JSON.Str).toString());
+            }
+          }
         }
+      }
+
+
+
+      if (sheets.length == 1) {
+        let sheet = sheets[0];
+        this.logger.debug("Filtering single sheet " + sheet + " from " + offset.toString(10) + " to " + limit.toString(10));
         if (!data.has(sheet)) {
           return new Response(String.UTF8.encode('Sheet does not exist.'), {
             url: null,
@@ -66,69 +88,51 @@ export class JSONHandler extends AbstractPathHandler {
             status: 404,
           });
         }
-        const sheetdata = <JSON.Arr>data.getArr(sheet);
-        const sheetrows = sheetdata.valueOf();
 
-        const filtered = new Array<JSON.Value>();
+        let retval = this.filterSheet(data, sheet, offset, limit, new JSONEncoder(), "sheet"); // root
 
-        if (offset <= 0) {
-          offset = 0;
-        }
-        if (limit <= 0) {
-          limit = sheetrows.length - offset;
-        }
-        for (let i = offset; // start at offset or zero
-             i < sheetrows.length && i < limit + offset; // go up to limit or end
-             i++) {
-               this.logger.debug("Index " + i.toString(10) + " is between offset " + offset.toString(10) + " and limit " + limit.toString(10));
-               filtered.push(sheetrows[i]);
-             }
-        
+        return new Response(String.UTF8.encode(retval.toString()), {
+          url: null,
+          headers: new HeaderBuilder("content-type", "application/json"),
+          status: 200,
+        });
+      } else {
+        this.logger.debug("Filtering all sheets!");
 
-        this.logger.debug("Building JSON output with " + filtered.length.toString() + " results");
-        const retval = new JSONEncoder();
+        let retval = new JSONEncoder();
+
         retval.pushObject(""); // root
-        retval.setInteger("limit", limit);
-        retval.setInteger("offset", offset),
-        retval.setInteger("total", filtered.length);
+        retval.setString(":type", "multi-sheet");
+        retval.setInteger(":version", 3);
+        retval.pushArray(":names");
+        for (let i = 0;i<sheets.length;i++) {
+          retval.setString("", sheets[i]);
+        }
+        retval.popArray();
 
-        this.logger.debug("Metadata properties attached, building data array now");
-        
-        retval.pushArray("data"); // .data
 
-        for (let i = 0; i < filtered.length; i++) {
-          this.logger.debug("Adding element " + i.toString(10) + " of " + filtered.length.toString(10) + " to output");
-          const filteredobj = <JSON.Obj>filtered[i];
-          if (filteredobj == null || !filteredobj.isObj) {
-            this.logger.debug("Element is empty, returning empty object.");
-            retval.pushObject("");
+        for (let i = 0;i<sheets.length;i++) {
+          let sheet = sheets[i];
+          if (!data.has(sheet)) {
+            return new Response(String.UTF8.encode('Sheet ' + sheet + ' does not exist.'), {
+              url: null,
+              headers: new HeaderBuilder("x-error", "Sheet " + sheet + " does not exist."),
+              status: 404,
+            });
+          }
+
+          const sheetdata = data.getObj(sheet);
+          // make sure we get an object
+          if (sheetdata!=null) {
+            retval.pushObject(sheets[i]);
+            // generate a filtered sheet
+            this.filterSheet(sheetdata, sheet, offset, limit, retval);
             retval.popObject();
           }
-          retval.pushObject("");
-          const keys = filteredobj.keys;
-
-          this.logger.debug("Adding element " + i.toString(10) + " of " + filtered.length.toString(10) + " to output with keys: " + keys.join(", "));
-          for (let j=0;j < keys.length; j++) {
-            const key = keys[j];
-            const val = filteredobj.get(key);
-            if (val == null) {
-              retval.setNull(key);
-            } else if (val.isString) {
-              retval.setString(key, (<JSON.Str>val).toString());
-            } else if (val.isInteger) {
-              retval.setInteger(key, (<JSON.Integer>val).valueOf());
-            } else if (val.isFloat) {
-              retval.setFloat(key, (<JSON.Float>val).valueOf());
-            } else if (val.isBool) {
-              retval.setBoolean(key, (<JSON.Bool>val).valueOf());
-            }
-          }
-          retval.popObject();
+          
         }
 
-        retval.popArray(); // .data
-
-        retval.popObject(); // root
+        retval.popObject();
 
         return new Response(String.UTF8.encode(retval.toString()), {
           url: null,
@@ -155,5 +159,76 @@ export class JSONHandler extends AbstractPathHandler {
       headers: null,
       status: contentresponse.status,
     });
+  }
+
+  private filterSheet(data: JSON.Obj, sheet: string, offset: i32, limit: i32, encoder: JSONEncoder, type: string = ""): JSONEncoder {
+    const sheetdata = <JSON.Arr>data.getArr(sheet);
+    const sheetrows = sheetdata.valueOf();
+
+    const filtered = new Array<JSON.Value>();
+
+    if (offset <= 0) {
+      offset = 0;
+    }
+    if (limit <= 0) {
+      limit = sheetrows.length - offset;
+    }
+    for (let i = offset; // start at offset or zero
+      i < sheetrows.length && i < limit + offset; // go up to limit or end
+      i++) {
+      this.logger.debug("Index " + i.toString(10) + " is between offset " + offset.toString(10) + " and limit " + limit.toString(10));
+      filtered.push(sheetrows[i]);
+    }
+
+
+    this.logger.debug("Building JSON output with " + filtered.length.toString() + " results");
+
+    encoder.pushObject(""); // root
+    if (type != "") {
+      encoder.setString(":type", type);
+    }
+    
+    encoder.setInteger("limit", limit);
+    encoder.setInteger("offset", offset),
+    encoder.setInteger("total", filtered.length);
+
+    this.logger.debug("Metadata properties attached, building data array now");
+
+    encoder.pushArray("data"); // .data
+
+    for (let i = 0; i < filtered.length; i++) {
+      this.logger.debug("Adding element " + i.toString(10) + " of " + filtered.length.toString(10) + " to output");
+      const filteredobj = <JSON.Obj>filtered[i];
+      if (filteredobj == null || !filteredobj.isObj) {
+        this.logger.debug("Element is empty, returning empty object.");
+        encoder.pushObject("");
+        encoder.popObject();
+      }
+      encoder.pushObject("");
+      const keys = filteredobj.keys;
+
+      this.logger.debug("Adding element " + i.toString(10) + " of " + filtered.length.toString(10) + " to output with keys: " + keys.join(", "));
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
+        const val = filteredobj.get(key);
+        if (val == null) {
+          encoder.setNull(key);
+        } else if (val.isString) {
+          encoder.setString(key, (<JSON.Str>val).toString());
+        } else if (val.isInteger) {
+          encoder.setInteger(key, (<JSON.Integer>val).valueOf());
+        } else if (val.isFloat) {
+          encoder.setFloat(key, (<JSON.Float>val).valueOf());
+        } else if (val.isBool) {
+          encoder.setBoolean(key, (<JSON.Bool>val).valueOf());
+        }
+      }
+      encoder.popObject();
+    }
+
+    encoder.popArray(); // .data
+
+    encoder.popObject(); // root
+    return encoder;
   }
 }
