@@ -21,10 +21,7 @@ strains:
     code: *defaultRepo
     content: https://github.com/adobe/helix-pages.git#master
     static: https://github.com/adobe/helix-pages.git/htdocs#master
-    # universal runtime, using the helix test deployment subdomain for now.
     package: https://helix-pages.anywhere.run/pages_7_2_2
-    version-lock:
-      env: amazonwebservices
 
   - name: gcf
     code: *defaultRepo
@@ -57,24 +54,3 @@ strains:
     static: https://github.com/adobe/helix-pages.git/htdocs#master
     # universal runtime, using the helix-pages subdomain
     package: https://helix-pages.anywhere.run/pages_7_2_2
-
-  - name: breaking-202106
-    sticky: false
-    condition:
-      preflight.x-pages-version=: breaking-202106
-    code: https://github.com/adobe/helix-pages.git#breaking-202106
-    content: https://github.com/adobe/helix-pages.git#breaking-202106
-    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-202106
-    package: https://helix-pages.anywhere.run/pages_7-2-1-breaking-202106
-    version-lock:
-      word2md: ci3442
-
-  # temporary strain to test the metadata.json loading from sharepoint
-  - name: breaking-800
-    sticky: false
-    condition:
-      preflight.x-pages-version=: breaking-800
-    code: https://github.com/adobe/helix-pages.git#breaking-800
-    content: https://github.com/adobe/helix-pages.git#breaking-800
-    static: https://github.com/adobe/helix-pages.git/htdocs#breaking-800
-    package: https://helix-pages.anywhere.run/pages_6-1-0-breaking-800
