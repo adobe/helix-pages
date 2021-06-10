@@ -22,10 +22,12 @@ describe('Test sidekick bookmarklet', () => {
   const fixturesPrefix = `file://${__dirname}/sidekick`;
 
   const getPlugins = async (p) => p.evaluate(
-    () => Array.from(document.querySelectorAll('.hlx-sk > div'))
+    () => Array.from(document.querySelectorAll('.hlx-sk > div.env > div, .hlx-sk > div:not(.env)'))
       .map((plugin) => ({
         id: plugin.className,
         text: plugin.textContent,
+        buttonPressed: plugin.querySelector(':scope > button')
+          && plugin.querySelector(':scope > button').classList.contains('pressed'),
       })),
   );
 
@@ -91,6 +93,19 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-none.html`, { waitUntil: 'load' });
     const skHandle = await page.$('div.hlx-sk');
     assert.ok(skHandle, 'Did not render without config');
+    const plugins = await getPlugins(page);
+    assert.strictEqual(plugins.length, 0, 'Rendered unexpected plugins');
+    const zIndex = await page.evaluate(
+      (elem) => window.getComputedStyle(elem).getPropertyValue('z-index'),
+      skHandle,
+    );
+    assert.strictEqual(zIndex, '9999999', 'Did not apply default CSS');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Renders with irrelevant config', async () => {
+    await page.goto(`${fixturesPrefix}/config-wrong.html`, { waitUntil: 'load' });
+    const skHandle = await page.$('div.hlx-sk');
+    assert.ok(skHandle, 'Did not render with irrelevant config');
     const plugins = await getPlugins(page);
     assert.strictEqual(plugins.length, 0, 'Rendered unexpected plugins');
     const zIndex = await page.evaluate(
@@ -190,15 +205,19 @@ describe('Test sidekick bookmarklet', () => {
     await page.goto(`${fixturesPrefix}/config-plugin.html`, { waitUntil: 'load' });
     await page.evaluate(() => {
       window.hlx.sidekick.add({
-        id: 'foo',
+        id: 'edit',
         override: true,
         button: {
-          text: 'ReplaceFoo',
+          text: 'Replaced',
         },
       });
     });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ReplaceFoo'), 'Did not replace plugin');
+    const replacedPlugin = plugins.find((p) => p.id === 'edit' && p.text === 'Replaced');
+    const originalPluginIndex = plugins.findIndex((p) => p.id === 'edit');
+    const replacedPluginIndex = plugins.findIndex((p) => p.text === 'Replaced');
+    assert.ok(replacedPlugin, 'Did not replace plugin');
+    assert.strictEqual(replacedPluginIndex, originalPluginIndex, 'Replaced plugin did not retain original position');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Extends plugin', async () => {
@@ -209,11 +228,14 @@ describe('Test sidekick bookmarklet', () => {
         id: 'foo',
         button: {
           text: 'ExtendFoo',
+          isPressed: true,
         },
       });
     });
     const plugins = await getPlugins(page);
-    assert.ok(plugins.find((p) => p.id === 'foo' && p.text === 'ExtendFoo'), 'Did not extend plugin');
+    const extendedPlugin = plugins.find((p) => p.id === 'foo' && p.text === 'ExtendFoo');
+    assert.ok(extendedPlugin, 'Did not extend plugin');
+    assert.ok(extendedPlugin.buttonPressed, 'Extended plugin button not pressed');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Removes plugin', async () => {
@@ -334,7 +356,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://master--pages--adobe.hlx.page/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk',
+              'https://admin.hlx3.page/adobe/pages/master/hlx_aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8yRTFQTnBoQWhUWkFackRqZXZNMEJYN0NacjdLam9tdUJPNnhFMVRVbzlOVS9lZGl0.lnk',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -372,7 +394,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://master--theblog--adobe.hlx.page/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/hlx_aHR0cHM6Ly9hZG9iZS5zaGFyZXBvaW50LmNvbS86dzovci9zaXRlcy9UaGVCbG9nL19sYXlvdXRzLzE1L0RvYy5hc3B4P3NvdXJjZWRvYz0lN0JFOEVDODBDQi0yNEMzLTRCOTUtQjA4Mi1DNTFGRDhCQzg3NjAlN0QmZmlsZT1jYWZlYmFiZS5kb2N4JmFjdGlvbj1kZWZhdWx0Jm1vYmlsZXJlZGlyZWN0PXRydWU=.lnk',
               'Staging lookup URL not opened',
             );
             resolve();
@@ -438,7 +460,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://theblog--adobe.hlx.page/en/topics/bla.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
               'Editor lookup URL not opened',
             );
             resolve();
@@ -464,7 +486,7 @@ describe('Test sidekick bookmarklet', () => {
           try {
             assert.strictEqual(
               target.url(),
-              'https://blog.adobe.com/en/topics/bla.lnk',
+              'https://admin.hlx3.page/adobe/theblog/master/en/topics/bla.lnk',
               'Editor lookup URL not opened',
             );
             resolve();
@@ -676,13 +698,29 @@ describe('Test sidekick bookmarklet', () => {
       await page.evaluate(() => window.hlx.sidekick.isInner() && window.hlx.sidekick.isHelix()),
       'Did not detect inner CDN URL',
     );
+    // check with different ref
+    await page.evaluate(() => {
+      window.hlx.sidekick.location.host = 'test--theblog--adobe.hlx.page';
+    });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isInner()),
+      'Did not detect inner CDN URL with different ref',
+    );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Outer CDN is correctly detected', async () => {
-    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    await page.goto(`${fixturesPrefix}/is-live.html`, { waitUntil: 'load' });
     assert.ok(
       await page.evaluate(() => window.hlx.sidekick.isOuter() && window.hlx.sidekick.isHelix()),
       'Did not detect outer CDN URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Production is correctly detected', async () => {
+    await page.goto(`${fixturesPrefix}/edit-production.html`, { waitUntil: 'load' });
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.isProd() && window.hlx.sidekick.isHelix()),
+      'Did not detect production URL',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

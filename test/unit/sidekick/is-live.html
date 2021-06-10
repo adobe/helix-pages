@@ -3,21 +3,15 @@
     <meta charset="utf-8"/>
   </head>
   <body>
+    <!-- switch to production from staging URL -->
+    <input type="hidden" id="sidekick_test_location" value="https://theblog--adobe.hlx.live/en/topics/bla.html"/>
     <script>
       (window.hlx = window.hlx || {}).sidekickConfig = {
+        host: 'blog.adobe.com',
+        project: 'Adobe Blog',
         owner: 'adobe',
         repo: 'theblog',
-        ref: 'foo',
-        host: 'blog.adobe.com',
-        plugins: [
-          {
-            id: 'foo',
-            button: {
-              text: 'Foo',
-              action: () => {},
-            }
-          }
-        ],
+        ref: 'master',
       };
     </script>
     <script src="../../../tools/sidekick/app.js"></script>

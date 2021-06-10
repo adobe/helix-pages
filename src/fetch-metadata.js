@@ -29,9 +29,9 @@ async function fetchMetadata(context, action) {
     // schedule fetch task
     downloader.fetch({
       uri: `https://${ref}--${repo}--${owner}.hlx.page/metadata.json`,
-      headers,
       errorOn404: false,
       options: {
+        headers,
         timeout: 20000,
       },
       id: 'metadata',

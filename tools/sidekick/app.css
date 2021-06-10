@@ -29,6 +29,8 @@
   --hlx-sk-button-hover-bg: #707070;
   --hlx-sk-button-hover-border: #707070;
   --hlx-sk-button-hover-color: white;
+  --hlx-sk-button-pressed-bg: #c0c0c0;
+  --hlx-sk-button-pressed-color: #505050;
   --hlx-sk-button-border-radius: 6px;
   --hlx-sk-button-disabled-color: #909090;
   --hlx-sk-button-disabled-border: solid 1px var(--hlx-sk-button-disabled-color);
@@ -47,8 +49,10 @@
     --hlx-sk-color: #dedede;
     --hlx-sk-button-color: #dedede;
     --hlx-sk-button-hover-bg: #909090;
-    --hlx-sk-button-hover-border: #303030;
+    --hlx-sk-button-hover-border: var(--hlx-sk-color);
     --hlx-sk-button-hover-color: #303030;
+    --hlx-sk-button-pressed-bg: #505050;
+    --hlx-sk-button-pressed-color: white;
     --hlx-sk-button-disabled-color: #707070;
     --hlx-sk-button-disabled-border: solid 1px var(--hlx-sk-button-disabled-color);
     --hlx-sk-modal-overlay-bg: rgba(127, 127, 127, 0.8);
@@ -126,7 +130,7 @@
 .hlx-sk button {
   background-color: transparent;
   border: var(--hlx-sk-button-border);
-  border-radius: 6px;
+  border-radius: var(--hlx-sk-button-border-radius);
   color: var(--hlx-sk-button-color);
   font-size: var(--hlx-sk-button-font-size);
   line-height: var(--hlx-sk-line-height);
@@ -141,11 +145,15 @@
 }
 
 .hlx-sk button:hover,
-.hlx-sk button:focus,
-.hlx-sk button.pressed {
+.hlx-sk button:focus {
   background-color: var(--hlx-sk-button-hover-bg);
   border-color: var(--hlx-sk-button-hover-border);
   color: var(--hlx-sk-button-hover-color);
+}
+
+.hlx-sk button.pressed {
+  background-color: var(--hlx-sk-button-pressed-bg);
+  color: var(--hlx-sk-button-pressed-color);
 }
 
 .hlx-sk button:disabled {
@@ -155,6 +163,32 @@
 
 .hlx-sk button:disabled:hover {
   background-color: var(--hlx-sk-button-disabled-hover-bg);
+}
+
+.hlx-sk .env {
+  display: flex;
+  flex-direction: row;
+  margin-right: 8px;
+}
+
+.hlx-sk .env button,
+.hlx-sk .env button.pressed {
+  margin-right: 0;
+  border-right-width: 0;
+  border-radius: 0;
+}
+
+.hlx-sk .env > div:first-child button,
+.hlx-sk .env > div:first-child button.pressed {
+  border-top-left-radius: var(--hlx-sk-button-border-radius);
+  border-bottom-left-radius: var(--hlx-sk-button-border-radius);
+}
+
+.hlx-sk .env > div:last-child button,
+.hlx-sk .env > div:last-child button.pressed {
+  border-top-right-radius: var(--hlx-sk-button-border-radius);
+  border-bottom-right-radius: var(--hlx-sk-button-border-radius);
+  border-right-width: 1px;
 }
 
 .hlx-sk-overlay {
@@ -254,6 +288,14 @@
 
 .hlx-sk .edit button::before {
   content: "Edit";
+}
+
+.hlx-sk .live button::before {
+  content: "Live";
+}
+
+.hlx-sk .prod button::before {
+  content: "Production";
 }
 
 .hlx-sk .reload button::before {
