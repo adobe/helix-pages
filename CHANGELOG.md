@@ -1,3 +1,10 @@
+## [7.2.3](https://github.com/adobe/helix-pages/compare/v7.2.2...v7.2.3) (2021-06-10)
+
+
+### Bug Fixes
+
+* **deploy:** do not pin the universal strain to amazon web services ([#841](https://github.com/adobe/helix-pages/issues/841)) ([07f87ea](https://github.com/adobe/helix-pages/commit/07f87ea97e33e4a4ef83b152f900d9e0cea113eb))
+
 ## [7.2.2](https://github.com/adobe/helix-pages/compare/v7.2.1...v7.2.2) (2021-06-07)
 
 
