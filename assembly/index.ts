@@ -72,7 +72,7 @@ function loadConfig(req: Request): MaybeResponse<GlobalConfig> {
     )
   }
 
-  const configpath = "/" + owner + "/" + repo + "/" + ref + "/config.json";
+  const configpath = "/" + owner + "/" + repo + "/" + ref + "/helix-config.json";
   // get config
   // https://helix3-prototype-private-bucket.s3.us-east-1.amazonaws.com/
   const confighost = 'helix-code-bus.s3.us-east-1.amazonaws.com';
