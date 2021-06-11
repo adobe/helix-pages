@@ -446,7 +446,7 @@ workflows:
             - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
-#            - run_diff_tests
+            - run_diff_tests
           filters:
             branches:
               ignore:
