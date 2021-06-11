@@ -1,3 +1,10 @@
+## [7.2.4](https://github.com/adobe/helix-pages/compare/v7.2.3...v7.2.4) (2021-06-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-pipeline to v14.0.11 ([#933](https://github.com/adobe/helix-pages/issues/933)) ([a7a133f](https://github.com/adobe/helix-pages/commit/a7a133f3cb4b343d29a3fc729b3d0dbed3787686))
+
 ## [7.2.3](https://github.com/adobe/helix-pages/compare/v7.2.2...v7.2.3) (2021-06-10)
 
 
