@@ -42,7 +42,7 @@
   "dependencies": {
     "@adobe/helix-deploy": "4.8.0",
     "@adobe/helix-fetch": "2.2.1",
-    "@adobe/helix-pipeline": "14.0.9",
+    "@adobe/helix-pipeline": "14.0.11",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-universal": "1.6.2",
     "@adobe/helix-universal-logger": "1.0.4",
