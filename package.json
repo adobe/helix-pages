@@ -41,7 +41,7 @@
   "homepage": "https://github.com/adobe/helix-pages#readme",
   "dependencies": {
     "@adobe/helix-deploy": "4.8.0",
-    "@adobe/helix-fetch": "2.2.1",
+    "@adobe/helix-fetch": "2.3.0",
     "@adobe/helix-pipeline": "14.0.11",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-universal": "1.6.2",
