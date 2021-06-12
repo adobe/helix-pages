@@ -1,3 +1,10 @@
+## [7.2.5](https://github.com/adobe/helix-pages/compare/v7.2.4...v7.2.5) (2021-06-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-fetch to v2.3.0 ([#934](https://github.com/adobe/helix-pages/issues/934)) ([f03e10d](https://github.com/adobe/helix-pages/commit/f03e10d5b660e5e94d1b2d2b99b6574a8d032445))
+
 ## [7.2.4](https://github.com/adobe/helix-pages/compare/v7.2.3...v7.2.4) (2021-06-11)
 
 
