@@ -42,7 +42,7 @@
   "dependencies": {
     "@adobe/helix-deploy": "4.8.2",
     "@adobe/helix-fetch": "2.3.0",
-    "@adobe/helix-pipeline": "14.0.13",
+    "@adobe/helix-pipeline": "14.0.15",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-universal": "1.6.3",
     "@adobe/helix-universal-logger": "1.0.5",
@@ -53,7 +53,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.5",
     "@adobe/helix-cli": "13.4.43",
-    "@adobe/helix-shared-config": "1.1.5",
+    "@adobe/helix-shared-config": "1.1.6",
     "@adobe/helix-shared-dom": "1.0.4",
     "@adobe/helix-testutils": "0.4.5",
     "@semantic-release/changelog": "5.0.1",
