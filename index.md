@@ -70,6 +70,7 @@ function takeMeThere() {
 
 - [Add an Atom feed to your site](docs/feed.md)
 - [Add an Index to your site](https://main--helix-home--adobe.hlx.page/docs/setup-indexing.html)
+- [Configure the Sidekick for your site](tools/sidekick/config.md)
 
 ## For authors
 
