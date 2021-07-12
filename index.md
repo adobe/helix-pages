@@ -2,24 +2,23 @@
 
 Welcome to Helix Pages!
 
-To use it, change the current URL to `https://<repo>--<owner>.project-helix.page`.
-`<owner>` and `<repo>` must refer to a valid Git repository.
+No sign-up: All you need is a public GitHub repository, then you can navigate to `https://<ref>--<repo>--<owner>.hlx.page`
+(`<owner>`, `<repo>` and `<ref>` must refer to a valid GitHub repository).
 
-Example: <https://helix-home--adobe.project-helix.page/README.html>
+Example: <https://main--helix-home--adobe.hlx.page/>
 
 ---
 
 ### Try it...
-Simply paste a GitHub URL to a publicly visible Markdown file (`.md`) here...
+Simply paste a GitHub URL to a public repository here...
 
 <script>
 
 function splitURL() {
-    const giturl = document.getElementById('giturl').value;
-    const resegs = /(?<!\?.+)(?<=\/)[\w-\.]+(?=[/\r\n?]|$)/g;
-    const segments = [...giturl.matchAll(resegs)];
-    const path = giturl.substr(segments[4].index + segments[4][0].length);
-    return ({ "user": segments[1][0], "repo": segments[2][0], "branch": segments[4][0], "path": path});
+    const giturl = new URL(document.getElementById('giturl').value);
+    const [user, repo, _, branch = 'main', ...psegs] = giturl.pathname.substring(1).split('/');
+    const path = `/${psegs.join('/') || 'README'}`;
+    return ({ user, repo, branch, path });
 }
 
 function change(evt) {
@@ -58,13 +57,13 @@ function takeMeThere() {
     const separator = '--';
     const pathstub = c.path.substr(0, c.path.length - 3);
     const branchprefix = (c.branch === 'master' ? '' : c.branch + separator);
-    const url = `https://${branchprefix}${c.repo}${separator}${c.user}.hlx.page${pathstub}.html`;
-    window.location = url;
+    const url = `https://${branchprefix}${c.repo}${separator}${c.user}.hlx.page${pathstub}`;
+    window.open(url);
 }
 </script>
-<input onkeyup="change(event)" type="text" id="giturl" aria-label="Github URL" placeholder="GitHub URL"></input>
+<input onkeyup="change(event)" type="text" id="giturl" aria-label="Github URL" placeholder="https://github.com/..."></input>
 <span id="alert" class="alert" style="display:none"></span>
-<button id="takemethere" onclick="takeMeThere()">Take Me There</button>
+<button id="takemethere" onclick="takeMeThere()">Take me to my Helix Pages site!</button>
 
 ## For developers
 
