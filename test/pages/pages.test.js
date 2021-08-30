@@ -181,10 +181,16 @@ describe('document equivalence', function suite() {
           originalURL, originalContent, testURL, testContent,
         } = info;
 
-        const orig_dom = new JSDOM(originalContent).window.document;
+        // exclude image hashes that may vary
+        const noHashOriginalContent = originalContent.replace(/\/media_(.*?)\./gm, '/media_HASH.');
+
+        const orig_dom = new JSDOM(noHashOriginalContent).window.document;
         filterDOM(orig_dom);
 
-        const test_text = fixDomainInTestContent(testContent);
+        // exclude image hashes that may vary
+        const noHashTestContent = testContent.replace(/\/media_(.*?)\./gm, '/media_HASH.');
+
+        const test_text = fixDomainInTestContent(noHashTestContent);
         const test_dom = new JSDOM(test_text).window.document;
         filterDOM(test_dom);
 
