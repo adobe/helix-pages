@@ -118,9 +118,9 @@ async function getMostVisited() {
 async function getTestSetup() {
   const mostVisitedUrls = await getMostVisited();
 
-  mostVisitedUrls.push({
-    req_url: 'https://theblog--adobe.hlx.page/en/publish/2019/11/22/asia-pacific-insiders-share-their-inspiration-from-max-2019.html',
-  });
+  // mostVisitedUrls.push({
+  //   req_url: 'https://theblog--adobe.hlx.page/en/publish/2019/11/22/asia-pacific-insiders-share-their-inspiration-from-max-2019.html',
+  // });
 
   // construct array of promises from fetch
   return processQueue(mostVisitedUrls, async (mostVisitedObj, _, results) => {
