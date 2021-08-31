@@ -130,6 +130,10 @@ async function getTestSetup() {
       testURL,
     };
 
+    // send PURGE requests to flush the cache
+    await fetch(originalURL, { method: 'PURGE' });
+    await fetch(testURL, { method: 'PURGE' });
+
     /* eslint-disable no-await-in-loop */
     let oRetries = 3;
     while (ret.originalStatus !== 200 && oRetries > 0) {
