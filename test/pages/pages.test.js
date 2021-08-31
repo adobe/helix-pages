@@ -118,9 +118,9 @@ async function getMostVisited() {
 async function getTestSetup() {
   const mostVisitedUrls = await getMostVisited();
 
-  // mostVisitedUrls.push({
-  //   req_url: 'https://theblog--adobe.hlx.page/en/publish/2019/11/22/asia-pacific-insiders-share-their-inspiration-from-max-2019.html',
-  // });
+  mostVisitedUrls.push({
+    req_url: 'https://theblog--adobe.hlx.page/en/publish/2019/11/22/asia-pacific-insiders-share-their-inspiration-from-max-2019.html',
+  });
 
   // construct array of promises from fetch
   return processQueue(mostVisitedUrls, async (mostVisitedObj, _, results) => {
@@ -129,6 +129,13 @@ async function getTestSetup() {
       originalURL,
       testURL,
     };
+
+    // send PURGE requests to flush the cache
+    await fetch(originalURL, { method: 'PURGE' });
+    await fetch(testURL, { method: 'PURGE' });
+
+    // "wait" 5s for the purge to be executed
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     /* eslint-disable no-await-in-loop */
     let oRetries = 3;
@@ -181,16 +188,10 @@ describe('document equivalence', function suite() {
           originalURL, originalContent, testURL, testContent,
         } = info;
 
-        // exclude image hashes that may vary
-        const noHashOriginalContent = originalContent.replace(/\/media_(.*?)\./gm, '/media_HASH.');
-
-        const orig_dom = new JSDOM(noHashOriginalContent).window.document;
+        const orig_dom = new JSDOM(originalContent).window.document;
         filterDOM(orig_dom);
 
-        // exclude image hashes that may vary
-        const noHashTestContent = testContent.replace(/\/media_(.*?)\./gm, '/media_HASH.');
-
-        const test_text = fixDomainInTestContent(noHashTestContent);
+        const test_text = fixDomainInTestContent(testContent);
         const test_dom = new JSDOM(test_text).window.document;
         filterDOM(test_dom);
 
