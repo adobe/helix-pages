@@ -134,6 +134,9 @@ async function getTestSetup() {
     await fetch(originalURL, { method: 'PURGE' });
     await fetch(testURL, { method: 'PURGE' });
 
+    // "wait" 5s for the purge to be executed
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     /* eslint-disable no-await-in-loop */
     let oRetries = 3;
     while (ret.originalStatus !== 200 && oRetries > 0) {
