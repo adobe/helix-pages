@@ -1,3 +1,15 @@
+# [7.3.0](https://github.com/adobe/helix-pages/compare/v7.2.6...v7.3.0) (2021-08-31)
+
+
+### Bug Fixes
+
+* attempt to relax the tests by ignoring the image hashes ([3315b2e](https://github.com/adobe/helix-pages/commit/3315b2e79cbae181f483eddd5ec568dbab46c818))
+
+
+### Features
+
+* **sidekick:** process hidden hlx3 flag [skip ci] ([d7433f6](https://github.com/adobe/helix-pages/commit/d7433f69ea488ad23b310d55877f268bbfd243a4))
+
 ## [7.2.6](https://github.com/adobe/helix-pages/compare/v7.2.5...v7.2.6) (2021-06-14)
 
 
