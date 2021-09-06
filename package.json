@@ -69,7 +69,7 @@
     "jquery": "3.6.0",
     "jsdoc-to-markdown": "7.0.1",
     "jsdom": "16.7.0",
-    "mocha": "9.1.0",
+    "mocha": "9.1.1",
     "mocha-junit-reporter": "2.0.0",
     "nock": "13.1.3",
     "nock-puppeteer": "1.0.6",
