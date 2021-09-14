@@ -1,3 +1,10 @@
+## [7.3.1](https://github.com/adobe/helix-pages/compare/v7.3.0...v7.3.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @adobe/helix-deploy to v4.9.10 ([#977](https://github.com/adobe/helix-pages/issues/977)) ([35f1b63](https://github.com/adobe/helix-pages/commit/35f1b63a029e259b0399c30b4372ea116bb028c6))
+
 # [7.3.0](https://github.com/adobe/helix-pages/compare/v7.2.6...v7.3.0) (2021-08-31)
 
 
