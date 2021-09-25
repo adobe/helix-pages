@@ -25,7 +25,7 @@ parameters:
 
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
-  helix-gcloud-setup: adobe/helix-gcloud-setup@1.0.0
+  helix-gcloud-setup: adobe/helix-gcloud-setup@1.0.1
 
 references:
   run_smoketests: &run_smoketests
