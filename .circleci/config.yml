@@ -25,7 +25,7 @@ parameters:
 
 orbs:
   puppeteer: threetreeslight/puppeteer@0.1.2
-  helix-gcloud-setup: adobe/helix-gcloud-setup@1.0.0
+  helix-gcloud-setup: adobe/helix-gcloud-setup@1.0.1
 
 references:
   run_smoketests: &run_smoketests
@@ -82,7 +82,7 @@ jobs:
       - setup
       - run:
           name: Installing Helix CLI
-          command: npm install @adobe/helix-cli@">=5" --save=false
+          command: npm install @adobe/helix-cli@"<14" --save=false
 
       - run:
           name: Prepare packackge secrets
@@ -309,7 +309,7 @@ jobs:
 
       - run:
           name: Installing Helix CLI
-          command: npm install @adobe/helix-cli@">=5" --save=false
+          command: npm install @adobe/helix-cli@"<14" --save=false
 
       - run:
           name: Reset Working Copy
