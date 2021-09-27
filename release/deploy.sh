@@ -46,7 +46,7 @@ hedy -v --target=wsk,aws,google --deploy --entry-file=./cgi-bin/feed.js         
 
 # update package secrets
 if [[ -f ".pages-package.env" ]]; then
-  hedy -v --no-build --no-hints --update-package --no-test
+  hedy -v --no-build --no-hints --update-package --aws-parameter-manager=system --no-test
 fi
 
 # update helix-config.yaml
