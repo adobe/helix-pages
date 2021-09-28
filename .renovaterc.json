@@ -1,3 +1,9 @@
 {
-  "extends": ["github>adobe/helix-shared"]
+  "extends": ["github>adobe/helix-shared"],
+  "packageRules": [
+    {
+      "packageNames": ["@adobe/helix-universal"],
+      "allowedVersions": "<1.7.0"
+    }
+  ]
 }
