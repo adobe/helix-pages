@@ -400,18 +400,6 @@ workflows:
               ignore:
                 - /breaking-.*/
       - run_smoketests:
-          name: adobe/helix-example-basic#test-code
-          owner: adobe
-          repo: helix-example-basic
-          branch: test-code
-          script: test:smoke
-          requires:
-            - init_smoketests
-          filters:
-            branches:
-              ignore:
-                - /breaking-.*/
-      - run_smoketests:
           name: adobe/theblog-tests
           owner: adobe
           repo: theblog-tests
@@ -443,7 +431,6 @@ workflows:
       - finalize_smoketests:
           requires:
             - adobe/helix-pages
-            - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
             - run_diff_tests
@@ -485,14 +472,6 @@ workflows:
         requires:
             - init_smoketests
     - run_smoketests:
-        name: adobe/helix-example-basic#test-code
-        owner: adobe
-        repo: helix-example-basic
-        branch: test-code
-        script: test:smoke
-        requires:
-            - init_smoketests
-    - run_smoketests:
         name: adobe/theblog-tests
         owner: adobe
         repo: theblog-tests
@@ -512,7 +491,6 @@ workflows:
     - finalize_smoketests:
         requires:
             - adobe/helix-pages
-            - adobe/helix-example-basic#test-code
             - adobe/ferrumjsorg
             - adobe/theblog-tests
             - run_diff_tests
