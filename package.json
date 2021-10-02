@@ -78,6 +78,6 @@
     "puppeteer": "10.4.0",
     "sanitize-filename": "1.6.3",
     "semantic-release": "18.0.0",
-    "yargs": "17.2.0"
+    "yargs": "17.2.1"
   }
 }
