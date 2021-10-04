@@ -13,7 +13,7 @@ Here's a [tutorial](/tutorial/) that will get you started in 10 minutes...
 
 ## For authors
 
-- [Add the Sidekick to your bookmark bar](tools/sidekick/)
+- [Add the Sidekick to your browser](/tools/sidekick/)
 
 ## Service status
 
