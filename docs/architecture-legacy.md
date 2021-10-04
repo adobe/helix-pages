@@ -1,6 +1,6 @@
 # Helix 2 Architecture
 
-_Note: This page describes the architecture of a deprecated Helix version. If you are looking for the current Helix architecture, please [click here](./architectue.md) instead._
+_Note: This page describes the architecture of a deprecated Helix version. If you are looking for the current Helix architecture, please [click here](./architecture.md) instead._
 
 Helix 2 was introduced as "Helix Pages", a simple, opinionated configuration of a Helix 1 deployment that could be used as a SaaS which would allow client-side customization.
 
