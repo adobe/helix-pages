@@ -59,9 +59,3 @@ function decoratePage() {
 window.addEventListener('DOMContentLoaded', () => {
   decoratePage();
 });
-
-// fix for global parcelRequire declaration
-// see https://twitter.com/dfkaye/status/1044693110700171264
-window.global = window;
-// eslint-disable-next-line no-unused-vars
-let parcelRequire;
