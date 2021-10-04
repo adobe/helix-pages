@@ -4,7 +4,7 @@ _Note: This page describes the architecture of a deprecated Helix version. If yo
 
 Helix 2 was introduced as "Helix Pages", a simple, opinionated configuration of a Helix 1 deployment that could be used as a SaaS which would allow client-side customization.
 
-[Helix 3](#helix-3) is an evolution that simplifies the architecture to increase the overall performance and availability of the service. Helix 2 will be phased out over the coming months.
+[Helix 3](./architecture.md) is an evolution that simplifies the architecture to increase the overall performance and availability of the service. Helix 2 will be phased out over the coming months.
 
 ![](./Helix%20Architecture/Helix%202%20Stack.png)
 
