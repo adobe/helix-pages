@@ -18,11 +18,5 @@ Here's a fun [tutorial](/tutorial/) that will get you started in 10 minutes...
 
 ## Service status
 
-<script>
-// fix for global parcelRequire declaration
-// see https://twitter.com/dfkaye/status/1044693110700171264
-window.global = window;
-var parcelRequire;
-</script>
 <script src="https://unpkg.com/@statuspage/status-widget/dist/index.js"></script> 
 <statuspage-widget src="https://status.project-helix.io"></statuspage-widget>
