@@ -53,7 +53,7 @@ At the Inner CDN level, no caching is applied, so that all requests accurately r
 
 ### PIPE
 
-The main delivery functionality is provided by the [`helix-pipeline-service`](https://github.com/adobe/helix-pipeline-service), which uses the [`helix-pipeline`](https://github.com/adobe/helix-pipeline) framework to render HTML, and renders filtered JSON directly (after applying some filters).
+The main delivery functionality is provided by the [`helix-pipeline-service`](https://github.com/adobe/helix-pipeline-service), which uses the [`helix-pipeline`](https://github.com/adobe/helix-pipeline) framework to render HTML, and [renders filtered JSON](./architecture-json.md) directly.
 
 The Pipeline Service pulls configuration from the Code Bus and the published Content from the Content Bus.
 
