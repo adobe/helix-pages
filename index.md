@@ -18,6 +18,5 @@ Here's a fun [tutorial](/tutorial/) that will get you started in 10 minutes...
 
 ## Service status
 
-<script src="https://35pzf5k01jvm.statuspage.io/embed/script.js"></script>
 <script src="https://unpkg.com/@statuspage/status-widget/dist/index.js"></script> 
 <statuspage-widget src="https://status.project-helix.io"></statuspage-widget>
