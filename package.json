@@ -45,7 +45,7 @@
     "@adobe/helix-pipeline": "14.0.42",
     "@adobe/helix-shared-wrap": "1.0.0",
     "@adobe/helix-universal": "1.6.12",
-    "@adobe/helix-universal-logger": "1.0.9",
+    "@adobe/helix-universal-logger": "1.1.0",
     "@adobe/htlengine": "6.3.8",
     "xml-escape": "1.1.0",
     "yaml": "1.10.2"
