@@ -53,7 +53,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.2.0",
     "@adobe/helix-cli": "13.4.86",
-    "@adobe/helix-shared-config": "1.4.1",
+    "@adobe/helix-shared-config": "1.4.2",
     "@adobe/helix-shared-dom": "1.1.0",
     "@adobe/helix-testutils": "0.4.5",
     "@semantic-release/changelog": "6.0.0",
