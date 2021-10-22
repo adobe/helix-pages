@@ -79,3 +79,4 @@ function takeMeThere() {
 - [Add the Sidekick to your bookmark bar](tools/sidekick/)
 Fri Oct 22 18:15:22 CEST 2021
 Fri Oct 22 18:18:28 CEST 2021
+Fri Oct 22 19:18:50 CEST 2021
