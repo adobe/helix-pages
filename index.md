@@ -77,3 +77,4 @@ function takeMeThere() {
 ## For authors
 
 - [Add the Sidekick to your bookmark bar](tools/sidekick/)
+Fri Oct 22 18:15:22 CEST 2021
