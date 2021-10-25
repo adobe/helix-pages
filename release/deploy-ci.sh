@@ -18,9 +18,9 @@ hedy -v --target=wsk,aws,google --deploy --entry-file=.hlx/build/src/html.js    
       --fastly-service-id 3F0xJzfyehcX3g3DQGubj9 \
       --checkpath /_status_check/healthcheck.json  # hardcoded health check path
 echo "Gateway Updated."
-hedy -v --target=wsk,aws,google --deploy --entry-file=.hlx/build/src/embed_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=embed_html --cleanup-ci=24h
-hedy -v --target=wsk,aws,google --deploy --entry-file=.hlx/build/src/plain_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=plain_html --cleanup-ci=24h
-hedy -v --target=wsk,aws,google --deploy --entry-file=./cgi-bin/feed.js            --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com' --cleanup-ci=24h
+hedy -v --target=wsk,aws,google --deploy --entry-file=.hlx/build/src/embed_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=embed_html --cleanup-ci=3d
+hedy -v --target=wsk,aws,google --deploy --entry-file=.hlx/build/src/plain_html.js --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=plain_html --cleanup-ci=3d
+hedy -v --target=wsk,aws,google --deploy --entry-file=./cgi-bin/feed.js            --pkgVersion=ci$CIRCLE_BUILD_NUM --property.scriptName=cgi-bin-feed    --test='?src=/en/query-index.json%3Flimit=1&id=path&title=title&updated=date&originalHost=blog.adobe.com' --cleanup-ci=3d
 
 # update package secrets
 if [[ -f ".pages-package.env" ]]; then
