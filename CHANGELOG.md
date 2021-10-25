@@ -1,3 +1,13 @@
+## [7.3.3](https://github.com/adobe/helix-pages/compare/v7.3.2...v7.3.3) (2021-10-25)
+
+
+### Bug Fixes
+
+* **deps:** update adobe fixes ([#1012](https://github.com/adobe/helix-pages/issues/1012)) ([60ae2f0](https://github.com/adobe/helix-pages/commit/60ae2f0147ac9c0ee23bdfc29ee484be6029aac9))
+* **deps:** update adobe fixes ([#1014](https://github.com/adobe/helix-pages/issues/1014)) ([514f665](https://github.com/adobe/helix-pages/commit/514f665ab615bf4147170c58b37318cadc52e258))
+* **deps:** update dependency @adobe/helix-deploy to v4.10.0 ([#989](https://github.com/adobe/helix-pages/issues/989)) ([540b97a](https://github.com/adobe/helix-pages/commit/540b97a1aad2ed50918ddbbee6eb7f717820fb58))
+* **deps:** update dependency @adobe/helix-pipeline to v14.0.43 ([#1007](https://github.com/adobe/helix-pages/issues/1007)) ([00c6851](https://github.com/adobe/helix-pages/commit/00c6851f648f5e914864189089505004e6857ec1))
+
 ## [7.3.2](https://github.com/adobe/helix-pages/compare/v7.3.1...v7.3.2) (2021-09-18)
 
 
