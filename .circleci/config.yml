@@ -274,7 +274,7 @@ jobs:
             - project/junit
 
   finalize_smoketests:
-    executor: node12
+    executor: node14
     steps:
       - attach_workspace:
           at: /home/circleci
