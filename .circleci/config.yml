@@ -1,10 +1,10 @@
 version: 2.1
 
 executors:
-  node12:
+  node14:
     docker:
-      # use latest node 12 on debian
-      - image: circleci/node:12
+      # use latest node 14 on debian
+      - image: circleci/node:14
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
       NODE_ENV: development # Only needed if puppeteer is in `devDependencies`
@@ -29,7 +29,7 @@ orbs:
 
 references:
   run_smoketests: &run_smoketests
-    executor: node12
+    executor: node14
     steps:
 
 commands:
@@ -55,7 +55,7 @@ commands:
 
 jobs:
   build:
-    executor: node12
+    executor: node14
     steps:
       - setup
       - run:
@@ -77,7 +77,7 @@ jobs:
 
 
   init_smoketests:
-    executor: node12
+    executor: node14
     steps:
       - setup
       - run:
@@ -175,7 +175,7 @@ jobs:
             - .npm
 
   run_smoketests:
-    executor: node12
+    executor: node14
     parameters:
         owner:
             type: string
@@ -231,7 +231,7 @@ jobs:
             - project/junit
 
   run_generic_smoketests:
-    executor: node12
+    executor: node14
     parameters:
         owner:
             type: string
@@ -287,7 +287,7 @@ jobs:
           path: junit
 
   publish:
-    executor: node12
+    executor: node14
     steps:
       - setup
 
@@ -339,7 +339,7 @@ jobs:
           command: npm run publish
 
   run_diff_tests:
-    executor: node12
+    executor: node14
     steps:
       - attach_workspace:
           at: /home/circleci
