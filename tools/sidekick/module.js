@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global window, document, navigator, fetch, CustomEvent, HTMLElement */
 /* eslint-disable no-console, no-alert */
 
 'use strict';
@@ -428,7 +427,6 @@
       ['project', config.project || ''],
       ['from', from || ''],
       ['giturl', `https://github.com/${config.owner}/${config.repo}/tree/${config.ref}`],
-      ['hlx3', config.hlx3],
     ]).toString();
     return shareUrl.toString();
   }
@@ -1000,11 +998,8 @@
       if (this.root.classList.contains('hlx-sk-hidden')) {
         this.root.classList.remove('hlx-sk-hidden');
       }
-      if (this.config.pushDown
-        && !this.hasAttribute('pushdown')
-        && this.location.host !== 'docs.google.com') {
+      if (this.config.pushDown && this.location.host !== 'docs.google.com') {
         // push down content
-        this.setAttribute('pushdown', '');
         this.config.pushDownElements.forEach((elem) => {
           // sidekick shown, push element down
           const currentMarginTop = parseInt(elem.style.marginTop, 10);
@@ -1030,11 +1025,8 @@
         this.root.classList.add('hlx-sk-hidden');
       }
       this.hideModal();
-      if (this.config.pushDown
-        && this.hasAttribute('pushdown')
-        && this.location.host !== 'docs.google.com') {
+      if (this.config.pushDown && this.location.host !== 'docs.google.com') {
         // revert push down of content
-        this.removeAttribute('pushdown');
         this.config.pushDownElements.forEach((elem) => {
           elem.style.marginTop = 'initial';
         });
