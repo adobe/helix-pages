@@ -5,6 +5,7 @@ test/integration
 test/integration-with-cgi-bin
 test/tmp/*
 test/loadtests/*
+tools/sidekick/*
 tmp/*
 coverage/*
 google/*
