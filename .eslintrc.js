@@ -13,6 +13,7 @@
 module.exports = {
   root: true,
   extends: '@adobe/helix',
+  ignorePatterns: ['tools/sidekick/*.js'],
   rules: {
     // allow reassigning param
     'no-param-reassign': [2, { props: false }],
