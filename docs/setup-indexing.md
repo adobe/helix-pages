@@ -48,7 +48,7 @@ your page.
 
 ## Setting up more index configurations
 
-You can have more than index configuration in the same `helix-query.yaml`, where different
+You can have more than one index configuration in the same `helix-query.yaml`, where different
 branches are indexed into different Excel workbooks. Again see
 [Reference](https://github.com/adobe/helix-index-files#reference) for more details
 
