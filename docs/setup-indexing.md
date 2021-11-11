@@ -7,7 +7,7 @@ an Excel workbook in a SharePoint folder, only, is supported.
 
 If you start with the `helix-pages-starter` project you will have a `helix-query.yaml` configuration
 file in your GitHub repository. After having setup your `fstab.yaml` with a mountpoint that points
-into your SharePoint folder, locate a folder where your query index will be located.
+into your SharePoint folder, go to a folder where your query index will be located.
 
 Now enter the target URL of that query index location:
 
@@ -16,6 +16,14 @@ Now enter the target URL of that query index location:
 3. Paste the link into the `helix-query.yaml`s target property
 4. Remove the query string in that link (the question mark `?` and all that follows)
 5. Append the name of your Excel workbook, e.g. `/query-index.xlsx`
+
+As an example, if the link to the folder is as follows:
+
+`https://adobe-my.sharepoint.com/:f:/r/personal/bob/Documents/mysite?csf=1&web=1&e=c7xaOP`
+
+Then after executing steps 4. and 5. it should look like this:
+
+`https://adobe-my.sharepoint.com/:f:/r/personal/bob/Documents/mysite/query-index.xlsx`
 
 When your first page is indexed, the indexer will automatically create a suitable workbook at
 that location.
