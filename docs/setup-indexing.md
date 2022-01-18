@@ -38,6 +38,15 @@ https://admin.hlx3.page/index/`owner`/`repo`/`branch`/`path`
 You should get a JSON response, where the `data` node contains the index representation of
 your page.
 
+## Debug your index configuration
+
+The Helix CLI has a feature where it will print the index record whenever you change your query
+configuration, which assists in finding the correct CSS selectors:
+```
+$ hlx up --print-index
+```
+For more information, visit https://github.com/adobe/helix-cli.
+
 ## Setting up more index configurations
 
 You can have more than one index configuration in the same `helix-query.yaml`, where different
