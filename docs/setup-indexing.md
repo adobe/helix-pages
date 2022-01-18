@@ -1,32 +1,24 @@
 # How to add indexing to your Helix 3 project step by step
 
-This document explains how to setup indexing in your Helix 3 project. Currently, indexing into
-an Excel workbook in a SharePoint folder, only, is supported.
+This document explains how to setup indexing in your Helix 3 project.
 
 ## Setting up an initial query index
 
 If you start with the `helix-pages-starter` project you will have a `helix-query.yaml` configuration
 file in your GitHub repository. After having setup your `fstab.yaml` with a mountpoint that points
-into your SharePoint folder, go to a folder where your query index will be located.
+into your SharePoint site or Google Drive, select a folder where your query index should be located,
+and enter the path relative to your mountpoint, e.g.:
 
-Now enter the target URL of that query index location:
+- `/query-index.xlsx` for a Sharepoint Site
+- `/query-index` for Google Drive
 
-1. Select the folder in the Sharepoint UI
-2. Choose action `Copy Link`, and select `Copy` in the popup window
-3. Paste the link into the `helix-query.yaml`s target property
-4. Remove the query string in that link (the question mark `?` and all that follows)
-5. Append the name of your Excel workbook, e.g. `/query-index.xlsx`
+For Sharepoint, the indexer will automatically setup the Excel workbook. For Google Drive, however,
+you have to create the spreadsheet yourself:
 
-As an example, if the link to the folder is as follows:
-
-`https://adobe-my.sharepoint.com/:f:/r/personal/bob/Documents/mysite?csf=1&web=1&e=c7xaOP`
-
-Then after executing steps 4. and 5. it should look like this:
-
-`https://adobe-my.sharepoint.com/:f:/r/personal/bob/Documents/mysite/query-index.xlsx`
-
-When your first page is indexed, the indexer will automatically create a suitable workbook at
-that location.
+1. Create the spreadsheet at the location specified above
+2. In that spreadsheet, create a sheet named `raw_index`
+3. In that sheet, enter the names of the properties in your `helix-query.yaml` in the first row -
+   one property name per cell - and add an entry `path`.
 
 ## Setting up the properties that should be added to the index
 
@@ -48,8 +40,8 @@ your page.
 
 ## Setting up more index configurations
 
-You can have more than index configuration in the same `helix-query.yaml`, where different
-branches are indexed into different Excel workbooks. Again see
+You can have more than one index configuration in the same `helix-query.yaml`, where different
+branches are indexed into different Excel workbooks or Google spreadsheets. Again see the
 [Reference](https://github.com/adobe/helix-index-files#reference) for more details
 
 ## Setting up an AWS queue to store indexed records into
@@ -57,7 +49,7 @@ branches are indexed into different Excel workbooks. Again see
 This is currently a manual process, that someone from the Helix Project must invoke. Please contact
 some team member and tell them your project's GitHub owner and repository.
 
-## Index a page so it ends up in the Excel workbook
+## Index a page so it ends up in the Excel workbook or Geegle spreadsheet
 
 Publish a page and it will get indexed, i.e. its index representation will be stored in the AWS
-queue, where it is picked up and stored in the Excel workbook.
+queue, where it is picked up and stored in the Excel workbook or Google spreadsheet.
